@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
 import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
 import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LinhaPesquisaService {
@@ -19,15 +19,15 @@ export class LinhaPesquisaService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} linhaPesquisa`;
   }
 
-  update(id: number, updateLinhaPesquisaDto: UpdateLinhaPesquisaDto) {
+  update(id: string, updateLinhaPesquisaDto: UpdateLinhaPesquisaDto) {
     return `This action updates a #${id} linhaPesquisa`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} linhaPesquisa`;
   }
 }

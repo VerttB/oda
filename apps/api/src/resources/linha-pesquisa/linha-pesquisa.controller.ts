@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LinhaPesquisaService } from './linha-pesquisa.service';
 import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
 import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
@@ -19,16 +27,19 @@ export class LinhaPesquisaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.linhaPesquisaService.findOne(+id);
+    return this.linhaPesquisaService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLinhaPesquisaDto: UpdateLinhaPesquisaDto) {
-    return this.linhaPesquisaService.update(+id, updateLinhaPesquisaDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateLinhaPesquisaDto: UpdateLinhaPesquisaDto,
+  ) {
+    return this.linhaPesquisaService.update(id, updateLinhaPesquisaDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.linhaPesquisaService.remove(+id);
+    return this.linhaPesquisaService.remove(id);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PesquisadoresService {

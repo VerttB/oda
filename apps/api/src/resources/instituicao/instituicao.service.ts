@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
 import { CreateInstituicaoDto } from './dto/create-instituicao.dto';
 import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class InstituicaoService {
@@ -19,15 +19,15 @@ export class InstituicaoService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} instituicao`;
   }
 
-  update(id: number, updateInstituicaoDto: UpdateInstituicaoDto) {
+  update(id: string, updateInstituicaoDto: UpdateInstituicaoDto) {
     return `This action updates a #${id} instituicao`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} instituicao`;
   }
 }

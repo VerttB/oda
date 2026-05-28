@@ -12,15 +12,15 @@ export class ProducoesService {
     return `This action returns all producoes`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} producoe`;
   }
 
-  update(id: number, updateProducoeDto: UpdateProducoeDto) {
+  update(id: string, updateProducoeDto: UpdateProducoeDto) {
     return `This action updates a #${id} producoe`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} producoe`;
   }
 }
