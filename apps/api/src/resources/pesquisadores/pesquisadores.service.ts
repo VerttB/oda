@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { UUID } from '@/common/types/uuid.type';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
@@ -19,15 +20,15 @@ export class PesquisadoresService {
     });
   }
 
-  findOne(id: string) {
+  findOne(id: UUID) {
     return `This action returns a #${id} pesquisadore`;
   }
 
-  update(id: string, updatePesquisadoreDto: UpdatePesquisadoreDto) {
+  update(id: UUID, updatePesquisadoreDto: UpdatePesquisadoreDto) {
     return `This action updates a #${id} pesquisadore`;
   }
 
-  remove(id: string) {
+  remove(id: UUID) {
     return `This action removes a #${id} pesquisadore`;
   }
 }

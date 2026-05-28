@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { UUID } from '@/common/types/uuid.type';
 import { CreateProducoeDto } from './dto/create-producoe.dto';
 import { UpdateProducoeDto } from './dto/update-producoe.dto';
 
@@ -12,15 +13,15 @@ export class ProducoesService {
     return `This action returns all producoes`;
   }
 
-  findOne(id: string) {
+  findOne(id: UUID) {
     return `This action returns a #${id} producoe`;
   }
 
-  update(id: string, updateProducoeDto: UpdateProducoeDto) {
+  update(id: UUID, updateProducoeDto: UpdateProducoeDto) {
     return `This action updates a #${id} producoe`;
   }
 
-  remove(id: string) {
+  remove(id: UUID) {
     return `This action removes a #${id} producoe`;
   }
 }

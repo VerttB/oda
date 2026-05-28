@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { UUID } from '@/common/types/uuid.type';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
@@ -19,15 +20,15 @@ export class GruposPesquisaService {
     });
   }
 
-  findOne(id: string) {
+  findOne(id: UUID) {
     return `This action returns a #${id} gruposPesquisa`;
   }
 
-  update(id: string, updateGruposPesquisaDto: UpdateGruposPesquisaDto) {
+  update(id: UUID, updateGruposPesquisaDto: UpdateGruposPesquisaDto) {
     return `This action updates a #${id} gruposPesquisa`;
   }
 
-  remove(id: string) {
+  remove(id: UUID) {
     return `This action removes a #${id} gruposPesquisa`;
   }
 }

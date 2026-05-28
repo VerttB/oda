@@ -6,7 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
+import type { UUID } from '@/common/types/uuid.type';
 import { LinhaPesquisaService } from './linha-pesquisa.service';
 import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
 import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
@@ -26,20 +28,20 @@ export class LinhaPesquisaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: UUID) {
     return this.linhaPesquisaService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: UUID,
     @Body() updateLinhaPesquisaDto: UpdateLinhaPesquisaDto,
   ) {
     return this.linhaPesquisaService.update(id, updateLinhaPesquisaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: UUID) {
     return this.linhaPesquisaService.remove(id);
   }
 }
