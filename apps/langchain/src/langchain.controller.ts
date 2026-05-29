@@ -1,6 +1,7 @@
 import { Controller } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
 import { LANGCHAIN_PATTERNS } from "./langchain.contracts";
+
 import type {
   LangchainGenerateRequest,
   LangchainSummarizeRequest,

@@ -8,7 +8,9 @@
     "api:test": "npm --prefix apps/api run test",
     "langchain:build": "npm --prefix apps/langchain run build",
     "langchain:dev": "npm --prefix apps/langchain run start:dev",
-    "langchain:start": "npm --prefix apps/langchain run start"
+    "langchain:start": "npm --prefix apps/langchain run start",
+    "format": "npm --prefix apps/api run format && npm --prefix apps/langchain run format",
+    "format:check": "npm --prefix apps/api run format:check && npm --prefix apps/langchain run format:check"
   },
   "license": "UNLICENSED",
   "private": true
