@@ -23,12 +23,16 @@ import { createKeyv } from '@keyv/redis';
       global: true,
     },
     CacheModule.registerAsync({
-        useFactory: async (configService: ConfigService) => ({
-          stores: [createKeyv(`${configService.getOrThrow<string>("REDIS_URL")}:${configService.getOrThrow<string>("REDIS_PORT")} `)],
-          ttl: 60 * 1000,
-        }),
-        isGlobal: true
+      useFactory: async (configService: ConfigService) => ({
+        stores: [
+          createKeyv(
+            `${configService.getOrThrow<string>('REDIS_URL')}:${configService.getOrThrow<string>('REDIS_PORT')} `,
+          ),
+        ],
+        ttl: 60 * 1000,
       }),
+      isGlobal: true,
+    }),
     GruposPesquisaModule,
     InstituicaoModule,
     LangchainGatewayModule,
