@@ -3,7 +3,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
-import { UUID } from 'node:crypto'; 
+
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list';
 
 @Injectable()
@@ -30,16 +30,16 @@ export class PesquisadoresService {
     );
   }
 
-  findOne(id: UUID) {
+  findOne(id: string) {
     return this.prismaService.pesquisador.findUnique({ where: { id: id}})
   }
 
-  async update(id: UUID, updatePesquisadoreDto: UpdatePesquisadoreDto) {
+  async update(id: string, updatePesquisadoreDto: UpdatePesquisadoreDto) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
     return await this.prismaService.pesquisador.update({where: {id: id}, data: updatePesquisadoreDto},)
   }
 
-  async remove(id: UUID) {
+  async remove(id: string) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
     return await this.prismaService.pesquisador.delete({where: { id }})
   }

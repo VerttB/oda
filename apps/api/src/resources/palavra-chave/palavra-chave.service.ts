@@ -1,7 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
-import { UUID } from "node:crypto";
 
 const PALAVRA_CHAVE_LIST_KEY = 'palavrachave:list';
 
@@ -29,7 +28,7 @@ export class PalavraChaveService {
         );
       }
     
-      findOne(id: UUID) {
+      findOne(id: string) {
         return this.prismaService.palavraChave.findUnique({ where: { id: id}})
       }
     

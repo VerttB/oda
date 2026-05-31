@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { GruposPesquisaService } from './grupos-pesquisa.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
@@ -26,20 +27,20 @@ export class GruposPesquisaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.gruposPesquisaService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateGruposPesquisaDto: UpdateGruposPesquisaDto,
   ) {
     return this.gruposPesquisaService.update(id, updateGruposPesquisaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.gruposPesquisaService.remove(id);
   }
 }

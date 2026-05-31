@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { PesquisadoresService } from './pesquisadores.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
@@ -26,20 +27,20 @@ export class PesquisadoresController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.pesquisadoresService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePesquisadoreDto: UpdatePesquisadoreDto,
   ) {
     return this.pesquisadoresService.update(id, updatePesquisadoreDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.pesquisadoresService.remove(id);
   }
 }

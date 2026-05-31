@@ -3,7 +3,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
-import { UUID } from 'node:crypto';
+
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list';
 
 @Injectable()
@@ -30,16 +30,16 @@ export class GruposPesquisaService {
     );
   }
 
-  findOne(id: UUID) {
+  findOne(id: string) {
     return `This action returns a #${id} gruposPesquisa`;
   }
 
-  async update(id: UUID, updateGruposPesquisaDto: UpdateGruposPesquisaDto) {
+  async update(id: string, updateGruposPesquisaDto: UpdateGruposPesquisaDto) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
     return `This action updates a #${id} gruposPesquisa`;
   }
 
-  async remove(id: UUID) {
+  async remove(id: string) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
     return `This action removes a #${id} gruposPesquisa`;
   }

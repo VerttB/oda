@@ -1,9 +1,9 @@
-import { Inject, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateInstituicaoDto } from './dto/create-instituicao.dto';
 import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
-import { UUID } from 'node:crypto';
+
 const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list';
 
 @Injectable()
@@ -33,16 +33,16 @@ export class InstituicaoService {
     );
   }
 
-  async findOne(id: UUID) {
+  async findOne(id: string) {
     return await this.prismaService.instituicao.findUniqueOrThrow({ where: { id }})
   }
 
-  async update(id: UUID, updateInstituicaoDto: UpdateInstituicaoDto) {
+  async update(id: string, updateInstituicaoDto: UpdateInstituicaoDto) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
     return await this.prismaService.instituicao.update({ where: { id }, data: updateInstituicaoDto})
   }
 
-  async remove(id: UUID) {
+  async remove(id: string) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
     return await this.prismaService.instituicao.delete({where: { id }})
   }
