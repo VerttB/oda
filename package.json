@@ -1,17 +1,64 @@
 {
   "name": "open-dgp-api",
   "version": "0.1.0",
-  "description": "Backend para coleta, estruturação e busca semântica de dados de grupos de pesquisa do DGP/CNPq.",
-  "scripts": {
-    "api:build": "npm --prefix apps/api run build",
-    "api:dev": "npm --prefix apps/api run start:dev",
-    "api:test": "npm --prefix apps/api run test",
-    "langchain:build": "npm --prefix apps/langchain run build",
-    "langchain:dev": "npm --prefix apps/langchain run start:dev",
-    "langchain:start": "npm --prefix apps/langchain run start",
-    "format": "npm --prefix apps/api run format && npm --prefix apps/langchain run format",
-    "format:check": "npm --prefix apps/api run format:check && npm --prefix apps/langchain run format:check"
-  },
+  "description": "Backend para coleta, estruturacao e busca semantica de dados de grupos de pesquisa do DGP/CNPq.",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "api:build": "npm --workspace @oda/api run build",
+    "api:dev": "npm --workspace @oda/api run start:dev",
+    "api:test": "npm --workspace @oda/api run test",
+    "langchain:build": "npm --workspace @oda/langchain run build",
+    "langchain:dev": "npm --workspace @oda/langchain run start:dev",
+    "langchain:start": "npm --workspace @oda/langchain run start",
+    "format": "npm --workspaces --if-present run format",
+    "format:check": "npm --workspaces --if-present run format:check"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/cache-manager": "^3.1.2",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^11.1.24",
+    "@nestjs/platform-express": "^11.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.1",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "globals": "^17.0.0",
+    "jest": "^30.0.0",
+    "prettier": "^3.4.2",
+    "prisma": "^7.8.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
+  },
+  "overrides": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/microservices": "^11.1.24",
+    "@nestjs/platform-express": "^11.0.1"
+  }
 }
