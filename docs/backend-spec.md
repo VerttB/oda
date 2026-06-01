@@ -319,8 +319,13 @@ Endpoints scaffold existentes por recurso:
 
 Observações:
 
-- `findAll` de grupos, instituições, linhas e pesquisadores já consulta Prisma.
-- `create`, `findOne`, `update` e `remove` ainda são placeholders.
+- A API compila via `npm run api:build` no workspace monorepo.
+- `linha-pesquisa` possui CRUD real com transações para manter vínculos em `membro_linha_pesquisa`, `linha_pesquisa_palavra_chave` e `linha_pesquisa_setor_aplicacao`.
+- `producoes` possui CRUD real com transações para manter vínculos em `producao_pesquisador` e `producao_palavra_chave`.
+- `instituicao` e `pesquisadores` possuem CRUD real simples com Prisma.
+- `pesquisadores.remove` remove vínculos em `membro_grupo`, `membro_linha_pesquisa` e `producao_pesquisador` antes de excluir o pesquisador.
+- `grupos-pesquisa` possui `create` e `findAll` reais, mas `findOne`, `update` e `remove` ainda precisam ser finalizados.
+- `uf`, `area-conhecimento`, `setor-aplicacao` e `palavra-chave` existem como services/DTOs auxiliares internos, mas ainda não estão expostos como módulos/controllers REST no `AppModule`.
 - DTOs de criação foram preenchidos para os recursos existentes com `class-validator` e `class-transformer`.
 - DTOs de atualização usam `PartialType` de `@nestjs/mapped-types`.
 - A aplicação usa `ValidationPipe` global com `whitelist`, `forbidNonWhitelisted` e `transform`.
@@ -334,9 +339,11 @@ Observações:
   - `P2002` para `409 Conflict`.
   - `P2003` para `422 Unprocessable Entity`.
   - `P2014` para `422 Unprocessable Entity`.
-- O recurso `producoes` existe no código e possui modelo correspondente no Prisma, mas o service ainda está em scaffold.
+- Cache manual com `cacheManager.wrap` é usado principalmente em listagens (`findAll`) e invalidado em operações de escrita quando implementadas.
 - Ainda não há paginação, filtros, ordenação ou padronização de resposta.
-- Os testes Jest atualmente falham ao importar o Prisma Client gerado por incompatibilidade com `import.meta` em ambiente CommonJS de teste; o build da API passa.
+- Testes unitários reais existem para `linha-pesquisa.service` e `producoes.service`, com mocks de Prisma/cache.
+- Validação recente: `npm --workspace @oda/api run test -- resources/linha-pesquisa/linha-pesquisa.service.spec.ts resources/producoes/producoes.service.spec.ts --runInBand` passou com 2 suítes e 8 testes.
+- A suíte completa de testes ainda precisa ser revisada e ampliada.
 
 ## 7. Diagramas
 
