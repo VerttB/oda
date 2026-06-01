@@ -31,7 +31,14 @@ export class PesquisadoresService {
   }
 
   findOne(id: string) {
-    return this.prismaService.pesquisador.findUnique({ where: { id: id}})
+    return this.prismaService.pesquisador.findUnique({ where: { id: id}, include: {
+      producoes: true,
+      membrosGrupo: {
+        include: {
+          grupoPesquisa: true
+        }
+      }
+    }})
   }
 
   async update(id: string, updatePesquisadoreDto: UpdatePesquisadoreDto) {
@@ -40,7 +47,26 @@ export class PesquisadoresService {
   }
 
   async remove(id: string) {
+    const pesquisador = await this.prismaService.$transaction(async (tx) => {
+      await tx.membroGrupo.deleteMany({
+        where: { pesquisadorId: id },
+      });
+
+      await tx.membroLinhaPesquisa.deleteMany({
+        where: { pesquisadorId: id },
+      });
+
+      await tx.producaoPesquisador.deleteMany({
+        where: { pesquisadorId: id },
+      });
+
+      return await tx.pesquisador.delete({
+        where: { id },
+      });
+    });
+
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
-    return await this.prismaService.pesquisador.delete({where: { id }})
+
+    return pesquisador;
   }
 }

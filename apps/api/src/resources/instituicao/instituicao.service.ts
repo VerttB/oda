@@ -16,10 +16,7 @@ export class InstituicaoService {
 
   async create(createInstituicaoDto: CreateInstituicaoDto) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
-
-     
-  
-  return await this.prismaService.instituicao.create({data: createInstituicaoDto})
+    return await this.prismaService.instituicao.create({data: createInstituicaoDto})
   }
 
   async findAll() {
@@ -41,6 +38,7 @@ export class InstituicaoService {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
     return await this.prismaService.instituicao.update({ where: { id }, data: updateInstituicaoDto})
   }
+
 
   async remove(id: string) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
