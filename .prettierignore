@@ -13,3 +13,6 @@ apps/api/prisma/migrations
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+.venv/
+__pycache__*/

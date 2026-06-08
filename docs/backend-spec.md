@@ -136,15 +136,14 @@ Ponto técnico em aberto:
 
 ## 5. Arquitetura
 
-Arquitetura inicial em discussão:
+Arquitetura atualizada (Monorepo Híbrido):
 
 ```mermaid
 flowchart LR
-  FE[Frontend] --> API[API REST]
+  FE[Frontend] --> API[NestJS API REST]
   API --> DB[(PostgreSQL)]
-  API --> LC[LangChain Service]
-  LC --> DB
-  LC --> LLM[LLM/Embedding Provider]
+  API --> LC[Python LangChain Service]
+  LC --> GEMINI[Google Gemini API]
   SCRAPER[Scraper Service] --> XML[(XML Output)]
   ETL[ETL/Orchestration] --> DB
   XML --> ETL
@@ -153,12 +152,19 @@ flowchart LR
 ```
 
 Observações:
+- **API REST (Node.js/NestJS):** Responsável pelo CRUD transacional, gerenciamento de usuários e orquestração de alto nível.
+- **LangChain Service (Python/FastAPI):** Microserviço especializado em busca semântica e RAG. Utiliza Google Gemini (LLM e Embeddings).
+- **Vetorização:** No estágio atual do MVP, utiliza vector store em memória (FAISS) alimentado por arquivos XML.
 
-- O scraper coleta dados em XML.
-- O ETL transforma, limpa e carrega dados no banco.
-- A API expõe os dados estruturados.
-- O LangChain consulta tabelas de RAG/embeddings e usa o LLM apenas quando necessário.
-- A geração de embeddings após carga/atualização dos dados será refinada.
+## 6.4 Estado Atual do Módulo LangChain (Python)
+
+- **Framework:** FastAPI.
+- **LLM:** Google Gemini 1.5 Flash.
+- **Embeddings:** Google Gemini (models/embedding-001).
+- **Vector Store:** FAISS (In-memory).
+- **Ingestão:** Parser customizado para arquivos XML do DGP/CNPq.
+- **Endpoints:**
+  - `POST /question`: Recebe uma pergunta e retorna uma resposta baseada no contexto dos XMLs.
 
 ### 5.1 Estrutura de Monorepo
 
