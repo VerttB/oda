@@ -1,0 +1,367 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</NOME>
+      <IDENTIFICACAO_DGP>9432972963521466</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Esse grupo de pesquisa atua de forma interdisciplinar, e vem desenvolvendo projetos de pesquisa com o financiamento de agencias de fomento: 1) EMPREENDEDORISMO SUSTENTÁVEL APLICADO A TECNOLOGIAS SOCIAIS LOCAIS - FAPESB DTE 0053/2013; 2) ROBOTICA BÁSICA EDUCACIONAL - FAPESB PES 0062/2013 E 3) VIRTUALIZAÇÃO 2D/3D DO MUSEU DE ZOOLOGIA DA UNEB - FAPESB CNV 0096/2013 e 4) METACENTROS COMO PROMOÇÃO DA INCLUSÃO DIGITAL E DA CIDADANIA - MEC PROEXT2012.</REPERCUSSAO>
+      <AREA>Ciências Exatas e da Terra; Ciência da Computação</AREA>
+      <INSTITUICAO>Universidade do Estado da Bahia - UNEB</INSTITUICAO>
+      <ANO_FORMACAO>2014</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>41680036</CEP>
+         <LOCALIDADE>Salvador</LOCALIDADE>
+         <UF>BA</UF>
+         <BAIRRO>Patamares</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>715</NUMERO>
+         <LOGRADOURO>Rua Pindoba</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Aloisio Santos Nascimento Filho" LATTES="7401907691814937" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Computabilidade e Modelos de Computação</AREA>
+            <AREA>Organização Industrial e Estudos Industriais</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Logística e Produtividade CIMATEC</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Redes Complexas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Logística e Gestão da Produção</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Pesquisa Operacional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Engenharia Industrial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eduardo Manuel de Freitas Jorge" LATTES="6716225567627323" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arquitetura de Sistemas de Computação</AREA>
+            <AREA>Banco de Dados</AREA>
+            <AREA>Engenharia de Software</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <AREA>Software Básico</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Educacional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hugo Saba Pereira Cardoso" LATTES="1966167015825708" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência da Computação</AREA>
+            <AREA>Engenharia de Software</AREA>
+            <AREA>Gerência de Projetos</AREA>
+            <AREA>Gestão Pública</AREA>
+            <AREA>Metodologia e Técnicas da Computação</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Educacional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Garcia Vivas Miranda" LATTES="1608472474770322" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Conservação de Solo e Água</AREA>
+            <AREA>Epidemiologia</AREA>
+            <AREA>Modelos computacionais</AREA>
+            <AREA>Motricidade</AREA>
+            <AREA>Neurociências</AREA>
+            <AREA>Sistemas Complexos</AREA>
+            <GRUPO_DE_PESQUISA>NITRE - Núcleo de Inovação Tecnológica em Reabilitação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Estudos em Saúde e Funcionalidade-NESF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Modelagem Matemática de Rede Neurais com Acoplamento Efático</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Desenvolvimento em Otimização Cognitiva</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Física Estatística e Sistemas Complexos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MEDIANTAR UFBA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Mesoescale Ocean-Atmosphere Network</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>a. Grafos e redes complexas: teoria e aplicações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Medicina Polar</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem matemática e a Neuro Fisiologia em Comunicação efática</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>b. Ciência de dados aplicada a sistemas vivos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>f. Biomecânica e Neurofísica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fatores Sociais e Biológicos da Neurodiversidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Neuroergonomia Cognitiva</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Dinâmicos Neurais em Redes.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sensoriamento Remoto</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcio Luis Valença Araújo" LATTES="0777733127275321" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração</AREA>
+            <AREA>Ciência da Computação</AREA>
+            <AREA>Economia</AREA>
+            <AREA>Epidemiologia</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovação, Propriedade Intelectual e Transferência de Tecnologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Propriedade Intelectual e Transferência de Tecnologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão da Inovação e Empreendedorismo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Fernanda Rios Grassi" LATTES="4436012961948689" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Doenças Infecciosas e Parasitárias</AREA>
+            <AREA>Imunologia Aplicada</AREA>
+            <AREA>Imunologia Celular</AREA>
+            <GRUPO_DE_PESQUISA>Doenças Infecciosas emergentes e negligenciadas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mayara Maria de Jesus Almeida" LATTES="4940207771377721" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração</AREA>
+            <AREA>Administração de Recursos Humanos</AREA>
+            <AREA>Inovação Tecnológica</AREA>
+            <AREA>Teoria Geral da Administração</AREA>
+            <AREA>Teoria Organizacional</AREA>
+            <GRUPO_DE_PESQUISA>Gestão, Inovação e Educação no Recôncavo Baiano</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação, Empreendedorismo e Gestão de Negócios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Jorge Silveira Ferreira" LATTES="3633682231940138" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Métodos e Modelos Matemáticos, Econométricos e Estatísticos</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Raphael Silva do Rosário" LATTES="5601958689947032" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Física Computacional</AREA>
+            <AREA>Física Estatística e Sistemas Complexos</AREA>
+            <AREA>Instrumentação Específica de Uso Geral em Física</AREA>
+            <AREA>Neurociência</AREA>
+            <AREA>Neurofísica</AREA>
+            <AREA>Redes Neurais Artificiais</AREA>
+            <GRUPO_DE_PESQUISA>NITRE - Núcleo de Inovação Tecnológica em Reabilitação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Física Estatística e Sistemas Complexos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>a. Grafos e redes complexas: teoria e aplicações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>f. Biomecânica e Neurofísica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Alana Carolina Pereira Abreu" LATTES="5623739019708811" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Sistemas de Informações</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>G2BC - Grupo de Pesquisa em Bioinformática e Biologia Computacional</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Bioinformática viral</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Aldo Melhor Barbosa" LATTES="0272876993638453" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Avaliação de Sistemas, Instituições, Planos e Programas Educacionais</AREA>
+            <AREA>Sistemas de Computação</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa Gestão Educacional e Formação de Gestores</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Políticas Educacionais, Gestão Educacional e Formação de Gestores</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Aline de Queiroz Passos Molineiro" LATTES="5533235028745949" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Pro reitoria de infraestrutura</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Desenvolvimento em Otimização Cognitiva</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Neuroergonomia Cognitiva</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bartolomeu das Neves Marques" LATTES="4350787213635211" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Administração</AREA>
+            <AREA>Comunicação</AREA>
+            <AREA>Educação</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovação, Propriedade Intelectual e Transferência de Tecnologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão da Inovação e Empreendedorismo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Catarina Ferreira Silveira" LATTES="3803995453022726" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Gestão da Produção e Processos</AREA>
+            <AREA>Gestão do Conhecimento</AREA>
+            <AREA>Marketing e Gestão da Cultura</AREA>
+            <AREA>Processo Decisório - Metodologia Multicritério de Apoio a Decisão</AREA>
+            <AREA>Sustentabilidade e Desenvolvimento Humano</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Educação, Tecnologias e Dinâmica territoriais no Baixo Sul da Bahia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação, Inovação Tecnológica e Empreendedorismo</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elisabete Joana Paes Barreto" LATTES="3521280644504624" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Planejamento em Ciência e Tecnologia</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elton Borges de Sena Barreto" LATTES="4022652802721951" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Física Geral</AREA>
+            <AREA>Instrumentação Específica de Uso Geral em Física</AREA>
+            <AREA>Métodos e Técnicas de Ensino</AREA>
+            <AREA>Metrologia, Técnicas Gerais de Laboratório, Sistema de Instrumentação</AREA>
+            <AREA>Ótica</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Educacional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Filipe Barros Teixeira" LATTES="9474062457712435" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Sistemas de Computação</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório Aberto de Inovação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Filipe Cardoso Brito" LATTES="7577033718670056" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Análise de Dados</AREA>
+            <AREA>Divulgação Científica</AREA>
+            <AREA>Engenharia Mecânica</AREA>
+            <AREA>Probabilidade e Estatística Aplicadas</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Flávio Santos Conterato" LATTES="6243445332422451" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Banco de Dados</AREA>
+            <AREA>Inteligência Artificial</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <AREA>Visão Computacional</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hugo Everaldo Salvador Bezerra" LATTES="0555814119350872" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Gerenciamento de Projetos</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Isabella Sampaio Santos" LATTES="1044437418894067" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Gestão da Inovação</AREA>
+            <AREA>Planejamento e Gestão</AREA>
+            <AREA>Propriedade Intelectual</AREA>
+            <AREA>Transferência de Tecnologia</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Josualdo Junior Dias da Silva" LATTES="8491072626157691" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>ANÁLISE DE SISTEMAS</AREA>
+            <AREA>Informática e Educação</AREA>
+            <AREA>Robótica, Mecatrônica e Automação</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos e Pesquisas em Formação de Professores - GEPROF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Acessibilidade e Politicas Públicas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Computação em Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Educacional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kellen Lima Rocha" LATTES="0953574383464948" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Comunicação Organizacional</AREA>
+            <AREA>Gestão Universitária</AREA>
+            <AREA>Mestrados Profissionais em Educação</AREA>
+            <AREA>Planejamento Estratégico</AREA>
+            <AREA>Pós-Graduação Stricto Sensu</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Sociais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="María Luz García Lesmes" LATTES="5397667184449773" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Adquisición de L2</AREA>
+            <AREA>Cognición y lenguaje</AREA>
+            <AREA>Ensino de espanhol</AREA>
+            <AREA>Nluevas tecnologías</AREA>
+            <AREA>Processamento da Linguagem Natural</AREA>
+            <AREA>Tradução</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Educacional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael Do Nascimento Argôlo" LATTES="3956770664987566" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael Guimarães Oliveira dos Santos" LATTES="0862503784644702" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Coleta e análise de dados</AREA>
+            <AREA>Engenharia Mecânica</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Modelagem Computacional</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Raíssa Silva Fernandes" LATTES="4596188341211832" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Computabilidade e Modelos de Computação</AREA>
+            <AREA>Física</AREA>
+            <AREA>Física Estatística e Termodinâmica</AREA>
+            <GRUPO_DE_PESQUISA>NITRE - Núcleo de Inovação Tecnológica em Reabilitação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Física Estatística e Sistemas Complexos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>a. Grafos e redes complexas: teoria e aplicações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>c. Modelagem da dinâmica e controle de doenças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rui Anderson Oliveira Rodrigues" LATTES="7514443718251574" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Toni Alex Reis Borges" LATTES="2644769045757950" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Data Analysis</AREA>
+            <AREA>Data Science</AREA>
+            <AREA>Network Science</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eliene Neri dos Santos Moura" LATTES="5782728086104383" FORMACAO_ACADEMICA="Especialização" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ivan Andrade Almeida" LATTES="4411072733085166" FORMACAO_ACADEMICA="Graduação" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kleber Monteiro Pinto" LATTES="4414905205162621" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>EDUCAÇÃO DE JOVENS E ADULTOS, PATRIMÔNIO E SABERES LOCAIS</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos e Pesquisa em Fisiologia, Neurociências e Educação</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Leilane Alves de Argôlo Santos" LATTES="7276928896150695" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada e Inovação (NPAI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>BARROCO IBERO-AMERICANO: ARQUITETURA E CIDADE (BIA)</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ciência de Dados</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de equipamentos de comunicação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Laboratório Aberto de Inovação</NOME>
+            <OBJETIVO>Modelar e implantar um espaço de laboratório hands-on (mão na massa) para estimular a inovação e a criatividade com a finalidade de educar para inovação e apoiar a pré-incubação e desenvolvimento de projetos de pesquisa aplicada na UNEB</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior | Atividades de apoio à educação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Modelagem Computacional com marcadores sociais, econômica e de saúde a partir de casos epidemiológicos registrados em municípios.</NOME>
+            <OBJETIVO>Neste trabalho objetivamos a construção de um modelo computacional, capaz de auxiliar as ações de combate a epidemias que utilizando a teoria dos agentes [Wooldridge1995, Carneiro2006] e redes complexas [Barabási1999], seja capaz de simular as dinâmicas de propagação, e com base nas series temporais históricas de ocorrência epidemiológicas, indicar os municípios com maior potencial de ocorrência de epidemia[Saba et al, 2014][Saba et al, 2018][Araújo et al 2018].</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana integradas com assistência social, prestadas em residências coletivas e particulares | Administração do estado e da política econômica e social | Administração pública, defesa e seguridade social</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Métodos, Técnicas, Linguagens e Ferramentas para Engenharia de Software</NOME>
+            <OBJETIVO>Pesquisar sobre métodos, técnicas, linguagens e ferramentas para Engenharia de Software com o objetivo de ampliar e evoluir esta área através de estudos no estado da arte e através de aplicações práticas.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Robótica Educacional</NOME>
+            <OBJETIVO>Inserção da robótica educacional no ensino básico como possibilidade de melhoria na aprendizagem, como a promoção da prática da robótica de forma interdisciplinar, alinhando as áreas do conhecimento.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Ensino médio | Educação infantil e ensino fundamental | Outras atividades de ensino</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Tecnologias Sociais</NOME>
+            <OBJETIVO>Analisar e implantar processos tecnológicos tais como: reciclagem de lixo eletrônico e empreendedorismo social, possibilitando a inclusão sócio-digital proveniente de uma ação composta pela integração entre MetaReciclagem, implantação de uma Rede de Empreendedorismo Social e Palestras de incentivo à cidadania, através do apoio a associações para capacitação profissional de membros das comunidades e a integração entre as associações.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de associações de defesa de direitos sociais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

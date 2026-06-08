@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Biomarcadores invasivos e não invasivos da resposta inflamatória e do estado oxidativo em animais domésticos e selvagens</NOME>
+      <IDENTIFICACAO_DGP>0220426365210571</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Investigações sobre a resposta de fase aguda em animais domésticos e selvagens para avaliar a inflamação, pesquisar biomarcadores precoces da inflamação e do estado oxidativo nas doenças parasitárias, nos processos infecciosos, traumas, cirurgias, neoplasias e estresse. Ênfase em estudos em aves de produção, ovinos, bovinos e animais de companhia, principalmente cães, gatos e aves silvestres. Grupo de pesquisa atuante e membro da ISACP (International Society for Animal Clinical Pathology). Possibilidades de investigações em espécies não-domésticas da fauna brasileira</REPERCUSSAO>
+      <AREA>Ciências Agrárias; Medicina Veterinária</AREA>
+      <INSTITUICAO>Universidade Federal do Paraná - UFPR</INSTITUICAO>
+      <ANO_FORMACAO>2026</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>80035050</CEP>
+         <LOCALIDADE>Curitiba</LOCALIDADE>
+         <UF>PR</UF>
+         <BAIRRO>Cabral</BAIRRO>
+         <COMPLEMENTO>Departamento de Medicina Veterinária</COMPLEMENTO>
+         <NUMERO>1540</NUMERO>
+         <LOGRADOURO>Rua Funcionários</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Camila Peres Rubio" LATTES="2064019986095056" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Patologia Clínica Animal</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elizabeth Moreira dos Santos Schmidt" LATTES="9586973791345293" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Clínica Veterinária</AREA>
+            <AREA>Doenças Parasitárias de Animais</AREA>
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Patologia Clínica Animal</AREA>
+            <AREA>Proteínas de Fase Aguda da Inflamação</AREA>
+            <GRUPO_DE_PESQUISA>Equipe de Estudo e Pesquisa em Parasitologia Animal</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sanidade e parasitologia animal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Naiara Mirelly Marinho da Silva" LATTES="5026944104769988" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Enfermidades Parasitárias dos Animais</AREA>
+            <AREA>Helmintologia de animais domésticos e selvagens</AREA>
+            <AREA>Parasitologia Veterinária</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rita Maria Venancio Mangrich Rocha" LATTES="4419243422589025" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Bioquímica Veterinária</AREA>
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Patologia Clínica Animal</AREA>
+            <GRUPO_DE_PESQUISA>Patologia Geral e Comparada</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bases Moleculares da Susceptibilidade do Hospedeiro</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Clínica e Cirurgia Veterinária</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Patologia Experimental e Descritiva</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Saulo Henrique Weber" LATTES="4154787146223637" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Banco de Dados Ecológicos</AREA>
+            <AREA>Cálculo Diferencial e Integral</AREA>
+            <AREA>Dendrometria e Inventário Florestal</AREA>
+            <AREA>Matemática Discreta e Combinatória</AREA>
+            <AREA>Probabilidade e Estatística Aplicadas</AREA>
+            <GRUPO_DE_PESQUISA>Medicina de Ruminantes</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Produção e saúde em ruminantes</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Felipe da Silva Dezidério" LATTES="1348043335278014" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Epidemiologia</AREA>
+            <AREA>Fisiopatologia e diagnóstico laboratorial</AREA>
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Patologia Animal</AREA>
+            <AREA>patologia comparada</AREA>
+            <AREA>Patologia Experimental</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Giordani Mascoli de Favare" LATTES="3869229634818928" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Inseminação Artificial Animal</AREA>
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Produção Animal</AREA>
+            <GRUPO_DE_PESQUISA>Equipe de Estudo e Pesquisa em Parasitologia Animal</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sanidade e parasitologia animal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Julia Codo Aruk" LATTES="3509715608347187" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Banco de Sangue Veterinário</AREA>
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Patologia Clínica Animal</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafaella Kozesinski" LATTES="0821226703862461" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Produção Animal</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marianna Laura Elis Chocobar" LATTES="9859828815674145" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="TECNICO"/>
+         <PESQUISADOR NOME="Milica Kovacevic Filipovic" LATTES="3583057028650488" FORMACAO_ACADEMICA="REPUBLICA DA SERVIA" CATEGORIA="ESTRANGEIRO">
+            <AREA>Regenerative medicine</AREA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Biomarcadores da Inflamação</NOME>
+            <OBJETIVO>Investigar os biomarcadores da inflamação (proteínas fase aguda) nas espécies animais, tanto domésticos quanto selvagens, desde a validação de métodos até a dinâmica dessas proteínas nas diferentes respostas inflamatórias, em amostras de sangue (soro/plasma) e amostras obtidas de forma não invasiva (saliva, urina, ovos). Busca-se também inserir o Brasil na elaboração do consenso internacional dos protocolos de determinação do perfil completo das concentrações desses biomarcadores em animais.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades veterinárias</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Biomarcadores do estado oxidativo</NOME>
+            <OBJETIVO>Investigar os biomarcadores do estado oxidativo (agente oxidantes e antioxidantes) nas diferentes espécies animais, tanto domésticos quanto selvagens, desde a validação de métodos até a dinâmica nas diferentes respostas inflamatórias e do estresse, em amostras de sangue (soro/plasma) e amostras obtidas de forma não invasiva.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades veterinárias</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

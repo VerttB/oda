@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Grupo de estudos linguístico e literário da Amazonia- GELLA</NOME>
+      <IDENTIFICACAO_DGP>0324380705826189</IDENTIFICACAO_DGP>
+      <REPERCUSSAO/>
+      <AREA>Lingüística, Letras e Artes; Lingüística</AREA>
+      <INSTITUICAO>Instituto Federal de Educação, Ciência e Tecnologia do Pará - IFPA</INSTITUICAO>
+      <ANO_FORMACAO>2023</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>68020820</CEP>
+         <LOCALIDADE>Santarém</LOCALIDADE>
+         <UF>PA</UF>
+         <BAIRRO>Interventoria</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>621</NUMERO>
+         <LOGRADOURO>Avenida Marechal Castelo Branco De 1817 Até 99999- de</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Arlon Francisco Carvalho Martins" LATTES="3385579371424467" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Língua Portuguesa</AREA>
+            <AREA>Línguas Estrangeiras Modernas</AREA>
+            <AREA>Lingüística</AREA>
+            <AREA>Sociolingüística e Dialetologia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Educação do IFPA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguagem, Educação Inclusiva e Culturas Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Lexicografia e Terminologia da Amazônia Ocidental Brasileira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Políticas Educacionais e Educação do Campo na Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cleidison da Silva Santos" LATTES="1054839328851319" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Filosofia da Linguagem</AREA>
+            <AREA>Línguas Estrangeiras Modernas</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Igor de Sousa Miranda" LATTES="4173337248562865" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação</AREA>
+            <AREA>Química</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de simulação e modelagem molecular</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="João Vitor Rodrigues Alencar" LATTES="1470620101683081" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Filosofia</AREA>
+            <AREA>Letras</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Educação do IFPA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Literatura e sociedade na educação do campo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguagem, Educação Inclusiva e Culturas Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Identidade, Cultura e Território na Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bruno Andrade da Gama" LATTES="1895856542810297" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Letras</AREA>
+            <AREA>Literatura Brasileira</AREA>
+            <GRUPO_DE_PESQUISA>AGOGE: Grupo de Estudos e Pesquisas sobre Formação de Professores e Gestores, História e Filosofia da Educação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Literaturas de Língua Portuguesa</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Literatura e outros campos do saber</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História e Historiografia da Educação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Filipe Daniel da Silva Morais" LATTES="4110897064824307" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <AREA>Banco de Dados</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Francilane" LATTES="5698732395133219" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Literatura e sociedade na educação do campo</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jennifer Freitas de Sousa" LATTES="1460808632996297" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Michael Martins Benício Costa" LATTES="0689740502002454" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura de Sistemas de Computação</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rosangela dos Reis Scapinelli" LATTES="2536735984123806" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <AREA>Construção Civil</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de estudos linguístico e literário da Amazonia- GELLA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Lexicografia e Terminologia da Amazônia Ocidental Brasileira</NOME>
+            <OBJETIVO>Desenvolver pesquisa com ênfase no construção de dicionários de linguagens técnicas e linguagens e línguas relacionadas a culturas dos povos tradicionais e originários da Amazônia</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior | Educação profissional de nível técnico e tecnológico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Linguística e literatura com ênfase na cultura de povos tradicionais da Amazônia</NOME>
+            <OBJETIVO>Estudar a linguagem e a literatura de povos tradicionais e originais da Amazônia como os povos indígenas, quilombolas e ribeirinhos. O interesse é analisar a linguagens desses povos e a literatura oral e escrita oriundas de culturas locais.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior | Educação profissional de nível técnico e tecnológico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Literatura e sociedade na educação do campo</NOME>
+            <OBJETIVO>Desenvolver pesquisa relacionadas a Educação do Campo - Linguagem e Literatura.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de apoio à educação | Educação profissional de nível técnico e tecnológico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

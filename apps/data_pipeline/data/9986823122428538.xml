@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Assistência à Saúde do Recém-Nascido</NOME>
+      <IDENTIFICACAO_DGP>9986823122428538</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O grupo "Assistência à Saúde do Recém-Nascido" está no início de suas atividades, com foco em aprimorar a terapia nutricional neonatal, desenvolvendo protocolos e diretrizes inovadores baseados em evidências. Prevê-se que o grupo se torne um centro de excelência regional, impulsionando tanto a pesquisa quanto a prática clínica nessa área crucial da medicina. A expectativa é que suas pesquisas resultem em melhorias significativas na assistência neonatal, promovendo o bem-estar a longo prazo dos recém-nascidos e influenciando positivamente as políticas de saúde pública relacionadas.
+
+À medida que o grupo avança, há uma visão clara de se tornar um centro de excelência reconhecido internacionalmente. Isso envolve atrair talentos e recursos para impulsionar ainda mais a pesquisa e a inovação na área da saúde neonatal. As colaborações multidisciplinares e institucionais são fundamentais para esse objetivo, permitindo que o grupo aborde questões complexas de saúde de maneira abrangente e</REPERCUSSAO>
+      <AREA>Ciências da Saúde; Nutrição</AREA>
+      <INSTITUICAO>Universidade Federal do Rio Grande do Norte - UFRN</INSTITUICAO>
+      <ANO_FORMACAO>2024</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>59200000</CEP>
+         <LOCALIDADE>Santa Cruz</LOCALIDADE>
+         <UF>RN</UF>
+         <BAIRRO>Centro</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>S/N</NUMERO>
+         <LOGRADOURO>Sta Cruz</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Fernanda da Fonseca Freitas" LATTES="6100035014265795" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Nutrição Clínica</AREA>
+            <GRUPO_DE_PESQUISA>Comportamento Alimentar</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estudos em comportamento, alimentos e nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Comportamento e consumo alimentar</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Comportamento alimentar</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcos Felipe Silva de Lima" LATTES="7014490761333004" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <GRUPO_DE_PESQUISA>O cuidar na saúde na perspectiva interprofissional</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estudos em comportamento, alimentos e nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidar em saúde da mulher e da criança</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Formação, ensino e aprendizagem</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Tecnologias em Saúde ATS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vigilância em Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Epidemiologia e atenção nutricional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Niegia Graciely de Medeiros Alves" LATTES="5800524434613034" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <AREA>Nutrição</AREA>
+            <AREA>Nutrição esportiva</AREA>
+            <AREA>Nutrição Hospitalar</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Priscila Nunes Costa" LATTES="7053963527719774" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ruty Eulália de Medeiros Eufrásio" LATTES="3446787442679894" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Alimentação escolar</AREA>
+            <AREA>NUTRIÇÃO CLÍNICA</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Waleska Araujo do Nascimento" LATTES="5613733879463920" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ida Monique Estevam da Silva" LATTES="3295094288610041" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jamili Eva Quirino Campelo" LATTES="0782391380391800" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jéssica Galvão do Nascimento" LATTES="0900509273163104" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="João Alfredo Soares Pires" LATTES="7734877835808946" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcos Roberto Pereira da Silva" LATTES="0739762994158246" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>O cuidar na saúde na perspectiva interprofissional</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidar em saúde da mulher e da criança</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vigilância em Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Elisa Coelho Nóbrega de Morais" LATTES="5764348020147135" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Nutrição</AREA>
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rayanne Kely Aprigio Nobre" LATTES="2220683030347732" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Walkiria Da Mata Coutinho" LATTES="7158142568885752" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Assistência à Saúde do Recém-Nascido</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Associação entre Terapia Nutricional e Desfechos Clínicos</NOME>
+            <OBJETIVO>Investigar as associações entre diferentes aspectos da terapia nutricional, como uso de aditivos, amamentação e medicamentos, com desfechos clínicos, parâmetros respiratórios e ocorrência de infecções, visando identificar estratégias eficazes de intervenção e prevenção.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atendimento hospitalar</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Desfechos Clínicos e Fatores Associados</NOME>
+            <OBJETIVO>Analisar os desfechos clínicos, como tempo de internação e incidência de complicações, dos recém-nascidos na UTIN, identificando os fatores associados a esses desfechos, incluindo características socioeconômicas e de saúde materna.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atendimento hospitalar</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>INDICADORES DE QUALIDADE EM TERAPIA NUTRICIONAL DE HOSPITAIS UNIVERSITÁRIOS</NOME>
+            <OBJETIVO>Implementar indicadores de qualidade para avaliar a eficácia e segurança da terapia nutricional neonatal, garantindo padrões elevados de cuidado e permitindo o monitoramento contínuo da prática clínica</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atendimento hospitalar</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Terapia Nutricional Neonatal</NOME>
+            <OBJETIVO>Avaliar a eficácia e segurança das dietas oferecidas aos recém-nascidos na UTIN, visando otimizar o suporte nutricional para promover um desenvolvimento saudável e reduzir a incidência de complicações.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atendimento hospitalar</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

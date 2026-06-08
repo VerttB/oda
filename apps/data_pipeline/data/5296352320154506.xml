@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Pesquisa em Tocoginecologia</NOME>
+      <IDENTIFICACAO_DGP>5296352320154506</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O Grupo de Pesquisa em Tocoginecologia é dedicado ao avanço do conhecimento e à melhoria dos cuidados de saúde para mulheres e fetos. Nosso grupo é composto por uma equipe multidisciplinar de especialistas que busca entender melhor as condições que afetam a saúde das mulheres e dos fetos e desenvolver novas estratégias para diagnóstico, tratamento e prevenção.</REPERCUSSAO>
+      <AREA>Ciências da Saúde; Medicina</AREA>
+      <INSTITUICAO>Universidade Federal de Mato Grosso - UFMT</INSTITUICAO>
+      <ANO_FORMACAO>2024</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>78060900</CEP>
+         <LOCALIDADE>Cuiabá</LOCALIDADE>
+         <UF>MT</UF>
+         <BAIRRO>UFMT</BAIRRO>
+         <COMPLEMENTO>Faculdade de Medicina</COMPLEMENTO>
+         <NUMERO>S/N</NUMERO>
+         <LOGRADOURO>Avenida Fernando Correa da Costa 2367 Universidade Fe</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Anselmo Verlangieri Carmo" LATTES="9293455071751886" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Medicina Fetal</AREA>
+            <AREA>Ultrassonografia em Ginecologia e Obstetrícia</AREA>
+            <AREA>Ultrassonografia Geral</AREA>
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>MEDICINA FETAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Obstetrícia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Aparecida Mazzutti Verlangieri Carmo" LATTES="3870309856798478" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Ginecologia e Obstetricia</AREA>
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gravidez de Alto Risco</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ginecologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Obstetrícia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Adna Sayuri Toyota da Silva" LATTES="3235595909944470" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gravidez de Alto Risco</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>MEDICINA FETAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Obstetrícia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Agatha Lima Moraes" LATTES="4406657790800143" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gravidez de Alto Risco</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Amanda Almeida Aguiar" LATTES="7671055149364620" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>MEDICINA FETAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ginecologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Obstetrícia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Caroline Ana Werle Torres" LATTES="3258601851852631" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gravidez de Alto Risco</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ginecologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jhenifer Pinheiro Teixeira" LATTES="9348663807140678" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gravidez de Alto Risco</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Stephannie Cristini Siqueira e Jesus" LATTES="1186045860407350" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>Pesquisa em Tocoginecologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>MEDICINA FETAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ginecologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Obstetrícia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ginecologia</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção ambulatorial executadas por médicos e odontólogos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Gravidez de Alto Risco</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção ambulatorial executadas por médicos e odontólogos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>MEDICINA FETAL</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção ambulatorial executadas por médicos e odontólogos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Obstetrícia</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atendimento hospitalar</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

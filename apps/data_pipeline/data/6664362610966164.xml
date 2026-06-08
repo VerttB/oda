@@ -1,0 +1,367 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</NOME>
+      <IDENTIFICACAO_DGP>6664362610966164</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O Grupo de pesquisa em Contabilidade Financeira - tem por propósito desenvolver pesquisas no campo da Contabilidade Financeira que envolva as dimensões de Ensino, Pesquisa e Extensão. A expansão do conhecimento em contabilidade financeira transita pela compreensão e atuação da ciência para a melhoraria da articulação entre as três dimensões. Na dimensão pesquisa o grupo se justifica pela necessidade de ampliar os horizontes da ciência em termos de teorias que expliquem e prevejam a utilidade da informação contábil. Na dimensão ensino o grupo se dedica a pesquisas que visem a identificação e disseminação de metodologias que priorizem a construção da ciência e do saber. Na dimensão extensão o grupo se dedica a transmitir o conhecimento em Contabilidade Financeira e capturar seus efeitos junto a empreendedores, profissionais e organizações interessadas no saber contábil.</REPERCUSSAO>
+      <AREA>Ciências Sociais Aplicadas; Administração</AREA>
+      <INSTITUICAO>Universidade Federal de Goiás - UFG</INSTITUICAO>
+      <ANO_FORMACAO>2021</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>74690900</CEP>
+         <LOCALIDADE>Goiânia</LOCALIDADE>
+         <UF>GO</UF>
+         <BAIRRO>Campus Samambaia - UFG</BAIRRO>
+         <COMPLEMENTO>Avenida Esperança s/n, Campus Samambaia</COMPLEMENTO>
+         <NUMERO>s/n</NUMERO>
+         <LOGRADOURO>Universidade Federal de Goiás - UFG - Campus II</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Ana Claudia Santo Lima Pinheiro" LATTES="7047882215503695" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>NECIF - Núcleo de Estudos em Contabilidade Internacional e Financeira</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Carlos Henrique Silva do Carmo" LATTES="1859940699823861" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Administração Financeira</AREA>
+            <AREA>Avaliação de Projetos</AREA>
+            <AREA>Ciências Contábeis</AREA>
+            <AREA>Contabilidade Financeira</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Denise Fernandes Nascimento" LATTES="2183621785162606" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Estratégias Empresariais, Econômicas e Mercadológicas (GEEEM)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Fraude corporativa e accountability: cadê a contabilidade?</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade, Organizações e Sociedade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias e Organizações</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Dermeval Martins Borges Junior" LATTES="1189142553625323" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Empresas</AREA>
+            <AREA>Administração Financeira</AREA>
+            <AREA>Pesquisa Operacional</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Fundos de Investimentos e Fundos de Commodities no Brasil</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Performance de Fundos de Investimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Retorno e Volatilidade de Commodities Agropecuárias</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elenilton Nery dos Santos Jacomini" LATTES="1860356637601334" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração Financeira</AREA>
+            <AREA>Teoria dos Grafos</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elmo Dias da Silveira" LATTES="1822199052591336" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ercilio Zanolla" LATTES="2535424071298626" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ercilio Zanolla" LATTES="2535424071298626" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriel Queiroz de Almeida" LATTES="7469158010447198" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gilberto Crispim da Silva" LATTES="9259035373490100" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Empresas</AREA>
+            <AREA>Administração de Pessoal</AREA>
+            <AREA>Administração Financeira</AREA>
+            <AREA>Administração Pública</AREA>
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO E SUSTENTABILIDADE NA GESTÃO PÚBLICA: POLÍTICAS DE GOVERNANÇA COLABORATIVA PARA O DESENVOLVIMENTO LOCAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DO COMPORTAMENTO DAS DESPESAS PÚBLICAS QUANTO A IDEOLOGIA POLÍTICA PARTIDÁRIA NOS GOVERNOS BRASILEIROS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CICLO POLÍTICO ORÇAMENTÁRIO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gilson Carlos de Assis Junior" LATTES="7029719897842474" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Antropologia</AREA>
+            <AREA>Filosofia da Linguagem</AREA>
+            <AREA>Lingüística Histórica</AREA>
+            <AREA>Literatura Brasileira</AREA>
+            <AREA>Teoria Literária</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jheneffer Silva Santos Duarte" LATTES="4903190150725154" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Contabilidade Financeira</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Johnny Jorge de Oliveira" LATTES="7341168955670549" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <AREA>GESTÃO PÚBLICA</AREA>
+            <AREA>METODOLOGIA DO ENSINO SUPERIOR (PESQUISA)</AREA>
+            <AREA>Organizações Públicas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CICLO POLÍTICO ORÇAMENTÁRIO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Juliana Ferreira de Carvalho" LATTES="5747877379954321" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências Contábeis</AREA>
+            <AREA>Direito</AREA>
+            <AREA>Finanças Corporativas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Julio Cesar Gomes Mendonça" LATTES="6174029351061962" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Qualidade e Convergência de Normas Contábeis</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Normatização Contábil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Krislâne Maria Pereira Mesquita" LATTES="2119078422255927" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Leidiane de Sousa Lessa" LATTES="5740300218758387" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lívia Janaína Silva" LATTES="9434906596585012" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>GESTÃO EM RECURSOS HUMANOS</AREA>
+            <GRUPO_DE_PESQUISA>Valuation</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Finanças de micro, pequena e média empresa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lucio de Souza Machado" LATTES="6742400453249031" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Empresas</AREA>
+            <AREA>Administração Financeira</AREA>
+            <GRUPO_DE_PESQUISA>DIDAKTIKÉ - Grupo de Estudos e Pesquisas em Didática e Questões Contemporâneas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Centro de Estudos Internacionais de Macroeconomia, Bancos e Finanças</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos Estatísticos e Econométricos aplicados a detecção de atos ilíticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise do comportamento humano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO E SUSTENTABILIDADE NA GESTÃO PÚBLICA: POLÍTICAS DE GOVERNANÇA COLABORATIVA PARA O DESENVOLVIMENTO LOCAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Formação de Professores, didática e práticas de ensino</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Macroeconomia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ludimila Lopes da Silva Marinho" LATTES="0960519533760365" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luiz Carlos da Silva Oliveira" LATTES="4345785641450107" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Auditoria Governamental e Controle Interno</AREA>
+            <AREA>Auditoria Interna</AREA>
+            <AREA>Auditoria Operacional na Área Governamental</AREA>
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <AREA>Controle Gerencial</AREA>
+            <AREA>Gestão Estratégica de Custos</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CICLO POLÍTICO ORÇAMENTÁRIO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Manoel Francelino dos Santos Filho" LATTES="9299330131939043" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Contabilidade e agronegócio</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças Comportamentais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Manuela Gonçalves Barros" LATTES="6539633405976565" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Contabilidade Financeira</AREA>
+            <AREA>Cooperativismo de crédito</AREA>
+            <AREA>Finanças</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcia Helena de Andrade Couto" LATTES="1379251562482481" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Empresas</AREA>
+            <AREA>AUDITORIA</AREA>
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <AREA>Métodos e Técnicas de Ensino</AREA>
+            <AREA>Política e Planejamento Governamentais</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marília Paranaíba Ferreira" LATTES="1572438601241956" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisas em Governança nas Organizações (NPGO)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Contabilidade, Gestão e Pesquisa em Cooperativas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Governança nas Organizações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Administração Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mario Ernesto Piscoya Diaz" LATTES="8921949936090276" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Análise de Dados</AREA>
+            <AREA>Análise de Séries Temporais</AREA>
+            <AREA>Análise Multivariada</AREA>
+            <AREA>Demografia</AREA>
+            <AREA>Probabilidade e Estatística</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO E SUSTENTABILIDADE NA GESTÃO PÚBLICA: POLÍTICAS DE GOVERNANÇA COLABORATIVA PARA O DESENVOLVIMENTO LOCAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CICLO POLÍTICO ORÇAMENTÁRIO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Michele Rílany Rodrigues Machado" LATTES="8001352972115912" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Compliance aplicada ao setor público</AREA>
+            <AREA>Finanças</AREA>
+            <AREA>Fraudes corporativas</AREA>
+            <AREA>Perícia Contábil</AREA>
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos Estatísticos e Econométricos aplicados a detecção de atos ilíticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise do comportamento humano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO E SUSTENTABILIDADE NA GESTÃO PÚBLICA: POLÍTICAS DE GOVERNANÇA COLABORATIVA PARA O DESENVOLVIMENTO LOCAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e Finanças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Governança, risco e compliance</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Monique Galvão de França" LATTES="3153786209687953" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO E SUSTENTABILIDADE NA GESTÃO PÚBLICA: POLÍTICAS DE GOVERNANÇA COLABORATIVA PARA O DESENVOLVIMENTO LOCAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nabila Cordeiro da Silva Paiva" LATTES="9902211216965881" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Tópicos Específicos de Educação</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Ensino, Pesquisa e Extensão em Marketing Analytics e Machine Learning (GRAMMA)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>3Cs em Foco - Comportamento, corrupção e compliance</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Estratégias Empresariais, Econômicas e Mercadológicas (GEEEM)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégia de marketing e desempenho de produtos, serviços ou marcas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Governança, risco e compliance</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias e Organizações</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Cesar Pansini" LATTES="1854537786678425" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Recursos Humanos</AREA>
+            <AREA>Ciências Contábeis</AREA>
+            <AREA>Pericia Judicial e Extrajudicial</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Cezar Pereira" LATTES="1577529612239317" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração Financeira</AREA>
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Junio Pereira de Moura" LATTES="7741395526468311" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências Contábeis</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Samuel de Resende Salgado" LATTES="1788622567472557" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sergio Thiago Morais de Rezende Dalescio" LATTES="8885153681682535" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Laboratório de Contabilidade, Inovação &amp; Sociedade (LACIS/UFG)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DO COMPORTAMENTO DAS DESPESAS PÚBLICAS QUANTO A IDEOLOGIA POLÍTICA PARTIDÁRIA NOS GOVERNOS BRASILEIROS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CICLO POLÍTICO ORÇAMENTÁRIO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Silvio Silva Miranda Filho" LATTES="1022823116243968" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>HI-Lab - Hybrid Intelligence Laboratory</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Contabilidade e agronegócio</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade e finanças aplicadas às atividades do agronegócio</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Adoção de Novas Tecnologias</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Alex De Castro Magalhães" LATTES="5620517819981015" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Administração</AREA>
+            <AREA>MERCADO FINANCEIRO</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Flávia Resende Alves" LATTES="1214969055015767" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Paula de Moraes" LATTES="7392336176360585" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Contabilidade e Finanças Públicas</AREA>
+            <AREA>Controladoria</AREA>
+            <AREA>FINANÇAS CORPORATIVAS</AREA>
+            <GRUPO_DE_PESQUISA>Public Sector Accounting and Control Research (CSP)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Estratégias Empresariais, Econômicas e Mercadológicas (GEEEM)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPCASP - GRUPO DE PESQUISA EM CONTABILIDADE APLICADA AO SETOR PÚBLICO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Impactos da Contabilidade no Setor Público, nas Organizações e na Sociedade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ANÁLISE DA EFICÁCIA DOS GASTOS ORÇAMENTÁRIOS NOS GOVERNOS POR MEIO DE INDICADORES DE AVALIAÇÃO DE DESEMPENHO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias e Organizações</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Edivânia Dourado Alvares" LATTES="8934301574220714" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Administração</AREA>
+            <AREA>ciências contábeis</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jonathan Ennes Pereira" LATTES="5624662880574232" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Auditoria</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Joney Belo dos Santos" LATTES="7170221631077644" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jorge Rocha Brandao" LATTES="5366560512425725" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Administração de Setores Específicos</AREA>
+            <AREA>AUDITORIA CONTROLADORA E TRIBUTOS</AREA>
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Josy Rodrigues da Silva Peixoto" LATTES="8117355444645177" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Juliana Dias de Oliveira" LATTES="3349953099153683" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE"/>
+         <PESQUISADOR NOME="Julio Gomes da Silveira" LATTES="5990427462867801" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Zhara Helou Ribeiro de Castilho" LATTES="4096795473595553" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CENTRO DE ESTUDOS, PESQUISA E EXTENSÃO EM CONTABILIDADE FINANCEIRA - CEPECONF</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contabilidade Financeira</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Contabilidade Financeira</NOME>
+            <OBJETIVO>O objetivo da linha de pesquisa é criar e organizar o conhecimento existente apto a dar respostas às demandas da comunidade acadêmica e da sociedade relacionadas a contabilidade financeira. Pesquisas que estimulem o desenvolvimento de ambientes colaborativos nas dimensões ensino, pesquisa e extensão podem contribuir para a construção e disseminação da ciência de forma ampla e abrangente e proporcionar soluções mais adequadas às demandas emergentes e contemporâneas da sociedade.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de contabilidade, consultoria e auditoria contábil e tributária</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

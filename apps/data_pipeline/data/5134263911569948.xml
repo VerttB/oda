@@ -1,0 +1,253 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Bioenergia e Bioprodutos da Amazônia</NOME>
+      <IDENTIFICACAO_DGP>5134263911569948</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O referido grupo de pesquisa desenvolve atividades de pesquisa básica e aplicada na área de biotecnologia, microbiologia industrial, ciência e tecnologia de alimentos. Tem como meta principal desenvolver novos produtos e processos para a produção de biocombustíveis e de diversos bioprodutos de base agroindustrial a partir da biodiversidade da Amazônia, por meio da prospecção de novos micro-organismos, enzimas e outros metabólitos com potencial aplicação biotecnológica e aplicação nos diversos setores industriais, tais como: alimentos, meio ambiente, biocombustíveis, agricultura e pecuária, entre outros. Outra meta do grupo é otimizar processo biotecnológicos e tecnológico por meio de planejamentos experimentais (Plackett-Burman, Fatorial Fracionado, DCCR e Análise de Regressão Multivariável - Stepwise), bem como a modelagem matemática de processos por redes neurais artificiais, visando maximizar o rendimento dos processos, bem como a redução de custos operacionais e impactos ambientais</REPERCUSSAO>
+      <AREA>Ciências Agrárias; Ciência e Tecnologia de Alimentos</AREA>
+      <INSTITUICAO>Instituto Federal do Amapá - IFAP</INSTITUICAO>
+      <ANO_FORMACAO>2014</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>68909398</CEP>
+         <LOCALIDADE>Macapá</LOCALIDADE>
+         <UF>AP</UF>
+         <BAIRRO>Brasil Novo</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>s/n</NUMERO>
+         <LOGRADOURO>Rodovia BR-210 - até km 0,003</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Elisa Maria de Oliveira" LATTES="0064261533136422" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Engenharia e Materiais Sustentáveis - NEMaS</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elisabete Piancó de Sousa Pinheiro" LATTES="1113711276098324" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação e Controle de Qualidade de Alimentos</AREA>
+            <AREA>Fisiologia Pós-Colheita</AREA>
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Tecnologia de Produtos de Origem Animal</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <AREA>Valor Nutritivo de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Ciência e Tecnologia dos Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Engenharia de Processamento de Produtos Agrícolas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Tecnologias Educacionais</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos de Origem Animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Caracterização química, física, físico-química, microbiológica e sensorial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise e Desenvolvimento de Software</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Pós-colheita de frutos e hortaliça</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processamento de frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Carnes e Pescado</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Secagem de Produtos Agrícolas e/ou Alimentícios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos de Origem Vegetal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de Resíduos Agroindustriais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fernando Barnabé Cerqueira" LATTES="1604638349819259" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Agrometeorologia, Hidráulica, Irrigação e Drenagem</AREA>
+            <AREA>Biotecnologia Vegetal e Melhoramento Genético de Plantas</AREA>
+            <AREA>Entomologia Agrícola</AREA>
+            <AREA>Olericultura</AREA>
+            <AREA>Plantas Daninhas</AREA>
+            <AREA>Tecnologia de Produção de Sementes e Armazenamento de Grãos</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Democracia e Gestão Social</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Solos e Plantas Cultivadas - GESP</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento local, Gestão Social e Ambiental</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Francileni Pompeu Gomes" LATTES="6909400245610844" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Armazenamento de Alimentos</AREA>
+            <AREA>Avaliação e Controle de Qualidade de Alimentos</AREA>
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Pós-colheita de produtos agrícolas e de plantas do Bioma Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Armazenamento de produtos agrícolas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Secagem de produtos vegetais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gilvanete Maria Ferreira" LATTES="9966980114710616" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Engenharia de Alimentos</AREA>
+            <AREA>Engenharia Química</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Harvey Alexander Villa Vélez" LATTES="9207609617198847" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Aproveitamento de resíduos</AREA>
+            <AREA>Engenharia química</AREA>
+            <AREA>Modelagem e simulação de processos</AREA>
+            <AREA>Secegem e propriedades termodinâmicas de sorção da água em biomateriais</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Produtos e Processos da Engenharia Química (GPPPEQ)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPMEC - GRUPO DE PESQUISA EM ENGENHARIA MECÂNICA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Polifenóis, antioxidantes e fibra dietética na saúde (POLIFIBAN)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo Hidrogênio Verde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ReACT Pesquisa - Rede de Aplicação de Ciência e Tecnologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Secagem e Desidratação Osmótica de Produtos Alimentícios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Espumantes com Produtos Alimentícios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Síntese de aluminato de sódio utilizando material reciclável</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Reologia de Produtos Alimentícios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência e Tecnologia aplicadas a soluções ambientais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FENÔMENOS DE TRANSPORTE E ENGENHARIA TÉRMICA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência e tecnologia de materiais e processos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marília de Almeida Cavalcante" LATTES="6270305452250591" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Fisiologia Pós-Colheita</AREA>
+            <AREA>MICROBIOLOGIA</AREA>
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Química, Física, Fisico-Química e Bioquímica dos Alim. e das Mat-Primas Alimentares</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Engenharia e Materiais Sustentáveis - NEMaS</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Prospecção de Microrganismos e Compostos Bioativos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Patrícia Suelene Silva Costa Gobira" LATTES="1416580088117639" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>CONTROLE DE QUALIDADE</AREA>
+            <AREA>Engenharia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Victor Gomes Sales" LATTES="3165647792943190" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Análise Sensorial</AREA>
+            <AREA>Ciência de Alimentos</AREA>
+            <AREA>Engenharia de Alimentos</AREA>
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Química, Física, Fisico-Química e Bioquímica dos Alim. e das Mat-Primas Alimentares</AREA>
+            <AREA>Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael Henrique Holanda Pinto" LATTES="9988464786582853" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Engenharia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa de Tecnologias Aplicadas em Recursos Naturais e Meio Ambiente da Amazônia - GTEC AMAZÔNIA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Termodinâmica Aplicada e Processos de Separação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de produtos e processos por tecnologia supercrítica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação e desenvolvimento de produtos a partir de matérias-primas e resíduos agroindustriais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Victor Hugo Gomes Sales" LATTES="7047070806748482" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Biotecnologia Industrial</AREA>
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Enzimologia</AREA>
+            <AREA>Microbiologia Industrial e de Fermentação</AREA>
+            <AREA>Probabilidade e Estatística</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Desenvolvimento em Química</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biomateriais poliméricos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biocombustíveis</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Viviane Santos Fonseca" LATTES="9621535141799990" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>PROFESSOR</AREA>
+            <AREA>SAÚDE PÚBLICA</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Willians Lopes de Almeida" LATTES="9560686413040002" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Espectroscopia</AREA>
+            <AREA>Física da Matéria Condensada</AREA>
+            <AREA>Materiais Não-Metálicos</AREA>
+            <AREA>Metodologias para o Ensino de Física</AREA>
+            <AREA>Práticas Educativas em Educação Profissional e Tecnológica (EPT)</AREA>
+            <AREA>Prop. Óticas e Espectrosc. da Mat. Condens; Outras Inter. da Mat. com Rad. e Part.</AREA>
+            <GRUPO_DE_PESQUISA>Processamento e Caracterização de Materiais Cerâmicos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Ciência dos Materiais e Processos Sustentáveis da Amazônia (CPMat)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Materiais e Tecnologias Emergentes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processamento e caracterização de cerâmicas eletrônicas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Síntese de pós cerâmicos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Anny Caroline Miranda Kunkel" LATTES="0537252003474831" FORMACAO_ACADEMICA="Mestrado Profissional" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Fitotecnia no Amapá (GEFAP)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente e Tecnologia na Produção Vegetal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eduarda Nicole Mourão Maia" LATTES="3785712438237518" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <AREA>Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hilton Prado de Castro Junior" LATTES="4875187748325399" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <AREA>Engenharia de Computação</AREA>
+            <AREA>Informática na Educação</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Tecnologias Educacionais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos e Pesquisas em Tecnologias Assistivas - GEPTA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise e Desenvolvimento de Software</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ian Alves Brito" LATTES="9133651431221696" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Janayna Paola Trindade Cavalcante" LATTES="2488355442095137" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lauana Natasha da Gama Pantoja" LATTES="6653071634848366" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Microbiologia e qualidade de produtos da Amazônia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Prospecção microbiológica em alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Controle Microbiológico dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Letícia Cardoso Gomes" LATTES="1895742340744288" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Daniel Castilho Costa" LATTES="7418327293503587" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Prisna Jamile Santos Leder" LATTES="8581672163825255" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia</AREA>
+            <AREA>Química</AREA>
+            <GRUPO_DE_PESQUISA>GEAstro - Grupo de Estudo, pesquisa, extensão e inovação em Astronomia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Espectroscopia e Espectrometria</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Vitor Gabriel Machado Rodrigues" LATTES="4370695894204821" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Danielle Esthefane Sousa Lima" LATTES="3314517936275866" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Diego Aparecido Belo Cabral da Silva" LATTES="8670796560079486" FORMACAO_ACADEMICA="Especialização" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Bioenergia e Bioprodutos da Amazônia</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Biotecnologia de alimentos da Amazônia</NOME>
+            <OBJETIVO>Desenvolver e aperfeiçoar processos fermentativos e enzimáticos, visando a produção de produtos e processos, a partir da biodiversidade da Amazônia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de Produtos Alimentícios</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Educação Profissional e Tecnológica na Amazônia</NOME>
+            <OBJETIVO>Produzir conhecimento sobre o uso da biodiversidade em processos tecnológicos</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior | Educação profissional de nível técnico e tecnológico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Otimização de processos biotecnológicos</NOME>
+            <OBJETIVO>Otimizar processos de produção de enzimas e metabólicos por meio de ferramentas de superfície de resposta e redes neurais artificiais.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de sabões, detergentes, produtos de limpeza, cosméticos, produtos de perfumaria e de higiene pessoal | Fabricação de Produtos Alimentícios | Fabricação de biocombustíveis</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Processos tecnológicos e pós-colheita de matrizes do bioma amazônico</NOME>
+            <OBJETIVO>Analisar os resíduos gerados pelo segmento agroindustrial em diferentes etapas de produção, visando a redução dos impactos ambientais e a agregação de valor aos mesmos.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de Produtos Alimentícios</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Prospecção de microrganismos produtores de interesse biotecnológico/industrial</NOME>
+            <OBJETIVO>Prospectar microrganismos capazes de produzir enzimas para diversas aplicações industriais.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de Produtos Alimentícios | Fabricação de produtos químicos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

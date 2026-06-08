@@ -1,0 +1,374 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</NOME>
+      <IDENTIFICACAO_DGP>1381748075437848</IDENTIFICACAO_DGP>
+      <REPERCUSSAO/>
+      <AREA>Ciências Humanas; Geografia</AREA>
+      <INSTITUICAO>Universidade Federal de Jataí - UFJ</INSTITUICAO>
+      <ANO_FORMACAO>2021</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>75804553</CEP>
+         <LOCALIDADE>Jataí</LOCALIDADE>
+         <UF>GO</UF>
+         <BAIRRO>Residencial Cylleneo França</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>280</NUMERO>
+         <LOGRADOURO>Rua 51</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Alécio Perini Martins" LATTES="4037183605742666" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Climatologia Geográfica e Mudanças Ambientais</AREA>
+            <AREA>Geoprocessamento</AREA>
+            <AREA>Inteligência Geográfica</AREA>
+            <AREA>Planejamento Ambiental</AREA>
+            <AREA>Sensoriamento Remoto</AREA>
+            <GRUPO_DE_PESQUISA>Climatologia - USP</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Estudos, Pesquisa e Extensão em Agroecologia e Agricultura Familiar Camponesa- NEAAF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos Teóricos e aplicados em Climatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem do sistema solo-planta-atmosfera</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geotecnologias aplicadas à análise, planejamento e monitoramento ambiental;</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Planejamento e Desenvolvimento em Agricultura Familiar Camponesa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Climática</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Aristeu Geovani de Oliveira" LATTES="8908459522892171" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Geografia</AREA>
+            <AREA>Geografia Física</AREA>
+            <AREA>Geografia Urbana</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Arlei Teodoro de Queiroz" LATTES="3287176097345213" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Análise, planejamento e gestão ambiental</AREA>
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Geografia</AREA>
+            <AREA>Hidrogeografia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Camila Bertoletti Carpenedo" LATTES="" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR"/>
+         <PESQUISADOR NOME="Diego Tarley Ferreira Nascimento" LATTES="0602122775820330" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Climatologia</AREA>
+            <AREA>Gelo Marinho</AREA>
+            <AREA>Interação do Oceano com a Atmosfera</AREA>
+            <AREA>mudanças climáticas</AREA>
+            <AREA>Variabilidade climática</AREA>
+            <GRUPO_DE_PESQUISA>Centro Polar e Climático</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Apoio à Pesquisa em Mudanças Climáticas (INCLINE - INterdisciplinary CLimate INvestigation cEnter)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Interação Oceano-Atmosfera e Climatologia - GOAC</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>NUVEM - Núcleo de Estudos sobre Variabilidade e Mudanças Climáticas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Mesoescale Ocean-Atmosphere Network</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Detecção, atribuição e variabilidade natural do clima</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia: variabilidade e mudanças climáticas.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Meteorologia de Mesoescala</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geografia Polar</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Interação Oceano-Atmosfera-Gelo Marinho</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Instrumentação meteorológica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Variabilidade e Mudanças Climáticas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Variabilidade, suscetibilidades e mudanças climáticas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia e Meteorologia Polar</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Eventos climáticos extremos no Brasil</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gilmar Oliveira Santos" LATTES="7583595383127682" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Cartografia, Geoprocessamento e Sensoriamento Remoto</AREA>
+            <AREA>Climatologia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Geografia Física, Paisagem e Ambiente</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atuação e dinâmica atmosférica do Bioma Cerrado</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Compartimentação, estrutura, evolução e fisiologia da paisagem</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gislaine Cristina Luiz" LATTES="4310433384519387" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Climatologia Geográfica</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="João Batista Pereira Cabral" LATTES="8750158608140247" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Agrometeorologia</AREA>
+            <AREA>Agronomia</AREA>
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Engenharia de Água e Solo</AREA>
+            <GRUPO_DE_PESQUISA>Tecnologias para aumento da eficiência do uso de nutrientes na agricultura</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Gestão, Tecnologia e Sustentabilidade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Gestão Sustentável do Solo e Sequestro de Carbono</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão ambiental e Sustentabilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Dinâmica de nutrientes e poluentes em sistemas agrícolas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Indicadores de Qualidade do Solo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Agricultura e Mudanças Climáticas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Clima e ambiente urbano</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Carlos Ugeda Júnior" LATTES="1914332507525986" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Arqueologia</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Engenharia Sanitária</AREA>
+            <AREA>Geociências</AREA>
+            <AREA>Geografia Física</AREA>
+            <GRUPO_DE_PESQUISA>Estudos do Quaternário</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise e gestão de recursos hídricos em bacias hidrográficas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Patrimônio Cutural e Paisagem</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Uso, manejo e conservação do solo e da água</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Ricardo Rodrigues Rocha" LATTES="4805553525036740" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geotecnologias aplicadas à análise, planejamento e monitoramento ambiental;</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Juliana Ramalho Barros" LATTES="3897963687114981" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Análise Regional</AREA>
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Geografia da Saúde</AREA>
+            <GRUPO_DE_PESQUISA>Climatologia Geográfica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GEIPaT - Grupo de Estudos de Imaginário, Paisagem e Transculturalidade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Geografia Física, Paisagem e Ambiente</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CLIMAGEO</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Espaço e diferença em perspectiva interseccional</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Geografia Escolar Inclusiva (IncluGEO)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Dinâmica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Interação clima, sociedade e ambiente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Teorias e Técnicas em Climatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia do Brasil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Aplicada</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mudanças Climáticas e variabilidade no clima</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cerrado piauiense e dinâmicas ambientais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino de Geografia e Formação de Professores</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lucas Barbosa e Souza" LATTES="6718404374052810" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Cartografia Temática e Geocartografia</AREA>
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Dinâmica e Gestão Ambiental</AREA>
+            <AREA>Geografia</AREA>
+            <AREA>Geografia Física</AREA>
+            <AREA>Métodos e Técnicas do Planejamento Urbano e Regional</AREA>
+            <GRUPO_DE_PESQUISA>Interações na superfície terrestre, água e atmosfera</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Sociedade, Ambiente, Representação e Educação - SARE</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geografia e suas Representações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Dinâmicas socioambientais e ordenamento territorial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Clima urbano e qualidade socioambiental</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação Geográfica e suas Práticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mauro Henrique Soares da Silva" LATTES="8310303536103062" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Geografia Física</AREA>
+            <AREA>Métodos e Técnicas do Planejamento Urbano e Regional</AREA>
+            <AREA>Percepção e Educação Ambiental</AREA>
+            <GRUPO_DE_PESQUISA>Climatologia Geográfica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ESPAÇO, SUJEITO E EXISTÊNCIA, DONA ALZIRA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Dinâmica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Teorias e Técnicas em Climatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia do Brasil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Aplicada</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael de Ávila Rodrigues" LATTES="4370286926305960" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Geografia</AREA>
+            <GRUPO_DE_PESQUISA>Geotecnologias e Modelagem Ambiental (GEOTEMA)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, biossistemática e ecologia da flora de Mato Grosso do Sul e estados vizinhos (SYSFLORA)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>EFORGEO- Estudos de Formação docente, Ensino e Produção do Conhecimento Geográfico</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia Vegetal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino-aprendizagem de Geografia e a organização do espaço</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Paisagem e Geotecnologias para o ensino de geografia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geotecnologias e ordenamento físico-territorial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Regina Maria Lopes" LATTES="0302690740554434" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Geociências</AREA>
+            <AREA>Geografia</AREA>
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem do sistema solo-planta-atmosfera</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Topoclimatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rildo Aparecido Costa" LATTES="9663990267370816" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Geociências</AREA>
+            <AREA>Geografia Física</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Climatologia Regional e Clima e Saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiência e Climatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia e Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sylvia Elaine Marques de Farias" LATTES="6632298682845957" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Instrumentação Meteorológica</AREA>
+            <AREA>Meteorologia Aplicada</AREA>
+            <AREA>Meteorologia Física</AREA>
+            <AREA>Micrometeorologia</AREA>
+            <AREA>Previsão de Tempo</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Variabilidade, suscetibilidades e mudanças climáticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Washington Silva Alves" LATTES="4627201279617572" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Cartografia e Geoprocessamento</AREA>
+            <AREA>Clima e Recursos Hídricos</AREA>
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Climatologia Urbana</AREA>
+            <AREA>Hidrogeografia</AREA>
+            <AREA>Variabilidade Climática</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Arlisson Pereira Cunha" LATTES="0027785497749720" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Variabilidade, suscetibilidades e mudanças climáticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bruno Jefferson Soares de Oliveira" LATTES="3353414047379362" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Geografia Regional</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Climática</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Deurivan Natal Arruda Lima" LATTES="0163966413840344" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Variabilidade, suscetibilidades e mudanças climáticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Diego da Silva Borges" LATTES="4622246064056766" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Climatologia Geográfica</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Evaldo Macêdo de Almeida" LATTES="8708180640753069" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Climatologia Geográfica</AREA>
+            <AREA>Educação Especial</AREA>
+            <AREA>Educação Inclusiva</AREA>
+            <AREA>Geografia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino de Climatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ezequiel Pereira da Silva" LATTES="4238561107137123" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Clima e ambiente urbano</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Germano Silva Albuquerque" LATTES="6240063918874987" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Climatologia</AREA>
+            <AREA>Geociências</AREA>
+            <AREA>Geografia Física</AREA>
+            <AREA>Meteorologia</AREA>
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem do sistema solo-planta-atmosfera</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Climática</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Glaucinéia Antônia de Sateles" LATTES="3695416940335318" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>EDUCAÇÃO INFANTIL</AREA>
+            <AREA>Geografia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino de Climatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nayanny Bruno de Oliveira Braz" LATTES="4639475613168203" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Educação</AREA>
+            <AREA>EDUCAÇÃO AMBIENTAL</AREA>
+            <AREA>Engenharia Ambiental</AREA>
+            <AREA>Geografia</AREA>
+            <AREA>Geografia Física</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atuação e dinâmica atmosférica do Bioma Cerrado</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Topoclimatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Polyana da Silva Gomes" LATTES="9327620207014098" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Geografia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino de Climatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rodrigo Cacho Lima" LATTES="2604521038827413" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Climatologia Geográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Welton Pessoa de Macedo" LATTES="6468112846719731" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Topoclimatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cristina Silva de Oliveira" LATTES="4641733578293220" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>TERRA - Temáticas Especiais Relacionadas ao Relevo e à Água</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Winder Rodrigues Pires" LATTES="3599387297850632" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Monitoramento e modelagem ambiental por geoprocessamento</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo e Pesquisa em Climatologia do Cerrado</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Análise e gestão de recursos hídricos em bacias hidrográficas</NOME>
+            <OBJETIVO>Gerenciamento Ambiental, monitoramento de qualidade da água.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Atuação e dinâmica atmosférica do Bioma Cerrado</NOME>
+            <OBJETIVO>Pesquisar sobre os diferentes tipos de tempo, no bioma Cerrado, por meio da atuação dos sistemas atmosféricos.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Clima e ambiente urbano</NOME>
+            <OBJETIVO>Pesquisar o clima urbano, ilhas de calor nas cidades.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Climatologia e agricultura no Cerrado</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Climatologia Geográfica</NOME>
+            <OBJETIVO>Analisar os fatores e a dinâmica atmosférica na superfície terrestre.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ensino de Climatologia</NOME>
+            <OBJETIVO>Contribuir com estudos no ensino de climatologia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Modelagem Climática</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Topoclimatologia</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Variabilidade, suscetibilidades e mudanças climáticas</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

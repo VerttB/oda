@@ -1,0 +1,144 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</NOME>
+      <IDENTIFICACAO_DGP>7785491341810374</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Grupo de Pesquisa com intuito de desenvolver pesquisas nas áreas de tecnologia e inovação dos materiais construtivos, planejamento urbano baseado no clima, mudanças climáticas locais e qualidade ambiental no meio urbano. Atuando em em campos disciplinares da Tecnologia da Construção, do Urbanismo, do Planejamento Urbano Sensível ao Clima, dos Modelos Climáticos Globais e Locais, das Soluções Baseadas na Natureza, da Relação Pessoa-Ambiente. Buscando verificar as condições de conforto ambiental e tecnologias para o aprimoramento do planejamento, gestão e a melhoria da qualidade de vida dos cidadãos.</REPERCUSSAO>
+      <AREA>Ciências Sociais Aplicadas; Arquitetura e Urbanismo</AREA>
+      <INSTITUICAO>Centro Universitário de Várzea Grande - UNIVAG</INSTITUICAO>
+      <ANO_FORMACAO>2024</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>78118900</CEP>
+         <LOCALIDADE>Várzea Grande</LOCALIDADE>
+         <UF>MT</UF>
+         <BAIRRO>Cristo Rei</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>2655</NUMERO>
+         <LOGRADOURO>Avenida Angelo Venâncio de Souza s/n Universidade de</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Diana Carolina Jesus de Paula" LATTES="1250796395513644" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Aspectos Físico-Ambientais do Planejamento Urbano e Regional</AREA>
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Conforto Ambiental</AREA>
+            <AREA>Planejamento e Projeto do Espaço Urbano</AREA>
+            <GRUPO_DE_PESQUISA>GRUPO DE PESQUISA EM TECNOLOGIA E ARQUITETURA AMBIENTAL</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Territorial e Local</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conforto Urbano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional de Dados Climáticos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fábio Friol Guedes de Paiva" LATTES="5006706886735096" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arquitetura</AREA>
+            <AREA>materiais</AREA>
+            <AREA>Polímeros e aplicações</AREA>
+            <GRUPO_DE_PESQUISA>Novos Materiais e Aplicações</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Saúde, Ambiente e Tecnologia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Planejamento e Gestão de Resíduos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Polímeros e Aplicações-Materiais Não Metálicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Territorial e Local</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente e Tecnologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Natallia Sanches e Souza" LATTES="2878290401700822" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Ciências Ambientais</AREA>
+            <GRUPO_DE_PESQUISA>GRUPO DE PESQUISA EM TECNOLOGIA E ARQUITETURA AMBIENTAL</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Territorial e Local</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conforto Urbano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem Computacional de Dados Climáticos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ângela Cristina Goês dos Santos" LATTES="1518844038713232" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bruno Kimura" LATTES="6180934686349900" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Déborah Karen Mansilha Guebara" LATTES="9286499190619801" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eliane Augusta Gonçalves de Souza" LATTES="4305063341766875" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Adequação Ambiental</AREA>
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Aspectos Físico-Ambientais do Planejamento Urbano e Regional</AREA>
+            <AREA>Serviços Urbanos e Regionais</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Emili Sayuri Takimoto" LATTES="2256828971758949" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Isabel Leticia Machado" LATTES="8243969042679188" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Planejamento Urbano e Regional</AREA>
+            <AREA>Projeto de Arquitetura e Urbanismo</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Isabela Machado Pereira" LATTES="1465487874232858" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nycolas Martins de Araujo Braga de Moraes" LATTES="8951530505051272" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Poema Bidarra Oliveira" LATTES="8995497567561368" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Territorial e Local</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafaela Alves Bernardes" LATTES="0718909182265288" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>INTERIORES</AREA>
+            <AREA>Paisagismo</AREA>
+            <AREA>Planejamento e Projetos da Edificação</AREA>
+            <AREA>Projeto de Arquitetura e Urbanismo</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafaela Ferreira Rosso" LATTES="0515265526630514" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Planejamento e Projeto do Espaço Urbano</AREA>
+            <AREA>Planejamento e Projetos da Edificação</AREA>
+            <AREA>Planejamento Urbano e Regional</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Territorial e Local</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Tatiane Cristine Silva Kono de Oliveira" LATTES="4504231791653840" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura e Urbanismo</AREA>
+            <AREA>Arquitetura Escolar</AREA>
+            <AREA>BIM aplicado a gestão pública</AREA>
+            <AREA>Design de Interiores</AREA>
+            <AREA>Planejamento e Projetos da Edificação</AREA>
+            <GRUPO_DE_PESQUISA>AMBIENTE CONSTRUÍDO, TECNOLOGIA E SUSTENTABILIDADE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ambiente Construído e Sustentabilidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ambiente Construído e Sustentabilidade</NOME>
+            <OBJETIVO>Estudo da importância do uso racional de recursos no ambiente construído, demonstrando sua relevância para o desenvolvimento sustentável em cidades. Com foco nas questões contemporâneas que permeiam a concepção do projeto do edifício e da cidade a partir dos novos desafios que se apresentam na atualidade, por intermédio da análise e avaliação dos aspectos relacionados aos condicionantes/desempenho ambiental, cultural, tecnológico, comportamental, legal e social nos assentamentos humanos.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Desenvolvimento Territorial e Local</NOME>
+            <OBJETIVO>Estudo dos aspectos ligados ao desenvolvimento territorial e a rede urbana do Centro-Oeste Brasileiro, como subsídio para elaboração de políticas públicas. No âmbito do desenvolvimento local, propõe a investigação do fenômeno urbano/metropolitano do ponto de vista do urbanismo e do planejamento urbano-regional para compreender as características espaciais e socioambientais da expansão urbano-metropolitana.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

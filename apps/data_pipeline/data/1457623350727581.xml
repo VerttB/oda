@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>À escuta de plantas e fios: arte, ecologias e processos de invenção</NOME>
+      <IDENTIFICACAO_DGP>1457623350727581</IDENTIFICACAO_DGP>
+      <REPERCUSSAO/>
+      <AREA>Lingüística, Letras e Artes; Artes</AREA>
+      <INSTITUICAO>Universidade Federal do Rio de Janeiro - UFRJ</INSTITUICAO>
+      <ANO_FORMACAO>2025</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>22210060</CEP>
+         <LOCALIDADE>Rio de Janeiro</LOCALIDADE>
+         <UF>RJ</UF>
+         <BAIRRO>Flamengo</BAIRRO>
+         <COMPLEMENTO>201</COMPLEMENTO>
+         <NUMERO>23</NUMERO>
+         <LOGRADOURO>Rua Almirante Tamandaré</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Marcela Fernandes de Carvalho" LATTES="9123770880804663" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Artes</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Narração de Histórias</AREA>
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mariana de Souza Guimarães" LATTES="0439164546070328" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Artes</AREA>
+            <AREA>Educaçao</AREA>
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Virna da Silva Bemvenuto" LATTES="8659046540077863" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Arte-educação</AREA>
+            <AREA>Artes</AREA>
+            <GRUPO_DE_PESQUISA>FRESTAS - Formação e Ressignificação do Educador: Saberes, Trocas, Arte e Sentidos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O ethos do cuidado na formação docente: potencializando o corpo, o movimento e a arte como dispositivos do sensível</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos sobre Poética</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diálogos entre arte e educação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriela Schiavo Forain Rocha" LATTES="3836005841400413" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Artes</AREA>
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Manuela Santos de Mendonça" LATTES="4147366338560769" FORMACAO_ACADEMICA="Ensino Médio (2o grau)" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Thales Silveira Gonçalves Gondra" LATTES="0383831534872869" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>INVESTIGAÇÕES FOTOGRÁFICAS - Laboratório de processos fotográficos e ensino da arte</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>À escuta de plantas e fios: arte, ecologias e processos de invenção</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processos fotográficos artesanais e ensino da arte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>À escuta das plantas e fios: arte, ecologias e processos de invenção</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>À escuta das plantas e fios: arte, ecologias e processos de invenção</NOME>
+            <OBJETIVO>O grupo de pesquisa tem como foco promover reflexões e pensamentos críticos sobre a prática da jardinagem e da linguagem do bordado, em suas dimensões visíveis e invisíveis, bem como os desdobramentos subjetivos, filosóficos, políticos, éticos, sociais, antropológicos, ecológicos; em relação ao estudo de processos de escuta, produção de subjetividade, invenção, desaceleração, alegria e cuidado.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

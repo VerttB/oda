@@ -1,0 +1,270 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</NOME>
+      <IDENTIFICACAO_DGP>4875461296350899</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O grupo ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica, tem como objetivos:
+
+1. Suportar as pesquisas e desenvolvimentos dos pesquisadores da UNEB na área de Arquitetura de Computadores e Sistemas Operacionais.
+2. Possibilitar a iniciação científica de Alunos da Graduação da UNEB.
+3. Contribuir para a formação continuada dos Professores da UNEB e de instituições acadêmicas da Bahia e do Brasil.
+4. Difundir a robótica autônoma, via projetos de extensão.
+5. Participar de competições nacionais e internacionais de robótica inteligente.</REPERCUSSAO>
+      <AREA>Ciências Exatas e da Terra; Ciência da Computação</AREA>
+      <INSTITUICAO>Universidade do Estado da Bahia - UNEB</INSTITUICAO>
+      <ANO_FORMACAO>2006</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>41150000</CEP>
+         <LOCALIDADE>Salvador</LOCALIDADE>
+         <UF>BA</UF>
+         <BAIRRO>Cabula</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>2555</NUMERO>
+         <LOGRADOURO>Rua Silveira Martins</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Adailton de Jesus Cerqueira Junior" LATTES="2209695733994080" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Engenharia de Software</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Robótica, Mecatrônica e Automação</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <AREA>Sistemas Multiagentes</AREA>
+            <AREA>Software Básico</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Patrícia Fontes Magalhães Mascarenhas" LATTES="9035802389892301" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Desenvolvimento Dirigido por Modelos</AREA>
+            <AREA>Engenharia de Software</AREA>
+            <AREA>Modelagem de Processos de Software</AREA>
+            <AREA>Reuso de software</AREA>
+            <AREA>Robótica multimodal e assistiva</AREA>
+            <AREA>Teste de Software</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Engenharia de Software e Aplicações</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisas em Redes e Computação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MATisSE (Models, Approaches and Technologies for Software Enginnering)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento dirigido à modelos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processos de Desenvolvimento de Software</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Inteligentes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Engenharia de Software</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Internet das Coisas (IoT)</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Modelagem de Software</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Linguagens Específicas de Domínio</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudo de Processos, Métodos e Linguagem de Programação Aplicadas ao Desenvolvimento de Softwares</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Diego Gervasio Frías Suárez" LATTES="1377022547816780" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Bioinformática</AREA>
+            <AREA>Engenharia de Software</AREA>
+            <AREA>Inteligência Artificial</AREA>
+            <AREA>Matemática da Computação</AREA>
+            <AREA>Princípios Variacionais e Métodos Numéricos</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>G2BC - Grupo de Pesquisa em Bioinformática e Biologia Computacional</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>PIMAT - Predições Inteligentes em Métodos Aplicados a Series Temporais</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Bioinformática viral</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Inteligentes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Bioinformática fúngica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Descrição e Predição Epidemiológica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elias Cunha Bitencourt" LATTES="0398551296546687" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Comunicação e Novas Tecnologias</AREA>
+            <AREA>Estudos de Ciência e Tecnologia (STS)</AREA>
+            <AREA>Estudos de Plataforma</AREA>
+            <AREA>Humanidades Digitais</AREA>
+            <AREA>Métodos Digitais</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Comunidades Virtuais - UNEB</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Datalab Design</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imaginários de plataforma</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Livro digital e mobilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Práticas algorítmicas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Visualização de Dados</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Enoch Mascarenhas Pedreira" LATTES="0611885325660302" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <AREA>Ensino</AREA>
+            <AREA>Inclusão Digital</AREA>
+            <AREA>Robótica Educacional</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ivanoé João Rodowanski" LATTES="5549082823769912" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Elementos de Máquinas</AREA>
+            <AREA>Instalações e Equipamentos Metalúrgicos</AREA>
+            <AREA>Máquinas, Motores e Equipamentos</AREA>
+            <AREA>Processos de Fabricação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE FÍSICA BÁSICA E APLICADA EM MATERIAIS SEMICONDUTORES</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ENERGIA, AUTOMAÇÃO E ROBÓTICA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Tecnologia em Sistemas Mecânicos e Automação - TecSiMA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mecatrônica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aplicações em Robótica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jorge Alberto Prado de Campos" LATTES="4851786390961391" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Computação Móvel</AREA>
+            <AREA>Sistemas de Informações Geográficas</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>IP&amp;QoS - Núcleo de Pesquisa em Redes IP e Qualidade de Serviço</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisas em Redes e Computação</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Smart Grid e Smart Cities</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Inteligentes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Web e Multimídia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Internet das Coisas (IoT)</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Grimaldo da Silva Filho" LATTES="0325157122452319" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Inteligência Artificial</AREA>
+            <AREA>Robótica Móvel</AREA>
+            <AREA>VIsão Computacional</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Inteligentes</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Josemar Rodrigues de Souza" LATTES="5463076295727564" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arquitetura de Computadores e Processamento de Alto Desempenho</AREA>
+            <AREA>Robótica Autônoma</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Comunidades Virtuais - UNEB</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ObservaBaía-Observatório de Riscos e Vulnerabilidades Socioambientais da Baía de Todos os Santos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Patrimônio Cultural: conhecimento, salvaguarda e disponibilização</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Computação de Alto Desempenho</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Jogos, jogos digitais e gamificação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Narrativas Interativas e Transmidiáticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marco Antonio Costa Simões" LATTES="0319800678858096" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Arquitetura de Computadores</AREA>
+            <AREA>Inteligência Artificial</AREA>
+            <AREA>Redes de Computadores e Sistemas Distribuídos</AREA>
+            <AREA>Robótica Inteligente</AREA>
+            <AREA>Sistemas de Tempo Real</AREA>
+            <AREA>Sistemas Operacionais</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Murilo do Carmo Boratto" LATTES="9222855062709254" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Análise Numérica</AREA>
+            <AREA>Computação de Alto Desempenho</AREA>
+            <AREA>Modelagem Matemática e Computacional</AREA>
+            <AREA>Programação Paralela e Distribuída</AREA>
+            <AREA>Sistemas Computacionais</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Comunidades Virtuais - UNEB</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas Inteligentes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Jogos, jogos digitais e gamificação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Oberdan Rocha Pinheiro" LATTES="4197802436808266" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Robótica</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Integração Digital para Manufatura Avançada</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Manufatura Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Romero Mendes Freire de Moura Júnior" LATTES="5231549546320188" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação</AREA>
+            <AREA>Interdisciplinar</AREA>
+            <AREA>Robótica</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Comunidades Virtuais UFBA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa Interdisciplinaridades &amp; Tecnologias (Inter&amp;Tec)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Laboratório e Oficinas de Jogos Digitais - Lógica Computacional e Programação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Jogos digitais, funções executivas e aprendizagem</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias para Qualidade de Vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Plataformas digitais e educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gamificação, educação e saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias de Produção</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência Itinerante (Stand de Robótica)</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias em Educação</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Alan Vitor de Almeida Nascimento" LATTES="2205785951836423" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Aprendizagem por Reforço</AREA>
+            <AREA>Controle</AREA>
+            <AREA>Inteligência Artificial</AREA>
+            <AREA>Robótica Inteligente</AREA>
+            <AREA>Sistemas de Informação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Caio Lucena Andrade Paula" LATTES="2723656811137084" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Sistemas de Informação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Caroline de Souza dos Santos" LATTES="8430039698868930" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Banco de Dados</AREA>
+            <AREA>Ciência da Computação</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Sistemas de Computação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LabIA: Laboratório de Inteligência Artificial</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aprendizado por Reforço</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriel Mascarenhas Costa de Sousa" LATTES="2452708656133457" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jadson Nobre Das Virgens" LATTES="9823674025515670" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Arquitetura de Sistemas de Computação</AREA>
+            <AREA>Linguagem de Programação</AREA>
+            <AREA>Micro-controladores</AREA>
+            <AREA>REDES DE COMPUTADORES</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Melissa Vitória Chagas Damasceno" LATTES="1240495244593495" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael Rodrigues Moscoso Mattos" LATTES="7685749766468665" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Yan Gabriel dos Anjos Vieira Conceição" LATTES="2459381128586444" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Robótica Inteligente</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Hélio de Carvalho" LATTES="9056444543257231" FORMACAO_ACADEMICA="Especialização" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luis Paulo Gonçalves dos Reis" LATTES="4492056378045452" FORMACAO_ACADEMICA="REPUBLICA PORTUGUESA" CATEGORIA="ESTRANGEIRO">
+            <AREA>Ciência da Computação</AREA>
+            <GRUPO_DE_PESQUISA>ACSO - Centro de Pesquisa em Arquitetura de Computadores, Sistemas Inteligentes e Robótica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inteligência Computacional</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LASER-Laboratório Avançado de Sistemas Embarcados e Robótica</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Computação de Alto Desempenho</NOME>
+            <OBJETIVO>Computação de Alto Desempenho</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades dos serviços de tecnologia da informação | Atividades dos serviços de tecnologia da informação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Robótica Inteligente</NOME>
+            <OBJETIVO>Pesquisar, analisar e desenvolver soluções de robótica inteligente utilizando sistemas multiagentes autônomos e as diversas técnicas de inteligência artificial.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades dos serviços de tecnologia da informação | Atividades de prestação de serviços de informação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Sistemas Inteligentes</NOME>
+            <OBJETIVO>Com a perspectiva de implantação do programa de Mestrado em Computação Aplicada na UNEB, foi criado a Linha de Pesquisa em Computação Aplicada. A referida linha abrigará os futuros projetos de pesquisa, que deverão ter, sempre que possível, a participação de pelo menos dois professores do programa, sendo um da linha de pesquisa Tecnologias Computacionais e o outro da linha de pesquisa Computação Interdisciplinar.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Extração de petróleo e gás natural</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

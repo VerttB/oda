@@ -1,0 +1,460 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</NOME>
+      <IDENTIFICACAO_DGP>0714714153016998</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O grupo reúne docentes, pesquisadores e estudantes de pós-graduação de distintas de Instituições de Ensino Superior e de Pesquisa das regiões sul, sudeste e nordeste do país que em sua grande maioria já atuam em conjunto na produção científica sobre invertebrados estuarinos e marinhos (ênfase em moluscos bivalves e equinodermos). Os estudos multi e interdisciplinares sobre esses recursos vivos bentônicos contribui de modo significativo sobre parte da biota economicamente e potencialmente explorada nos ecossistemas costeiros. A compreensão sobre aspectos morfofuncionais, fisiológicos e etnoecológicos e as interfaces sobre o uso e a conservação dos habitats ocupados por esses organismos mesclam a proposta de trabalho destes profissionais e acadêmicos em questão.</REPERCUSSAO>
+      <AREA>Ciências Biológicas; Zoologia</AREA>
+      <INSTITUICAO>Universidade Estadual do Paraná - UNESPAR</INSTITUICAO>
+      <ANO_FORMACAO>2020</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>83203560</CEP>
+         <LOCALIDADE>Paranaguá</LOCALIDADE>
+         <UF>PR</UF>
+         <BAIRRO>João Gualberto</BAIRRO>
+         <COMPLEMENTO>Universidade Estadual do Paraná campus Paranaguá</COMPLEMENTO>
+         <NUMERO>117</NUMERO>
+         <LOGRADOURO>Rua Comendador Correia Júnior</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Ana Cerilza Santana Mélo" LATTES="0747156832406887" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Bioética</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Enrtomologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Ecologia, Biologia e Comportamento de Insetos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Augusto Luiz Ferreira Junior" LATTES="5693751437008754" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Interação de Organismos Aquáticos, Parâmetros Ambientais e Contaminantes Emergentes</AREA>
+            <AREA>Taxonomia e Ecologia de Moluscos</AREA>
+            <GRUPO_DE_PESQUISA>Evolução, dinâmica e recursos costeiros</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ecologia e Biologia Reprodutiva de Invertebrados Marinhos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MUSEU DE CIÊNCIAS NATURAIS - UEPG</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia e Ecologia de Moluscos Marinhos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Quaternario das Ilhas oceanicas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contaminantes ambientais e invertebrados aquáticos como bioindicadores.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Quaternário Costeiro</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia e Ecologia de Moluscos Marinhos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Carolina Arruda de Oliveira Freire" LATTES="0072954652250238" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Comparação de tolerância fisiológica entre espécies nativas e invasoras</AREA>
+            <AREA>Ecotoxicologia aquática</AREA>
+            <AREA>Fisiologia Comparativa da Osmorregulação</AREA>
+            <AREA>Fisiologia de espécies nativas com potencial para aquacultura</AREA>
+            <GRUPO_DE_PESQUISA>Fisiologia Comparativa da Osmorregulação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Sistemática e Ecologia de Invertebrados Marinhos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Aquicultura Integrada: Ecologia, Biodiversidade, Fisiologia, Sanidade e Produção Sustentável</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Papel dos transportadores branquiais e renais na transição entre hiper- e hipo-regulação em peixes e crustáceos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Metabolismo energético da adaptação a diferentes gradientes salinos em crustáceos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estresse Animal - Ambiental</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia da Conservação de Vertebrados Aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estresse salino e regulação de volume em células de animais aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Recursos pesqueiros e mudanças climáticas - abordagem global</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Evolução de nichos salinos e bioinvasão.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia de espécies nativas com vistas a sua utilização em aquicultura</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia comparativa de espécies nativas com interesse para aquicultura</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Produção de organismos aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecofisiologia da osmorregulação e relação com distribuição em equinodermas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estresse químico e regulação de volume em células de animais aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia Endócrina da Osmorregulação em Peixes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aquicultura multi-trófica integrada</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia comparativa e osmorregulação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecofisiologia de moluscos bivalves e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cultivo de organismos marinhos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Efeito de poluentes inorgânicos e orgânicos sobre a osmorregulação de animais aquáticos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eddy José Francisco de Oliveira" LATTES="4575150069494160" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biotecnologia</AREA>
+            <AREA>DNA AMBIENTAL - SOLO/ÁGUA/AR</AREA>
+            <AREA>Ecologia Molecular</AREA>
+            <AREA>Genética Animal</AREA>
+            <AREA>Genética da Conservação</AREA>
+            <GRUPO_DE_PESQUISA>Ecologia, Biologia e Comportamento de Insetos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Zoonoses e Saúde Única</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>DOENÇAS E EPIDEMIAS AMPLIFICADAS PELO CLIMA (CLIMADE): Como as alterações climáticas modificam o curso das doenças/epidemias, causadas por vírus, nos hospedeiros/reservatórios/vetores/meio ambiente.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>mudanças climáticas globais e emergencia e reemergência de patógenos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Abordagens genômica populacional, filogeografia marinha</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia Molecular dos arbovírus, dos retrovirus humanos e dos vírus respiratórios</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PROGRAMAS, PROJETOS E CAPACITAÇÃO PARA A PROMOÇÃO DA SAÚDE</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etiologia e epidemiologia das zoonoses</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Técnicas de diagnóstico de infecções zoonóticas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eraldo Medeiros Costa Neto" LATTES="2521953264550977" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia e Ecologia de Insetos</AREA>
+            <AREA>Ecologia Aplicada</AREA>
+            <AREA>Etnoentomologia</AREA>
+            <AREA>Etnozoologia</AREA>
+            <AREA>Utilização dos Animais</AREA>
+            <AREA>Zooterapia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Investigações em Etnobiologia e Ensino de Ciências (GIEEC)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ecologia Espiritual: integração Natureza, Humanidade e Espiritualidades</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Educação Patrimônio Cultural e Etnicidade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Meio Ambiente e Crenças: pesquisas multidisciplinares em ciências ambientais, ciências das religiões e teologia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia das conexões espirituais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enozoologia, etnoecologia e sociobiodiversidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Patrimonio Cultural Proibido e a Educação Psicodélica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conhecimentos científicos, etnobiológicos e etnoecológicos, recursos e sequências didáticas para o ensino de ciências intercultural</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Franciane Maria Pellizzari" LATTES="5871026743739880" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Aqüicultura</AREA>
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Fisiologia Vegetal</AREA>
+            <AREA>Oceanografia</AREA>
+            <AREA>Taxonomia Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Taxonomia, diversidade, ecologia e bioprospecção de fungos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia de fungos extremófilos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fauna associada e interações fauna-substrato</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Francisco José Bezerra Souto" LATTES="2755938351735494" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ecologia</AREA>
+            <AREA>Etnoecologia</AREA>
+            <AREA>Etnozoologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Francisco José Bezerra Souto" LATTES="2755938351735494" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ecologia</AREA>
+            <AREA>Etnoecologia</AREA>
+            <AREA>Etnozoologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Francisco José Reyes Sánchez" LATTES="0209922803348389" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Marina</AREA>
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Desenvolvimento Produtivo</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Recursos Pesqueiros e Engenharia de Pesca</AREA>
+            <AREA>Taxonomia</AREA>
+            <GRUPO_DE_PESQUISA>Monitoramento Integrado de Manguezais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Alterações Ambientais no Ecossistema Manguezal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diversidade e Conservação da Fauna Associada à Manguezais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão e Conservação de Unidades de Conservação em Áreas de Manguezal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Entoconhecimento tradicional</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriela Dubeski Ferreira" LATTES="9660709831578960" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências Biológicas</AREA>
+            <AREA>Histologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriele Costa Ramos" LATTES="1433846532029505" FORMACAO_ACADEMICA="Graduação" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Geral</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Guilherme Sabino Rupp" LATTES="7416518914682046" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Aqüicultura</AREA>
+            <AREA>Ecologia Aplicada</AREA>
+            <AREA>Interação entre os Organismos Marinhos e os Parâmetros Ambientais</AREA>
+            <AREA>Maricultura</AREA>
+            <AREA>Recursos Pesqueiros e Engenharia de Pesca</AREA>
+            <AREA>Recursos Pesqueiros Marinhos</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hozana de Barros Castro" LATTES="2850766771562130" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <AREA>Educação</AREA>
+            <AREA>Museologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Francisco de Oliveira Neto" LATTES="6389922147584969" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ecologia de Peixes</AREA>
+            <AREA>Ecossistemas marinhos costeiros</AREA>
+            <AREA>Interação entre os Organismos Marinhos e os Parâmetros Ambientais</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Abordagens genômica populacional, filogeografia marinha</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luciana Ribeiro Martins" LATTES="4661653617529476" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Sistemática</AREA>
+            <AREA>Taxonomia dos Grupos Recentes</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Carcinologia-MZ-USP</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Coleção de Invertebrados Marinhos MZUSP</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Filogenia e Evolução</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Taxonomia e Biodiversidade Animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diversidade e evolução de Echinodermata</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Matheus Pires Miranda" LATTES="6836589031793802" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Bioquímica</AREA>
+            <AREA>Ensino</AREA>
+            <AREA>Química Orgânica</AREA>
+            <AREA>Zoologia de Invertebrados</AREA>
+            <GRUPO_DE_PESQUISA>Bioquímica, Biotecnologia e Bioprodutos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Bases celulares e bioquímicas das respostas a estímulos bióticos e abióticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Produtos naturais, Plantas medicinais e Bioprospecção vegetal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mayra Jankowsky" LATTES="9106050537260893" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Áreas Protegidas</AREA>
+            <AREA>Biologia da Conservação</AREA>
+            <AREA>Ecologia Humana</AREA>
+            <AREA>Etnoecologia</AREA>
+            <AREA>Manejo e Conservação de Recursos Pesqueiros Marinhos</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Murilo Zanetti Marochi" LATTES="5911445652130392" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Carcinologia</AREA>
+            <AREA>Comportamento Animal</AREA>
+            <AREA>Ecologia de populações</AREA>
+            <AREA>Efeitos de estressores climáticos no ambiente costeiro</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de estudos em ecologia e comportamento de organismos aquáticos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sociedade e Desenvolvimento em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia comportamental</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Efeito das Mudanças do clima e da Diversidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nicole Stakowian" LATTES="5305263092528211" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ecologia</AREA>
+            <AREA>Fisiologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Fisiologia Comparativa da Osmorregulação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estresse salino e regulação de volume em células de animais aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Recursos pesqueiros e mudanças climáticas - abordagem global</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fisiologia comparativa entre espécies exóticas e espécies nativas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aquicultura multi-trófica integrada</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Pablo Damian Borges Guilherme" LATTES="2689507681780757" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Interação entre os Organismos Marinhos e os Parâmetros Ambientais</AREA>
+            <AREA>Morfologia dos Grupos Recentes</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Tecnologia em Gestão Ambiental</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sociedade e Desenvolvimento em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão socioambiental, sustentabilidade e desenvolvimento local</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafael Metri" LATTES="6403295150804669" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ascidiacea</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Ecologia de Ecossistemas</AREA>
+            <AREA>Taxonomia dos Grupos Recentes</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Sistemática e Ecologia de Invertebrados Marinhos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Tecnologia em Gestão Ambiental</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Conservação e manejo de ambientes aquáticos, costeiros e oceânicos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão socioambiental, sustentabilidade e desenvolvimento local</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>lixo no mar paranaense e brasileiro</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sandro Valdecir Deretti Lemes" LATTES="1764024633455172" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Mercadologia</AREA>
+            <GRUPO_DE_PESQUISA>Centro de Estudos e Pesquisas sobre Desastres - CEPED/PR</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sociedade e Desenvolvimento em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Susete Wambier Christo" LATTES="5200668953095936" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ecologia</AREA>
+            <AREA>Zoologia Aplicada</AREA>
+            <GRUPO_DE_PESQUISA>Ecologia e Biologia Reprodutiva de Invertebrados Marinhos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ECOLOGIA E CONSERVACÃO DE FAUNA DE ECOSSISTEMAS COSTEIROS</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MUSEU DE CIÊNCIAS NATURAIS - UEPG</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia e Ecologia de Moluscos Marinhos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão de ecossistemas estuarinos e costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Zooplâncton marinho: composição e distribuição espaço-temporal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Contaminantes ambientais e invertebrados aquáticos como bioindicadores.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Zoologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Reproducao invertebrados marinhos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e conservação de sistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia e Ecologia de Moluscos Marinhos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Fisiologia de organismos marinhos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Walter Ramos Pinto Cerqueira" LATTES="1248317434836569" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia de Echinodermata</AREA>
+            <AREA>Ecologia de Echinodermata</AREA>
+            <AREA>Ecologia de Populações e Comunidades</AREA>
+            <AREA>Taxonomia de Echinodermata</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Coleções zoológicas e divulgação científica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Taxonomia de invertebrados costeiros e oceânicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Yara Aparecida Garcia Tavares" LATTES="3178953616298297" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Fisiologia de grupos recentes</AREA>
+            <AREA>Utilização dos Animais</AREA>
+            <AREA>Zoologia Aplicada</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O Meio Ambiente Costeiro do Paraná</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Conservação da Biodiversidade em ambientes litorâneos e insulares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia e Conservação de ecossistemas costeiros</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia reprodutiva de invertebrados aquáticos costeiros e oceânicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecofisiologia de moluscos bivalves e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Yara Nantes Vasconcelos" LATTES="9352447340448520" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Geral</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Histologia</AREA>
+            <AREA>Zoologia</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Brenda Ramos de Jesus" LATTES="2679712621359648" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Coleções zoológicas e divulgação científica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia reprodutiva de invertebrados aquáticos costeiros e oceânicos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Guilherme Mischur Nascimento" LATTES="7665244021330665" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia marinha</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Taxonomia vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kauan Araujo Fontes" LATTES="4494517978773070" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Coleções zoológicas e divulgação científica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia reprodutiva de invertebrados aquáticos costeiros e oceânicos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Magno Zumbi de Lima Mendes" LATTES="7807637506190764" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Coleções zoológicas e divulgação científica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia reprodutiva de invertebrados aquáticos costeiros e oceânicos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Natalie Petrovna Semanovschi" LATTES="9634618738715611" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Marinha</AREA>
+            <AREA>Biologia Reprodutiva</AREA>
+            <AREA>Ecologia</AREA>
+            <AREA>Histologia</AREA>
+            <AREA>Manejo e Conservação de Recursos Pesqueiros Marinhos</AREA>
+            <AREA>Zoologia de Invertebrados Marinhos</AREA>
+            <GRUPO_DE_PESQUISA>Fisiologia Comparativa da Osmorregulação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Sistemática e Ecologia de Invertebrados Marinhos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia, Bioestatística e Gestão de Ecossistemas Aquáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecologia populacional de moluscos e equinodermos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecofisiologia da osmorregulação e relação com distribuição em equinodermas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ecofisiologia de moluscos bivalves e equinodermos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elenilson Severino de souza" LATTES="8662336145996244" FORMACAO_ACADEMICA="Especialização" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>ENTOMOLOGIA - FITOSSANIDADE</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia Reprodutiva, EcoFisiologia, Etnoecologia e Conservação de invertebrados marinhos e estuarinos com ênfase moluscos bivalves e equinodermos.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Taxonomia, Ecologia e Biologia Reprodutiva de Invertebrados Aquáticos Costeiros e Oceânicos</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Bases celulares e bioquímicas das respostas a estímulos bióticos e abióticos</NOME>
+            <OBJETIVO>Dosagens bioquímicas teciduais (carbohidratos e lipídeos totais) e alocação de recursos energéticos em equinodermos na costa brasileira.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências físicas e naturais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Abordagens genômica populacional, filogeografia marinha</NOME>
+            <OBJETIVO>Compreender a biologia da vida selvagem, como as dinâmicas populacionais, e orientam ações diretas sobre conservação e manejo para populações de vida selvagem e seus habitats e construir primers para sequenciamento de próxima geração focado na região 5' da região de controle mitocondrial de equinodermos (mtDNA).</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências físicas e naturais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ecofisiologia de moluscos bivalves e equinodermos</NOME>
+            <OBJETIVO>avaliar o desempenho fisiológico destes organismos; detectar marcadores de sobrecarga homeostática para ambos os grupos que podem ser utilizados para avaliação de impactos e alterações nos ambientes costeiros, em especial aquelas aceleradas ao aquecimento global</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências físicas e naturais | Pesca | Aqüicultura</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ecologia e Conservação de ecossistemas costeiros</NOME>
+            <OBJETIVO>avaliar a qualidade dos habitas costeiros com ênfase nos impactos antrópicos e no status de conservação das espécies; elencar estratégias para o uso/manejo racional dos mesmos e o desenvolvimento sustentável dos ecossistemas costeiros</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesca e Aqüicultura | Atividades de apoio à educação | Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ecologia populacional de moluscos e equinodermos</NOME>
+            <OBJETIVO>Avaliar a distribuição espaço-temporal, o crescimento populacional, a dinâmica da alimentação de distintas populações de moluscos bivalves, asteroides, equinoides, holoturoides e ofiuroides e as interações abióticas nos habitats ocupados.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesca e Aqüicultura | Preservação do pescado e fabricação de produtos do pescado | Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Etnoecologia dos recursos pesqueiros bentônicos de interesse comercial</NOME>
+            <OBJETIVO>gerar informações sócio-econômicas sobre as dinâmicas sociais da pesca artesanal de invertebrados bentônicos (marinhos e estuarinos)</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Caça e serviços relacionados | Atividades de apoio à educação | Preservação do pescado e fabricação de produtos do pescado</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Morfologia e biologia reprodutiva de moluscos e equinodermos em ambientes costeiros e insulares:</NOME>
+            <OBJETIVO>caracterizar aspectos morfofuncionais e possíveis relações alométricas
+em distintas populações de bivalves, asteroides, equinoides, holoturoides e ofiuroides em ambientes costeiros e insulares; caracterizar os eventos temporais da gametogênese, a proporção sexual, as características citométricas do tecido gonadal, os índices gonadossomáticos e as estratégicas de alocação de recursos (níveis de componentes bioquímicos teciduais) devotados à reprodução</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesca e Aqüicultura | Preservação do pescado e fabricação de produtos do pescado | Pesquisa e desenvolvimento científico</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</NOME>
+      <IDENTIFICACAO_DGP>5681969941356895</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Se considerarmos que a universidade é um cenário voltado para a formação acadêmica onde envolve a participação de alunos e profissionais em áreas multidisciplinares, podemos contemplar as vivências e expressões desses sujeitos no que se refere ao perfil da qualidade de vida, aplicação de metodologias ativas e gestão. Todo esse conjunto de análises permitirá contribuir com formação profissional, traçar um perfil do egresso no ensino superior, análise da promoção da saúde e da qualidade de vida intra e extra muros. Acrescenta-se que estudos nesta área permitirão a criação de ambientes favoráveis à saúde e a educação implicando o reconhecimento da complexidade das nossas sociedades e das relações de interdependência entre diversos setores.</REPERCUSSAO>
+      <AREA>Ciências da Saúde; Medicina</AREA>
+      <INSTITUICAO>Universidade de Ribeirão Preto - UNAERP</INSTITUICAO>
+      <ANO_FORMACAO>2022</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>14096900</CEP>
+         <LOCALIDADE>Ribeirão Preto</LOCALIDADE>
+         <UF>SP</UF>
+         <BAIRRO>Ribeirânia</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>2201</NUMERO>
+         <LOGRADOURO>Avenida Costábile Romano 2201 Associação de Ensino de</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Eloisa Maria Gatti Regueiro" LATTES="2901466840054711" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação</AREA>
+            <AREA>Fisioterapia Respiratória</AREA>
+            <GRUPO_DE_PESQUISA>Investigação das Técnicas e Recursos da Fisioterapia Respiratória</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LARECAP - Laboratório de Reabilitação Cardiopulmonar</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Reabilitação Cardiopulmonar</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Investigação dos Recursos Mecânicos da Fisioterapia Respiratória</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Helen Figueiredo Fumagalli" LATTES="6557675196916234" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Administração de Unidades Educativas</AREA>
+            <AREA>Biologia Geral</AREA>
+            <AREA>Educação médica</AREA>
+            <AREA>Educação Permanente</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Tecnologia Ambiental</AREA>
+            <GRUPO_DE_PESQUISA>Ensino Médico</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa em Recursos Hídricos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino Médico</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tratamento de efluentes e remoção de microcontaminantes emergentes</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jose Rodolfo Tasqueti Porto" LATTES="3635756816366311" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Geral</AREA>
+            <AREA>Bioquímica</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Nutrição</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <AREA>Saúde Mental</AREA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Renata Dellalibera-Joviliano" LATTES="2840815150459820" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Análises Clínicas</AREA>
+            <AREA>Anatomia Patológica e Patologia Clínica</AREA>
+            <AREA>Imunologia</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Parasitologia e Cardiologia</AREA>
+            <AREA>Qualidade de Vida</AREA>
+            <GRUPO_DE_PESQUISA>Ensino Médico</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Cardiopatias</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>O estresse oxidativo no desenvolvimento de doenças</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>SISTEMA IMUNE E RESPOSTA INFLAMATÓRIA NA SAÚDE E NA DOENÇA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>QUALIDADE DE VIDA, METODOLOGIAS ATIVAS E GESTÃO</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Farmacologia Cardiovascular</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MECANISMOS ASSOCIADOS A RESPOSTA INFLAMATÓRIA E AO SISTEMA IMUNE NA SAÚDE E NA DOENÇA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Investigações Moleculares e Imunológicas do Câncer</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biodiagnóstico e biotecnologia aplicada</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida do estudante universitário</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida no trabalho e empreendedorismo sustentável</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida e metodologias ativas no ensino superior</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de Vida em Universitários na área da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inflamação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Resposta Imune e inflamatória na saúde e na doença</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inflamação, estresse oxidativo e lesão endotelial envolve padrões de resposta de citocinas ---</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cardiomiopatias</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida de professores do ensino superior</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino Médico</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mediadores inflamatórios envolvidos na ativação da MMP-2 em modelos animais de doenças cardiovasculares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunologia básica e aplicada nos processos imunobiológicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida na promoção da saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida e metodologias ativas no ensino superior</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida do estudante universitário</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistema Imune: saúde e doença</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Resposta Imune e inflamatória na saúde e na doença</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sofia Banzatto" LATTES="9622479549598139" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Biotecnologia</AREA>
+            <AREA>Medicina de família e comunidade</AREA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GeronNutri-Grupo de Pesquisa de Nutrição e Envelhecimento</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biomarcadores Aplicados a Estudos Clínicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Nutrição Clínica, Macro e Micronutrientes e Metabolismo</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Felipe Ribeiro Furlan" LATTES="8149509042346441" FORMACAO_ACADEMICA="Especialização - Residência médica" CATEGORIA="ESTUDANTE">
+            <AREA>Educação Médica</AREA>
+            <GRUPO_DE_PESQUISA>MECANISMOS ASSOCIADOS A RESPOSTA INFLAMATÓRIA E AO SISTEMA IMUNE NA SAÚDE E NA DOENÇA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistema Imune: saúde e doença</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Guilherme Bedum" LATTES="8446097491019882" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de vida do estudante universitário</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mariana Talarico Marçal Galvão" LATTES="2234359505737096" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sthefany Mikaely Procopio Barbosa" LATTES="8975482160087342" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>MECANISMOS ASSOCIADOS A RESPOSTA INFLAMATÓRIA E AO SISTEMA IMUNE NA SAÚDE E NA DOENÇA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CIÊNCIAS DA SAÚDE E QUALIDADE DE VIDA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências da Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Resposta Imune e inflamatória na saúde e na doença</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistema Imune: saúde e doença</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ciências da Saúde</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Qualidade de vida do estudante universitário</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Qualidade de vida e metodologias ativas no ensino superior</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

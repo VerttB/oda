@@ -1,0 +1,253 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Ciência e Tecnologia de Alimentos</NOME>
+      <IDENTIFICACAO_DGP>9669456528016175</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Geração de conhecimentos que permitam responder os questionamentos das indústrias alimentícias da região, principalmente do pequeno e médio produtor diretamente e/ou através de parcerias, programas e, desenvolver produtos a partir de matérias-primas, com destaque para produtos regionais, agregando valor e diversificando a produção com a transferência de tecnologia.</REPERCUSSAO>
+      <AREA>Ciências Agrárias; Ciência e Tecnologia de Alimentos</AREA>
+      <INSTITUICAO>Instituto Federal de Educação, Ciência e Tecnologia do Tocantins - IFTO</INSTITUICAO>
+      <ANO_FORMACAO>2019</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>77600000</CEP>
+         <LOCALIDADE>Paraíso do Tocantins</LOCALIDADE>
+         <UF>TO</UF>
+         <BAIRRO>Distrito Agroindustrial</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>S/N</NUMERO>
+         <LOGRADOURO>BR 153, KM 480</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Alessandra Vespucio Vaz" LATTES="6856250132399913" FORMACAO_ACADEMICA="Especialização" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação e Controle de Qualidade de Alimentos</AREA>
+            <AREA>Ciência de Alimentos</AREA>
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Padrões, Legislação e Fiscalização de Alimentos</AREA>
+            <AREA>Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Carla Dettenborn de Cól" LATTES="4280043733640923" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de produtos de origem animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cristiane Miranda Martins" LATTES="1991096185549601" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ensino-Aprendizagem</AREA>
+            <AREA>Fisiologia de Plantas Cultivadas</AREA>
+            <AREA>Fitotecnia</AREA>
+            <AREA>Manejo e Tratos Culturais</AREA>
+            <AREA>Nutrição mineral de plantas</AREA>
+            <AREA>Produção e Beneficiamento de Sementes</AREA>
+            <GRUPO_DE_PESQUISA>GPAC - Grupo de Pesquisa em Agroecologia no Cerrado</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Manejo da adubação verde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Agricultura Orgânica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Demis Carlos Ribeiro Menezes" LATTES="7357175105036361" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Agronegócio</AREA>
+            <AREA>Clínica e Cirurgia Animal</AREA>
+            <AREA>Medicina Veterinária</AREA>
+            <AREA>Reprodução Animal</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Inovação em Agropecuária - GPIAgro</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Sistemas Integrados de Produção Agroindustriais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Extensão em Zootecnia - GPEZOO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Produção e manejo de ruminantes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Reprodução, genética e melhoramento animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão da informação nas atividades de pecuária</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de produtos de origem animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Acompanhamento de sistemas de produção animal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fernando Morais Rodrigues" LATTES="8294416815018315" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Aproveitamento de Subprodutos</AREA>
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Gestão Ambiental e Educacional</AREA>
+            <AREA>Politicas Públicas e Gestão da Educação Profissional e Tecnológica</AREA>
+            <AREA>Tecnologia de Produtos de Origem Animal</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>GEPAV - Grupo de Estudo em Produção Animal e Vegetal</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovação e Tecnologias Aplicada à Educação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Agricultura Familiar e o Agronegócio</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Meio Ambiente e Desenvolvimento Regional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processos Formativos e Práticas Educativas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Metodologias e Tecnologias Inovadoras na Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Controle de Qualidade de alimentos,bebidas e embalagens</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão do Agronegócio</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação e Tecnologia na Educação Profissional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Digitais Aplicadas à Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em leite e derivados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cadeias Produtivas do Agronegócio</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Florisvaldo Gama de Souza" LATTES="0845252578513375" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Armazenamento de Alimentos</AREA>
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Fisiologia Pós-Colheita</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kallyana Moraes Carvalho Dominices" LATTES="6032859237880982" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Fontes de Energia Renováveis</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maurício Donato de Moura Júnior" LATTES="3239527623925608" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Otavio Cabral Neto" LATTES="5027409571651307" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação da Qualidade de Carne</AREA>
+            <AREA>Avaliação e Controle de Qualidade de Alimentos</AREA>
+            <AREA>Avaliação e Tipificação de Carcaças</AREA>
+            <AREA>Julgamento Animal</AREA>
+            <AREA>Tecnologia de Produtos de Origem Animal</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa Aplicada em Aquicultura</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GEPPRUF - Grupo de Estudos e Pesquisas em Produção de Ruminantes e Forragicultura</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GEPAV - Grupo de Estudo em Produção Animal e Vegetal</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa e Extensão em Zootecnia - GPEZOO</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo em Agropecuária Sustentável - GEAS</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciências agrárias e Zootecnia: Aquicultura</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão de Resíduos Agropecuários</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Controle de Qualidade de alimentos,bebidas e embalagens</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise de dados aplicada a produção animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de produção e processamento de produtos de origem animal e vegetal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas de Produção Animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Alimentos para Ruminantes</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Acompanhamento de sistemas de produção animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de produtos de origem animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e/ou simulação de sistemas de produção e reprodução de animais de interesse zootécnico</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade e Segurança dos Alimentos de Origem Animal</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paula Jucá de Sousa" LATTES="1054796381462640" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Letras</AREA>
+            <AREA>Lingüística</AREA>
+            <AREA>Sociolingüística e Dialetologia</AREA>
+            <AREA>Tecnologia Educacional</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovação e Tecnologias Aplicada à Educação</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Metodologias e Tecnologias Inovadoras na Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Processos Formativos e Práticas Educativas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Digitais Aplicadas à Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação e Tecnologia na Educação Profissional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em leite e derivados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Robson José Esteves Peluzio" LATTES="0328129027784816" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Samira Costa Braga" LATTES="2904801558795827" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <AREA>Ciências Agrárias</AREA>
+            <AREA>Microbiologia Aplicada</AREA>
+            <AREA>Microbiologia Industrial e de Fermentação</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sérgio Luis Melo Viroli" LATTES="4778618948917858" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>AMBIENTE</AREA>
+            <AREA>Armazenamento de Alimentos</AREA>
+            <AREA>Química</AREA>
+            <AREA>Química Analítica</AREA>
+            <AREA>Tecnologia de Produtos de Origem Animal</AREA>
+            <AREA>Tecnologia de Produtos de Origem Vegetal</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Alimentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aproveitamento de subprodutos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em leite e derivados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ciência dos alimentos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Wesley Sousa dos Santos" LATTES="4483441550310695" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em frutas e hortaliças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia, processos e inovações em leite e derivados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de produtos de origem animal</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cláudia Veloso" LATTES="6431090275820425" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fernanda Alves Costa" LATTES="5856599505191383" FORMACAO_ACADEMICA="Mestrado Profissional" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Davy William Hidalgo Chávez" LATTES="6394941877881287" FORMACAO_ACADEMICA="REPUBLICA DO PERU" CATEGORIA="ESTRANGEIRO">
+            <AREA>Ciência e Tecnologia de Alimentos</AREA>
+            <GRUPO_DE_PESQUISA>Ciência e Tecnologia de Alimentos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>TECNOLOGIA, PROCESSAMENTO E INOVAÇÃO APLICADOS A AGROINDÚSTRIA DE ALIMENTOS</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>TECNOLOGIA, PROCESSAMENTO E INOVAÇÃO APLICADOS A PRODUTOS DE ORIGEM VEGETAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Aproveitamento de subprodutos</NOME>
+            <OBJETIVO>Geração de conhecimentos que permitam responder os questionamentos das indústrias alimentícias da região, principalmente do pequeno e médio produtor diretamente e/ou através de parcerias, programas e, desenvolver produtos a partir de matérias-primas, com destaque para produtos regionais, agregando valor e diversificando a produção com a transferência de tecnologia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Abate e fabricação de produtos de carne | Fabricação de conservas de frutas, legumes e outros vegetais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Ciência dos alimentos</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Fabricação de conservas de frutas, legumes e outros vegetais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Tecnologia de Alimentos</NOME>
+            <OBJETIVO>Geração de conhecimentos que permitam responder os questionamentos das indústrias alimentícias da região, principalmente do pequeno e médio produtor diretamente e/ou através de parcerias, programas e, desenvolver produtos a partir de matérias-primas, com destaque para produtos regionais, agregando valor e diversificando a produção com a transferência de tecnologia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Fabricação de conservas de frutas, legumes e outros vegetais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Tecnologia de produtos de origem animal</NOME>
+            <OBJETIVO>Geração de conhecimentos que permitam responder os questionamentos das indústrias alimentícias da região, principalmente do pequeno e médio produtor diretamente e/ou através de parcerias, programas e, desenvolver produtos a partir de matérias-primas, com destaque para produtos regionais, agregando valor e diversificando a produção com a transferência de tecnologia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Abate e fabricação de produtos de carne | Preservação do pescado e fabricação de produtos do pescado</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Tecnologia, processos e inovações em frutas e hortaliças</NOME>
+            <OBJETIVO>Geração de conhecimentos que permitam responder os questionamentos das indústrias alimentícias da região, principalmente do pequeno e médio produtor diretamente e/ou através de parcerias, programas e, desenvolver produtos a partir de matérias-primas, com destaque para produtos regionais, agregando valor e diversificando a produção com a transferência de tecnologia.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Fabricação de conservas de frutas, legumes e outros vegetais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Tecnologia, processos e inovações em leite e derivados</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Fabricação de outros produtos alimentícios | Fabricação de conservas de frutas, legumes e outros vegetais</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

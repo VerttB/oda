@@ -1,0 +1,992 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</NOME>
+      <IDENTIFICACAO_DGP>7905804177191470</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>PERFIL EPIDEMIOLOGIA DAS GESTANTES E NEONATOS
+ALTERAÇÕES METABÓLICAS NA MULHER E NA GESTAÇÃO
+TRANSMISSÃO VERTICAL DAS INFECÇÕES BACTERIANAS, VIRÓTICAS E PARASITÁRIAS
+ALTO RISCO GRAVÍDICO-PUERPERAL
+FATORES RELACIONADOS COM A INFERTILIDADE HUMANA: IMUNOLÓGICOS, GENÉTICOS, INFECCIOSOS, HORMONAIS, SEMINAIS, OVARIANOS, UTERINOS E EMBRIONÁRIOS
+PLANEJAMENTO FAMILIAR
+ASPECTOS BIOMOLECULARES NAS INFECÇÕES DO TRATO GENITAL INFERIOR
+LESÕES INTRAEPITELIAIS CERVICAIS E CARCINOMA CERVICAL
+QUALIDADE DE VIDA DAS MULHERES
+FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA
+NEOPLASIA BENIGNA DE MAMA E CARCINOMA MAMÁRIO</REPERCUSSAO>
+      <AREA>Ciências da Saúde; Medicina</AREA>
+      <INSTITUICAO>Universidade Federal do Rio Grande do Norte - UFRN</INSTITUICAO>
+      <ANO_FORMACAO>2015</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>59012300</CEP>
+         <LOCALIDADE>Natal</LOCALIDADE>
+         <UF>RN</UF>
+         <BAIRRO>Petrópolis</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>259</NUMERO>
+         <LOGRADOURO>Avenida Nilo Peçanha</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Ana Karla Monteiro Santana de Oliveira Freitas" LATTES="5823409056812397" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Katherine da Silveira Gonçalves de Oliveira" LATTES="3436756337251449" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Doenças Sexualmente Transmissíveis</AREA>
+            <AREA>Ginecologia-Obstetrícia</AREA>
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo em Bioética e Saúde Feminina - GEBESF</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Patologia do Trato Genital Inferior e Colposcopia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Lab-SYS Research &amp; Health Innovation</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de Vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Revisões Sistemáticas e Metanálises</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Oncologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>OS PADRÕES SEXUAIS EM ESTUDANTES DE MEDICINA NAS UNIVERSIDADES PRIVADAS DO ESTADO DE ALAGOAS - SOB O ASPECTO BIOÉTICO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Novas Tecnologias e aplicativos direcionados a assistência a saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunogenética</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Citologia/ Citopatologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções genitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Paula Morais Fernandes" LATTES="1471172131479930" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Doenças Transmissíveis</AREA>
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Doenças Emergentes, Reemergentes e Negligenciadas</AREA>
+            <AREA>Imunogenética</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>DIVERSA - Diversidade, Sexualidade e Vulnerabilidades em Saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diversidade, sexualidade e vulnerabilidades em saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Carolina de Oliveira Mendes Aguiar" LATTES="3980490175965712" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Imunologia</AREA>
+            <AREA>Imunologia Celular</AREA>
+            <AREA>Parasitologia</AREA>
+            <AREA>Protozoologia Parasitária Animal</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eduardo Caldas Costa" LATTES="1216441676725839" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Metabolismo, Exercício e Nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Exercício Clínico e Envelhecimento (ExCE)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Laboratório de Epidemiologia de Comportamentos de Risco à Saúde - LEPRISCO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Alterações a adaptações fisiológicas ao treinamento físico</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aspectos epidemiológicos e psicossociais da atividade física, saúde e desempenho humano.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aspectos biofisiológicos da atividade física, saúde e desempenho humano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Papel prognóstico, preventivo e terapêutico da aptidão física, (in)atividade física e comportamento sedentário na saúde humana</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Elaine Cristina Alves" LATTES="5141956983191703" FORMACAO_ACADEMICA="Mestrado Profissional" CATEGORIA="PESQUISADOR">
+            <AREA>Ensino-Aprendizagem</AREA>
+            <AREA>Farmácia Hospitalar</AREA>
+            <AREA>Gestão de Programas de Residência em Saúde</AREA>
+            <AREA>Imunobiológicos</AREA>
+            <AREA>Métodos e Técnicas de Ensino</AREA>
+            <AREA>Neonatologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fabiana Ariston Filgueira" LATTES="2419348301484876" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Controle de Infecção Hospitalar</AREA>
+            <AREA>Infectologia Pediátrica</AREA>
+            <AREA>Terapia Intensiva Pediátrica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Janaina Cristiana de Oliveira Crispim Freitas" LATTES="2644540835478572" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Imunogenética</AREA>
+            <AREA>Imunologia Aplicada</AREA>
+            <AREA>Imunologia Celular</AREA>
+            <AREA>Imunoquímica</AREA>
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovações para prevenção e manejo do câncer de colo do útero</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Autocoleta e teste de HPV em mulheres não rastreadas para o câncer cervical no Brasil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Oncologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunopatologia e imunoterapia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunogenética</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Autocoleta como instrumento para equidade de gênero e raça na saúde.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções genitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Caminhos e entraves à implementação de novas tecnologias no SUS para eliminação do câncer de colo do útero</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jose Verissimo Fernandes" LATTES="7078820975978056" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Virologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia molecular aplicada ao estudo, identificação e controle de patógenos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de ferramentas moleculares para identificação de patógenos de importância médica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Karine Cavalcanti Maurício de Sena Evangelista" LATTES="2628723272728505" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação nutricional e doenças crônicas(diabetes, síndrome metabólica, DCV, câncer)</AREA>
+            <AREA>Minerais em doenças cardiovasculares</AREA>
+            <AREA>Zinco e Diabetes</AREA>
+            <GRUPO_DE_PESQUISA>Alimentos, Nutrição e Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Micronutrientes, Genômica Nutricional e Saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vitaminas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Genômica nutricional nos processos de saúde e doença</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Elementos essenciais e tóxicos e metabolômica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diagnóstico, Análise e Intervenção Nutricional de População</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Karla Danielly da Silva Ribeiro" LATTES="5658288179573297" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Bioquímica</AREA>
+            <AREA>Nutrição</AREA>
+            <GRUPO_DE_PESQUISA>Alimentos, Nutrição e Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Bioquímica dos Alimentos e da Nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Micronutrientes, Genômica Nutricional e Saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vitaminas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Diagnóstico, Análise e Intervenção Nutricional de População</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise nutricional de indivíduos e populações</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Gestão e Políticas de Alimentação, Nutrição e Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kassio Michell Gomes de Lima" LATTES="6928918856031880" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Instrumentação Analítica</AREA>
+            <AREA>Métodos Óticos de Análise</AREA>
+            <AREA>Química</AREA>
+            <GRUPO_DE_PESQUISA>Química Biológica e Quimiometria</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa de Interações Microbianas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Novos Métodos de Identificação de Micro-organismos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de Experimentos para o Ensino de Química</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Controle de Qualidade de Medicamentos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos de Calibração Multivariados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Instrumentação Analítica e Sensores Ópticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos de Seleção de Variáveis</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Sistemas digitais e Dispositivos Eletrônicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biotecnologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de novas metodologias analíticas por ATR-FTIR em sistemas biológicos usando biofluidos e tecidos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos Instrumentais Fundamentais e Aplicados</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Planejamentos Fatoriais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Leonardo Capistrano Ferreira" LATTES="2739353650933389" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Epidemiologia genética</AREA>
+            <AREA>Imunogenética</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia e Imunologia de Doenças Infecciosas e Tropicais</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcela Abbott Galvão Ururahy" LATTES="8016222352823817" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Diabetes Mellitus</AREA>
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>(BEOXI) GRUPO DE ESTUDOS EM BIOPROSPECÇÃO E METABOLISMO OXIDATIVO: EDUCAÇÃO, CIÊNCIAS, TECNOLOGIAS E SAÚDE</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Doenças Metabólicas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcia Edilaine Lopes Consolaro" LATTES="0683896538423063" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Citologia Clínica</AREA>
+            <AREA>Doenças Sexualmente Trasmissíveis</AREA>
+            <AREA>Farmácia</AREA>
+            <AREA>Fisiopatologia e diagnóstico laboratorial</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <GRUPO_DE_PESQUISA>Citologia Clínica e infecções sexualmente transmissíveis</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Inovações para prevenção e manejo do câncer de colo do útero</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Câncer de mama</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Autocoleta e teste de HPV em mulheres não rastreadas para o câncer cervical no Brasil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções Sexualmente Transmissíveis</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Epidemiologia da Infertilidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>HPV e carcinogênese</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Autocoleta como instrumento para equidade de gênero e raça na saúde.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Caminhos e entraves à implementação de novas tecnologias no SUS para eliminação do câncer de colo do útero</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria da Conceição de Mesquita Cornetta" LATTES="7465090403635260" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Diabetes Gestacional</AREA>
+            <AREA>Ensino Médico</AREA>
+            <AREA>Obstetrícia</AREA>
+            <AREA>Pré Natal de Alto Risco</AREA>
+            <AREA>Prevenção de Câncer do Colo Uterino</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria de Lourdes Costa da Silva" LATTES="4062479983995258" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>enfermagem em UTI</AREA>
+            <AREA>Gestação de Alto Risco</AREA>
+            <AREA>Neonatologia</AREA>
+            <GRUPO_DE_PESQUISA>GEASMIN - GRUPO DE ESTUDO DE AVALIAÇÃO EM SAÚDE MATERNO INFANTIL</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Tuberculose da Universidade Federal do Rio Grande do Norte (GTB-UFRN)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estudos Epidemiológico-Operacionais em Tuberculose</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Políticas, Programas e Serviços de Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Políticas de Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem no cuidado à saúde da família em situação de gravidez, parto, nascimento e puerpério em diferentes níveis de complexidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Thereza Albuquerque Barbosa Cabral Micussi" LATTES="2360845979410206" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação do Assoalho Pélvico</AREA>
+            <AREA>Reabilitação dos Músculos do Assoalho Pélvico</AREA>
+            <AREA>Saúde da Mulher</AREA>
+            <AREA>Uroginecologia</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Neuromodulação Clínica (NeuroClin)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDO E PESQUISA EM FISIOTERAPIA NA SAÚDE DA MULHER</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de Vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde Baseado em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e intervenção fisioterapêutica na saúde da mulher</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e Intervenção em fisioterapia no sistema musculoesquelético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nilba Lima de Souza" LATTES="3552543432083948" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Avaliação de Políticas e programas de saúde na área de saúde da mulher e da criança</AREA>
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Saúde da Mulher</AREA>
+            <AREA>Enfermagem Neonatal</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>GEASMIN - GRUPO DE ESTUDO DE AVALIAÇÃO EM SAÚDE MATERNO INFANTIL</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Tuberculose da Universidade Federal do Rio Grande do Norte (GTB-UFRN)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estudos Epidemiológico-Operacionais em Tuberculose</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégia de cuidar à promoção de saúde da criança e do adolescente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Políticas, Programas e Serviços de Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Políticas de Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem no cuidado à saúde da família em situação de gravidez, parto, nascimento e puerpério em diferentes níveis de complexidade</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Norma Lucena Cavalcanti Licinio da Silva" LATTES="7341938714365067" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Genética Molecular e de Microorganismos</AREA>
+            <AREA>Imunogenética</AREA>
+            <GRUPO_DE_PESQUISA>Imunogenética, Biotecnologia e pesquisa pré-clinica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Oncologia em crianças, adolescentes e adultos jovens</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GENOMAS SUS</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudo de variantes genéticas associadas a fenótipo de doenças debilitantes de qualquer natureza</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento e validação de métodos moleculares e imunológicos para caracterização do câncer e de doenças associadas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos da biologia do câncer: aspectos celulares, moleculares, genéticos, imunológicos e imunogenéticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos epidemiológicos em doenças transmissíveis e não transmissíveis</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunomodulação em doenças infecciosa, autoimune e câncer</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação de Métodos Moleculares e Imunologicos para caracterização de doenças infecciosas e câncer</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Biologia e Genética de doenças raras</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paula Renata Lima Machado Farias" LATTES="8904316209025915" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Imunologia</AREA>
+            <AREA>Microbiologia</AREA>
+            <AREA>Virologia</AREA>
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Sanidade de Organismos Aquáticos</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunopatologia e imunoterapia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>SISTEMÁTICA DE PROTOZOÁRIOS PARASITOS PEIXES</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>SISTEMÁTICA DE MIXOZOÁRIOS PARASITOS PEIXES</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paulo Cesar Giraldo" LATTES="6395956022175653" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências da Saúde</AREA>
+            <AREA>Doenças Infecciosas e Parasitárias</AREA>
+            <AREA>Fisioterapia</AREA>
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <AREA>Higiene genital feminina</AREA>
+            <AREA>Imunologia Aplicada</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Patologia do Trato Genital Inferior e Colposcopia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Citologia/ Citopatologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rand Randall Martins" LATTES="8062199269259772" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Assistência Farmacêutica</AREA>
+            <AREA>Farmácia Clínica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ricardo Ney Oliveira Cobucci" LATTES="6641915180697564" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biotecnologia em Saúde Humana e Animal</AREA>
+            <AREA>Divulgação Científica</AREA>
+            <AREA>Educação</AREA>
+            <AREA>GINECOLOGIA E OBSTETRÍCIA</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biotecnologia aplicada à Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Biologia molecular aplicada ao estudo, identificação e controle de patógenos</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Micronutrientes, Genômica Nutricional e Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>IASMIN - Inteligência Artificial Aplicada à Saúde Materno-Infantil</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vitaminas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Elementos essenciais e tóxicos e metabolômica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Oncologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de ferramentas moleculares para identificação de patógenos de importância médica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação em Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologias Inteligentes para Saúde Materno-Infantil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Bioprospecção Molecular</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>IA em Biotecnologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Silvana Alves Pereira" LATTES="3640379319601363" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Neonataologia</AREA>
+            <AREA>Neurociencias e Comportamento</AREA>
+            <AREA>Psicologia do Desenvolvimento Humano</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>SAFE - Support and Assessment of the Family and Neonatal Environment</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Baby BRain - Baby Research Group on Brain Activity and Neuromotor Development in Brazil</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Follow-up of Infants Brasil</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>NOSSO BEBÊ</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos sobre avaliação e intervenção fisioterapêutica em recém-nascidos, lactentes, crianças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e Intervenção do desenvolvimento do bebê de risco para atrasos do desenvolvimento</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Repercussões da UTI neonatal na saúde materno-infantil</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação do ambiente familiar de bebês de risco para atrasos do desenvolvimento</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Silvana Maria Quintana" LATTES="6723353746838236" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Doenças Infecto Contagiosas</AREA>
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Tatyana Maria Silva de Souza Rosendo" LATTES="4946747115155324" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Epidemiologia</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <AREA>Vigilância em Saúde</AREA>
+            <GRUPO_DE_PESQUISA>Gestão, Educação, Trabalho e Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>QualiSaúde - Qualidade em Serviços de Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDOS EM AVALIAÇÃO DE POLÍTICAS, PROGRAMAS E SERVIÇOS DE SAÚDE</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde do Trabalhador</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Segurança do Paciente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Melhoria da Qualidade do Cuidado de Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Epidemiologia dos Serviços de Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Tirzah Braz Petta" LATTES="9979644969955564" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Bioquímica</AREA>
+            <AREA>Cancerologia</AREA>
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Mutagenese</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Genética e Oncologia Molecular</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aconselhamento Genético em Oncologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Epidemiologia Genética de doenças raras no RN</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Genômica Funcional para Busca de Biomarcadores em Câncer</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Valter Ferreira de Andrade Neto" LATTES="4863082845974813" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Epidemiologia e perfil Imune</AREA>
+            <AREA>Etnofarmacologia</AREA>
+            <AREA>Farmacologia Bioquímica e Molecular</AREA>
+            <AREA>Fitoterapia</AREA>
+            <AREA>Protozoologia Parasitária Animal</AREA>
+            <AREA>Protozoologia Parasitária Humana</AREA>
+            <GRUPO_DE_PESQUISA>Malária Experimental e Humana</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Antimaláricos bloqueadores da transmissão da malária</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Viviane Souza do Amaral" LATTES="4440806451383783" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências Ambientais</AREA>
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Mutagenese</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Adrielle Kétcia Alves de Lima" LATTES="0821150273417717" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Alícia Carolina da Silva Medeiros" LATTES="6026702363638967" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Imunologia Aplicada</AREA>
+            <AREA>Microbiologia de Alimentos</AREA>
+            <AREA>Tecnologia de Alimentos</AREA>
+            <AREA>Virologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Amanda Samara Davi de Lima" LATTES="6950796935420089" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Amaxsell Thiago Barros de Souza" LATTES="7591335745521609" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Saúde da Mulher</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Carolina Zimmermann Simões" LATTES="9556027921708423" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Antonio Alves de Souza Neto" LATTES="6931496696040100" FORMACAO_ACADEMICA="Especialização - Residência médica" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Antonio Carlos Queiroz de Aquino" LATTES="8332633719249594" FORMACAO_ACADEMICA="Pós-Doutorado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde Baseado em Evidências</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Arlen Cabral Barreto" LATTES="7666233529800106" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Bioquímica</AREA>
+            <AREA>Divulgação Científica</AREA>
+            <AREA>Imunologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Aurora Tatiana Soares da Rocha" LATTES="6548353026681515" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciência da Computação</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Saúde Mental</AREA>
+            <AREA>Enfermagem Pediátrica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ayane Cristine Alves Sarmento" LATTES="6145665770763582" FORMACAO_ACADEMICA="Pós-Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisiopatologia e diagnóstico laboratorial</AREA>
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Lab-SYS Research &amp; Health Innovation</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de Vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Revisões Sistemáticas e Metanálises</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde Baseado em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções genitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Beatriz Maia de paiva" LATTES="8771590623106854" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Análises clínicas</AREA>
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Genética</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bruna Silvino Schunck" LATTES="0178954738634368" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Bioquímica Clínica</AREA>
+            <AREA>Função renal</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Byanca Rodrigues Carneiro" LATTES="3716353180788974" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>NUTRIÇÃO CLÍNICA</AREA>
+            <AREA>NUTRIÇÃO MATERNO-INFANTIL</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Micronutrientes, Genômica Nutricional e Saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Vitaminas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cazuy Alves Uchoa Guerra" LATTES="7606209125142665" FORMACAO_ACADEMICA="Especialização - Residência médica" CATEGORIA="ESTUDANTE">
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cijara Leonice de Freitas" LATTES="3435619523270147" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <AREA>ENFERMAGEM EM NEONATOLOGIA</AREA>
+            <AREA>Enfermagem Obstétrica</AREA>
+            <AREA>Urgência e Emergência</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cleverton da Paz Mangabeira" LATTES="2026117069959162" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Farmácia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Daniel Paiva Marques" LATTES="2823961499295988" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Dary Medeiros Dantas" LATTES="4944213869105745" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Oncologia</AREA>
+            <AREA>Saúde da Mulher</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Débora de Almeida Aloise" LATTES="2325320450062404" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Genética Humana e Médica</AREA>
+            <AREA>Imunologia</AREA>
+            <AREA>Parasitologia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo Interdisciplinar de Estudos em Ciência, Saúde e Sociedade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Délis de Oliveira Ferreira" LATTES="7235544487334911" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Ciências Morfológicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Morfofisiologia Comparada</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eduarda de Medeiros Soares" LATTES="0732701776354220" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>GINECOLOGIA E OBSTETRÍCIA</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Emanuelly Bernardes de Oliveira da Silva" LATTES="1930412213088116" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Câncer cervical</AREA>
+            <AREA>Diabetes mellitus gestacional</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Protozoologia e Helmintologia de Parasitos</AREA>
+            <AREA>Psicomotricidade</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fernanda Catarina Ribeiro" LATTES="0136050679238567" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Dermatologia</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Medicina emergencista</AREA>
+            <AREA>Medicina Intensiva</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Gabriela Lobo Fernandes" LATTES="3934049409394913" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hanna Letticia Oliveira Lima" LATTES="3360605296934802" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Psicologia</AREA>
+            <AREA>Teleinformática</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hégila da Silva Dantas" LATTES="5104103804205296" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Hugo Marcus Aguiar de Melo Rodrigues" LATTES="3003304084014693" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Alergologia e Imunologia Clínica</AREA>
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ivete Matias Xavier" LATTES="8883678155969773" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Cirurgia</AREA>
+            <AREA>GINECOLOGIA E OBSTETRÍCIA</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Janaina Cavalcanti Costa de Oliveira" LATTES="1632205516501533" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Nutrição Clínica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Janice França de Queiroz" LATTES="8910619233366056" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>PSICOLOGIA CLÍNICA</AREA>
+            <AREA>Psicologia do Desenvolvimento Humano</AREA>
+            <AREA>Psicologia do Ensino e da Aprendizagem</AREA>
+            <AREA>Psicologia do Trabalho e Organizacional</AREA>
+            <AREA>Psicologia Social</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jéssica Amanda Moura da Costa" LATTES="5162734097480691" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Bioquímica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jessica Dayanna Landivar Coutinho" LATTES="1171813810179682" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Biomedicina</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Genética e Oncologia Molecular</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aconselhamento Genético em Oncologia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jéssica Escorel Chaves Cavalcanti" LATTES="5959722255358065" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>AVALIAÇÃO DE TECNOLOGIA EM SAÚDE</AREA>
+            <AREA>Farmácia clínica, assistência e atenção farmacêuticas</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Jessika Aline do Nascimento Medeiros" LATTES="4589944969994737" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Farmácia clínica, assistência e atenção farmacêuticas</AREA>
+            <AREA>Fisiopatologia e diagnóstico laboratorial</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ANACLIN - Grupo de pesquisa em Análises Clínicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensaios Biológicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="José Jardson Nascimento de Oliveira" LATTES="0514841002121953" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Molecular e Genética</AREA>
+            <AREA>Bioquímica Geral e Clínica</AREA>
+            <AREA>Imunologia Molecular e Celular</AREA>
+            <AREA>Pesquisa Clínica - Vacinologia e Novos Fármacos</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Joyce Maria Pereira de Oliveira" LATTES="9486415201871493" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDO E PESQUISA EM FISIOTERAPIA NA SAÚDE DA MULHER</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e intervenção fisioterapêutica na saúde da mulher</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Karine Lilian de Souza" LATTES="7076071025565494" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia molecular</AREA>
+            <AREA>Microbiologia</AREA>
+            <AREA>Vigilância Sanitária</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kayonaria Kardenia Alves da Costa Gomes" LATTES="8149742665775407" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kleyton Santos de Medeiros" LATTES="" FORMACAO_ACADEMICA="Pós-Doutorado" CATEGORIA="ESTUDANTE"/>
+         <PESQUISADOR NOME="Larissa Esteves Mesquita" LATTES="9594341717619381" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lisieux de Lourdes Martins Nobrega Pessoa" LATTES="9826490842636070" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Cirurgia Ginecológica</AREA>
+            <AREA>Ginecologia e Obstetrícia</AREA>
+            <AREA>Ginecologia Regenerativa, Funcional e Estética</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lívia Oliveira Bezerra" LATTES="7282155175981140" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e Intervenção em fisioterapia no sistema musculoesquelético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Liziane Virginia Pereira Freire" LATTES="0127033089738102" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Análises Clínicas</AREA>
+            <AREA>Biomedicina</AREA>
+            <AREA>Reprodução Humana</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lorena Thalia Pereira da Silva" LATTES="9132237685139850" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luciana Medeiros Souto" LATTES="4187505566187678" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Nutrição</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luiz José de Sant'anna Neto" LATTES="6125160754566327" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Clínica Médica</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Psiquiatria</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maiara Costa de Oliveira" LATTES="4717784737948859" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e Intervenção em fisioterapia no sistema musculoesquelético</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Clara de Araújo Silva Cavalcanti" LATTES="3828089871329648" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Atuação farmacêutica em oncologia</AREA>
+            <AREA>Drogaria e dispensação de medicamentos</AREA>
+            <AREA>Farmácia</AREA>
+            <AREA>Farmácia clínica, assistência e atenção farmacêuticas</AREA>
+            <AREA>Farmácia Hospitalar</AREA>
+            <AREA>Farmacotécnica e tecnologia farmacêutica</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Clara Eugênia de Oliveira" LATTES="0193521664048263" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <AREA>Materno-infantil</AREA>
+            <AREA>Saúde da Criança</AREA>
+            <AREA>Saúde da mulher</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Clara Lima da Cruz" LATTES="3703990020958584" FORMACAO_ACADEMICA="Especialização - Residência médica" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <AREA>Linguagens de Programação</AREA>
+            <AREA>Neonatologia</AREA>
+            <AREA>Pediatria</AREA>
+            <AREA>Robótica, Mecatrônica e Automação</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Daniele Bezerra Félix" LATTES="7793824724554296" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Bioquímica Clínica</AREA>
+            <AREA>Farmacologia Clínica</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisas em Plantas Medicinais e Condimentares</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Riscos potenciais à saúde humana</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria de Jesus Xavier Aguirre" LATTES="6232317790481544" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Merenda Escolar</AREA>
+            <AREA>Nutrição</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Elionês de Oliveira Araújo" LATTES="5234000182942143" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Nutrição clínica</AREA>
+            <GRUPO_DE_PESQUISA>Bioquímica dos Alimentos e da Nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise nutricional de indivíduos e populações</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Letícia Araújo Silva de Carvalho" LATTES="7108384700730055" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estratégias de investigação multitranslacional em promoção e reabilitação em saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Letícia de Lima Machado" LATTES="2522808081009278" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Biomedicina</AREA>
+            <AREA>covid-19</AREA>
+            <AREA>imunologia e citometria de fluxo</AREA>
+            <AREA>Reprodução Assitida</AREA>
+            <AREA>saúde da mulher</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Doenças do Sistema Linfo-Hematopoético</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Citometria de Fluxo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Matheus Eduardo do Nascimento Barreto" LATTES="7848161814650445" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mayara Cristina Alves da Silva" LATTES="7018028238731419" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Michelly Nóbrega Monteiro" LATTES="3256556588492860" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>´MEDICINA</AREA>
+            <AREA>Medicina</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ensino e Pesquisa em Saúde Baseada em Evidências</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Milena Gomes de Freitas" LATTES="4458712338326776" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paloma Otero Batista" LATTES="0977401163220015" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>BIOMEDICINA</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções genitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Paula Lima Galvão Gomes Serpa" LATTES="8098547765873834" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Bioquímica dos Alimentos e da Nutrição</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise nutricional de indivíduos e populações</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Priscilla Karilline do Vale Bezerra" LATTES="3906494613527089" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Assistência Farmacêutica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Farmacovigilância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção Farmacêutica / Farmácia Clínica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rafaella Rêgo Maia" LATTES="0383647198143302" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia Dermato Funcional</AREA>
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rayanne Samueli Pimenta Morais" LATTES="6359374713756246" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Citologia e Biologia Celular</AREA>
+            <AREA>Imunogenética</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Renata Kelly de Freitas Mano" LATTES="5311274613973152" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Cancerologia</AREA>
+            <AREA>Imunologia Aplicada</AREA>
+            <AREA>Novas Drogas Terapêuticas</AREA>
+            <GRUPO_DE_PESQUISA>Inovação Biotecnológica em Saúde</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento de Vacinas, agentes profiláticos, terapêuticos e testes diagnósticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rita Nykassia Pinheiro Santos" LATTES="1166814024049073" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Avaliação e analises toxicológicas</AREA>
+            <AREA>Farmacognosia</AREA>
+            <AREA>Fisiopatologia e diagnóstico laboratorial</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Roberto Moreno Mendonça" LATTES="8215516673051462" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina Interna - Terapia Intensiva</AREA>
+            <AREA>Radiologia Cardiovascular</AREA>
+            <AREA>Radiologia e Diagnóstico por Imagem</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de Saúde Baseado em Evidências</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Qualidade de Vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ronnier De Oliveira" LATTES="9650579012202860" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Medicina</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Roseany Cavalcante da Silva" LATTES="5446028553918521" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sarah Dantas Viana Medeiros" LATTES="6066482541332518" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Análises Clínicas</AREA>
+            <AREA>Farmácia</AREA>
+            <AREA>Imunologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sávio Ferreira Camargo" LATTES="8248497839284543" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Administração Pública</AREA>
+            <AREA>Ciências da Saúde</AREA>
+            <AREA>Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Exercício Clínico e Envelhecimento (ExCE)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Papel prognóstico, preventivo e terapêutico da aptidão física, (in)atividade física e comportamento sedentário na saúde humana</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Stephany Ann Costa do Rosario" LATTES="5945991062027441" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Bioquímica Clínica</AREA>
+            <AREA>Doenças Metabólicas</AREA>
+            <AREA>Farmácia</AREA>
+            <AREA>Saúde da Mulher</AREA>
+            <AREA>Uroanálise</AREA>
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Doenças Metabólicas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Talles Henrique de Araújo Pontes" LATTES="7003089155947459" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Citologia e Biologia Celular</AREA>
+            <AREA>Diagnóstico por Imagem</AREA>
+            <AREA>Imunologia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Tatiana Camila de Lima Alves da Silva" LATTES="0660600540180796" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Fisioterapia e Terapia Ocupacional</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Pesquisas nas disfunções pélvicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Avaliação e Intervenção em fisioterapia no sistema musculoesquelético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Yulyanna Moreira Rodrigues" LATTES="0803647837723109" FORMACAO_ACADEMICA="Especialização - Residência médica" CATEGORIA="ESTUDANTE">
+            <AREA>Biologia Celular e Molecular</AREA>
+            <AREA>Ecologia e Toxicologia de Microorganismos Aquaticos</AREA>
+            <AREA>ginecologia</AREA>
+            <AREA>Glicídeos</AREA>
+            <AREA>Imunogenética</AREA>
+            <AREA>Obstetrícia</AREA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>ALTO RISCO GRAVÍDICO-PUERPERAL</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fabíola Sephora Batista Pereira Fernandes" LATTES="1632340455590030" FORMACAO_ACADEMICA="Mestrado Profissional" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Kleyton Thiago Costa de Carvalho" LATTES="3970007029924837" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <AREA>Bioanálise</AREA>
+            <AREA>Biologia Molecular</AREA>
+            <AREA>Farmácia</AREA>
+            <AREA>Imunologia</AREA>
+            <GRUPO_DE_PESQUISA>Bioanálises</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>CUIDADOS COM A SAÚDE FEMININA E MATERNO-INFANTIL NA MATERNIDADE JANUÁRIO CICCO.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunopatologia e imunoterapia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>ALTO RISCO GRAVÍDICO-PUERPERAL</NOME>
+            <OBJETIVO>ALTO RISCO GRAVÍDICO-PUERPERAL</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>ASPECTOS BIOMOLECULARES NAS INFECÇÕES E NEOPLASIAS DO TRATO GENITAL INFERIOR E MAMA</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA</NOME>
+            <OBJETIVO>FATORES RELACIONADOS COM A INFERTILIDADE HUMANA: IMUNOLÓGICOS, GENÉTICOS, INFECCIOSOS, HORMONAIS, SEMINAIS, OVARIANOS, UTERINOS E EMBRIONÁRIOS</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</NOME>
+            <OBJETIVO>FERRAMENTAS DE ENSINO EM GINECOLOGIA , OBSTETRÍCIA E PERINATOLOGIA</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>INOVAÇÃO NA SAÚDE DA MULHER E RECÉM-NASCIDO</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de serviços de complementação diagnóstica e terapêutica</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>PERFIL EPIDEMIOLOGICO E GENÉTICO DAS GESTANTES E NEONATOS</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

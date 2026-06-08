@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</NOME>
+      <IDENTIFICACAO_DGP>1250036305286788</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física tem se consolidado como um espaço de produção científica e formação de pesquisadoras, contribuindo para o debate crítico sobre a divisão sexual do trabalho e suas implicações na docência e na formação profissional de mulheres. O grupo atua na pesquisa, ensino e extensão, com publicações acadêmicas, participação em eventos científicos e projetos financiados, incluindo bolsas de iniciação científica. Além disso, promove diálogos com movimentos sociais e colabora com instituições para ampliar a reflexão sobre sexo/gênero, cor/raça e trabalho na Educação e na Educação Física. Seu impacto se reflete na formação de novas pesquisadoras, na orientação de estudantes, ampliando a visibilidade da temática no meio acadêmico e social.</REPERCUSSAO>
+      <AREA>Ciências Humanas; Educação</AREA>
+      <INSTITUICAO>Universidade Estadual de Montes Claros - UNIMONTES</INSTITUICAO>
+      <ANO_FORMACAO>2025</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>39401089</CEP>
+         <LOCALIDADE>Montes Claros</LOCALIDADE>
+         <UF>MG</UF>
+         <BAIRRO>Vila Mauricéia</BAIRRO>
+         <COMPLEMENTO>Prédio 6</COMPLEMENTO>
+         <NUMERO>s/n</NUMERO>
+         <LOGRADOURO>Avenida Rui Braga</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Carla Chagas Ramalho" LATTES="3637197719291948" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Ensino-Aprendizagem</AREA>
+            <AREA>Fundamentos da Educação</AREA>
+            <AREA>Gênero e Sexualidade</AREA>
+            <GRUPO_DE_PESQUISA>Laboratório de Pesquisa em Movimentos Sociais, Desigualdades e Diversidade de Corpo, Raça e Gênero - LADECORGEN</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Movimentos Sociais, Desigualdade e Diversidasde sobre a Raça</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mulheres e o processo educacional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação Física Escolar no contexto da Educação do Campo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Capoeira e o materialismo histórico-dialético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ester Liberato Pereira" LATTES="5813806316468531" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Campo Profissional da Educação Física</AREA>
+            <AREA>Equoterapia</AREA>
+            <AREA>Esporte Adaptado e Paralímpico</AREA>
+            <AREA>Estudos Socioculturais</AREA>
+            <AREA>História do Esporte e da Educação Física</AREA>
+            <AREA>Introdução à Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>NEHME - Núcleo de Estudos em História e Memória do Esporte e da Educação Física</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em História do Esporte e da Educação Física (GEHEF)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos Olímpicos e Paralímpicos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estudos histórico-culturais acerca do esporte adaptado e do esporte paralímpico</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História do Esporte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História da Educação Física</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História do Corpo e das Práticas Corporais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História do Esporte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mulheres e o processo educacional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Paradesporto e Esportes Surdos: estudos histórico-culturais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Renato Sobral Monteiro Junior" LATTES="6708716565086201" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Atividade Física e Saúde</AREA>
+            <AREA>Envelhecimento</AREA>
+            <AREA>Fisiologia do Exercício</AREA>
+            <AREA>Neurociência</AREA>
+            <AREA>Neurofisiologia</AREA>
+            <AREA>Prescrição de exercício para grupos especiais (diabéticos, obesos, cardiopatas)</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos e Pesquisas em Neurociência, Exercício, Saúde e Esporte - GENESEs</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos em Neurociências e Exercício - GENE</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Movimento Humano: Esporte e Saúde (MHES)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Movimento Humano e Esporte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Neurociência do Exercício na Saúde e no Esporte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atividade Física e saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Prevenção e terapias não farmacológicas das doenças</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Movimento Humano e Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Capoeira e o materialismo histórico-dialético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Bianca Borges Meireles" LATTES="7975750303698551" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Mulheres e o processo educacional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Capoeira e o materialismo histórico-dialético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Clara Cristina da Silva Lopes" LATTES="6609028521007060" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Capoeira e o materialismo histórico-dialético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Deyse Mariana Mendes Carvalho" LATTES="5153616776247653" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação Física Escolar no contexto da Educação do Campo</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Helton Gabriel Prates Souza" LATTES="0128885283663082" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Capoeira e o materialismo histórico-dialético</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lucas Rafael Ruas Moreira" LATTES="8306622887348586" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Educação Física</AREA>
+            <GRUPO_DE_PESQUISA>Femme - Grupo de Estudo sobre o Sistema Sexo/Gênero e Cor/Raça na Educação e na Educação Física</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação Física Escolar no contexto da Educação do Campo</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Capoeira e o materialismo histórico-dialético</NOME>
+            <OBJETIVO>Analisar o movimento histórico da capoeira no interior do modo de produção capitalista, suas contradições e suas relações com as formas de resistência do movimento negro, a partir do materialismo histórico-dialético.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Educação Física Escolar no contexto da Educação do Campo</NOME>
+            <OBJETIVO>Analisar como a Educação Física Escolar se relaciona com o projeto crítico da Educação do Campo, em sua perspectiva emancipatória, considerando a realidade concreta das escolas do campo e as possibilidades contra-hegemônicas que essa área pode construir no âmbito das práticas pedagógicas.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Mulheres e o processo educacional</NOME>
+            <OBJETIVO>Explorar as dinâmicas de opressão e resistência enfrentadas pelas mulheres no processo educacional, com foco nas influências da divisão sexual do trabalho, do sistema sexo/gênero e das opressões relacionadas a cor/raça. Esta linha de pesquisa busca compreender como essas opressões impactam a formação acadêmica, a inserção e a permanência das mulheres nas instituições de ensino - 
+seja como docentes ou discentes -, além de identificar as estratégias que elas adotam para superar os desafios.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Pesquisa e desenvolvimento experimental em ciências sociais e humanas | Educação superior</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

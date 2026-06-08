@@ -1,0 +1,323 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>Atenção Integral à Saúde da Criança e Adolescente - AISCA</NOME>
+      <IDENTIFICACAO_DGP>4980433683169392</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>O grupo de Pesquisa AISCA se propõe a integrar os eixos de ensino, pesquisa, extensão e gestão da Universidade Federal de Alagoas/EENF, na perspectiva do incentivo a formação de recursos humanos na área, graduação e pós-graduação em Enfermagem,na área da Saúde da Criança e Adolescente, integrando grupos de pesquisa parceiros, rede dos serviços de saúde de Alagoas, instituições de ensino superior públicas e privadas e comunidade/usuários do SUS. Os pesquisadores envolvidos, docentes, especialistas, mestres e doutores da área e afins desenvolvem atividades de ensino/pesquisa, iniciação científica, extensão, orientação de TCC, dissertações/teses, com enfoque na saúde materno infantil e seus principais agravos, a partir dos diagnósticos/indicadores de saúde e perfil epidemiológico. Incentiva a participação de seus integrantes/colaborares em eventos científicos da área, curso de capacitação/aperfeiçoamento, produção cientifica.</REPERCUSSAO>
+      <AREA>Ciências da Saúde; Enfermagem</AREA>
+      <INSTITUICAO>Universidade Federal de Alagoas - UFAL</INSTITUICAO>
+      <ANO_FORMACAO>2011</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>57072900</CEP>
+         <LOCALIDADE>Maceió</LOCALIDADE>
+         <UF>AL</UF>
+         <BAIRRO>Tabuleiro do Martins</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>s/n</NUMERO>
+         <LOGRADOURO>Universidade Federal de Alagoas</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Ana Carolina Santana Vieira" LATTES="5611818807124868" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Crescimento e Desenvolvimento da Criança e Adolescente</AREA>
+            <AREA>Dor Neonatal</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>Neuroproteção</AREA>
+            <AREA>Saúde da Criança</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Imunofarmacologia</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atividade leishmanicida de produtos naturais ou sintéticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Terapêutica Experimental</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde da Criança, da MUlher e do adolescente</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inflamação e analgesia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Anne Laura Costa Ferreira" LATTES="2604859525162878" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>DOCÊNCIA NO ENSINO SUPERIOR</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>NEONATOLOGIA</AREA>
+            <AREA>SAUDE DA CRIANÇA</AREA>
+            <AREA>URGENCIA E EMERGENCIA</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ingrid Martins Leite Lúcio" LATTES="7001867001343851" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Enfermagem e Neonatologia</AREA>
+            <AREA>Enfermagem e Pediatria</AREA>
+            <AREA>Enfermagem em Saúde Coletiva</AREA>
+            <AREA>Enfermagem em Saúde do Adulto e do Idoso</AREA>
+            <AREA>Ensino Superior</AREA>
+            <AREA>Gestão em Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Enfermagem à Pessoa com Deficiência e sua Família (NEDEF)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Pesquisa na Saúde do Neonato e da Criança - NUPESNEC</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança com Deficiência e sua Família</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Tecnologia de Enfermagem na Promoção de Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ivanise Gomes de Souza Bittencourt" LATTES="4652763314552430" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Educação Inclusiva</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>Enfermagem em Saúde Mental</AREA>
+            <AREA>Gestão de Enfermagem em Serviços de Saúde</AREA>
+            <AREA>Pessoa com Deficiência</AREA>
+            <AREA>Tecnologias Digitais da Informação e Comunicação</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Estudo em Educação e Diversidade (NEEDI)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Saúde Mental, Ética e Educação</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Enfermagem à Pessoa com Deficiência e sua Família (NEDEF)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>TECNOLOGIAS DA INFORMAÇÃO E COMUNICAÇÃO FORMAÇÃO - Tecnologias da Informação e Comunicação na Formação de Professores</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado de Enfermagem à Pessoa com Deficiência e sua Família</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>TIC e a inclusão de pessoas com deficiencia em diferentes contextos educativos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à Pessoa com Deficiência</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança e Adolescente com Deficiência</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Larissa Tenório Andrade Correia" LATTES="7258331662680632" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Neonatologia</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDOS INTEGRADOS PARA A SAÚDE E DESENVOLVIMENTO INFANTIL (GESDI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Regina Célia Sales Santos" LATTES="2829996096554163" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biotecnologia e Tratamento de feridas</AREA>
+            <AREA>Enfermagem e informática</AREA>
+            <AREA>Enfermagem Em Terapia Intensiva Adulta</AREA>
+            <AREA>Pesquisa Clinica</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GPESAM-Grupo de Pesquisa em Saúde Mental, Álcool e outras Drogas Austregésilo Carrano Bueno</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDOS E PESQUISA EM QUALIDADE E SEGURANÇA NA SAÚDE E ENFERMAGEM - GEPEQUASS</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Tecnologias e Intervenções de enfermagem referentes a infecções relacionadas a assistência à saúde e ao período perioperatório.</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Segurança do Paciente e Qualidade na Assistência à Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Inovação e Tecnologia para o Cuidado Seguro em Saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Infecções Relacionadas à Assistência à Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rossana Teotônio de Farias Moreira" LATTES="0930200680636809" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>Microbiologia Médica</AREA>
+            <GRUPO_DE_PESQUISA>CLININFEC - Clínica e doenças infecciosas veterinárias</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Alergoimunologia e microbiologia clínica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Enfermagem à Pessoa com Deficiência e sua Família (NEDEF)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Imunologia Aplicada às Doenças Infecciosas e Parasitárias</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Clínica Médica e Cirúrgica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Micologia Médica e Veterinária</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Erros Inatos da Imunidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Doenças infecciosas em indivíduos imunocomprometidos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança e Adolescente com Deficiência</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado ao Adolescente com Deficiência</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Adrielly Cristina de Lima Raimundo" LATTES="2857173436505419" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Saúde Coletiva</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>ENFERMAGEM NEONATAL</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Adrielly Joyce Dos Santos" LATTES="7125814043349111" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>PROCUIDADO</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Assistência à saúde coletiva e individual na rede intersetorial de atenção à saúde</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Alyssia Daynara Silva Lopes" LATTES="8181581436842377" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciências da Saúde</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>Enfermagem Neonatal</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Clara da Costa Magalhães" LATTES="6217186409421223" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Mirelle dos Santos" LATTES="4500567128526827" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Andréa Cordeiro da Silva" LATTES="0629035458157135" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Anne Karolyne da Silva Alves" LATTES="0633099594086646" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Avanços em Tecnologia, Ensino e Gerenciamento para a Saúde do Adulto, o Centro Cirúrgico (CC) e o Centro de Material Esterilizado (CME).</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Vulnerabilidades e Doenças Negligenciadas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Aprimoramento de Técnicas e Tecnologias em Enfermagem</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Dayane Lourenço Ferreira" LATTES="5814645964537652" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>MENTALIS - Grupo de Pesquisa em Saúde Mental e Vulnerabilidades Sociais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Enfermagem à Pessoa com Deficiência e sua Família (NEDEF)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Análise de dados e métodos quantitativos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança com Deficiência e sua Família</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança e Adolescente com Deficiência</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eurides Vitoria Viana do Nascimento" LATTES="5093387290071732" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudos e Pesquisas na Saúde da Mulher e Vulnerabilidades - GEPSMUV</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem, Vida, Saúde, Cuidado dos Grupos Humanos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lana Beatriz Lima Carnaúba" LATTES="9489365282840789" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luana Camily de Oliveira Costa" LATTES="5249582284577543" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Estudo D. Isabel Macintyre</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Ética e Organização Profissional</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem e Saúde Coletiva</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luana Monyellen de Souza Santos" LATTES="9473648260715729" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maelly Oliveira da Silva" LATTES="2172984710112645" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marcos Euzébio de França Júnior" LATTES="3767176193718288" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Estudos Epidemiológicos em Saúde Coletiva</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Determinantes e condicionantes para o adoecimento físico e mental da população</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria de Lourdes Domingos da Silva Dias Neves" LATTES="9347373048806714" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mariana Lima Dutra" LATTES="9993548188829142" FORMACAO_ACADEMICA="Especialização" CATEGORIA="ESTUDANTE">
+            <AREA>Citologia e Biologia Celular</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <AREA>Enfermagem em Saúde da Mulher</AREA>
+            <AREA>Saúde Materno-Infantil</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Saúde da Mulher e da Gestação</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Efeitos celulares e moleculares da presença de microplásticos na placenta</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Nicole Peixoto da Silva" LATTES="3631345388069603" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <AREA>Enfermagem em Saúde da Criança e do Adolescente</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ranielle Pinto Chagas" LATTES="3838333067402101" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Alergoimunologia e microbiologia clínica</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Desenvolvimento Integral na Primeira Infância</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Doenças infecciosas em indivíduos imunocomprometidos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rayssa Francielly dos Santos Alves" LATTES="8091378212323285" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Núcleo de Enfermagem à Pessoa com Deficiência e sua Família (NEDEF)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado de Enfermagem à Pessoa com Deficiência e sua Família</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado à Criança e Adolescente com Deficiência</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado ao Adolescente com Deficiência</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Rebeka Lourenço Silva" LATTES="6766061449998519" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>GRUPO DE ESTUDOS INTEGRADOS PARA A SAÚDE E DESENVOLVIMENTO INFANTIL (GESDI)</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Enfermagem Baseada em Evidências Neonatal e Pediátrica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Vitória Dias Barros" LATTES="6817789206818360" FORMACAO_ACADEMICA="Graduação" CATEGORIA="ESTUDANTE">
+            <AREA>Enfermagem</AREA>
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cuidado Integral à Saúde do Recém-Nascido e Familia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>O cuidado à criança, adolescente e família no contexto da hospitalização</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Fernanda Ferreira Voss" LATTES="1552745485271105" FORMACAO_ACADEMICA="Graduação" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Mabelly Cavalcante Rego" LATTES="3764636951345796" FORMACAO_ACADEMICA="Especialização" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maria Isabel Fernandes Calheiros" LATTES="4523150189459091" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Leitura, Biblioteca Escolar e Cidadania</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sarah Lins de Barros Moreira" LATTES="7186809488504417" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Vanessa Ferry de Oliveira Soares" LATTES="8589135576802432" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="TECNICO">
+            <GRUPO_DE_PESQUISA>Atenção Integral à Saúde da Criança e Adolescente - AISCA</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Atenção à saúde e cuidado de enfermagem nos diferentes ciclos de vida</NOME>
+            <OBJETIVO>Desevolvimento de pesquisa vinculadas a Pesquisa vinculada as pesquisas realizadas no Programa de Pós-Graduação em Enfermagem (PPGENF/UFAL)</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Cuidado Integral à Saúde do Recém-Nascido e Familia</NOME>
+            <OBJETIVO>Desenvolver trabalhos com ênfase na metas do Ministério da saúde pautadas na promoção da saúde do RN e Família.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de profissionais da área de saúde, exceto médicos e odontólogos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Cuidado à Criança e Adolescente com Deficiência</NOME>
+            <OBJETIVO>Promover investigações e ações relacionadas à Criança e o Adolescente com Deficiência de forma a contribuir para o cuidado, atenção, apoio e participação social nos diferentes contextos educativos e de saúde.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de profissionais da área de saúde, exceto médicos e odontólogos</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Desenvolvimento Integral na Primeira Infância</NOME>
+            <OBJETIVO/>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Enfermagem Baseada em Evidências Neonatal e Pediátrica</NOME>
+            <OBJETIVO>Desenvimento de estudos e pesquisas com enfoque em tecnologias e práticas inovadoras no cuidado em saúde da criança, adolescente e família</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior | Atividades de atenção à saúde humana | Atividades de apoio à gestão de saúde</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>O cuidado à criança, adolescente e família no contexto da hospitalização</NOME>
+            <OBJETIVO>Desenvolvimento de estudos e pesquisa com enfoque no Processo de Cuidar da criança, adolescente e família em situação de adoecimento</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de atenção à saúde humana | Educação superior | Atividades de apoio à gestão de saúde</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

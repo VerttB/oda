@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>____ &gt;&gt; NABGWANA ____ &gt;&gt; SAÚDE COMUNITÁRIA</NOME>
+      <IDENTIFICACAO_DGP>7284243618665936</IDENTIFICACAO_DGP>
+      <REPERCUSSAO/>
+      <AREA>Ciências da Saúde; Saúde Coletiva</AREA>
+      <INSTITUICAO>Universidade de São Paulo - USP</INSTITUICAO>
+      <ANO_FORMACAO>2020</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>01246904</CEP>
+         <LOCALIDADE>São Paulo</LOCALIDADE>
+         <UF>SP</UF>
+         <BAIRRO>Pacaembu</BAIRRO>
+         <COMPLEMENTO>Dpto. Saúde e Sociedade</COMPLEMENTO>
+         <NUMERO>715</NUMERO>
+         <LOGRADOURO>Avenida Doutor Arnaldo 715 Faculdade de Saúde Pública</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Adriana Romano Athila" LATTES="9532527458741912" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Antropologia da Alimentação e Nutrição</AREA>
+            <AREA>Antropologia da Saúde</AREA>
+            <AREA>Documentação de Línguas e Culturas Indígenas</AREA>
+            <AREA>Etnologia dos Índios Sul-Americanos</AREA>
+            <AREA>Gênero e Parentesco</AREA>
+            <AREA>Políticas Públicas e Povos Indígenas</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Ana Gabriela Morim de Lima" LATTES="0154962868376058" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Biodiversidade e Conhecimentos Tradicionais</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <AREA>Teoria Antropológica</AREA>
+            <GRUPO_DE_PESQUISA>SMARTIE Laboratório de Formas Agentivas e Expressivas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arte, Imagem e Pesquisa etnográfica</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="André Luis Campanha Demarchi" LATTES="1913765602645746" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Antropologia</AREA>
+            <AREA>Antropologia Urbana</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <GRUPO_DE_PESQUISA>Memória, Arte e Alteridade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Acervo Povos Indígenas no Tocantins</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa ContraNarrativas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Etnologia Indígena</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>CosmoComunicação, território e sociobiodiversidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Antropologia da Arte</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Redes de Relações Indígenas no Brasil Central.</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Comunicação, Poder e Identidades</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Clarice Cohn" LATTES="1714080901123094" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Antropologia</AREA>
+            <AREA>Antropologia da criança</AREA>
+            <AREA>Antropologia da Educação</AREA>
+            <AREA>Antropologia da saúde</AREA>
+            <AREA>Antropologia Urbana</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Pesquisa em Interculturalidades e Educação: experiências entre os Povos indígenas da Bahia</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>NAIP - Núcleo de Antropologia da Imagem e Performance</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Memória, Biografia e Etnografia</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Educação Escolar Indígena Específica, Diferenciada e Intercultural</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Políticas de educãção escolar indígena</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Diego Madi Dias" LATTES="6656968596656412" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>antropologia da modernidade</AREA>
+            <AREA>etnologia americanista</AREA>
+            <GRUPO_DE_PESQUISA>NUMAS - Núcleo de Estudos dos Marcadores Sociais da Diferença</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estetipop - laboratório de pesquisa antropológica em estética, aprendizagem e cultura pop/popular</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Marcadores sociais da diferença</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estética, aprendizagem e processos criativos em contextos populares e periféricos</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Eduardo Carrara" LATTES="5149801287795909" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Antropologia</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <AREA>Sociologia</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Lenin Alfonso Morales López" LATTES="6526060505118483" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <GRUPO_DE_PESQUISA>Grupo de Acompanhamento e Estudos em Governança Socioambiental</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Saúde e Clima</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Maurício Soares Leite" LATTES="3725373725149471" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="PESQUISADOR">
+            <AREA>Alimentação e nutrição de populações indígenas</AREA>
+            <AREA>Antropologia da Alimentação</AREA>
+            <AREA>Saúde Indígena</AREA>
+            <GRUPO_DE_PESQUISA>Núcleo de estudos de saberes e saúde indígena</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Nutrição e saúde</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Antropologia da Saúde</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Sandra Bomfim de Queiroz" LATTES="6592307119344994" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="PESQUISADOR">
+            <AREA>Ciências da Saúde</AREA>
+            <AREA>Educação Étnico-racial</AREA>
+            <AREA>Saúde Coletiva</AREA>
+            <GRUPO_DE_PESQUISA>Ensino, Saúde e Sociedade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Mediações: Terapia Ocupacional, Fundamentos e Atuação Social</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Abordagens interdisciplinares e transdisciplinares</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Cotidiano, Cultura e Sociedade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Questão social, políticas sociais e Terapia Ocupacional.</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cyril Menta" LATTES="0139139363802912" FORMACAO_ACADEMICA="REPUBLICA FRANCESA" CATEGORIA="ESTRANGEIRO">
+            <AREA>Antropologia</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <AREA>Teoria Antropológica</AREA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Luisa Elvira Belaunde Olschewski" LATTES="2452943059817065" FORMACAO_ACADEMICA="REPUBLICA DO PERU" CATEGORIA="ESTRANGEIRO">
+            <AREA>Antropologia</AREA>
+            <AREA>Etnologia Indígena</AREA>
+            <GRUPO_DE_PESQUISA>Laboratório de Antropologia Simétrica</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Estudos da Amazônia Indígena</GRUPO_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>ECONOMIAS ALIMENTARES EM TRANSFORMAÇÃO NA AMÉRICA INDÍGENA</NOME>
+            <OBJETIVO>Esta linha de pesquisa tem por objetivo promover a cooperação interinstitucional voltada ao trabalho acadêmico transdisciplinar de pesquisa e extensão universitária entre os campos científicos da Etnologia Ameríndia; Alimentação e Nutrição; e Saúde Coletiva.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Alojamento e alimentação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>TEORIA SOCIAL E ESTUDOS CLÁSSICOS EM ETNOLOGIA</NOME>
+            <OBJETIVO>GRUPO DE LEITURA E DISCUSSÃO ONLINE</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Educação superior</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>
