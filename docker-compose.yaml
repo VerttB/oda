@@ -22,15 +22,26 @@ services:
       - "6379:6379"
 
   hop:
-    image: apache/hop:2.10
-    container_name: oda_hop
+    image: apache/hop:2.18.0
+    container_name: oda_hop_prod
+    profiles: ["prod"] # Este container só subirá se você explicitamente pedir (--profile prod)
     environment:
-      HOP_PROJECT_NAME: ${HOP_PROJECT_NAME}
-      HOP_PROJECT_FOLDER: ${HOP_PROJECT_FOLDER}
-      HOP_ENVIRONMENT_NAME: ${HOP_ENVIRONMENT_NAME}
-      HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS: ${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}
-      HOP_RUN_CONFIG: ${HOP_RUN_CONFIG}
-      HOP_LOG_LEVEL: ${HOP_LOG_LEVEL}
+      HOP_PROJECT_NAME: ${HOP_PROJECT_NAME:-oda}
+      HOP_PROJECT_FOLDER: ${HOP_PROJECT_FOLDER:-/files/apps/data_pipeline/hop}
+    volumes:
+      - .:/files
+    depends_on:
+      - postgres
+      - redis
+
+  hop-web:
+    image: apache/hop-web:2.18.0
+    container_name: oda_hop_web
+    ports:
+      - "8080:8080"
+    environment:
+      HOP_PROJECT_NAME: ${HOP_PROJECT_NAME:-oda}
+      HOP_PROJECT_FOLDER: ${HOP_PROJECT_FOLDER:-/files/apps/data_pipeline/hop}
     volumes:
       - .:/files
     depends_on:
