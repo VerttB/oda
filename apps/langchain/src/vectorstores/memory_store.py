@@ -30,7 +30,12 @@ class VectorStoreManager:
             self._initialize_from_xmls()
 
     def _initialize_from_xmls(self):
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+        # Alterado para ler diretamente da pasta de dados do data_pipeline
+        # Caminho relativo: oda/apps/langchain/src/vectorstores/../../data_pipeline/data
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+        data_dir = os.path.join(base_dir, "data_pipeline", "data")
+        
+        print(f"Buscando XMLs em: {data_dir}")
         documents = load_all_xmls(data_dir)
         
         if documents:
@@ -45,10 +50,12 @@ class VectorStoreManager:
                 if i + batch_size < len(documents):
                     time.sleep(3)
             
+            # Salva no disco para a próxima vez
             self.vector_store.save_local(self.index_path)
             print(f"Índice salvo em {self.index_path}")
         else:
-            initial_docs = [Document(page_content="Sistema Open DGP pronto.", metadata={"source": "manual"})]
+            print("Nenhum documento XML encontrado no data_pipeline. Inicializando vazio.")
+            initial_docs = [Document(page_content="Sistema Open DGP pronto. Aguardando dados do pipeline.", metadata={"source": "manual"})]
             self.vector_store = FAISS.from_documents(initial_docs, self.embeddings)
 
     def get_retriever(self, k=2):
