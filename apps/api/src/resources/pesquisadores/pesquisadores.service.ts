@@ -4,8 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
 import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
-import { Prisma } from '../../../generated/prisma';
-
+import { PesquisadorWhereInput } from '../../../generated/prisma/models';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list';
 
 @Injectable()
@@ -14,7 +13,7 @@ export class PesquisadoresService {
     private readonly prismaService: PrismaService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-  ) {}
+  ) { }
 
   async create(createPesquisadoreDto: CreatePesquisadoreDto) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
@@ -24,7 +23,7 @@ export class PesquisadoresService {
   }
 
   async findAll(query?: FindAllPesquisadoresDto) {
-    const where: Prisma.PesquisadorWhereInput = {};
+    const where: PesquisadorWhereInput = {};
 
     if (query) {
       if (query.nome) {
@@ -39,7 +38,7 @@ export class PesquisadoresService {
     }
 
     // Bypass cache if filters or pagination are present (except default pagination)
-    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || (query && (query.page! > 1 || query.size !== 30))) {
       return this.prismaService.pesquisador.findMany({
         where,
         skip: query?.skip,
@@ -64,19 +63,21 @@ export class PesquisadoresService {
   }
 
   findOne(id: string) {
-    return this.prismaService.pesquisador.findUnique({ where: { id: id}, include: {
-      producoes: true,
-      membrosGrupo: {
-        include: {
-          grupoPesquisa: true
+    return this.prismaService.pesquisador.findUnique({
+      where: { id: id }, include: {
+        producoes: true,
+        membrosGrupo: {
+          include: {
+            grupoPesquisa: true
+          }
         }
       }
-    }})
+    })
   }
 
   async update(id: string, updatePesquisadoreDto: UpdatePesquisadoreDto) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
-    return await this.prismaService.pesquisador.update({where: {id: id}, data: updatePesquisadoreDto},)
+    return await this.prismaService.pesquisador.update({ where: { id: id }, data: updatePesquisadoreDto },)
   }
 
   async remove(id: string) {

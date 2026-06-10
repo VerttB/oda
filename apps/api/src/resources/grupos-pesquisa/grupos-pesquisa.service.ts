@@ -4,8 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
-import { Prisma } from '../../../generated/prisma';
-
+import { GrupoPesquisaWhereInput } from '../../../generated/prisma/models';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list';
 
 @Injectable()
@@ -14,15 +13,15 @@ export class GruposPesquisaService {
     private readonly prismaService: PrismaService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-  ) {}
+  ) { }
 
   async create(createGruposPesquisa: CreateGruposPesquisaDto) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return await this.prismaService.grupoPesquisa.create({data: createGruposPesquisa})
+    return await this.prismaService.grupoPesquisa.create({ data: createGruposPesquisa })
   }
 
   async findAll(query?: FindAllGruposPesquisaDto) {
-    const where: Prisma.GrupoPesquisaWhereInput = {};
+    const where: GrupoPesquisaWhereInput = {};
 
     if (query) {
       if (query.situacao) {
@@ -70,48 +69,54 @@ export class GruposPesquisaService {
   }
 
   async findOne(id: string) {
-    return await this.prismaService.grupoPesquisa.findUniqueOrThrow({ where: { id }, include: {
-      areaConhecimento: true,
-      linhasPesquisa: true,
-      instituicao: true,
-      membros: true,
-    }})
+    return await this.prismaService.grupoPesquisa.findUniqueOrThrow({
+      where: { id }, include: {
+        areaConhecimento: true,
+        linhasPesquisa: true,
+        instituicao: true,
+        membros: true,
+      }
+    })
   }
 
   async update(id: string, updateGruposPesquisa: UpdateGruposPesquisaDto) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return await this.prismaService.grupoPesquisa.update({ where: { id }, data: updateGruposPesquisa})
+    return await this.prismaService.grupoPesquisa.update({ where: { id }, data: updateGruposPesquisa })
   }
 
 
-  async addMember(grupoId: string, pesquisadorId: string ){
+  async addMember(grupoId: string, pesquisadorId: string) {
 
-    return this.prismaService.membroGrupo.create({ data: {
-      grupoId, pesquisadorId,
-    }})
+    return this.prismaService.membroGrupo.create({
+      data: {
+        grupoId, pesquisadorId,
+      }
+    })
   }
-  async addManyMembers(grupoId: string, pesquisadoresId: string[]){
-    return await this.prismaService.membroGrupo.createMany({ data: pesquisadoresId.map((id) => ({
-      grupoId,
-      pesquisadorId: id
-    }))})
-  }
-
-
-  async removeMember(grupoId: string, pesquisadorId: string){
-      return await this.prismaService.membroGrupo.deleteMany({ where: { grupoId, pesquisadorId}})
-    
+  async addManyMembers(grupoId: string, pesquisadoresId: string[]) {
+    return await this.prismaService.membroGrupo.createMany({
+      data: pesquisadoresId.map((id) => ({
+        grupoId,
+        pesquisadorId: id
+      }))
+    })
   }
 
-  async removeManyMembers(grupoId: string, pesquisadoresId: string){}
-  
+
+  async removeMember(grupoId: string, pesquisadorId: string) {
+    return await this.prismaService.membroGrupo.deleteMany({ where: { grupoId, pesquisadorId } })
+
+  }
+
+  async removeManyMembers(grupoId: string, pesquisadoresId: string) { }
+
   async remove(id: string) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return await this.prismaService.$transaction( async (tx) => {
-      await tx.membroGrupo.deleteMany({ where: { grupoId: id}})
-      await tx.logColetaGrupo.deleteMany({ where: { grupoId: id}})
-      return await tx.grupoPesquisa.delete({ where: { id }})
-      
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.membroGrupo.deleteMany({ where: { grupoId: id } })
+      await tx.logColetaGrupo.deleteMany({ where: { grupoId: id } })
+      return await tx.grupoPesquisa.delete({ where: { id } })
+
     })
   }
 }
