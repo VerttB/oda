@@ -3,6 +3,8 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
 import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
+import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
+import { Prisma } from '../../../generated/prisma';
 
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list';
 
@@ -69,11 +71,37 @@ export class LinhaPesquisaService {
     return linhaPesquisa;
   }
 
-  async findAll() {
+  async findAll(query?: FindAllLinhaPesquisaDto) {
+    const where: Prisma.LinhaPesquisaWhereInput = {};
+
+    if (query) {
+      if (query.grupo) {
+        where.grupoId = query.grupo;
+      }
+      if (query.nome) {
+        where.titulo = { contains: query.nome, mode: 'insensitive' };
+      }
+    }
+
+    // Bypass cache if filters or pagination are present (except default pagination)
+    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+      return await this.prismaService.linhaPesquisa.findMany({
+        where,
+        skip: query?.skip,
+        take: query?.take,
+        omit: {
+          criadoEm: true,
+          atualizadoEm: true,
+        },
+      });
+    }
+
     return await this.cacheManager.wrap(
       LINHAS_PESQUISA_LIST_CACHE_KEY,
       async () =>
         await this.prismaService.linhaPesquisa.findMany({
+          skip: query?.skip,
+          take: query?.take,
           omit: {
             criadoEm: true,
             atualizadoEm: true,

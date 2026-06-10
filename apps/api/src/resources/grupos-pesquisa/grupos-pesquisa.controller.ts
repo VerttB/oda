@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { GruposPesquisaService } from './grupos-pesquisa.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
+import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 
 @Controller('grupos-pesquisa')
 export class GruposPesquisaController {
@@ -22,8 +24,8 @@ export class GruposPesquisaController {
   }
 
   @Get()
-  findAll() {
-    return this.gruposPesquisaService.findAll();
+  findAll(@Query() query: FindAllGruposPesquisaDto) {
+    return this.gruposPesquisaService.findAll(query);
   }
 
   @Get(':id')

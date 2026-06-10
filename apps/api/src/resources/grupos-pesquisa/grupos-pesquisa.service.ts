@@ -3,6 +3,8 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
+import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
+import { Prisma } from '../../../generated/prisma';
 
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list';
 
@@ -19,9 +21,46 @@ export class GruposPesquisaService {
     return await this.prismaService.grupoPesquisa.create({data: createGruposPesquisa})
   }
 
-  async findAll() {
+  async findAll(query?: FindAllGruposPesquisaDto) {
+    const where: Prisma.GrupoPesquisaWhereInput = {};
+
+    if (query) {
+      if (query.situacao) {
+        where.situacao = query.situacao;
+      }
+      if (query.nome) {
+        where.nome = { contains: query.nome, mode: 'insensitive' };
+      }
+      if (query.anoFormacao) {
+        where.anoFormacao = query.anoFormacao;
+      }
+      if (query.instituicao) {
+        where.instituicaoId = query.instituicao;
+      }
+      if (query.uf) {
+        where.instituicao = {
+          ufId: query.uf,
+        };
+      }
+    }
+
+    // Bypass cache if filters or pagination are present (except default pagination)
+    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+      return this.prismaService.grupoPesquisa.findMany({
+        where,
+        skip: query?.skip,
+        take: query?.take,
+        omit: {
+          criadoEm: true,
+          atualizadoEm: true,
+        },
+      });
+    }
+
     return this.cacheManager.wrap(GRUPOS_PESQUISA_LIST_CACHE_KEY, () =>
       this.prismaService.grupoPesquisa.findMany({
+        skip: query?.skip,
+        take: query?.take,
         omit: {
           criadoEm: true,
           atualizadoEm: true,

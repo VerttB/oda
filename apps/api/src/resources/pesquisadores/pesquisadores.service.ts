@@ -3,6 +3,8 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
+import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
+import { Prisma } from '../../../generated/prisma';
 
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list';
 
@@ -16,12 +18,43 @@ export class PesquisadoresService {
 
   async create(createPesquisadoreDto: CreatePesquisadoreDto) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
-    return await this.prismaService.pesquisador.create({data: createPesquisadoreDto})
+    return await this.prismaService.pesquisador.create({
+      data: createPesquisadoreDto,
+    });
   }
 
-  async findAll() {
+  async findAll(query?: FindAllPesquisadoresDto) {
+    const where: Prisma.PesquisadorWhereInput = {};
+
+    if (query) {
+      if (query.nome) {
+        where.nome = { contains: query.nome, mode: 'insensitive' };
+      }
+      if (query.formacaoAcademica) {
+        where.formacaoAcademica = query.formacaoAcademica;
+      }
+      if (query.tipo) {
+        where.tipo = query.tipo;
+      }
+    }
+
+    // Bypass cache if filters or pagination are present (except default pagination)
+    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+      return this.prismaService.pesquisador.findMany({
+        where,
+        skip: query?.skip,
+        take: query?.take,
+        omit: {
+          criadoEm: true,
+          atualizadoEm: true,
+        },
+      });
+    }
+
     return this.cacheManager.wrap(PESQUISADORES_LIST_CACHE_KEY, () =>
       this.prismaService.pesquisador.findMany({
+        skip: query?.skip,
+        take: query?.take,
         omit: {
           criadoEm: true,
           atualizadoEm: true,

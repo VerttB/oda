@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { PesquisadoresService } from './pesquisadores.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
+import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 
 @Controller('pesquisadores')
 export class PesquisadoresController {
@@ -22,8 +24,8 @@ export class PesquisadoresController {
   }
 
   @Get()
-  findAll() {
-    return this.pesquisadoresService.findAll();
+  findAll(@Query() query: FindAllPesquisadoresDto) {
+    return this.pesquisadoresService.findAll(query);
   }
 
   @Get(':id')
