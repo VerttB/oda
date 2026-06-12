@@ -4,14 +4,14 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-  moduleFormat = "cjs"
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  moduleFormat    = "cjs"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
   extensions = [pgvector(map: "vector")]
 }
 
@@ -362,4 +362,40 @@ model LogColetaGrupo {
   atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
 
   @@map("log_coleta_grupo")
+}
+
+// Tabelas de Staging para o Apache Hop
+model StgGrupoPesquisa {
+  id               Int     @id @default(autoincrement())
+  dgp_id           String?
+  nome             String?
+  ano_formacao     Int?
+  area_predominante String?
+  repercussao      String?
+  instituicao_nome String?
+  uf               String?
+
+  @@map("stg_grupo_pesquisa")
+}
+
+model StgPesquisador {
+  id        Int     @id @default(autoincrement())
+  dgp_id    String?
+  nome      String?
+  lattes_id String?
+  formacao  String?
+  categoria String?
+
+  @@map("stg_pesquisador")
+}
+
+model StgLinhaPesquisa {
+  id               Int     @id @default(autoincrement())
+  dgp_id           String?
+  titulo           String?
+  objetivo         String?
+  setor_aplicacao  String?
+  palavra_chave    String?
+
+  @@map("stg_linha_pesquisa")
 }
