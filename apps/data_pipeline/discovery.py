@@ -1,30 +1,13 @@
-import os
 import time
-import logging
 import re
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 from database import init_db, salvar_id_banco
+from config import sonda_logger as logger
 
-DATA_DIR = "./data"
-DISCOVERY_LOG = f"{DATA_DIR}/discovery.log"
 
-logger = logging.getLogger("DiscoverySonda")
-logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
-
-stdout_handler = logging.StreamHandler()
-stdout_handler.setLevel(logging.DEBUG)
-stdout_handler.setFormatter(formatter)
-logger.addHandler(stdout_handler)
-
-file_handler = logging.FileHandler(DISCOVERY_LOG, encoding="utf-8")
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
 
 def run_discovery():
     init_db()
-    # Utilizando apenas as vogais ja conseguimos puxar praticamente todo portifolio de pesquisas.
     chaves_varredura = ["a", "e", "i", "o", "u"]
 
     logger.info("---------------------------------------------------------")
