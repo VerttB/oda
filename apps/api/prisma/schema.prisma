@@ -62,7 +62,7 @@ model GrupoPesquisa {
   instituicaoId      String            @map("instituicao_id")
   membros            MembroGrupo[]
   linhasPesquisa     LinhaPesquisa[]
-  logsColetaGrupo    LogColetaGrupo[]
+  logColetaGrupo LogColetaGrupo[] 
   criadoEm           DateTime          @default(now()) @map("criado_em")
   atualizadoEm       DateTime          @updatedAt @map("atualizado_em")
 
@@ -362,6 +362,15 @@ model LogColetaGrupo {
   atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
 
   @@map("log_coleta_grupo")
+}
+
+model FilaExtracao {
+  termoBusca        String   @id @map("termo_busca")
+  status            String   @default("PENDENTE")
+  tentativas        Int      @default(0)
+  ultimaAtualizacao DateTime @default(now()) @updatedAt @map("ultima_atualizacao")
+
+  @@map("fila_extracao")
 }
 
 // Tabelas de Staging para o Apache Hop

@@ -3,7 +3,7 @@ import time
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
-from src.core.ingestion import load_all_xmls
+from src.core.ingestion import load_all_jsons
 
 class VectorStoreManager:
     def __init__(self):
@@ -19,6 +19,7 @@ class VectorStoreManager:
         self.index_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "vector_db")
         self.vector_store = None
         
+        # Tenta carregar o índice local antes de processar JSONs
         if os.path.exists(self.index_path):
             print("Carregando Vector Store persistente do disco (Economia de tokens!)...")
             self.vector_store = FAISS.load_local(
@@ -27,16 +28,14 @@ class VectorStoreManager:
                 allow_dangerous_deserialization=True
             )
         else:
-            self._initialize_from_xmls()
+            self._initialize_from_jsons()
 
-    def _initialize_from_xmls(self):
-        # Alterado para ler diretamente da pasta de dados do data_pipeline
-        # Caminho relativo: oda/apps/langchain/src/vectorstores/../../data_pipeline/data
+    def _initialize_from_jsons(self):
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
         data_dir = os.path.join(base_dir, "data_pipeline", "data")
         
-        print(f"Buscando XMLs em: {data_dir}")
-        documents = load_all_xmls(data_dir)
+        print(f"Buscando JSONs em: {data_dir}")
+        documents = load_all_jsons(data_dir)
         
         if documents:
             print(f"Vetorizando {len(documents)} documentos (Primeira execução)...")
@@ -54,7 +53,7 @@ class VectorStoreManager:
             self.vector_store.save_local(self.index_path)
             print(f"Índice salvo em {self.index_path}")
         else:
-            print("Nenhum documento XML encontrado no data_pipeline. Inicializando vazio.")
+            print("Nenhum documento JSON encontrado no data_pipeline. Inicializando vazio.")
             initial_docs = [Document(page_content="Sistema Open DGP pronto. Aguardando dados do pipeline.", metadata={"source": "manual"})]
             self.vector_store = FAISS.from_documents(initial_docs, self.embeddings)
 

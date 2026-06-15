@@ -2,4 +2,6 @@ playwright
 beautifulsoup4
 lxml
 python-dotenv
-# Outras dependências que podem ser necessárias conforme o código
+psycopg2-binary
+prisma
+requests

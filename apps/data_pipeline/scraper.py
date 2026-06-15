@@ -2,10 +2,7 @@ import os
 import time
 import signal
 import sys
-import sqlite3  
 import argparse
-import xml.etree.ElementTree as ET
-import xml.dom.minidom
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 import psycopg2
 from extractors.dgp_extractor import DGPextractor

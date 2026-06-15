@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <pipeline>
   <info>
     <name>enrich_research_data</name>
-    <description/>
-    <extended_description/>
-    <pipeline_version/>
+    <description />
+    <extended_description />
+    <pipeline_version />
     <pipeline_type>Normal</pipeline_type>
   </info>
   <order>
@@ -48,7 +48,7 @@
   <transform>
     <name>Ler Staging Grupos</name>
     <type>TableInput</type>
-    <connection>oda_db</connection>
+    <copies>1</copies><connection>oda_db</connection>
     <sql>SELECT dgp_id, instituicao_nome as instituicao, uf, area_predominante as area FROM stg_grupo_pesquisa</sql>
     <GUI>
       <xloc>100</xloc>
@@ -59,7 +59,7 @@
   <transform>
     <name>Tratar UF</name>
     <type>StringOperations</type>
-    <fields>
+    <copies>1</copies><fields>
       <field>
         <in_stream_name>uf</in_stream_name>
         <trim_type>both</trim_type>
@@ -75,7 +75,7 @@
   <transform>
     <name>Inserir/Atualizar UF</name>
     <type>InsertUpdate</type>
-    <connection>oda_db</connection>
+    <copies>1</copies><connection>oda_db</connection>
     <commit>100</commit>
     <lookup>
       <table>uf</table>
@@ -104,7 +104,7 @@
   <transform>
     <name>Tratar Instituicao</name>
     <type>StringOperations</type>
-    <fields>
+    <copies>1</copies><fields>
       <field>
         <in_stream_name>instituicao</in_stream_name>
         <trim_type>both</trim_type>
@@ -120,7 +120,7 @@
   <transform>
     <name>Lookup UF ID</name>
     <type>DBLookup</type>
-    <connection>oda_db</connection>
+    <copies>1</copies><connection>oda_db</connection>
     <lookup>
       <table>uf</table>
       <key>
@@ -131,7 +131,7 @@
       <value>
         <name>id</name>
         <rename>uf_id</rename>
-        <default/>
+        <default />
         <type>String</type>
       </value>
     </lookup>
@@ -144,7 +144,7 @@
   <transform>
     <name>Inserir/Atualizar Instituicao</name>
     <type>InsertUpdate</type>
-    <connection>oda_db</connection>
+    <copies>1</copies><connection>oda_db</connection>
     <commit>100</commit>
     <lookup>
       <table>instituicao</table>
@@ -178,7 +178,7 @@
   <transform>
     <name>Tratar Area</name>
     <type>StringOperations</type>
-    <fields>
+    <copies>1</copies><fields>
       <field>
         <in_stream_name>area</in_stream_name>
         <trim_type>both</trim_type>
@@ -193,7 +193,7 @@
   <transform>
     <name>Inserir/Atualizar Area Conhecimento</name>
     <type>InsertUpdate</type>
-    <connection>oda_db</connection>
+    <copies>1</copies><connection>oda_db</connection>
     <commit>100</commit>
     <lookup>
       <table>area_conhecimento</table>

@@ -29,10 +29,11 @@ services:
       HOP_PROJECT_NAME: ${HOP_PROJECT_NAME:-oda}
       HOP_PROJECT_FOLDER: ${HOP_PROJECT_FOLDER:-/files/apps/data_pipeline/hop}
       OPEN_ALEX_KEY: ${OPEN_ALEX_KEY}
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - .:/files
     depends_on:
       - postgres
-      
+
 volumes:
   postgres_data:

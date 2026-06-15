@@ -68,6 +68,11 @@ Responsabilidades esperadas:
 - Registro de qualidade dos dados.
 - Carga no banco transacional e/ou nas tabelas de indexação semântica.
 
+#### Gerenciamento de Variáveis no Apache Hop
+Para conciliar o desenvolvimento local (Hop Desktop) com a execução em produção (Docker), o projeto adota uma estratégia híbrida:
+- **Variáveis de Ambiente (Segredos):** Senhas de banco de dados e tokens de API devem ser injetados localmente via "Edit Environment Variables" no Hop Desktop ou através do `.env` do Docker Compose. **Nunca versionados.**
+- **Hop Environments (Configurações):** O arquivo `config/dev-env.json` é utilizado para versionar URLs base (ex: OpenAlex) e padrões estruturais não-sensíveis (`DB_HOST` como `localhost` para dev).
+
 ### 3.2 API REST e Microservices
 
 A API REST terá inicialmente um frontend único como consumidor principal. A arquitetura deve, no entanto, preservar princípios de interoperabilidade para que o backend possa futuramente atender portais ou aplicações externas.
@@ -607,3 +612,16 @@ A avaliação inicial das respostas do LangChain será manual, verificando:
 - Se os grupos retornados são compatíveis com a pergunta.
 - Se a resposta está apoiada em dados efetivamente coletados.
 - Se a recuperação usa corretamente áreas e linhas de pesquisa.
+
+## 9. Diretrizes Futuras
+
+Para a evolução do MVP rumo a um sistema de produção escalável, foram definidas as seguintes diretrizes:
+
+### 9.1 Mensageria e Processamento Assíncrono (Redis)
+- **Desativação da API de IA:** O serviço LangChain deixará de ser uma API FastAPI síncrona e passará a operar como um **Worker (Consumidor)**.
+- **Fila de Vetorização:** O Scraper e o ETL atuarão como **Produtores**, enviando mensagens para filas no Redis (ex: `fila_embeddings`) contendo metadados e IDs dos documentos recém-processados.
+- **Vantagens:** Maior resiliência contra falhas em APIs externas (Gemini/OpenAlex), controle refinado de *Rate Limit* e desacoplamento total entre a coleta de dados e a geração de inteligência semântica.
+
+### 9.2 Persistência Vetorial
+- Migração do Vector Store em memória (FAISS) para o **PostgreSQL com extensão pgvector**.
+- Isso permitirá consultas híbridas (SQL + Vetor) e persistência de longo prazo dos embeddings sem necessidade de re-vetorização total em cada inicialização.
