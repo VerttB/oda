@@ -3,7 +3,9 @@ import psycopg2
 from psycopg2.extras import DictCursor
 from dotenv import load_dotenv
 
-load_dotenv("../../.env")
+# Sobe 3 níveis (common -> data_pipeline -> apps -> root)
+env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), '.env')
+load_dotenv(env_path)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

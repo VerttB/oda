@@ -1,8 +1,14 @@
 import time
 import re
+import os
+import sys
+
+# Adiciona a raiz do data_pipeline ao path para resolver os imports de common
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
-from database import init_db, salvar_id_banco
-from config import sonda_logger as logger
+from common.database import init_db, salvar_id_banco
+from common.config import sonda_logger as logger
 
 
 

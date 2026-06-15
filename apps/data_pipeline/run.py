@@ -9,8 +9,8 @@ def orquestrar_pipeline_paralelo():
     print("======================================================\n")
     
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    discovery_script = os.path.join(base_dir, "discovery.py")
-    scraper_script = os.path.join(base_dir, "scraper.py")
+    discovery_script = os.path.join(base_dir, "scrapers", "discovery.py")
+    scraper_script = os.path.join(base_dir, "scrapers", "dgp.py")
 
     print("---------------------------------------------------------")
     print("⚙️ INICIANDO MOTOR 1: A Sonda (Descoberta Paginada de IDs)")
@@ -23,7 +23,7 @@ def orquestrar_pipeline_paralelo():
     time.sleep(15)
 
     print("\n---------------------------------------------------------")
-    print("⚙️ INICIANDO MOTOR 2: O Aspirador XML (Metadados Estruturais)")
+    print("⚙️ INICIANDO MOTOR 2: O Aspirador JSON (Metadados Estruturais)")
     print("---------------------------------------------------------")
     
     # Liga e anexa a maquina aspiradora em cima da Tabela 

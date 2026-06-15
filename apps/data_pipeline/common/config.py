@@ -2,11 +2,13 @@ import logging
 import sys
 
 DATA_DIR = "./data"
-ISSUES_LOG = f"{DATA_DIR}/issues.log"
-APP_LOG = f"{DATA_DIR}/scraper.log"
-DB_FILE = f"{DATA_DIR}/scraper_estado.db"
-DISCOVERY_LOG = f"{DATA_DIR}/discovery.log"
-
+DGP_DATA_DIR = f"{DATA_DIR}/dgp"
+LATTES_DATA_DIR = f"{DATA_DIR}/lattes"
+ISSUES_LOG = f"{DATA_DIR}/dgp/issues.log"
+APP_LOG = f"{DATA_DIR}/dgp/scraper.log"
+DB_FILE = f"{DATA_DIR}/dgp/scraper_estado.db"
+DISCOVERY_LOG = f"{DATA_DIR}/dgp/discovery.log"
+IMAGE_DIR = f"{DATA_DIR}/images"
 
 # Configurações do ETL (Apache Hop)
 # Se estiver rodando fora do Docker, use localhost:8080. 

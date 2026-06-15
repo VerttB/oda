@@ -6,8 +6,7 @@ def trigger_hop_workflow():
     """
     Aciona a execução do workflow principal no Apache Hop Server via API REST.
     """
-    # Endpoint para rodar workflow no Hop Server
-    # Ex: http://localhost:8080/hop/workflow/run?workflow=/caminho/para/workflow.hwf&run_config=local
+   
     url = f"{HOP_SERVER_URL}/workflow/run"
     
     params = {

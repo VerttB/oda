@@ -3,13 +3,18 @@ import time
 import signal
 import sys
 import argparse
+
+# Adiciona a raiz do data_pipeline ao path para resolver os imports de common e extractors
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 import psycopg2
-from extractors.dgp_extractor import DGPextractor
-from database import init_db, obter_proximo_pendente, atualizar_status, criar_conexao
-from config import dgp_logger as logger, DATA_DIR, ETL_BATCH_SIZE
-from hop_trigger import trigger_hop_workflow
+from extractors.dgp import DGPextractor
+from common.database import init_db, obter_proximo_pendente, atualizar_status, criar_conexao
+from common.config import dgp_logger as logger, DGP_DATA_DIR, ETL_BATCH_SIZE
+from common.hop_trigger import trigger_hop_workflow
 import json
+
 _stop_requested = False
 dgp_extractor = DGPextractor(logger)
 def sigint_handler(sig, frame):
@@ -22,7 +27,7 @@ signal.signal(signal.SIGINT, sigint_handler)
 def salvar_json(dados, identificador_nome):
     identificador_valido = dados.get("id_dgp", identificador_nome)
 
-    caminho = os.path.join(DATA_DIR, f"{identificador_valido}.json")
+    caminho = os.path.join(DGP_DATA_DIR, f"{identificador_valido}.json")
     caminho_tmp = f"{caminho}.tmp"
     formatted_json = json.dumps(dados, indent=4, ensure_ascii=False)
     with open(caminho_tmp, "w", encoding="utf-8") as f: f.write(formatted_json)
