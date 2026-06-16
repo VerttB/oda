@@ -1,39 +1,20 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import docker.errors
 import requests
 from requests.auth import HTTPBasicAuth
 from config import HOP_SERVER_URL, HOP_USER, HOP_PASS, HOP_WORKFLOW_PATH, dgp_logger as logger
-
+import docker
 def trigger_hop_workflow():
-    """
-    Aciona a execução do workflow principal no Apache Hop Server via API REST.
-    """
+    client = docker.from_env()
    
-    url = f"{HOP_SERVER_URL}/workflow/run"
-    
-    params = {
-        "workflow": HOP_WORKFLOW_PATH,
-        "run_config": "local"
-    }
-    
-    logger.info(f"Triggering Apache Hop ETL: {HOP_WORKFLOW_PATH}")
-    
     try:
-        response = requests.get(
-            url, 
-            params=params, 
-            auth=HTTPBasicAuth(HOP_USER, HOP_PASS),
-            timeout=10
-        )
+        hop_container = client.containers.get("hop")
+        hop_container.start()
+        logger.info("Iniciando container apache hop")
         
-        if response.status_code == 200:
-            logger.info("✅ Sinal de execução enviado ao Apache Hop com sucesso.")
-            return True
-        else:
-            logger.error(f"❌ Falha ao acionar Hop ETL. Status: {response.status_code}, Resposta: {response.text}")
-            return False
-            
-    except Exception as e:
-        logger.error(f"❌ Erro de conexão ao tentar acionar o Apache Hop: {e}")
-        return False
+        
+        
+    except docker.errors.NotFound:
+        print("Container não encontrado")
