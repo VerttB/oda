@@ -1,0 +1,9 @@
+{
+	"id": "XhuLKHmF1EsvpbE",
+	"json": "{\"id\":\"XhuLKHmF1EsvpbE\",\"url\":\"http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf\",\"loadedUrl\":\"http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf\",\"uniqueKey\":\"SEARCH-a-2\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":1,\"errorMessages\":[\"page.waitForSelector: Timeout 45000ms exceeded.\\nCall log:\\n\\u001b[2m  - waiting for locator('.itemConsulta') to be visible\\u001b[22m\\n\\n    at PlaywrightCrawler.requestHandler (D:\\\\Uneb\\\\2026.1\\\\TCC1\\\\Projeto\\\\oda\\\\apps\\\\data-pipeline-ts\\\\src\\\\scrapers\\\\dgpScraper.ts:61:28)\\n    at async wrap (D:\\\\Uneb\\\\2026.1\\\\TCC1\\\\Projeto\\\\oda\\\\node_modules\\\\.pnpm\\\\@apify+timeout@0.3.5\\\\node_modules\\\\@apify\\\\src\\\\index.ts:78:27)\"],\"headers\":{},\"userData\":{\"label\":\"SEARCH\",\"chave\":\"a\",\"pagina\":2,\"__crawlee\":{\"state\":5}}}",
+	"method": "GET",
+	"orderNo": 1781664581798,
+	"retryCount": 1,
+	"uniqueKey": "SEARCH-a-2",
+	"url": "http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf"
+}

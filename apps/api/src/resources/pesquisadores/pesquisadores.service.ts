@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
 import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
 import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
-import { PesquisadorWhereInput } from '../../../generated/prisma/models';
+import { Prisma } from '@oda/database';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class PesquisadoresService {
   }
 
   async findAll(query?: FindAllPesquisadoresDto) {
-    const where: PesquisadorWhereInput = {};
+    const where: Prisma.PesquisadorWhereInput = {};
 
     if (query) {
       if (query.nome) {

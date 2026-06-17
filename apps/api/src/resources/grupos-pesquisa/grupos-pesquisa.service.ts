@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
 import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
-import { GrupoPesquisaWhereInput } from '../../../generated/prisma/models';
+import { Prisma } from '@oda/database';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class GruposPesquisaService {
   }
 
   async findAll(query?: FindAllGruposPesquisaDto) {
-    const where: GrupoPesquisaWhereInput = {};
+    const where: Prisma.GrupoPesquisaWhereInput = {};
 
     if (query) {
       if (query.situacao) {

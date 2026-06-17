@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { PalavraChave } from "../../../../generated/prisma/client";
+import { PalavraChave } from "@oda/database";
 
 export class CreatePalavraChaveDto{
     @IsString()

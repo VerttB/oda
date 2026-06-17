@@ -1,0 +1,9 @@
+{
+	"id": "nv5pdqfRIUM5SVL",
+	"json": "{\"id\":\"nv5pdqfRIUM5SVL\",\"url\":\"http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf\",\"loadedUrl\":\"http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf\",\"uniqueKey\":\"SEARCH-u-1\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"label\":\"SEARCH\",\"chave\":\"u\",\"pagina\":1,\"__crawlee\":{\"state\":4}},\"handledAt\":\"2026-06-17T02:48:47.225Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "SEARCH-u-1",
+	"url": "http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf"
+}

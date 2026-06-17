@@ -1,0 +1,23 @@
+{
+  "name": "@oda/data-pipeline",
+  "version": "1.0.0",
+  "description": "Data Pipeline microservice rewritten in TypeScript.",
+  "private": true,
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@crawlee/playwright": "^3.17.0",
+    "@oda/database": "workspace:*",
+    "cheerio": "^1.0.0",
+    "crawlee": "^3.17.0",
+    "dotenv": "^16.4.7",
+    "playwright": "^1.50.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

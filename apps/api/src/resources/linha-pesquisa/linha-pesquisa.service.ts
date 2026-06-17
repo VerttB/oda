@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
 import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
-import { LinhaPesquisaWhereInput } from '../../../generated/prisma/models';
+import { Prisma } from '@oda/database';
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list';
 
 @Injectable()
@@ -72,7 +72,7 @@ export class LinhaPesquisaService {
 
   async findAll(query?: FindAllLinhaPesquisaDto) {
 
-    const where: LinhaPesquisaWhereInput = {};
+    const where: Prisma.LinhaPesquisaWhereInput = {};
 
     if (query) {
       if (query.grupo) {

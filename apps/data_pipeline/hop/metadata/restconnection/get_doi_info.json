@@ -1,9 +1,0 @@
-{
-  "auth_header_value": "",
-  "auth_header_name": "",
-  "virtualPath": "",
-  "auth_header_prefix": "",
-  "base_url": "https://citation.doi.org/",
-  "name": "get_doi_info",
-  "test_url": "https://citation.doi.org/"
-}

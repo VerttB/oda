@@ -3,4 +3,4 @@ export {
   Situacao,
   TipoPesquisador,
   TipoProducao,
-} from '../../generated/prisma/enums';
+} from '@oda/database';

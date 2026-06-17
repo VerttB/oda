@@ -1,0 +1,20 @@
+{
+  "name": "@oda/etl",
+  "version": "1.0.0",
+  "description": "ETL service for processing scraped JSON data and persisting to PostgreSQL.",
+  "private": true,
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "dotenv": "^16.4.7",
+    "@oda/database": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "@types/node": "^24.0.0",
+    "ts-node": "^10.9.2"
+  }
+}

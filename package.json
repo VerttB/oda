@@ -1,0 +1,26 @@
+{
+  "name": "oda",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "pnpm install",
+    "build:all": "pnpm -r run build",
+    "generate": "pnpm -F @oda/database run prisma:generate",
+    "dev:api": "pnpm -F @oda/api start:dev",
+    "dev:langchain": "pnpm -F @oda/langchain dev",
+    "run:pipeline": "pnpm -F @oda/data-pipeline start",
+    "pipeline:dgp": "pnpm -F @oda/data-pipeline start dgp",
+    "pipeline:lattes": "pnpm -F @oda/data-pipeline start lattes",
+    "etl": "pnpm -F @oda/etl start"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "prisma": "^7.8.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1"
+  }
+}
