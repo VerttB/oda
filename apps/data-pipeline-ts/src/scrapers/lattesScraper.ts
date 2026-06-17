@@ -1,15 +1,13 @@
-import { PlaywrightCrawler, log } from 'crawlee';
+import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import { LattesParser } from '../parsers/lattesParser';
 import { saveJson, LATTES_DATA_DIR, IMAGE_DIR } from '../common/config';
 import * as fs from 'fs';
 import * as path from 'path';
+import pLimit from 'p-limit'; // Precisará adicionar p-limit ou usar implementação custom
 
 const parser = new LattesParser();
 const LATTES_URL = "https://buscatextual.cnpq.br/buscatextual/busca.do";
 
-/**
- * Baixa a imagem do pesquisador conforme o original em Python.
- */
 async function downloadImage(url: string, name: string) {
     if (!url) return;
     try {
@@ -17,99 +15,114 @@ async function downloadImage(url: string, name: string) {
         if (response.ok) {
             const buffer = Buffer.from(await response.arrayBuffer());
             const fileName = `${name.replace(/\s+/g, '_')}.webp`;
+            if (!fs.existsSync(IMAGE_DIR)) fs.mkdirSync(IMAGE_DIR, { recursive: true });
             fs.writeFileSync(path.join(IMAGE_DIR, fileName), buffer);
-            log.info(`[Lattes] Imagem salva: ${fileName}`);
+            console.log(`[Lattes] Imagem salva: ${fileName}`);
         }
     } catch (e) {
-        log.warning(`[Lattes] Não foi possível baixar imagem de ${name}: ${e.message}`);
+        console.warn(`[Lattes] Não foi possível baixar imagem de ${name}: ${e.message}`);
     }
 }
 
-/**
- * Scraper Lattes usando Crawlee para gestão de fila e anti-bloqueio.
- */
-export async function runLattesScraper(names: string[] = []) {
-    if (!names.length) {
-        log.warning("[Lattes] Nenhum nome fornecido. Usando lista padrão de teste.");
-        names = ["Eduardo Manuel de Freitas Jorge", "Altemir José Mossi", "Alfredo Castamann", "Eduardo Arthur Izycki", "Erika Stockler"];
+async function searchAndExtractLattes(context: BrowserContext, page: Page, name: string) {
+    try {
+        console.log(`🔍 [Lattes] Buscando: ${name}`);
+        await page.goto(LATTES_URL, { timeout: 60000 });
+        
+        await page.fill("input[id='textoBusca']", name);
+        await page.click("input[id='buscarDemais']");
+        await page.click("a[id='botaoBuscaFiltros']");
+        
+        await page.waitForSelector(".resultado", { timeout: 30000 });
+        
+        const firstResult = page.locator(".resultado b a").first();
+        if (await firstResult.count() === 0) {
+            console.warn(`⚠️ [Lattes] Nenhum resultado para ${name}`);
+            return null;
+        }
+            
+        await firstResult.click();
+        await page.waitForSelector(".moldal-interna", { state: "visible", timeout: 15000 });
+
+        const frame = page.frameLocator("iframe.iframe-modal");
+        
+        const [curriculoPage] = await Promise.all([
+            context.waitForEvent('page', { timeout: 30000 }),
+            frame.locator("a:has-text('Currículo Lattes')").evaluate(el => (el as HTMLElement).click())
+        ]);
+
+        await curriculoPage.waitForLoadState("domcontentloaded");
+        const html = await curriculoPage.content();
+
+        const basicInfo = parser.extractBasicInfo(html);
+        const projects = parser.extractProjectDetails(html);
+        const events = parser.extractEventDetails(html);
+        
+        // Imagem
+        const photoUrl = parser.extractPhotoUrl(html);
+        if (photoUrl) {
+            await downloadImage(photoUrl, name);
+        }
+        
+        const fullData = { ...basicInfo, ...projects, ...events };
+        const fileName = name.replace(/\s+/g, '_');
+        saveJson(fullData, LATTES_DATA_DIR, fileName);
+        
+        await curriculoPage.close();
+        console.log(`✅ [Lattes] Sucesso: ${name}`);
+        return fullData;
+
+    } catch (e) {
+        console.error(`❌ [Lattes] Erro ao processar ${name}: ${e.message}`);
+        return null;
     }
+}
 
-    log.info(`🚀 Iniciando Scraper Lattes para ${names.length} pesquisadores com Crawlee`);
-
-    const crawler = new PlaywrightCrawler({
-        headless: true,
-        maxConcurrency: 1, // Um por vez para o Lattes (muito sensível)
-        requestHandlerTimeoutSecs: 300,
-        // useFingerprints: true,
-
-        async requestHandler({ page, request }) {
-            const { name, label } = request.userData;
-            const browserContext = page.context()
-
-            if (label === 'SEARCH') {
-                log.info(`🔍 [Lattes] Buscando: ${name}`);
-                await page.goto(LATTES_URL, { waitUntil: 'domcontentloaded' });
-                
-                await page.fill("input[id='textoBusca']", name);
-                await page.click("input[id='buscarDemais']");
-                await page.click("a[id='botaoBuscaFiltros']");
-                
-                try {
-                    await page.waitForSelector(".resultado", { timeout: 30000 });
-                } catch (e) {
-                    log.warning(`⚠️ [Lattes] Pesquisador não encontrado: ${name}`);
-                    return;
-                }
-
-                const firstResult = page.locator(".resultado b a").first();
-                if (await firstResult.count() === 0) return;
-
-                await firstResult.click();
-                await page.waitForSelector(".moldal-interna", { state: "visible", timeout: 15000 });
-
-                const frame = page.frameLocator("iframe.iframe-modal");
-                const cvLink = frame.locator("a:has-text('Currículo Lattes')");
-
-                const [popup] = await Promise.all([
-                    browserContext.waitForEvent('page', { timeout: 30000 }),
-                    cvLink.evaluate(el => (el as HTMLElement).click()),
-                ]);
-
-                await popup.waitForLoadState("domcontentloaded");
-                const html = await popup.content();
-
-                // Parsing
-                const basicInfo = parser.extractBasicInfo(html);
-                const projects = parser.extractProjectDetails(html);
-                const events = parser.extractEventDetails(html);
-                
-                // Imagem
-                const photoUrl = parser.extractPhotoUrl(html);
-                if (photoUrl) {
-                    await downloadImage(photoUrl, name);
-                }
-
-                const fullData = {
-                    nome: name,
-                    ...basicInfo,
-                    ...projects,
-                    ...events
-                };
-
-                const fileName = name.replace(/\s+/g, '_').toLowerCase();
-                saveJson(fullData, LATTES_DATA_DIR, fileName);
-                log.info(`✅ [Lattes] Sucesso: ${name}`);
-                
-                await popup.close();
-            }
-        },
+async function worker(name: string, browser: Browser) {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    
+    // Otimização: Bloquear imagens e assets pesados
+    await page.route("**/*", (route) => {
+        if (["image", "stylesheet", "font"].includes(route.request().resourceType())) {
+            route.abort();
+        } else {
+            route.continue();
+        }
     });
 
-    await crawler.addRequests(names.map(name => ({
-        url: LATTES_URL,
-        userData: { label: 'SEARCH', name },
-        uniqueKey: `LATTES-${name}`
-    })));
-
-    await crawler.run();
+    try {
+        await searchAndExtractLattes(context, page, name);
+    } finally {
+        await context.close();
+    }
 }
+
+export async function runLattesScraper(names: string[] = []) {
+    if (!names || names.length === 0) {
+        names = [
+            "Eduardo Manuel de Freitas Jorge", 
+            "Altemir José Mossi", 
+            "Alfredo Castamann",
+            "Eduardo Arthur Izycki",
+            "Erika Stockler",
+            "Alexandre Hugo Cezar Barros",
+            "Ana Luiza du Bocage Neta",
+            "Anália Carmem Silva de Almeida"
+        ];
+    }
+
+    console.log(`🚀 Scraper Lattes iniciado para ${names.length} pesquisadores (Async + 2 Workers)`);
+    
+    const browser = await chromium.launch({ headless: true });
+    
+    // Concurrency limit mimicking Python's asyncio.Semaphore(2)
+    const limit = pLimit(2);
+    
+    const tasks = names.map(name => limit(() => worker(name, browser)));
+    await Promise.all(tasks);
+    
+    await browser.close();
+    console.log('🏁 Scraper Lattes finalizado.');
+}
+

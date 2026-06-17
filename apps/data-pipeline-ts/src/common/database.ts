@@ -1,4 +1,4 @@
-import { prismaConfig, PrismaClient } from '@oda/database';
+import { PrismaClient, prismaConfig } from "@oda/database"
 
 export const prisma = new PrismaClient(prismaConfig)
 

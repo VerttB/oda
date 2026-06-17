@@ -18,7 +18,9 @@ const randomSleep = (min: number, max: number) => sleep(Math.floor(Math.random()
  */
 async function scrapeGroupPage(context: BrowserContext, groupPage: Page) {
     const url = groupPage.url();
+    console.log(`[Scraper] Processando grupo na URL: ${url}`);
     const match = url.match(/espelhogrupo\/(\d{16})/);
+    console.log(match)
     const dgpId = match ? match[1] : null;
 
     if (!dgpId) {
@@ -98,7 +100,7 @@ export async function runDgpScraper() {
 
     log.info('🚀 Iniciando Scraper Unificado DGP (Clique Direto -> Extração)');
 
-    const browser = await chromium.launch({ headless: true });
+    const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext({
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
     });

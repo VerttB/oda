@@ -2,8 +2,8 @@ import * as chokidar from 'chokidar';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
-import { prisma } from '@oda/database';
-
+import { prismaConfig, PrismaClient } from '@oda/database';
+const prisma = new PrismaClient(prismaConfig);
 dotenv.config({ path: '../../.env' });
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
