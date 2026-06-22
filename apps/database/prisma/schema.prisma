@@ -72,6 +72,7 @@ model GrupoPesquisa {
 
 model LinhaPesquisa {
   id               String                        @id @default(uuid())
+  dgpId            String?                       @unique @map("dgp_id")
   titulo           String
   objetivo         String?
   grupo            GrupoPesquisa                 @relation(fields: [grupoId], references: [id])
