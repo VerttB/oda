@@ -5,11 +5,14 @@
   "scripts": {
     "install:all": "pnpm install",
     "build:all": "pnpm -r run build",
-    "generate": "pnpm -F @oda/database run prisma:generate",
+    "prisma:generate": "pnpm -F @oda/database run prisma:generate",
+    "prisma:studio": "pnpm -F @oda/database run prisma:studio",
+    "prisma:push": "pnpm -F @oda/database run prisma:push",
     "dev:api": "pnpm -F @oda/api start:dev",
     "dev:langchain": "pnpm -F @oda/langchain dev",
     "run:pipeline": "pnpm -F @oda/data-pipeline start",
     "pipeline:dgp": "pnpm -F @oda/data-pipeline start dgp",
+    "pipeline:discovery": "pnpm -F @oda/data-pipeline start discovery",
     "pipeline:lattes": "pnpm -F @oda/data-pipeline start lattes",
     "etl": "pnpm -F @oda/etl start"
   },
@@ -21,6 +24,7 @@
     "prisma": "^7.8.0"
   },
   "dependencies": {
+    "bullmq": "^5.79.0",
     "dotenv": "^16.6.1"
   }
 }
