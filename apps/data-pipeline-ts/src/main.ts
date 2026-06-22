@@ -1,32 +1,43 @@
 import * as dotenv from "dotenv";
+import path from "node:path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
+
 import { runDgpScraper } from "./scrapers/dgpScraper";
+import { runDgpDiscovery } from "./scrapers/dgpDiscovery";
 import { runLattesScraper } from "./scrapers/lattesScraper";
 
-dotenv.config({ path: "../../.env" });
 
 async function main() {
   const args = process.argv.slice(2);
-  const command = args[0] || "dgp";
+  const command = args[0] || "dgp-extract";
 
   console.log(`[Pipeline] Iniciando Data Pipeline TS com comando: ${command}`);
 
   try {
     switch (command) {
+      case "discovery":
+      case "dgp-discovery":
+        const keys = args.length > 1 ? args.slice(1) : ["a", "e", "i", "o", "u"];
+        await runDgpDiscovery(keys);
+        break;
+
       case "dgp":
-      case "dgp-scraper":
+      case "dgp-extract":
         await runDgpScraper();
         break;
       
       case "lattes":
       case "lattes-scraper":
-        // Passa os nomes fornecidos via CLI ou deixa vazio para o default
         const names = args.slice(1);
         await runLattesScraper(names);
         break;
       
       default:
         console.error(`[Pipeline] Erro: Comando desconhecido '${command}'`);
-        console.log("Comandos disponíveis: dgp, lattes");
+        console.log("Comandos disponíveis: dgp-discovery, dgp-extract, lattes");
         process.exit(1);
     }
   } catch (error) {
