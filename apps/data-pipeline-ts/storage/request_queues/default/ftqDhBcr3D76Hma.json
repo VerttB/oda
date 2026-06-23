@@ -1,9 +1,0 @@
-{
-	"id": "ftqDhBcr3D76Hma",
-	"json": "{\"id\":\"ftqDhBcr3D76Hma\",\"url\":\"http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf\",\"uniqueKey\":\"DGP-SEARCH-u\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"chave\":\"u\"}}",
-	"method": "GET",
-	"orderNo": 1781732415932,
-	"retryCount": 0,
-	"uniqueKey": "DGP-SEARCH-u",
-	"url": "http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf"
-}

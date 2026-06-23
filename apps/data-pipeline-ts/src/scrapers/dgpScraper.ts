@@ -1,26 +1,42 @@
 import { PlaywrightCrawler, log } from 'crawlee';
 import { BrowserContext, Page } from 'playwright';
 import { DGPExtractor } from '../parsers/dgpParser';
-import { db } from '../common/database';
+import { db, prisma } from '../common/database';
 import { saveJson, DGP_DATA_DIR } from '../common/config';
-
+import { runLattesScraper } from './lattesScraper';
+import { FilaExtracaoStatus, LogColetaStatus } from '@oda/database';
+import { sleep, randomSleep } from '../common/utils';
 const extractor = new DGPExtractor();
-const SEARCH_URL = 'http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const randomSleep = (min: number, max: number) => sleep(Math.floor(Math.random() * (max - min + 1) + min));
+async function closePopup(popups: Set<Page>, page: Page) {
+    for (const p of popups) {
+        if (p !== page) {
+            try {
+                await p.close();
+            } catch (e) {}
+        }
+    }
+    popups.clear();
+}
 
-async function scrapeGroupPage(context: BrowserContext, groupPage: Page) {
+async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaId: string) {
     const url = groupPage.url();
-    const match = url.match(/espelhogrupo\/(\d{16})/);
-    const dgpId = match ? match[1] : null;
-
+    const match = url.split("/");
+    const dgpId = match[match.length-1];
+    
     if (!dgpId) {
         log.warning(`[Scraper] Não foi possível encontrar ID na URL: ${url}`);
         return;
     }
 
-    log.info(`📄 Extraindo dados do Grupo ID: ${dgpId}`);
+    log.info(`[Scraper] Extraindo dados detalhados do Grupo ID: ${dgpId}`);
+
+    const activePopups = new Set<Page>();
+    const popupListener = (p: Page) => {
+        activePopups.add(p);
+        p.once('close', () => activePopups.delete(p));
+    };
+    groupPage.on('popup', popupListener);
 
     try {
         await groupPage.waitForSelector('#recursosHumanos', { timeout: 30000 });
@@ -36,14 +52,19 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page) {
             });
 
             await randomSleep(500, 1500);
-            const [popup] = await Promise.all([
-                context.waitForEvent('page', { timeout: 20000 }),
-                btn.click(),
-            ]);
-            await popup.waitForLoadState('domcontentloaded');
-            const html = await popup.content();
-            rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
-            await popup.close();
+            try {
+                const [openedPopup] = await Promise.all([
+                    groupPage.waitForEvent('popup', { timeout: 20000 }),
+                    btn.click(),
+                ]);
+                await openedPopup.waitForLoadState('domcontentloaded');
+                await sleep(500);
+                const html = await openedPopup.content();
+                rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
+                await openedPopup.close();
+            } finally {
+                await closePopup(activePopups, groupPage)
+            }
         }
 
         const linesPopups: string[] = [];
@@ -51,13 +72,18 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page) {
         
         for (const btn of linesButtons) {
             await randomSleep(500, 1500);
-            const [popup] = await Promise.all([
-                context.waitForEvent('page', { timeout: 20000 }),
-                btn.click(),
-            ]);
-            await popup.waitForLoadState('domcontentloaded');
-            linesPopups.push(await popup.content());
-            await popup.close();
+            try {
+                const [openedPopup] = await Promise.all([
+                    groupPage.waitForEvent('popup', { timeout: 20000 }),
+                    btn.click(),
+                ]);
+                await openedPopup.waitForLoadState('domcontentloaded');
+                await sleep(500);
+                linesPopups.push(await openedPopup.content());
+                await openedPopup.close();
+            } finally {
+                await closePopup(activePopups, groupPage)
+            }
         }
 
         const mainHtml = await groupPage.content();
@@ -65,27 +91,96 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page) {
         
         data.id_dgp = dgpId;
         saveJson(data, DGP_DATA_DIR, dgpId);
-        log.info(`✅ Grupo ${dgpId} salvo com sucesso.`);
-        
-        await db.queueDiscovery(dgpId);
-        await db.updateQueueStatus(dgpId, 'CONCLUIDO');
+        log.info(`Grupo ${dgpId} extraído e salvo com sucesso.`);
 
-    } catch (err) {
+        // Filtra pesquisadores e líderes do grupo
+      
+        const pesquisadoresParaScrapear: string[] = [];
+
+        // Insere na fila ou verifica se já está pendente
+        for (const p of data.membros) {
+            const row = await prisma.filaExtracaoPesquisador.findUnique({
+                where: { lattesId: p.lattes }
+            });
+
+            if (!row) {
+                await prisma.filaExtracaoPesquisador.create({
+                    data: { lattesId: p.lattes, nome: p.nome, status: FilaExtracaoStatus.PENDENTE }
+                });
+                pesquisadoresParaScrapear.push(p.nome);
+            } else if (row.status === FilaExtracaoStatus.PENDENTE) {
+                pesquisadoresParaScrapear.push(p.nome);
+            } else {
+                log.info(`[Scraper] Pesquisador ${p.nome} (ID: ${p.lattes}) já foi processado ou está em andamento. Pulando...`);
+            }
+        }
+        
+        await db.logGrupo(coletaId, dgpId, LogColetaStatus.SUCESSO);
+
+        if (pesquisadoresParaScrapear.length > 0) {
+            log.info(`[Scraper] Iniciando extração Lattes para ${pesquisadoresParaScrapear.length} pesquisadores pendentes do grupo ${dgpId}...`);
+            await runLattesScraper(pesquisadoresParaScrapear);
+        }
+
+    } catch (err: any) {
         log.error(`❌ Erro ao extrair grupo ${dgpId}: ${err.message}`);
-        await db.queueDiscovery(dgpId);
-        await db.updateQueueStatus(dgpId, 'ERRO');
+        await db.logGrupo(coletaId, dgpId, LogColetaStatus.ERRO);
+    } finally {
+        groupPage.off('popup', popupListener);
+        for (const p of activePopups) {
+            if (p !== groupPage) {
+                try {
+                    await p.close();
+                } catch (e) {}
+            }
+        }
+        activePopups.clear();
     }
 }
 
-export async function runDgpScraper() {
-    log.info('🚀 Iniciando Scraper Unificado DGP com Crawlee (Clique Direto -> Extração)');
+export async function runDgpScraper(dgpIds: string[] = []) {
+    log.info('[Scraper] Iniciando Extração DGP a partir da fila (FilaExtracao)');
 
-    const chavesVarredura = ["a", "e", "i", "o", "u"];
+    let pendingGroups: { dgpId: string; nome: string }[] = [];
+
+    if (dgpIds && dgpIds.length > 0) {
+        // Se IDs específicos foram fornecidos, garante que existem na fila e os seleciona
+        for (const id of dgpIds) {
+            const row = await prisma.filaExtracaoGrupo.upsert({
+                where: { dgpId: id },
+                update: {},
+                create: {
+                    dgpId: id,
+                    nome: `Grupo_${id}`,
+                    area: 'N/A',
+                    instituicao: 'N/A',
+                    status: FilaExtracaoStatus.PENDENTE
+                }
+            });
+            pendingGroups.push({ dgpId: row.dgpId, nome: row.nome });
+        }
+    } else {
+        const pending = await prisma.filaExtracaoGrupo.findMany({
+            where: { status: FilaExtracaoStatus.PENDENTE },
+            take: 50 
+        });
+        pendingGroups = pending.map(p => ({ dgpId: p.dgpId, nome: p.nome }));
+    }
+
+    if (pendingGroups.length === 0) {
+        log.info('[Scraper] Nenhum grupo pendente na fila.');
+        return;
+    }
+
+    log.info(`[Scraper] Encontrados ${pendingGroups.length} grupos pendentes. Iniciando extração...`);
+
+    const coleta = await db.startScrapperColeta('DGP');
+    const coletaId = coleta.id;
 
     const crawler = new PlaywrightCrawler({
         headless: true,
-        maxConcurrency: 1, // Mantido 1 pois navega pelas páginas de busca
-        requestHandlerTimeoutSecs: 1800, // Timeout alto para páginas com muitos grupos
+        maxConcurrency: 1, 
+        requestHandlerTimeoutSecs: 3600, 
 
         preNavigationHooks: [
             async ({ page }) => {
@@ -100,75 +195,32 @@ export async function runDgpScraper() {
 
         async requestHandler({ page, request }) {
             const context = page.context();
-            const chave = request.userData.chave;
+            const dgpId = request.url.split("/").pop();
+            const { coletaId } = request.userData;
             
-            log.info(`\n🔍 Buscando chave: '${chave.toUpperCase()}'`);
+            if (!dgpId) return;
+
+            log.info(`\n🔍 Processando Grupo: ${dgpId}`);
             
             try {
-                await page.goto(SEARCH_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-                await randomSleep(2000, 3000);
-
-                await page.fill("input[id='idFormConsultaParametrizada:idTextoFiltro']", chave);
-                await page.click("button[id='idFormConsultaParametrizada:idPesquisar']");
-                
-                let hasNextPage = true;
-                let pageNum = 1;
-
-                while (hasNextPage) {
-                    log.info(`📍 Processando página ${pageNum} da chave '${chave}'`);
-                    await page.waitForSelector(".itemConsulta", { timeout: 30000 });
-
-                    const links = page.locator("a[id*='idBtnVisualizarEspelhoGrupo']");
-                    const count = await links.count();
-                    log.info(`Encontrados ${count} grupos na página.`);
-
-                    for (let i = 0; i < count; i++) {
-                        const btn = links.nth(i);
-                        try {
-                            log.info(`[${i+1}/${count}] Abrindo espelho do grupo...`);
-                            await randomSleep(2000, 4000); 
-
-                            const [groupPage] = await Promise.all([
-                                context.waitForEvent('page', { timeout: 30000 }),
-                                btn.click(),
-                            ]);
-
-                            await groupPage.waitForLoadState('domcontentloaded');
-                            await scrapeGroupPage(context, groupPage);
-                            await groupPage.close();
-                        } catch (err) {
-                            log.error(`Falha ao abrir grupo: ${err.message}`);
-                        }
-                    }
-
-                    const proximoBtn = page.locator(".ui-paginator-next");
-                    if (await proximoBtn.count() > 0) {
-                        const isDisabled = await proximoBtn.evaluate((el) => el.classList.contains('ui-state-disabled'));
-                        if (!isDisabled) {
-                            log.info('Avançando para a próxima página de resultados...');
-                            await randomSleep(3000, 5000);
-                            await proximoBtn.click();
-                            await page.waitForResponse(res => res.url().includes('consulta_parametrizada.jsf'));
-                            pageNum++;
-                        } else {
-                            hasNextPage = false;
-                        }
-                    } else {
-                        hasNextPage = false;
-                    }
-                }
-            } catch (error) {
-                log.error(`Erro na busca da chave '${chave}': ${error.message}`);
+                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PROCESSANDO);
+                await scrapeGroupPage(context, page, coletaId);
+            } catch (error: any) {
+                log.error(`[Scraper] Erro crítico no handler para o grupo '${dgpId}': ${error.message}`);
+                await db.logGrupo(coletaId, dgpId, LogColetaStatus.ERRO);
             }
         },
     });
 
-    await crawler.addRequests(chavesVarredura.map(chave => ({
-        url: SEARCH_URL,
-        userData: { chave },
-        uniqueKey: `DGP-SEARCH-${chave}`
-    })));
+    const requests = pendingGroups.map(group => ({
+        url: `http://dgp.cnpq.br/dgp/espelhogrupo/${group.dgpId}`,
+        userData: { coletaId },
+        uniqueKey: `DGP-EXTRACT-${group.dgpId}`
+    }));
 
+    await crawler.addRequests(requests);
     await crawler.run();
-    log.info('🏁 Scraper DGP finalizado via Crawlee.');
+    
+    await db.finishGrupoColeta(coletaId, pendingGroups.length);
+    log.info('[Scraper] Extração DGP finalizada.');
 }

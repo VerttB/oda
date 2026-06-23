@@ -8,11 +8,12 @@ hide circle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-entity "uf" as Uf {
+entity "estado" as Estado {
   * id : uuid
   --
   * sigla : string <<unique>>
   * nome : string
+  * regiao : string
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -22,7 +23,7 @@ entity "instituicao" as Instituicao {
   --
   * nome : string
   * sigla : string
-  uf_id : uuid
+  estado_id : uuid
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -269,7 +270,7 @@ enum "acao_coleta" as AcaoColeta {
   erro
 }
 
-Uf ||--o{ Instituicao
+Estado ||--o{ Instituicao
 Instituicao ||--o{ GrupoPesquisa
 AreaConhecimento ||--o{ GrupoPesquisa
 AreaConhecimento ||--o{ AreaConhecimento : subareas

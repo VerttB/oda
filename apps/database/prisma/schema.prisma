@@ -63,7 +63,6 @@ model GrupoPesquisa {
   instituicaoId      String            @map("instituicao_id")
   membros            MembroGrupo[]
   linhasPesquisa     LinhaPesquisa[]
-  logColeta          LogColetaItem[]   @relation("GrupoLogs")
   criadoEm           DateTime          @default(now()) @map("criado_em")
   atualizadoEm       DateTime          @updatedAt @map("atualizado_em")
 
@@ -113,7 +112,6 @@ model Pesquisador {
   membrosGrupo         MembroGrupo[]
   membrosLinhaPesquisa MembroLinhaPesquisa[]
   producoes            ProducaoPesquisador[]
-  logColeta            LogColetaItem[] @relation("PesquisadorLogs")
   areasAtuacao         PesquisadorAreaAtuacao[]
   criadoEm             DateTime                 @default(now()) @map("criado_em")
   atualizadoEm         DateTime                 @updatedAt @map("atualizado_em")
@@ -227,12 +225,9 @@ model LinhaPesquisaPalavraChave {
 }
 
 enum TipoProducao {
-  ARTIGO_PERIODICO   @map("artigo_periodico")
-  ARTIGO_CONFERENCIA @map("artigo_conferencia")
-  LIVRO              @map("livro")
-  CAPITULO_LIVRO     @map("capitulo_livro")
-  TRABALHO_TECNICO   @map("trabalho_tecnico")
-  OUTRA              @map("outra")
+  ARTIGO            @map("artigo")
+  LIVROCAPITULO     @map("livro_capitulo")
+  OUTRA             @map("outra")
 
   @@map("tipo_producao")
 }
@@ -377,8 +372,6 @@ model LogColetaItem {
   id            String                  @id @default(uuid())
   coletaScraper ColetaScraper           @relation(fields: [coletaId], references: [id])
   coletaId      String                  @map("coleta_id")
-  grupo         GrupoPesquisa?          @relation("GrupoLogs", fields: [entidadeId], references: [dgpId], map: "fk_log_grupo", onDelete: NoAction, onUpdate: NoAction)
-  pesquisador   Pesquisador?            @relation("PesquisadorLogs", fields: [entidadeId], references: [lattesId], map: "fk_log_pesquisador", onDelete: NoAction, onUpdate: NoAction)
   entidade      LogColetaEntidade         
   entidadeId    String                  @map("entidade_id")
   status        LogColetaStatus 

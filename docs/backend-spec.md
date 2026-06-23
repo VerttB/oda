@@ -149,7 +149,7 @@ Arquitetura atualizada (Monorepo Híbrido):
 flowchart LR
   FE[Frontend] --> API[NestJS API REST]
   API --> DB[(PostgreSQL)]
-  API --> LC[Python LangChain Service]
+  API --> LC[Typescript LangChain Service]
   LC --> GEMINI[Google Gemini API]
   SCRAPER[Scraper Service] --> XML[(XML Output)]
   ETL[ETL/Orchestration] --> DB
@@ -160,23 +160,26 @@ flowchart LR
 
 Observações:
 - **API REST (Node.js/NestJS):** Responsável pelo CRUD transacional, gerenciamento de usuários e orquestração de alto nível.
-- **LangChain Service (Python/FastAPI):** Microserviço especializado em busca semântica e RAG. Utiliza Google Gemini (LLM e Embeddings).
+- **LangChain Service (Typescript):** Microserviço especializado em busca semântica e RAG. Utiliza Google Gemini (LLM e Embeddings).
 - **Vetorização:** No estágio atual do MVP, utiliza vector store em memória (FAISS) alimentado por arquivos XML.
 
-## 6.5 Estado Atual do Scraper Service (Python)
+## 6.5 Estado Atual do Scraper Service (TypeScript)
 
-- **Linguagem:** Python.
-- **Ferramentas:** Playwright (automação), BeautifulSoup4 (parsing), SQLite (controle de estado).
-- **Arquitetura:** Modelo Produtor-Consumidor.
-  - `discovery.py` (Sonda): Identifica IDs de grupos de pesquisa via busca parametrizada e alimenta a fila no SQLite.
-  - `scraper.py` (Aspirador): Consome IDs da fila, extrai dados detalhados (incluindo membros e linhas de pesquisa) e gera arquivos XML.
-  - `run.py`: Orquestrador que executa ambos os processos em paralelo.
-- **Localização:** `apps/data_pipeline`.
-- **Saída:** Arquivos XML estruturados na pasta `apps/data_pipeline/data`, prontos para consumo pelo ETL ou LangChain.
+- **Linguagem:** TypeScript (Node.js/Crawlee/Playwright).
+- **Localização:** `apps/data-pipeline-ts`.
+- **Arquitetura & Fluxo:**
+  - `dgpDiscovery.ts`: Responsável pela varredura e enfileiramento das chaves de busca. Executa de forma concorrente em duas direções (`forward` e `backward`) para maximizar a velocidade.
+  - `dgpScraper.ts`: Consome os registros da fila (`filaExtracaoGrupo`) e extrai os espelhos dos grupos detalhadamente.
+  - `lattesScraper.ts`: Coleta dados de currículos e fotos de membros/líderes dos grupos.
+- **Mecanismos de Estabilidade & Concorrência:**
+  - **Isolamento de Eventos de Abas (Page-Scoped Popups):** Todas as escutas de novas janelas utilizam `page.on('popup')` e `page.waitForEvent('popup')` em substituição ao escopo global do contexto do navegador (`context.on('page')`). Isso assegura isolamento total entre os workers sob alta concorrência.
+  - **Processamento de Listagem em Duas Fases:** Em cada página, itens normais (não-boundaries e sem duplicados na página) são processados primeiro, permitindo pular de forma imediata registros cacheados via memória RAM (`processedKeys`). Em seguida, são processados os boundaries (limites da página que podem transpassar com outra direção) e duplicados internos (que necessitam de abertura para verificar desvios de ID).
+  - **Persistência de Progresso Resiliente:** O progresso de cada buscador é rastreado por um mapa global em memória (`requestPageProgress`). Se o worker cair ou a página do navegador for desalocada, a retentativa do Crawlee reinicia diretamente na última página processada com sucesso, evitando recomeçar da página 1 e ser falsamente interrompida.
+  - **Otimização de Escrita no Banco:** Reduzida a concorrência e o tráfego com o banco de dados durante a descoberta para 1 única operação (`upsert`), eliminando loops de recontagem sequenciais. A recalculagem de grupos `similares` passa a ser executada em um único lote (`normalizeQueueData`) ao término da execução do scraper.
 
 ### 5.1 Estrutura de Monorepo
 
-O projeto usa um monorepo npm workspace, com `package.json` na raiz e `package.json` por aplicação.
+O projeto usa um monorepo pnpm workspace, com `package.json` na raiz e `package.json` por aplicação.
 
 Estrutura atual:
 
@@ -191,7 +194,7 @@ Decisões:
 - Todos os pacotes `@nestjs/*` devem ser mantidos no `package.json` raiz.
 - Dependências específicas de cada aplicação permanecem no respectivo app.
 - A unificação de dependências por workspace não altera a separação lógica dos serviços: `api` e `langchain` continuam sendo aplicações executáveis separadamente.
-- Os scripts da raiz devem usar `npm --workspace` para executar comandos em cada app.
+- Os scripts da raiz devem usar `pnpm --workspace` para executar comandos em cada app.
 
 ## 6. Modelagem de Dados
 
@@ -234,7 +237,7 @@ Pontos a definir:
 Tabelas/modelos atualmente presentes no schema Prisma:
 
 - `Instituicao`.
-- `Uf`.
+- `Estado`.
 - `GrupoPesquisa`.
 - `LinhaPesquisa`.
 - `Pesquisador`.
@@ -299,8 +302,8 @@ Correções e complementos aplicados:
 - `Pesquisador` recebeu `tipo`, com valores técnico, estudante, pesquisador e colaborador estrangeiro.
 - `Pesquisador` recebeu `formacaoAcademica`, com valores graduação, especialização, mestrado e doutorado.
 - `Pesquisador` não possui `email` no modelo atual.
-- `Uf` foi criada como tabela própria.
-- `Instituicao.uf` passou a ser uma relação opcional com `Uf`.
+- `Estado` foi criado como tabela própria e recebeu o campo `regiao`.
+- `Instituicao.estado` passou a ser uma relação opcional com `Estado`.
 - `GrupoPesquisa` passou a ter vínculo opcional com `AreaConhecimento`.
 - `MembroGrupo` recebeu `dataEntrada` para registrar quando o pesquisador entrou no grupo.
 - `LinhaPesquisa` passou a possuir membros por meio de `MembroLinhaPesquisa`.
@@ -335,13 +338,13 @@ Endpoints scaffold existentes por recurso:
 
 Observações:
 
-- A API compila via `npm run api:build` no workspace monorepo.
+- A API compila via `pnpm run api:build` no workspace monorepo.
 - `linha-pesquisa` possui CRUD real com transações para manter vínculos em `membro_linha_pesquisa`, `linha_pesquisa_palavra_chave` e `linha_pesquisa_setor_aplicacao`.
 - `producoes` possui CRUD real com transações para manter vínculos em `producao_pesquisador` e `producao_palavra_chave`.
 - `instituicao` e `pesquisadores` possuem CRUD real simples com Prisma.
 - `pesquisadores.remove` remove vínculos em `membro_grupo`, `membro_linha_pesquisa` e `producao_pesquisador` antes de excluir o pesquisador.
 - `grupos-pesquisa` possui `create` e `findAll` reais, mas `findOne`, `update` e `remove` ainda precisam ser finalizados.
-- `uf`, `area-conhecimento`, `setor-aplicacao` e `palavra-chave` existem como services/DTOs auxiliares internos, mas ainda não estão expostos como módulos/controllers REST no `AppModule`.
+- `estado`, `area-conhecimento`, `setor-aplicacao` e `palavra-chave` existem como services/DTOs auxiliares internos, mas ainda não estão expostos como módulos/controllers REST no `AppModule`.
 - DTOs de criação foram preenchidos para os recursos existentes com `class-validator` e `class-transformer`.
 - DTOs de atualização usam `PartialType` de `@nestjs/mapped-types`.
 - A aplicação usa `ValidationPipe` global com `whitelist`, `forbidNonWhitelisted` e `transform`.
@@ -358,7 +361,7 @@ Observações:
 - Cache manual com `cacheManager.wrap` é usado principalmente em listagens (`findAll`) e invalidado em operações de escrita quando implementadas.
 - Ainda não há paginação, filtros, ordenação ou padronização de resposta.
 - Testes unitários reais existem para `linha-pesquisa.service` e `producoes.service`, com mocks de Prisma/cache.
-- Validação recente: `npm --workspace @oda/api run test -- resources/linha-pesquisa/linha-pesquisa.service.spec.ts resources/producoes/producoes.service.spec.ts --runInBand` passou com 2 suítes e 8 testes.
+- Validação recente: `pnpm --workspace @oda/api run test -- resources/linha-pesquisa/linha-pesquisa.service.spec.ts resources/producoes/producoes.service.spec.ts --runInBand` passou com 2 suítes e 8 testes.
 - A suíte completa de testes ainda precisa ser revisada e ampliada.
 
 ## 7. Diagramas
@@ -371,11 +374,12 @@ hide circle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-entity "uf" as Uf {
+entity "estado" as Estado {
   * id : uuid
   --
   * sigla : string
   * nome : string
+  * regiao : string
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -385,7 +389,7 @@ entity "instituicao" as Instituicao {
   --
   * nome : string
   * sigla : string
-  uf_id : uuid
+  estado_id : uuid
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -437,11 +441,26 @@ entity "pesquisador" as Pesquisador {
   * atualizado_em : datetime
 }
 
-entity "membro_grupo" as MembroGrupo {
+entity "area_atuacao" as AreaAtuacao {
   * id : uuid
   --
+  * nome : string
+  * nome_normalizado : string
+  * criado_em : datetime
+  * atualizado_em : datetime
+}
+
+entity "pesquisador_area_atuacao" as PesquisadorAreaAtuacao {
+  * pesquisador_id : uuid
+  * area_atuacao_id : uuid
+  --
+  * criado_em : datetime
+}
+
+entity "membro_grupo" as MembroGrupo {
   * pesquisador_id : uuid
   * grupo_id : uuid
+  --
   data_entrada : datetime
   * criado_em : datetime
   * atualizado_em : datetime
@@ -556,26 +575,48 @@ entity "coleta_scraper" as ColetaScraper {
   * id : uuid
   --
   * data_inicio : datetime
-  * data_fim : datetime
+  data_fim : datetime
   * status : status_coleta
   * registros_processados : int
-  * origem : string
-  * log_erros : text
   * criado_em : datetime
   * atualizado_em : datetime
 }
 
-entity "log_coleta_grupo" as LogColetaGrupo {
+entity "log_coleta_grupo" as LogColetaItem {
   * id : uuid
   --
   * coleta_id : uuid
-  * grupo_id : uuid
-  * acao : acao_coleta
+  entidade : log_coleta_entidade
+  * entidade_id : string
+  * status : log_coleta_status
   * criado_em : datetime
   * atualizado_em : datetime
 }
 
-Uf ||--o{ Instituicao
+entity "fila_extracao_grupo" as FilaExtracaoGrupo {
+  * dgp_id : string
+  --
+  * nome : string
+  * area : string
+  * instituicao : string
+  * status : fila_extracao_status
+  * tentativas : int
+  * similares : int
+  * criado_em : datetime
+  * ultima_atualizacao : datetime
+}
+
+entity "fila_extracao_pesquisador" as FilaExtracaoPesquisador {
+  * lattes_id : string
+  --
+  * nome : string
+  * status : fila_extracao_status
+  * tentativas : int
+  * criado_em : datetime
+  * ultima_atualizacao : datetime
+}
+
+Estado ||--o{ Instituicao
 Instituicao ||--o{ GrupoPesquisa
 AreaConhecimento ||--o{ GrupoPesquisa
 AreaConhecimento ||--o{ AreaConhecimento : subareas
@@ -590,11 +631,14 @@ LinhaPesquisa ||--o{ LinhaPesquisaSetorAplicacao
 SetorAplicacao ||--o{ LinhaPesquisaSetorAplicacao
 Producao ||--o{ ProducaoPesquisador
 Pesquisador ||--o{ ProducaoPesquisador
+Pesquisador ||--o{ PesquisadorAreaAtuacao
+AreaAtuacao ||--o{ PesquisadorAreaAtuacao
 Producao ||--o{ ProducaoPalavraChave
 PalavraChave ||--o{ ProducaoPalavraChave
 RagDocument ||--o{ RagChunk
-ColetaScraper ||--o{ LogColetaGrupo
-GrupoPesquisa ||--o{ LogColetaGrupo
+ColetaScraper ||--o{ LogColetaItem
+GrupoPesquisa ||--o| LogColetaItem
+Pesquisador ||--o| LogColetaItem
 @enduml
 ```
 

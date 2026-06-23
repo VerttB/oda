@@ -103,6 +103,7 @@ export class DGPExtractor {
     const data: any = {
       id_dgp: '000000',
       nome: 'N/A',
+      situacao: "",
       repercussao: '',
       area: 'N/A',
       instituicao: 'N/A',
@@ -116,7 +117,6 @@ export class DGPExtractor {
     if (idMatch) {
       data.id_dgp = idMatch[1];
     } else {
-      // Fallback: busca em inputs escondidos (comum no JSF do CNPq) ou metadados
       const hiddenId = $('input[id*="idGrupoPesquisa"], input[name*="idGrupoPesquisa"]').val();
       if (hiddenId && typeof hiddenId === 'string' && /\d{16}/.test(hiddenId)) {
         data.id_dgp = hiddenId;
@@ -129,7 +129,7 @@ export class DGPExtractor {
       h1Clone.find('div, img').remove();
       data.nome = cleanText(h1Clone.text());
     }
-
+    data.situacao = getAdjacentField($,  /Situação do grupo/)
     data.ano_formacao = getAdjacentField($, /Ano de formação/);
     data.area = getAdjacentField($, /Área predominante/);
     data.instituicao = getAdjacentField($, /Instituição do grupo/);

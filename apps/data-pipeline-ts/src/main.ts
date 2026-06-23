@@ -26,7 +26,8 @@ async function main() {
 
       case "dgp":
       case "dgp-extract":
-        await runDgpScraper();
+        const dgpIds = args.slice(1);
+        await runDgpScraper(dgpIds);
         break;
       
       case "lattes":

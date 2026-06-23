@@ -3,8 +3,6 @@ import { FilaExtracaoStatus, StatusColeta, LogColetaStatus, LogColetaEntidade } 
 import { cleanStr } from "./utils";
 export const prisma = new PrismaClient(prismaConfig)
 
-
-
 export const db = {
   /**
    * Registra o início de uma nova coleta do scrapper principal.
@@ -19,12 +17,22 @@ export const db = {
     });
   },
 
-  async getQueueDiscovery(){
+  async getGroupQueueDiscovery(){
     return prisma.filaExtracaoGrupo.findMany( { select: {
       nome: true,
       instituicao: true,
       area: true
     }})
+  },
+
+  async getPesquisadorQueueDiscovery(){
+    return prisma.filaExtracaoPesquisador.findMany({
+      select: {
+        lattesId: true,
+        nome: true,
+        status: true
+      }
+    });
   },
 
   /**
@@ -83,10 +91,11 @@ export const db = {
         console.log(`[Database] Recalculado 'similares' para ${updatedSimilares} registros no banco.`);
     }
   },
+
   /**
    * Finaliza uma coleta global.
    */
-  async finishColeta(id: string, registros: number) {
+  async finishGrupoColeta(id: string, registros: number) {
     return prisma.coletaScraper.update({
       where: { id },
       data: {
@@ -98,21 +107,26 @@ export const db = {
   },
 
   /**
-   * Registra a descoberta ou início do processamento de um grupo específico.
+   * Registra o log de coleta de um grupo e o marca como concluído na fila.
    */
-  async logGrupo(coletaId: string, entidadeId: string,entidade: LogColetaEntidade, status: LogColetaStatus ) {
-    return prisma.logColetaItem.create({
-      data: {
-        coletaId,
-        entidadeId,
-        entidade,
-        status,
-      },
-    });
+  async logGrupo(coletaId: string, dgpId: string, status: LogColetaStatus) {
+    return prisma.$transaction([
+      prisma.logColetaItem.create({
+        data: {
+          coletaId,
+          entidadeId: dgpId,
+          entidade: LogColetaEntidade.GRUPO,
+          status,
+        },
+      }),
+      prisma.filaExtracaoGrupo.update({
+        where: { dgpId },
+        data: { status: FilaExtracaoStatus.CONCLUIDO }
+      })
+    ]);
   },
 
-  
-  async queueDiscovery(data: { dgpId: string, nome: string, area: string, instituicao: string }) {
+  async groupQeueDiscovery(data: { dgpId: string, nome: string, area: string, instituicao: string }) {
     const nomeLimpo = cleanStr(data.nome);
     const areaLimpa = cleanStr(data.area);
     const instituicaoLimpa = cleanStr(data.instituicao);
@@ -136,12 +150,42 @@ export const db = {
   },
 
   /**
-   * Atualiza o status de um item na fila.
+   * Atualiza o status de um item na fila de grupos.
    */
-  async updateQueueStatus(dgpId: string, status: FilaExtracaoStatus) {
+  async updateGroupQueueStatus(dgpId: string, status: FilaExtracaoStatus) {
       return prisma.filaExtracaoGrupo.update({
           where: { dgpId },
           data: { status }
       });
+  },
+
+  /**
+   * Atualiza o status de um pesquisador na fila de extração.
+   */
+  async updatePesquisadorQueueStatus(lattesId: string, status: FilaExtracaoStatus) {
+      return prisma.filaExtracaoPesquisador.update({
+          where: { lattesId },
+          data: { status }
+      });
+  },
+
+  /**
+   * Registra o log de coleta de um pesquisador e o marca como concluído na fila.
+   */
+  async logPesquisador(coletaId: string, lattesId: string, status: LogColetaStatus) {
+      return prisma.$transaction([
+          prisma.logColetaItem.create({
+              data: {
+                  coletaId,
+                  entidadeId: lattesId,
+                  entidade: LogColetaEntidade.PESQUISADOR,
+                  status,
+              },
+          }),
+          prisma.filaExtracaoPesquisador.update({
+              where: { lattesId },
+              data: { status: FilaExtracaoStatus.CONCLUIDO }
+          })
+      ]);
   }
 };

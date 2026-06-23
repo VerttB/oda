@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "ts-node src/main.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "etl:grupo": "ts-node src/main.ts grupo",
+    "etl:pesquisador": "ts-node src/main.ts pesquisador"
   },
   "dependencies": {
     "chokidar": "^4.0.3",
