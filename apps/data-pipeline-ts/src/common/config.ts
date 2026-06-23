@@ -8,7 +8,6 @@ export const DGP_DATA_DIR = path.join(DATA_DIR, 'dgp');
 export const LATTES_DATA_DIR = path.join(DATA_DIR, 'lattes');
 export const IMAGE_DIR = path.join(DATA_DIR, 'images');
 
-// Ensure directories exist
 [DATA_DIR, DGP_DATA_DIR, LATTES_DATA_DIR, IMAGE_DIR].forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
