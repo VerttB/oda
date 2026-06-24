@@ -1,5 +1,6 @@
 packages:
   - 'apps/*'
+  - 'shared/*'
 allowBuilds:
   '@prisma/engines': true
   '@scarf/scarf': true
