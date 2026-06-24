@@ -22,17 +22,16 @@ services:
       - "6379:6379"
 
   api:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     container_name: oda_api
-    working_dir: /app
-    volumes:
-      - .:/app
+    restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
     ports:
       - "3000:3000"
-    command: sh -c "pnpm install && pnpm -F @oda/api start:dev"
     depends_on:
       - postgres
       - redis
