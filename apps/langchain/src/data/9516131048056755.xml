@@ -1,0 +1,200 @@
+<?xml version="1.0" ?>
+<DIRETORIO_DE_GRUPOS>
+   <GRUPO_DE_PESQUISA>
+      <NOME>ARISE - Arqueologia Interativa e Simulações Eletrônicas</NOME>
+      <IDENTIFICACAO_DGP>9516131048056755</IDENTIFICACAO_DGP>
+      <REPERCUSSAO>Estudo sobre simulações eletrônicas digitais e análise de seu conteúdo já produzido e ofertado no mercado, além da produção de interatividades baseadas em dispositivos eletrônicos que auxiliem na compreensão da Arqueologia e História de sociedades passadas.
+- Pesquisa e estudos sobre Humanidades Digitais, Ciberarqueologia e Jogos Eletrônicos; 
+- Análise de simulações eletrônicas (jogos) existentes no mercado; 
+- Produção de material voltado a arqueojogos; 
+- Desenvolvimento de instalações interativas baseadas em dispositivos eletrônicos e materiais impressos/feitos em resina. 
+Metodologia: 
+- Discussões em grupo de textos pertinentes aos temas estudados; 
+- Análise de jogos eletrônicos a partir da prática; 
+- Desenvolvimento de arqueojogos; 
+- Produção de material para website/Facebook; 
+- Produção de material audiovisual (gameplays comentados) para o YouTube; 
+Desenvolvimento de dispositivos eletrônicos interativos e disponibilização da metodologia para replicação;</REPERCUSSAO>
+      <AREA>Ciências Humanas; Arqueologia</AREA>
+      <INSTITUICAO>Universidade de São Paulo - USP</INSTITUICAO>
+      <ANO_FORMACAO>2017</ANO_FORMACAO>
+      <ENDERECO>
+         <CEP>05508070</CEP>
+         <LOCALIDADE>São Paulo</LOCALIDADE>
+         <UF>SP</UF>
+         <BAIRRO>Butantã</BAIRRO>
+         <COMPLEMENTO/>
+         <NUMERO>1466</NUMERO>
+         <LOGRADOURO>Avenida Professor Almeida Prado</LOGRADOURO>
+      </ENDERECO>
+      <PESQUISADORES>
+         <PESQUISADOR NOME="Alex da Silva Martire" LATTES="2974994861825943" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arqueologia Histórica</AREA>
+            <AREA>Ciberarqueologia</AREA>
+            <AREA>Cibernética</AREA>
+            <AREA>História Antiga e Medieval</AREA>
+            <AREA>Realidade Aumentada</AREA>
+            <AREA>Realidade Virtual</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ATRIVM / UFMS - Laboratório de Estudos Interdisciplinares da Antiguidade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Idade Média e Métodos Digitais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LEACH - Laboratório de Estudos Antárticos em Ciências Humanas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Arqueologia e Pré-História Evolutiva e Experimental</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Os Triunfos de Turlough</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Digital, Cyberarqueologia e Archeogaming</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Antártica</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Geotecnologias aplicadas à Arqueologia</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Amanda Cristina dos Santos Costa Alves" LATTES="1512659819860991" FORMACAO_ACADEMICA="Mestrado Profissional" CATEGORIA="PESQUISADOR">
+            <AREA>Arqueologia</AREA>
+            <AREA>Educação Patrimonial</AREA>
+            <AREA>Ensino de História</AREA>
+            <AREA>Ensino-Aprendizagem</AREA>
+            <AREA>Tecnologias da Educação</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Vagner Carvalheiro Porto" LATTES="5177324451229879" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="LIDER">
+            <AREA>Arqueologia Clássica</AREA>
+            <AREA>Arqueologia Histórica</AREA>
+            <AREA>Curadoria de Exposições</AREA>
+            <AREA>História Antiga</AREA>
+            <AREA>Numismática</AREA>
+            <AREA>Patrimônio Histórico e Arqueológico</AREA>
+            <GRUPO_DE_PESQUISA>Laboratório de História Antiga e Medieval (LABHAM)</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>História da África Antiga e Medieval</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ATRIVM / UFMS - Laboratório de Estudos Interdisciplinares da Antiguidade</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Numismática Antiga</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LARP - Laboratório de Arqueologia Romana Provincial</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Culturas, fronteiras e representações na Antiguidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Métodos Numismáticos</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Estado, urbanização e rotas transaarianas no Saara antigo: os garamantes na África romana (sec. I a.C.-IV d.C.)</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Identidades religiosas e relações de gênero na Antiguidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Usos do passado e Ensino de História Antiga e Medieval</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Numismática Antiga</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia e Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia do Mediterrâneo Antigo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Numismática romana</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia romana provincial</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Religião no Império Romano</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Noção de Valor na Antiguidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Produção, circulação e visibilidade da cultura material na Antiguidade</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História, Arqueologia e Patrimônio Digital</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia, patrimônio e coleções arqueológicas</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Amanda Daltro de Viveiros Pina" LATTES="5486211760855453" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Archaeogaming</AREA>
+            <AREA>Arqueologia Histórica</AREA>
+            <AREA>Ciberarqueologia</AREA>
+            <AREA>Direito</AREA>
+            <AREA>Museologia</AREA>
+            <GRUPO_DE_PESQUISA>Grupo de Arqueologia Histórica Amazônida - GAhIA</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LARP - Laboratório de Arqueologia Romana Provincial</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia e Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História, Arqueologia e Patrimônio Digital</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Camila de Ávila" LATTES="9570030721474610" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Artes</AREA>
+            <AREA>Comunicação Visual e Cinema</AREA>
+            <GRUPO_DE_PESQUISA>Audiovisualidades da Tecnocultura: comunicação, memória e design</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Midias e processos audiovisuais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Cleberson Henrique de Moura" LATTES="8343007497758405" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Ciências Humanas</AREA>
+            <AREA>Design Instrucional</AREA>
+            <AREA>Divulgação Científica</AREA>
+            <AREA>Educação</AREA>
+            <AREA>Práticas Pedagógicas</AREA>
+            <GRUPO_DE_PESQUISA>Laboratório de Pesquisas sobre Museus na América Latina</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História dos Museus e da Museologia na América Latina</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Marina Luz de Carvalho" LATTES="4975178975050092" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>História</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Matheus Morais Cruz" LATTES="4520159949216939" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <AREA>Arqueologia</AREA>
+            <AREA>Arqueologia do Mediterrâneo Antigo</AREA>
+            <AREA>Arqueologia Romana Provincial</AREA>
+            <AREA>Ciberarqueologia</AREA>
+            <AREA>História</AREA>
+            <AREA>História Antiga</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Numismática Antiga</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>LARP - Laboratório de Arqueologia Romana Provincial</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia e Educação</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia do Mediterrâneo Antigo</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Numismática romana</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>História, Arqueologia e Patrimônio Digital</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Priscilla Ferreira Ulguim" LATTES="1017418260591775" FORMACAO_ACADEMICA="Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Arqueologia Digital</AREA>
+            <AREA>ARQUEOLOGIA FORENSE</AREA>
+            <AREA>Arqueologia Funerária</AREA>
+            <AREA>BIOARQUEOLOGIA</AREA>
+            <AREA>Digital Death</AREA>
+            <AREA>Zooarqueologia</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Tomás Partiti Cafagne" LATTES="8681811117065623" FORMACAO_ACADEMICA="Mestrado" CATEGORIA="ESTUDANTE">
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+         <PESQUISADOR NOME="Vinicius Marino Carvalho" LATTES="0149644147308476" FORMACAO_ACADEMICA="Pós-Doutorado" CATEGORIA="ESTUDANTE">
+            <AREA>Game Studies</AREA>
+            <AREA>História Antiga e Medieval</AREA>
+            <AREA>Métodos digitais na pesquisa em História</AREA>
+            <GRUPO_DE_PESQUISA>ARISE - Arqueologia Interativa e Simulações Eletrônicas</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>EPIFAME - Epidemics and Famines in the Western Mediterranean</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Idade Média e Métodos Digitais</GRUPO_DE_PESQUISA>
+            <GRUPO_DE_PESQUISA>Laboratório de Estudos Medievais</GRUPO_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Fome, abastecimento e clima nas fontes mediterrânicas</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Arqueologia Interativa</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Os Triunfos de Turlough</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Crises de Mortalidade e Álgebra de Mapas no Mediterrâneo Tardomedieval</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>Humanidades Digitais</LINHA_DE_PESQUISA>
+            <LINHA_DE_PESQUISA>A historiografia e a conjuntura econômica do final da Idade Média</LINHA_DE_PESQUISA>
+         </PESQUISADOR>
+      </PESQUISADORES>
+      <LINHAS_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Arqueologia Interativa</NOME>
+            <OBJETIVO>Estudo de interações eletrônicas em tempo real no campo arqueológico.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de apoio à educação | Atividades dos serviços de tecnologia da informação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+         <LINHA_DE_PESQUISA>
+            <NOME>Humanidades Digitais</NOME>
+            <OBJETIVO>Partindo do conceito amplo de Humanidades Digitais, o ARISE tem por objetivo central fomentar a análise acadêmica de mídias eletrônicas interativas (jogos eletrônicos, serious games, simulações digitais), bem como produzir materiais que versam sobre arqueojogos e instalações interativas voltadas para museus e instituições de ensino.</OBJETIVO>
+            <SETOR_APLICACAO/>
+            <SETOR_APLICACAO>Atividades de apoio à educação</SETOR_APLICACAO>
+            <SETOR_APLICACAO>Recursos humanos</SETOR_APLICACAO>
+         </LINHA_DE_PESQUISA>
+      </LINHAS_DE_PESQUISA>
+   </GRUPO_DE_PESQUISA>
+</DIRETORIO_DE_GRUPOS>

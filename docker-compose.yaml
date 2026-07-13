@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: pgvector/pgvector:pg18-trixie
-    container_name: ia-t3
+    container_name: oda_postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -14,20 +14,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
-  langchain:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ia-t3-rag
+  redis:
+    image: redis:7-alpine
+    container_name: oda_redis
     restart: always
-    env_file:
-      - .env
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - OPEN_AI_KEY=${OPEN_AI_KEY}
-      - LANGCHAIN_PORT=8002
     ports:
-      - "8002:8002"
+      - "6379:6379"
+
+  hop:
+    image: apache/hop:2.18.0
+    container_name: oda_hop_prod
+    profiles: ["prod"] # Este container só subirá se você explicitamente pedir (--profile prod)
+    environment:
+      HOP_PROJECT_NAME: ${HOP_PROJECT_NAME:-oda}
+      HOP_PROJECT_FOLDER: ${HOP_PROJECT_FOLDER:-/files/apps/data_pipeline/hop}
+      OPEN_ALEX_KEY: ${OPEN_ALEX_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - .:/files
     depends_on:
       - postgres
 

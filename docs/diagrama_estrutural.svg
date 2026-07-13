@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Diagrama estrutural do backend ODA</title>
+  <desc id="desc">Arquitetura com frontend, API REST, PostgreSQL, serviço LangChain, provedor LLM, scraper, saída XML, ETL e gatilho de indexação.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#334155" />
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 8; }
+      .box-api { fill: #eff6ff; stroke: #1d4ed8; }
+      .box-data { fill: #ecfdf5; stroke: #047857; }
+      .box-ai { fill: #f5f3ff; stroke: #6d28d9; }
+      .box-pipeline { fill: #fff7ed; stroke: #c2410c; }
+      .label { font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 700; fill: #0f172a; text-anchor: middle; }
+      .sub { font-family: Arial, Helvetica, sans-serif; font-size: 14px; fill: #475569; text-anchor: middle; }
+      .group-title { font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: 700; fill: #334155; }
+      .group { fill: none; stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 8 8; rx: 12; }
+      .line { fill: none; stroke: #334155; stroke-width: 2.4; marker-end: url(#arrow); }
+      .line-soft { fill: none; stroke: #64748b; stroke-width: 2.2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760" />
+  <text x="640" y="48" class="label" style="font-size:28px">Estrutura do Backend ODA</text>
+  <text x="640" y="76" class="sub">API REST, pipeline de coleta/ETL, persistência relacional e camada semântica/RAG</text>
+
+  <rect class="group" x="42" y="120" width="500" height="520" />
+  <text x="68" y="150" class="group-title">Aplicação e Dados</text>
+
+  <rect class="group" x="738" y="120" width="500" height="520" />
+  <text x="764" y="150" class="group-title">Coleta, ETL e IA</text>
+
+  <rect class="box" x="80" y="215" width="180" height="86" />
+  <text x="170" y="253" class="label">Frontend</text>
+  <text x="170" y="276" class="sub">Consumidor inicial</text>
+
+  <rect class="box box-api" x="326" y="205" width="190" height="106" />
+  <text x="421" y="246" class="label">API REST</text>
+  <text x="421" y="270" class="sub">NestJS + Prisma</text>
+  <text x="421" y="290" class="sub">Recursos do MVP</text>
+
+  <rect class="box box-data" x="326" y="405" width="190" height="116" />
+  <text x="421" y="447" class="label">PostgreSQL</text>
+  <text x="421" y="471" class="sub">Tabelas transacionais</text>
+  <text x="421" y="491" class="sub">Tabelas RAG/embeddings</text>
+
+  <rect class="box box-ai" x="780" y="200" width="210" height="116" />
+  <text x="885" y="244" class="label">LangChain</text>
+  <text x="885" y="268" class="sub">Busca semântica</text>
+  <text x="885" y="288" class="sub">RAG</text>
+
+  <rect class="box box-ai" x="1030" y="215" width="170" height="86" />
+  <text x="1115" y="253" class="label">LLM</text>
+  <text x="1115" y="276" class="sub">Embeddings</text>
+
+  <rect class="box box-pipeline" x="780" y="405" width="180" height="96" />
+  <text x="870" y="444" class="label">Scraper</text>
+  <text x="870" y="468" class="sub">DGP/CNPq</text>
+
+  <rect class="box box-pipeline" x="1010" y="405" width="150" height="96" />
+  <text x="1085" y="444" class="label">XML</text>
+  <text x="1085" y="468" class="sub">Saida coletada</text>
+
+  <rect class="box box-pipeline" x="780" y="555" width="180" height="96" />
+  <text x="870" y="594" class="label">ETL</text>
+  <text x="870" y="618" class="sub">Limpeza e carga</text>
+
+  <rect class="box box-api" x="1010" y="555" width="150" height="96" />
+  <text x="1085" y="594" class="label">Indexing</text>
+  <text x="1085" y="618" class="sub">Jobs/embeddings</text>
+
+  <path class="line" d="M260 258 H326" />
+  <path class="line" d="M421 311 V405" />
+  <path class="line" d="M516 258 H780" />
+  <path class="line" d="M990 258 H1030" />
+  <path class="line-soft" d="M885 316 C885 356, 550 350, 516 425" />
+  <path class="line" d="M960 453 H1010" />
+  <path class="line" d="M1085 501 C1085 535, 940 526, 900 555" />
+  <path class="line" d="M780 603 C650 603, 575 500, 516 468" />
+  <path class="line" d="M960 603 H1010" />
+  <path class="line" d="M1085 555 C1085 365, 970 340, 905 316" />
+</svg>
