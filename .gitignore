@@ -5,8 +5,7 @@ node_modules
 !.env.example
 session-log.md
 generated
-storage
-data
+
 # Apache Hop Local
 .hop/
 hop-config.json
@@ -14,19 +13,3 @@ audit/
 metadata/hop-config.json
 *.hpl.cache
 *.hwf.cache
-
-
-# New python gitignore
-.env
-.venv/
-venv/
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.vscode/
-.idea/
-*.egg-info/
-dist/
-build/
-static/
