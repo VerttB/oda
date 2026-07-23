@@ -38,12 +38,12 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     UfModule,
   ],
   controllers: [AppController],
-  // providers: [
-  //   AppService,
-  //   {
-  //     provide: APP_GUARD,
-  //     useClass: JwtAuthGuard,
-  //   },
-  // ],
+  providers: [
+    AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
+  ],
 })
 export class AppModule {}
