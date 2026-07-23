@@ -14,7 +14,7 @@ export class LangchainGatewayService {
     const host = process.env.LANGCHAIN_HOST ?? '127.0.0.1';
     const cleanHost = host.startsWith('http') ? host : `http://${host}`;
     const port = process.env.LANGCHAIN_PORT ?? '8002'; // default to HTTP port of langchain-ts
-    this.baseUrl = `http://localhost:8002`;
+    this.baseUrl = `${cleanHost}:${port}`;
   }
 
   async health(): Promise<LangchainHealthResponse> {
