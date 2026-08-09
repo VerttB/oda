@@ -43,8 +43,13 @@ export class PesquisadoresService {
       if (query.orcidId) {
         where.orcidId = query.orcidId;
       }
-      if (query.grupoPesquisaId) {
-        where.membrosGrupo = { some: { grupoId: query.grupoPesquisaId } };
+      if (query.grupoPesquisaId || query.eLider !== undefined) {
+        where.membrosGrupo = {
+          some: {
+            ...(query.grupoPesquisaId ? { grupoId: query.grupoPesquisaId } : {}),
+            ...(query.eLider !== undefined ? { eLider: query.eLider } : {}),
+          }
+        };
       }
     }
 

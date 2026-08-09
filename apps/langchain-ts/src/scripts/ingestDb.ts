@@ -84,6 +84,13 @@ async function main() {
     content += `Instituição: ${g.instituicao?.nome || 'N/A'} (${g.instituicao?.sigla || ''}) - Estado: ${g.instituicao?.estado?.nome || 'N/A'}\n`;
     content += `Área Predominante: ${g.areaPredominante || 'N/A'}\n`;
     content += `Ano de Formação: ${g.anoFormacao || 'N/A'}\n`;
+    if (g.unidade) content += `Unidade: ${g.unidade}\n`;
+    if (g.cidade || g.uf || g.logradouro) {
+      content += `Localização: ${[g.logradouro, g.bairro, g.cidade, g.uf, g.cep].filter(Boolean).join(', ')}\n`;
+    }
+    if (g.email || g.telefone || g.website) {
+      content += `Contato: ${[g.email ? `Email: ${g.email}` : null, g.telefone ? `Tel: ${g.telefone}` : null, g.website ? `Site: ${g.website}` : null].filter(Boolean).join(' | ')}\n`;
+    }
     content += `Repercussão: ${g.repercussao || 'N/A'}\n`;
 
     const areas = g.areasConhecimento.map(ac => ac.area?.nome).filter(Boolean);
@@ -101,7 +108,8 @@ async function main() {
     if (g.membros.length > 0) {
       content += `Membros do Grupo:\n`;
       for (const m of g.membros) {
-        content += `- ${m.pesquisador?.nome || 'N/A'} (${m.pesquisador?.tipo || 'N/A'}, ${m.pesquisador?.formacaoAcademica || 'N/A'})\n`;
+        const tagLider = m.eLider ? ' [LÍDER DO GRUPO]' : '';
+        content += `- ${m.pesquisador?.nome || 'N/A'}${tagLider} (${m.pesquisador?.tipo || 'N/A'}, ${m.pesquisador?.formacaoAcademica || 'N/A'})\n`;
       }
     }
 

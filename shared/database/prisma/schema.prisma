@@ -56,6 +56,19 @@ model GrupoPesquisa {
   anoFormacao        Int?              @map("ano_formacao")
   areaPredominante   String            @map("area_predominante")
   repercussao        String?
+  unidade            String?
+  email              String?
+  telefone           String?
+  website            String?
+  logradouro         String?
+  numero             String?
+  complemento        String?
+  bairro             String?
+  cidade             String?
+  uf                 String?
+  cep                String?
+  latitude           Float?
+  longitude          Float?
   areasConhecimento GrupoPesquisaAreaConhecimento[]
   situacao           Situacao          @default(ATIVO)
   instituicao        Instituicao       @relation(fields: [instituicaoId], references: [id])
@@ -129,6 +142,7 @@ model MembroGrupo {
   pesquisadorId String        @map("pesquisador_id")
   grupoPesquisa GrupoPesquisa @relation(fields: [grupoId], references: [id])
   grupoId       String        @map("grupo_id")
+  eLider        Boolean       @default(false) @map("e_lider")
   dataEntrada   DateTime?     @map("data_entrada")
   criadoEm      DateTime      @default(now()) @map("criado_em")
   atualizadoEm  DateTime      @updatedAt @map("atualizado_em")

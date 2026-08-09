@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "ts-node src/main.ts",
+    "update-groups": "ts-node src/updateGroupsOnly.ts",
     "build": "tsc"
   },
   "dependencies": {

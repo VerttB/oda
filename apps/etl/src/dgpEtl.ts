@@ -45,6 +45,19 @@ export async function saveGroupToDb(data: any) {
                     anoFormacao: ano,
                     areaPredominante: data.areaPredominante?.trim() || 'N/A',
                     repercussao: data.repercussao?.trim() || null,
+                    unidade: data.unidade?.trim() || null,
+                    email: data.email?.trim() || null,
+                    telefone: data.telefone?.trim() || null,
+                    website: data.website?.trim() || null,
+                    logradouro: data.endereco?.logradouro?.trim() || null,
+                    numero: data.endereco?.numero?.trim() || null,
+                    complemento: data.endereco?.complemento?.trim() || null,
+                    bairro: data.endereco?.bairro?.trim() || null,
+                    cidade: data.endereco?.cidade?.trim() || data.endereco?.localidade?.trim() || null,
+                    uf: data.endereco?.uf?.trim() || null,
+                    cep: data.endereco?.cep?.trim() || null,
+                    latitude: data.latitude ?? null,
+                    longitude: data.longitude ?? null,
                     instituicaoId: instituicao.id,
                 },
                 create: {
@@ -53,6 +66,19 @@ export async function saveGroupToDb(data: any) {
                     anoFormacao: ano,
                     areaPredominante: data.areaPredominante?.trim() || 'N/A',
                     repercussao: data.repercussao?.trim() || null,
+                    unidade: data.unidade?.trim() || null,
+                    email: data.email?.trim() || null,
+                    telefone: data.telefone?.trim() || null,
+                    website: data.website?.trim() || null,
+                    logradouro: data.endereco?.logradouro?.trim() || null,
+                    numero: data.endereco?.numero?.trim() || null,
+                    complemento: data.endereco?.complemento?.trim() || null,
+                    bairro: data.endereco?.bairro?.trim() || null,
+                    cidade: data.endereco?.cidade?.trim() || data.endereco?.localidade?.trim() || null,
+                    uf: data.endereco?.uf?.trim() || null,
+                    cep: data.endereco?.cep?.trim() || null,
+                    latitude: data.latitude ?? null,
+                    longitude: data.longitude ?? null,
                     instituicaoId: instituicao.id,
                 }
             });
@@ -114,9 +140,8 @@ export async function saveGroupToDb(data: any) {
             await prisma.$transaction(async (tx) => {
                 for (const membro of data.membros) {
                     if (!membro.nome) continue;
-                    const cleanLattes = membro.lattes ? membro.lattes.trim() : null;
-                    if(!cleanLattes) continue;
-        
+                    const cleanLattes = membro.lattes && membro.lattes.trim().length > 0 ? membro.lattes.trim() : null;
+
                     const rawTipo = membro.categoriaLattes?.trim().toUpperCase();
                     const tipoMap: Record<string, TipoPesquisador> = {
                         'PESQUISADOR': TipoPesquisador.PESQUISADOR,
@@ -140,19 +165,35 @@ export async function saveGroupToDb(data: any) {
                         ? (formacaoMap[rawFormacao] || FormacaoAcademica.OUTRO) 
                         : null;
 
-                    const pesquisador = await tx.pesquisador.upsert({
-                        where: { lattesId: cleanLattes },
-                        update: {
-                            formacaoAcademica: formacao,
-                            tipo: tipo
-                        },
-                        create: {
-                            nome: membro.nome.trim(),
-                            lattesId: cleanLattes,
-                            tipo: tipo,
-                            formacaoAcademica: formacao
-                        }
-                    })
+                    let pesquisador = null;
+                    if (cleanLattes) {
+                        pesquisador = await tx.pesquisador.findUnique({ where: { lattesId: cleanLattes } });
+                    }
+                    if (!pesquisador && membro.nome) {
+                        pesquisador = await tx.pesquisador.findFirst({
+                            where: { nome: { equals: membro.nome.trim(), mode: 'insensitive' } }
+                        });
+                    }
+
+                    if (pesquisador) {
+                        pesquisador = await tx.pesquisador.update({
+                            where: { id: pesquisador.id },
+                            data: {
+                                ...(cleanLattes && !pesquisador.lattesId ? { lattesId: cleanLattes } : {}),
+                                ...(formacao ? { formacaoAcademica: formacao } : {}),
+                                ...(tipo ? { tipo } : {})
+                            }
+                        });
+                    } else {
+                        pesquisador = await tx.pesquisador.create({
+                            data: {
+                                nome: membro.nome.trim(),
+                                lattesId: cleanLattes,
+                                tipo: tipo,
+                                formacaoAcademica: formacao
+                            }
+                        });
+                    }
 
                     if (membro.areas && Array.isArray(membro.areas)) {
                         for (const areaStr of membro.areas) {
@@ -203,6 +244,7 @@ export async function saveGroupToDb(data: any) {
                         }
                     }
                    
+                    const isLider = membro.eLider === true;
                     await tx.membroGrupo.upsert({
                         where: {
                             pesquisadorId_grupoId: {
@@ -210,10 +252,11 @@ export async function saveGroupToDb(data: any) {
                                 grupoId: grupoId
                             }
                         },
-                        update: {},
+                        update: { eLider: isLider },
                         create: {
                             pesquisadorId: pesquisador.id,
-                            grupoId: grupoId
+                            grupoId: grupoId,
+                            eLider: isLider
                         }
                     });
                 }

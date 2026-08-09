@@ -24,4 +24,12 @@ export class FindAllGruposPesquisaDto extends PaginationDto {
   @IsOptional()
   @IsUUID()
   estadoId?: string;
+
+  @IsOptional()
+  @IsString()
+  cidade?: string;
+
+  @IsOptional()
+  @IsString()
+  uf?: string;
 }

@@ -43,6 +43,12 @@ export class GruposPesquisaService {
           estadoId: query.estadoId,
         };
       }
+      if (query.cidade) {
+        where.cidade = { contains: query.cidade, mode: 'insensitive' };
+      }
+      if (query.uf) {
+        where.uf = { equals: query.uf, mode: 'insensitive' };
+      }
     }
 
     if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {

@@ -1,5 +1,6 @@
 import { FormacaoAcademica, TipoPesquisador } from '@/prisma/prisma.enums';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class FindAllPesquisadoresDto extends PaginationDto {
@@ -26,4 +27,9 @@ export class FindAllPesquisadoresDto extends PaginationDto {
   @IsOptional()
   @IsString()
   grupoPesquisaId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  eLider?: boolean;
 }

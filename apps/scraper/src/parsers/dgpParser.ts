@@ -140,21 +140,31 @@ export class DGPExtractor {
       h1Clone.find('div, img').remove();
       data.nome = cleanText(h1Clone.text());
     }
-    data.situacao = getAdjacentField($,  /Situação do grupo/)
+    data.situacao = getAdjacentField($,  /Situação do grupo/);
     data.anoFormacao = getAdjacentField($, /Ano de formação/);
     data.area = getAdjacentField($, /Área predominante/);
     data.instituicao = getAdjacentField($, /Instituição do grupo/);
+    data.unidade = getAdjacentField($, /Unidade/) || null;
+    data.email = getAdjacentField($, /Contato do grupo/) || null;
+    const rawTelefone = getAdjacentField($, /Telefone/);
+    data.telefone = rawTelefone ? rawTelefone.replace(/_$/, '').trim() : null;
+    data.website = getAdjacentField($, /Website/) || null;
+
+    const rawLat = parseFloat(getAdjacentField($, /Latitude/));
+    const rawLng = parseFloat(getAdjacentField($, /Longitude/));
+    data.latitude = (!isNaN(rawLat) && rawLat !== 0) ? rawLat : null;
+    data.longitude = (!isNaN(rawLng) && rawLng !== 0) ? rawLng : null;
 
     const addr = $('#endereco');
     if (addr.length) {
       data.endereco = {
-        cep: getAdjacentField($, 'CEP'),
-        localidade: getAdjacentField($, 'Localidade'),
-        uf: getAdjacentField($, 'UF'),
-        bairro: getAdjacentField($, 'Bairro'),
-        complemento: getAdjacentField($, 'Complemento'),
-        numero: getAdjacentField($, 'Número'),
-        logradouro: getAdjacentField($, 'Logradouro'),
+        cep: getAdjacentField($, 'CEP') || null,
+        localidade: getAdjacentField($, 'Localidade') || null,
+        uf: getAdjacentField($, 'UF') || null,
+        bairro: getAdjacentField($, 'Bairro') || null,
+        complemento: getAdjacentField($, 'Complemento') || null,
+        numero: getAdjacentField($, 'Número') || null,
+        logradouro: getAdjacentField($, 'Logradouro') || null,
       };
     }
 
@@ -169,11 +179,14 @@ export class DGPExtractor {
     const lideresLabel = $('label').filter((_, el) => /Líder\(es\) do grupo:/.test($(el).text()));
     const lideresList: string[] = [];
     if (lideresLabel.length) {
-       lideresLabel.next('div.controls').text().split(',').forEach(n => {
+       const controlsDiv = lideresLabel.next('div.controls').clone();
+       controlsDiv.find('script, button, a, form, style, .ui-button, .ui-tooltip').remove();
+       controlsDiv.text().split(/,|\n/).forEach(n => {
            const nome = cleanText(n);
-           if (nome) lideresList.push(nome);
+           if (nome && nome.length > 2) lideresList.push(nome);
        });
     }
+    data.lideres = lideresList;
 
     // RH (Membros)
     $('#recursosHumanos table[role="grid"]').each((_, table) => {
@@ -192,7 +205,7 @@ export class DGPExtractor {
 
           let categoria = 'PESQUISADOR';
           if (categoryLabel.includes('pesquisador')) {
-            categoria = lideresList.includes(nome) ? 'LIDER' : 'PESQUISADOR';
+            categoria = 'PESQUISADOR';
           } else if (categoryLabel.includes('estudante')) {
             categoria = 'ESTUDANTE';
           } else if (categoryLabel.includes('técnico') || categoryLabel.includes('tecnico')) {
@@ -201,12 +214,17 @@ export class DGPExtractor {
             categoria = 'ESTRANGEIRO';
           }
 
+          const isLider = lideresList.some(
+            l => l.trim().toLowerCase() === nome.trim().toLowerCase()
+          );
+
           const extra = rhDetailsMap.get(nome) || {};
           data.membros.push({
             nome,
             lattes: extra.lattes || '',
             formacaoAcademica: formacaoTable || extra.titulacao || '',
             categoriaLattes: categoria,
+            eLider: isLider,
             areas: extra.areas || [],
             gruposAssociados: extra.grupos || [],
             linhasAssociadas: extra.linhas || [],
