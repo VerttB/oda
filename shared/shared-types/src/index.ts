@@ -116,3 +116,40 @@ export const LattesResearcherSchema = z.object({
   livrosCapitulos: z.array(BookChaptersSchema).optional().nullable(),
 });
 export type LattesResearcher = z.infer<typeof LattesResearcherSchema>;
+
+// ==========================================
+// SCHEMAS DE METADADOS DO PIPELINE LOG
+// ==========================================
+
+export const ScraperMetadataSchema = z.object({
+  tamanhoTotalBytes: z.number().int().nonnegative().optional(),
+  tamanhoFormatado: z.string().optional(),
+  arquivosJsonGerados: z.number().int().nonnegative().optional(),
+  navegador: z.string().optional(),
+});
+export type ScraperMetadata = z.infer<typeof ScraperMetadataSchema>;
+
+export const EtlMetadataSchema = z.object({
+  gruposGravados: z.number().int().nonnegative().optional(),
+  pesquisadoresAtualizados: z.number().int().nonnegative().optional(),
+  linhasPesquisaGravadas: z.number().int().nonnegative().optional(),
+  producoesVinculadas: z.number().int().nonnegative().optional(),
+  qualisAssociados: z.number().int().nonnegative().optional(),
+});
+export type EtlMetadata = z.infer<typeof EtlMetadataSchema>;
+
+export const RagMetadataSchema = z.object({
+  quantidadeChunks: z.number().int().nonnegative().optional(),
+  tamanhoMedioChunk: z.number().int().positive().optional(),
+  modeloEmbedding: z.string().optional(),
+  totalTokensEstimados: z.number().int().nonnegative().optional(),
+});
+export type RagMetadata = z.infer<typeof RagMetadataSchema>;
+
+export const PipelineMetadataSchema = z.union([
+  ScraperMetadataSchema,
+  EtlMetadataSchema,
+  RagMetadataSchema,
+]);
+export type PipelineMetadata = z.infer<typeof PipelineMetadataSchema>;
+

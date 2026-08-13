@@ -375,38 +375,90 @@ enum StatusColeta {
   @@map("status_coleta")
 }
 
-model ColetaScraper {
-  id                   String           @id @default(uuid())
-  dataInicio           DateTime         @map("data_inicio")
-  dataFim              DateTime?         @map("data_fim")
-  status               StatusColeta     @default(EMANDAMENTO)
-  registrosProcessados Int              @map("registros_processados")
-  logsColetaGrupo      LogColetaItem[]
-  criadoEm             DateTime         @default(now()) @map("criado_em")
-  atualizadoEm         DateTime         @updatedAt @map("atualizado_em")
-
-  @@map("coleta_scraper")
+enum ModuloSistema {
+  SCRAPER
+  ETL
+  RAG
 }
 
-enum LogColetaStatus {
+enum ModoExecucao {
+  COMPLETA
+  APENAS_DGP
+  APENAS_LATTES
+}
+
+enum StatusSessao {
+  EMANDAMENTO
+  CONCLUIDO
+  ERRO
+}
+
+enum TipoEntidadeLog {
+  GRUPO
+  PESQUISADOR
+  LINHA_PESQUISA
+  GERAL
+}
+
+enum StatusItemLog {
   SUCESSO
   ERRO
 }
-enum LogColetaEntidade {
-  PESQUISADOR
-  GRUPO
+
+enum TipoErroColeta {
+  TIMEOUT
+  NAO_ENCONTRADO
+  BLOCKED_CAPTCHA
+  ESTRUTURA_HTML_INVALIDA
+  ERRO_REDE
+  FALHA_ETL
+  EMBEDDING_RATE_LIMIT
+  EMBEDDING_API_KEY_INVALIDA
+  EMBEDDING_FALHA_CALCULO
+  EMBEDDING_CONEXAO_LLM
+  DESCONHECIDO
 }
-model LogColetaItem {
-  id            String                  @id @default(uuid())
-  coletaScraper ColetaScraper           @relation(fields: [coletaId], references: [id])
-  coletaId      String                  @map("coleta_id")
-  entidade      LogColetaEntidade         
-  entidadeId    String                  @map("entidade_id")
-  status        LogColetaStatus 
-  criadoEm      DateTime                @default(now()) @map("criado_em")
-  atualizadoEm  DateTime                @updatedAt @map("atualizado_em")
-  @@index([entidade, entidadeId, status])
-  @@map("log_coleta_grupo")
+
+model PipelineLog {
+  id                   String            @id @default(uuid())
+  modulo               ModuloSistema
+  dgpId                String?           @map("dgp_id")
+  modoExecucao         ModoExecucao      @default(COMPLETA) @map("modo_execucao")
+  status               StatusSessao      @default(EMANDAMENTO)
+  registrosProcessados Int               @default(0) @map("registros_processados")
+  quantidadeSucessos   Int               @default(0) @map("quantidade_sucessos")
+  quantidadeErros      Int               @default(0) @map("quantidade_erros")
+  dataInicio           DateTime          @default(now()) @map("data_inicio")
+  dataFim              DateTime?         @map("data_fim")
+  duracaoMs            Int?              @map("duracao_ms")
+  metadata             Json?             @map("metadata")
+  itens                PipelineLogItem[]
+  criadoEm             DateTime          @default(now()) @map("criado_em")
+  atualizadoEm         DateTime          @updatedAt @map("atualizado_em")
+
+  @@index([modulo, status])
+  @@index([dgpId])
+  @@map("pipeline_log")
+}
+
+model PipelineLogItem {
+  id            String          @id @default(uuid())
+  pipelineLog   PipelineLog     @relation(fields: [pipelineLogId], references: [id], onDelete: Cascade)
+  pipelineLogId String          @map("pipeline_log_id")
+  entidadeId    String?         @map("entidade_id")
+  tipoEntidade  TipoEntidadeLog @default(GRUPO) @map("tipo_entidade")
+  etapa         String?
+  status        StatusItemLog   
+  tipoErro      TipoErroColeta? @map("tipo_erro")
+  mensagemErro  String?         @map("mensagem_erro")
+  detalhesErro  String?         @map("detalhes_erro")
+  tempoMs       Int?            @map("tempo_ms")
+  criadoEm      DateTime        @default(now()) @map("criado_em")
+
+  @@index([pipelineLogId])
+  @@index([entidadeId])
+  @@index([status])
+  @@map("pipeline_log_item")
 }
 
 enum FilaExtracaoStatus {
