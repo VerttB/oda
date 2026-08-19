@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 import { LattesParser } from '../parsers/lattesParser';
 import { saveJson, LATTES_DATA_DIR, IMAGE_DIR } from '../common/config';
 import { prisma, db } from '../common/database';
-import { FilaExtracaoStatus, LogColetaStatus } from '@oda/database';
+import { FilaExtracaoStatus, TipoErroColeta,StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, SharedPipelineLogger } from '@oda/database';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
@@ -15,7 +15,7 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 function normalizeName(n: string): string {
     return n.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ' ');
 }
-
+let pipelineLogger: SharedPipelineLogger | null = null;
 async function getPaginationStatus(page: Page) {
     try {
         const info = await page.evaluate(() => {
@@ -96,7 +96,7 @@ async function closeModal(page: Page) {
     } catch (e) {}
 }
 
-export async function runLattesScraper(names: string[] = []) {
+export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?: SharedPipelineLogger, dgpGrupo: string | null = null) {
     let targets: { nome: string; lattesId: string }[] = [];
 
     if (!names || names.length === 0) {
@@ -117,10 +117,14 @@ export async function runLattesScraper(names: string[] = []) {
             targets.push({ nome: name, lattesId: row ? row.lattesId : '' });
         }
     }
-
-    // Inicializa a Coleta Scraper global
-    const coleta = await db.startScrapperColeta('LATTES');
-    const coletaId = coleta.id;
+    
+    if(pipelineLoggerPrev){
+        if(!dgpGrupo){ throw new Error("Para reutilizar logger, o parâmetro dgpGrupo deve ser fornecido."); }
+        pipelineLogger = pipelineLoggerPrev;
+    } else {
+        pipelineLogger = new SharedPipelineLogger(prisma);
+        pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER,"LATTES_EXTRACTION", ModoExecucao.APENAS_LATTES);
+    }
 
     // Coloca os itens da fila em PROCESSANDO
     for (const target of targets) {
@@ -160,7 +164,7 @@ export async function runLattesScraper(names: string[] = []) {
         async requestHandler({ page, request }) {
             const { name, label, targetLattesId, coletaId } = request.userData;
             const browserContext = page.context();
-
+            const startTimer = performance.now();
             if (label === 'SEARCH') {
                 log.info(`🔍 [Lattes] Buscando: ${name} (ID Esperado: ${targetLattesId || 'Qualquer um'})`);
 
@@ -172,10 +176,20 @@ export async function runLattesScraper(names: string[] = []) {
                 
                 try {
                     await page.waitForSelector(".resultado", { timeout: 40000 });
-                } catch (e) {
+                } catch (e:any) {
                     log.warning(`⚠️ [Lattes] Pesquisador não encontrado: ${name}`);
                     if (targetLattesId) {
-                        await db.logPesquisador(coletaId, targetLattesId, LogColetaStatus.ERRO);
+                        await pipelineLogger!.pipelineLogItem(
+                            `Coleta Lattes - ${name}`,
+                            StatusItemLog.ERRO,
+                            {
+                                entidadeId: targetLattesId || null,
+                                tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                                tipoErro: TipoErroColeta.NAO_ENCONTRADO,
+                                mensagemErro: `Pesquisador não encontrado na busca do Lattes.`,
+                                detalhesErro: e.stack || null,
+                            }
+                        );
                     }
                     return;
                 }
@@ -251,6 +265,8 @@ export async function runLattesScraper(names: string[] = []) {
                             if (photoUrl) {
                                 await downloadImage(photoUrl, parsedLattesId);
                             }
+                            const endTimer = performance.now();
+                            const tempoMs = endTimer - startTimer;
 
                             const fullData = {
                                 nome: name,
@@ -265,9 +281,18 @@ export async function runLattesScraper(names: string[] = []) {
                             const fileName = parsedLattesId;
                             saveJson(fullData, LATTES_DATA_DIR, fileName);
                             log.info(`✅ [Lattes] Sucesso: ${name} (ID: ${parsedLattesId})`);
-
+3
                             if (targetLattesId) {
-                                await db.logPesquisador(coletaId, targetLattesId, LogColetaStatus.SUCESSO);
+                               //await db.logPesquisador(coletaId, targetLattesId, LogColetaStatus.SUCESSO);
+                               await pipelineLogger!.pipelineLogItem(
+                                    `Coleta Lattes - ${name}`,
+                                    StatusItemLog.SUCESSO,
+                                    {
+                                        entidadeId: parsedLattesId,
+                                        tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                                        tempoMs,
+                                    }
+                                );
                             }
 
                             await openedPopup.close();
@@ -314,7 +339,19 @@ export async function runLattesScraper(names: string[] = []) {
 
                 if (!success && targetLattesId) {
                     log.warning(`⚠️ [Lattes] Nenhum resultado coincidiu com o ID esperado (${targetLattesId}) para ${name}`);
-                    await db.logPesquisador(coletaId, targetLattesId, LogColetaStatus.ERRO);
+                    const endTimer = performance.now();
+                    const tempoMs = endTimer - startTimer;
+                    await pipelineLogger!.pipelineLogItem(
+                                `Coleta Lattes - ${name}`,
+                                StatusItemLog.ERRO,
+                                {
+                                    entidadeId: targetLattesId || null,
+                                    tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                                    tipoErro: TipoErroColeta.NAO_ENCONTRADO,
+                                    mensagemErro: "Nenhum resultado coincidiu com o ID esperado (${targetLattesId}) para ${name}",
+                                    tempoMs,
+                                }
+                            );
                 }
             }
         },
@@ -322,11 +359,11 @@ export async function runLattesScraper(names: string[] = []) {
 
     await crawler.addRequests(targets.map(target => ({
         url: LATTES_URL,
-        userData: { label: 'SEARCH', name: target.nome, targetLattesId: target.lattesId, coletaId },
+        userData: { label: 'SEARCH', name: target.nome, targetLattesId: target.lattesId, coletaId: dgpGrupo || null },
         uniqueKey: `LATTES-${target.nome}-${target.lattesId}`
     })));
 
     await crawler.run();
-    await db.finishGrupoColeta(coletaId, targets.length);
+    //await db.finishGrupoColeta(coletaId, targets.length);
     log.info('🏁 Scraper Lattes finalizado via Crawlee.');
 }
