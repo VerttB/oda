@@ -5,10 +5,9 @@ import { OPEN_ALEX_URL, DOI_URL, PROCESSED_DATA_DIR } from './commom/config';
 import { TipoProducao, Qualis } from '@oda/database';
 import { stripHtml } from './commom/normalize';
 import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
-
+import { SharedPipelineLogger } from '@oda/database';
 const prisma = new PrismaClient(prismaConfig);
-
-
+const pipelineLogger = new SharedPipelineLogger(prisma);
 export async function getOpenAlexData(orcid:string) {
     try{
         const url = `${OPEN_ALEX_URL}?api_key=${process.env.OPEN_ALEX_KEY}&filter=orcid:${orcid}`
@@ -276,6 +275,7 @@ export async function saveLattesToDb(data: any) {
             }
         }, { timeout: 30000 });
     } catch (error) {
+        
         console.error(`[ETL] ❌ Erro no Lattes de ${data.nome}:`, error);
     }
 }
@@ -295,7 +295,6 @@ export async function runPesquisadorEtl(jsonPath: string) {
     const lattesData = JSON.parse(content);
 
     await saveLattesToDb(lattesData);
-
     const lattesFileName = path.basename(jsonPath);
     const processedLattesDir = path.join(PROCESSED_DATA_DIR, 'lattes');
     if (!fs.existsSync(processedLattesDir)) fs.mkdirSync(processedLattesDir, { recursive: true });

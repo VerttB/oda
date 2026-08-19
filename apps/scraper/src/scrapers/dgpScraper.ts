@@ -4,10 +4,11 @@ import { DGPExtractor } from '../parsers/dgpParser';
 import { db, prisma } from '../common/database';
 import { saveJson, DGP_DATA_DIR } from '../common/config';
 import { runLattesScraper } from './lattesScraper';
-import { FilaExtracaoStatus, LogColetaStatus } from '@oda/database';
+import { FilaExtracaoStatus, TipoErroColeta,StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao } from '@oda/database';
 import { sleep, randomSleep } from '../common/utils';
+import { SharedPipelineLogger } from '@oda/database';
 const extractor = new DGPExtractor();
-
+const pipelineLogger = new SharedPipelineLogger(prisma);
 async function closePopup(popups: Set<Page>, page: Page) {
     for (const p of popups) {
         if (p !== page) {
@@ -42,7 +43,8 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
         await groupPage.waitForSelector('#recursosHumanos', { timeout: 30000 });
         await randomSleep(1000, 2000);
 
-        const rhDetailsMap = new Map<string, any>();
+        // Cria map de detalhes do RH para cada pesquisador/líder do grupo
+        const rhDetailsMap = new Map<string, ReturnType<typeof extractor.extractRHDetails>>();
         const rhButtons = await groupPage.$$("a[id*='idBtnVisualizarEspelho']");
         
         for (const btn of rhButtons) {
@@ -60,18 +62,33 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 await openedPopup.waitForLoadState('domcontentloaded');
                 await sleep(500);
                 const html = await openedPopup.content();
+                // Extração dos pesquisadores do grupo de pesquisa
                 rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
                 await openedPopup.close();
+            }catch (err: any) {
+                log.error(`[Scraper] Erro ao extrair detalhes do RH para ${nome}: ${err.message}`);
+                pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                    tipoEntidade: TipoEntidadeLog.GRUPO,
+                    entidadeId: dgpId,
+                    tipoErro: TipoErroColeta.DESCONHECIDO,
+                    mensagemErro: `Erro ao extrair detalhes do RH para ${nome}: ${err.message}`,
+                    detalhesErro: err.stack
+                });
+                
             } finally {
                 await closePopup(activePopups, groupPage)
             }
         }
 
-        const linesPopups: string[] = [];
+        const linesMap = new Map<string, ReturnType<typeof extractor.extractLineDetails>>();
         const linesButtons = await groupPage.$$("a[id*='idBtnVisualizarEspelhoLinhaPesquisa']");
         
         for (const btn of linesButtons) {
             await randomSleep(500, 1500);
+            const linhaNome = await btn.evaluate(el => {
+                const row = el.closest('tr');
+                return row ? (row.querySelector('td')?.textContent || '').trim() : '';
+            });
             try {
                 const [openedPopup] = await Promise.all([
                     groupPage.waitForEvent('popup', { timeout: 20000 }),
@@ -79,15 +96,25 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 ]);
                 await openedPopup.waitForLoadState('domcontentloaded');
                 await sleep(500);
-                linesPopups.push(await openedPopup.content());
+                const html = await openedPopup.content();
+                linesMap.set(linhaNome || "Desconhecido", extractor.extractLineDetails(html, linhaNome));
                 await openedPopup.close();
+            }catch(err: any){
+                console.error(`[Scraper] Erro ao extrair detalhes da linha de pesquisa: ${err.message}`);
+                pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                    tipoEntidade: TipoEntidadeLog.GRUPO,
+                    entidadeId: dgpId,
+                    tipoErro: TipoErroColeta.DESCONHECIDO,
+                    mensagemErro: `Erro ao extrair detalhes da linha de pesquisa ${linhaNome}: ${err.message}`,
+                    detalhesErro: err.stack
+                });
             } finally {
                 await closePopup(activePopups, groupPage)
             }
         }
 
         const mainHtml = await groupPage.content();
-        const data = extractor.extractGroupMirror(mainHtml, linesPopups, rhDetailsMap);
+        const data = extractor.extractGroupMirror(mainHtml, linesMap, rhDetailsMap);
         
         data.id_dgp = dgpId;
         saveJson(data, DGP_DATA_DIR, dgpId);
@@ -115,13 +142,23 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
             }
         }
         
-        await db.logGrupo(coletaId, dgpId, LogColetaStatus.SUCESSO);
+        await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.SUCESSO, {
+            tipoEntidade: TipoEntidadeLog.GRUPO,
+            entidadeId: dgpId,
+            mensagemErro: '',
+            detalhesErro: ''
+        });
 
         // Fila de pesquisadores populada com sucesso. A extração Lattes ocorrerá de forma sequencial ao término do processo DGP.
 
     } catch (err: any) {
         log.error(`❌ Erro ao extrair grupo ${dgpId}: ${err.message}`);
-        await db.logGrupo(coletaId, dgpId, LogColetaStatus.ERRO);
+        await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+            tipoEntidade: TipoEntidadeLog.GRUPO,
+            entidadeId: dgpId,
+            mensagemErro: err.message,
+            detalhesErro: err.stack
+        });
     } finally {
         groupPage.off('popup', popupListener);
         for (const p of activePopups) {
@@ -171,8 +208,6 @@ export async function runDgpScraper(dgpIds: string[] = []) {
 
     log.info(`[Scraper] Encontrados ${pendingGroups.length} grupos pendentes. Iniciando extração...`);
 
-    const coleta = await db.startScrapperColeta('DGP');
-    const coletaId = coleta.id;
 
     const crawler = new PlaywrightCrawler({
         headless: true,
@@ -207,24 +242,32 @@ export async function runDgpScraper(dgpIds: string[] = []) {
             
             try {
                 await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PROCESSANDO);
+                await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, dgpId, ModoExecucao.COMPLETA);
                 await scrapeGroupPage(context, page, coletaId);
             } catch (error: any) {
                 log.error(`[Scraper] Erro crítico no handler para o grupo '${dgpId}': ${error.message}`);
-                await db.logGrupo(coletaId, dgpId, LogColetaStatus.ERRO);
+                await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                    tipoEntidade: TipoEntidadeLog.GRUPO,
+                    entidadeId: dgpId,
+                    tipoErro: TipoErroColeta.DESCONHECIDO,
+                    mensagemErro: error.message,
+                    detalhesErro: JSON.stringify(error, Object.getOwnPropertyNames(error))
+                });
+                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.CONCLUIDO);
+                await pipelineLogger.finishPipelineLogger(StatusSessao.ERRO);
             }
         },
     });
 
     const requests = pendingGroups.map(group => ({
         url: `http://dgp.cnpq.br/dgp/espelhogrupo/${group.dgpId}`,
-        userData: { coletaId },
+        userData: { dgpId: group.dgpId, coletaId: `DGP-EXTRACT-${group.dgpId}` },
         uniqueKey: `DGP-EXTRACT-${group.dgpId}`
     }));
 
     await crawler.addRequests(requests);
     await crawler.run();
     
-    await db.finishGrupoColeta(coletaId, pendingGroups.length);
     log.info('[Scraper] Extração DGP finalizada.');
 
     // Encadeamento sequencial para processar pesquisadores pendentes da fila

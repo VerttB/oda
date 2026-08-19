@@ -1,5 +1,5 @@
 import { PrismaClient, prismaConfig } from "@oda/database"
-import { FilaExtracaoStatus, StatusColeta, LogColetaStatus, LogColetaEntidade } from "@oda/database";
+import { FilaExtracaoStatus, StatusColeta } from "@oda/database";
 import { cleanStr } from "./utils";
 export const prisma = new PrismaClient(prismaConfig)
 
@@ -7,16 +7,7 @@ export const db = {
   /**
    * Registra o início de uma nova coleta do scrapper principal.
    */
-  async startScrapperColeta(origem: string) {
-    return prisma.coletaScraper.create({
-      data: {
-        dataInicio: new Date(),
-        status: StatusColeta.EMANDAMENTO,
-        registrosProcessados: 0,
-      },
-    });
-  },
-
+  
   async getGroupQueueDiscovery(){
     return prisma.filaExtracaoGrupo.findMany( { select: {
       nome: true,
@@ -95,38 +86,12 @@ export const db = {
   /**
    * Finaliza uma coleta global.
    */
-  async finishGrupoColeta(id: string, registros: number) {
-    return prisma.coletaScraper.update({
-      where: { id },
-      data: {
-        dataFim: new Date(),
-        status: StatusColeta.CONCLUIDA,
-        registrosProcessados: registros,
-      },
-    });
-  },
+  
 
   /**
    * Registra o log de coleta de um grupo e o marca como concluído na fila.
    */
-  async logGrupo(coletaId: string, dgpId: string, status: LogColetaStatus) {
-    return prisma.$transaction([
-      prisma.logColetaItem.create({
-        data: {
-          coletaId,
-          entidadeId: dgpId,
-          entidade: LogColetaEntidade.GRUPO,
-          status,
-        },
-      }),
-      prisma.filaExtracaoGrupo.update({
-        where: { dgpId },
-        data: { status: FilaExtracaoStatus.CONCLUIDO }
-      })
-    ], {
-      timeout: 30000
-    });
-  },
+  
 
   async groupQeueDiscovery(data: { dgpId: string, nome: string, area: string, instituicao: string }) {
     const nomeLimpo = cleanStr(data.nome);
@@ -174,22 +139,5 @@ export const db = {
   /**
    * Registra o log de coleta de um pesquisador e o marca como concluído na fila.
    */
-  async logPesquisador(coletaId: string, lattesId: string, status: LogColetaStatus) {
-      return prisma.$transaction([
-          prisma.logColetaItem.create({
-              data: {
-                  coletaId,
-                  entidadeId: lattesId,
-                  entidade: LogColetaEntidade.PESQUISADOR,
-                  status,
-              },
-          }),
-          prisma.filaExtracaoPesquisador.update({
-              where: { lattesId },
-              data: { status: FilaExtracaoStatus.CONCLUIDO }
-          })
-      ], {
-          timeout: 30000
-      });
-  }
+
 };

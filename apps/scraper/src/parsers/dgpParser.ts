@@ -20,7 +20,7 @@ export const getAdjacentField = ($: cheerio.CheerioAPI, labelPattern: string | R
 
 export class DGPExtractor {
   /**
-   * Extrai detalhes do Recursos Humanos (Pesquisador/Estudante)
+   * Extrai detalhes de um único Pesquisador (Pesquisador/Estudante)
    */
   extractRHDetails(html: string) {
     const $ = cheerio.load(html);
@@ -109,7 +109,7 @@ export class DGPExtractor {
   /**
    * Consolida a extração completa do espelho do grupo
    */
-  extractGroupMirror(html: string, linesPopups: string[], rhDetailsMap: Map<string, any>) {
+  extractGroupMirror(html: string, linesMap: Map<string, ReturnType<typeof this.extractLineDetails>>, rhDetailsMap: Map<string, ReturnType<typeof this.extractRHDetails>>) {
     const $ = cheerio.load(html);
     const data: any = {
       idDgp: '000000',
@@ -218,11 +218,11 @@ export class DGPExtractor {
             l => l.trim().toLowerCase() === nome.trim().toLowerCase()
           );
 
-          const extra = rhDetailsMap.get(nome) || {};
+          const extra = rhDetailsMap.get(nome)!;
           data.membros.push({
             nome,
             lattes: extra.lattes || '',
-            formacaoAcademica: formacaoTable || extra.titulacao || '',
+            formacaoAcademica: formacaoTable || '',
             categoriaLattes: categoria,
             eLider: isLider,
             areas: extra.areas || [],
@@ -233,17 +233,20 @@ export class DGPExtractor {
       });
     });
 
-    // Linhas
-    let lineIdx = 0;
-    $('#linhaPesquisa tbody tr').each((_, tr) => {
-       const tds = $(tr).find('td');
-       if (tds.length > 0 && !$(tds[0]).attr('colspan')) {
-           const title = cleanText($(tds[0]).text());
-           const popupHtml = linesPopups[lineIdx] || '';
-           data.linhas.push(this.extractLineDetails(popupHtml, title));
-           lineIdx++;
-       }
+    linesMap.forEach((lineDetails, lineName) => {
+      data.linhas.push(lineDetails);
     });
+    // Linhas
+    // let lineIdx = 0;
+    // $('#linhaPesquisa tbody tr').each((_, tr) => {
+    //    const tds = $(tr).find('td');
+    //    if (tds.length > 0 && !$(tds[0]).attr('colspan')) {
+    //        const title = cleanText($(tds[0]).text());
+    //        const popupHtml = linesPopups[lineIdx] || '';
+    //        data.linhas.push(this.extractLineDetails(popupHtml, title));
+    //        lineIdx++;
+    //    }
+    // });
 
     return data;
   }
