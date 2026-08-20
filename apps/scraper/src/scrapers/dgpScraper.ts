@@ -4,11 +4,13 @@ import { DGPExtractor } from '../parsers/dgpParser';
 import { db, prisma } from '../common/database';
 import { saveJson, DGP_DATA_DIR } from '../common/config';
 import { runLattesScraper } from './lattesScraper';
-import { FilaExtracaoStatus, TipoErroColeta,StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao } from '@oda/database';
+import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao } from '@oda/database';
 import { sleep, randomSleep } from '../common/utils';
 import { SharedPipelineLogger } from '@oda/database';
+
 const extractor = new DGPExtractor();
 const pipelineLogger = new SharedPipelineLogger(prisma);
+
 async function closePopup(popups: Set<Page>, page: Page) {
     for (const p of popups) {
         if (p !== page) {
@@ -20,7 +22,7 @@ async function closePopup(popups: Set<Page>, page: Page) {
     popups.clear();
 }
 
-async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaId: string) {
+async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaId: string, pipelineLogId: string | null) {
     const url = groupPage.url();
     const match = url.split("/");
     const dgpId = match[match.length-1];
@@ -65,18 +67,17 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 // Extração dos pesquisadores do grupo de pesquisa
                 rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
                 await openedPopup.close();
-            }catch (err: any) {
+            } catch (err: any) {
                 log.error(`[Scraper] Erro ao extrair detalhes do RH para ${nome}: ${err.message}`);
-                pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, 'RH_DETALHES', StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
                     mensagemErro: `Erro ao extrair detalhes do RH para ${nome}: ${err.message}`,
                     detalhesErro: err.stack
                 });
-                
             } finally {
-                await closePopup(activePopups, groupPage)
+                await closePopup(activePopups, groupPage);
             }
         }
 
@@ -99,9 +100,9 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 const html = await openedPopup.content();
                 linesMap.set(linhaNome || "Desconhecido", extractor.extractLineDetails(html, linhaNome));
                 await openedPopup.close();
-            }catch(err: any){
+            } catch(err: any){
                 console.error(`[Scraper] Erro ao extrair detalhes da linha de pesquisa: ${err.message}`);
-                pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, 'LINHA_PESQUISA', StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
@@ -109,7 +110,7 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                     detalhesErro: err.stack
                 });
             } finally {
-                await closePopup(activePopups, groupPage)
+                await closePopup(activePopups, groupPage);
             }
         }
 
@@ -121,7 +122,6 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
         log.info(`Grupo ${dgpId} extraído e salvo com sucesso.`);
 
         // Filtra pesquisadores e líderes do grupo
-      
         const pesquisadoresParaScrapear: string[] = [];
 
         // Insere na fila ou verifica se já está pendente
@@ -142,18 +142,14 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
             }
         }
         
-        await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.SUCESSO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'GRUPO_ESPELHO', StatusItemLog.SUCESSO, {
             tipoEntidade: TipoEntidadeLog.GRUPO,
             entidadeId: dgpId,
-            mensagemErro: '',
-            detalhesErro: ''
         });
-
-        // Fila de pesquisadores populada com sucesso. A extração Lattes ocorrerá de forma sequencial ao término do processo DGP.
 
     } catch (err: any) {
         log.error(`❌ Erro ao extrair grupo ${dgpId}: ${err.message}`);
-        await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'GRUPO_ESPELHO', StatusItemLog.ERRO, {
             tipoEntidade: TipoEntidadeLog.GRUPO,
             entidadeId: dgpId,
             mensagemErro: err.message,
@@ -178,7 +174,6 @@ export async function runDgpScraper(dgpIds: string[] = []) {
     let pendingGroups: { dgpId: string; nome: string }[] = [];
 
     if (dgpIds && dgpIds.length > 0) {
-        // Se IDs específicos foram fornecidos, garante que existem na fila e os seleciona
         for (const id of dgpIds) {
             const row = await prisma.filaExtracaoGrupo.upsert({
                 where: { dgpId: id },
@@ -207,7 +202,6 @@ export async function runDgpScraper(dgpIds: string[] = []) {
     }
 
     log.info(`[Scraper] Encontrados ${pendingGroups.length} grupos pendentes. Iniciando extração...`);
-
 
     const crawler = new PlaywrightCrawler({
         headless: true,
@@ -239,14 +233,16 @@ export async function runDgpScraper(dgpIds: string[] = []) {
             if (!dgpId) return;
 
             log.info(`\n🔍 Processando Grupo: ${dgpId}`);
+            let pipelineLogId: string | null = null;
             
             try {
                 await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PROCESSANDO);
-                await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, dgpId, ModoExecucao.COMPLETA);
-                await scrapeGroupPage(context, page, coletaId);
+                pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, dgpId, ModoExecucao.COMPLETA);
+                await scrapeGroupPage(context, page, coletaId, pipelineLogId);
+                await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO);
             } catch (error: any) {
                 log.error(`[Scraper] Erro crítico no handler para o grupo '${dgpId}': ${error.message}`);
-                await pipelineLogger.pipelineLogItem('scrapeGroupPage', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, 'scrapeGroupPage', StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
@@ -254,7 +250,7 @@ export async function runDgpScraper(dgpIds: string[] = []) {
                     detalhesErro: JSON.stringify(error, Object.getOwnPropertyNames(error))
                 });
                 await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.CONCLUIDO);
-                await pipelineLogger.finishPipelineLogger(StatusSessao.ERRO);
+                await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
             }
         },
     });

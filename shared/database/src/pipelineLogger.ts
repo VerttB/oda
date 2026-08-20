@@ -11,12 +11,11 @@ export interface LogItemOptions {
 }
 
 export class SharedPipelineLogger {
-  private currentPipelineLogId: string | null = null;
-  constructor(private readonly prisma: PrismaClient ) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async startPipelineLogger(
     modulo: ModuloSistema,
-    dgpId: string,
+    dgpId?: string | null,
     modoExecucao: ModoExecucao = ModoExecucao.COMPLETA,
     metadata?: PipelineMetadata
   ): Promise<string | null> {
@@ -25,17 +24,16 @@ export class SharedPipelineLogger {
       const log = await this.prisma.pipelineLog.create({
         data: {
           modulo,
-          dgpId: dgpId,
+          dgpId: dgpId || null,
           modoExecucao,
           status: StatusSessao.EMANDAMENTO,
           dataInicio: new Date(),
           metadata: parsedMetadata ? (parsedMetadata as any) : undefined,
         },
       });
-      this.currentPipelineLogId = log.id;
+      return log.id;
     } catch (err: any) {
       console.error(`[SharedPipelineLogger] Erro ao iniciar sessão: ${err.message}`);
-      this.currentPipelineLogId = null;
       return null;
     }
   }
@@ -44,20 +42,21 @@ export class SharedPipelineLogger {
    * Registra um item/etapa individual no pipeline_log_item
    */
   async pipelineLogItem(
+    pipelineLogId: string | null | undefined,
     etapa: string,
     status: StatusItemLog,
     options?: LogItemOptions
   ) {
-    if (!this.currentPipelineLogId) return;
+    if (!pipelineLogId) return;
 
     try {
       await this.prisma.pipelineLogItem.create({
         data: {
-          pipelineLogId: this.currentPipelineLogId,
+          pipelineLogId,
           etapa,
           status,
           entidadeId: options?.entidadeId || null,
-          tipoEntidade: options?.tipoEntidade,
+          tipoEntidade: options?.tipoEntidade || TipoEntidadeLog.GRUPO,
           tipoErro: options?.tipoErro || null,
           mensagemErro: options?.mensagemErro || null,
           detalhesErro: options?.detalhesErro || null,
@@ -70,7 +69,7 @@ export class SharedPipelineLogger {
         : { registrosProcessados: { increment: 1 }, quantidadeErros: { increment: 1 } };
 
       await this.prisma.pipelineLog.update({
-        where: { id: this.currentPipelineLogId },
+        where: { id: pipelineLogId },
         data: incrementData,
       });
     } catch (err: any) {
@@ -78,16 +77,19 @@ export class SharedPipelineLogger {
     }
   }
 
-
-async finishPipelineLogger(
+  /**
+   * Finaliza uma sessão de log atualizando dataFim, duracaoMs, status e metadados finais
+   */
+  async finishPipelineLogger(
+    pipelineLogId: string | null | undefined,
     status: StatusSessao,
     finalMetadata?: PipelineMetadata
   ) {
-    if (!this.currentPipelineLogId) return;
+    if (!pipelineLogId) return;
 
     try {
       const sessao = await this.prisma.pipelineLog.findUnique({
-        where: { id: this.currentPipelineLogId },
+        where: { id: pipelineLogId },
       });
 
       if (!sessao) return;
@@ -100,7 +102,7 @@ async finishPipelineLogger(
       const mergedMetadata = { ...existingMeta, ...newMeta };
 
       await this.prisma.pipelineLog.update({
-        where: { id: this.currentPipelineLogId },
+        where: { id: pipelineLogId },
         data: {
           status,
           dataFim,
@@ -113,4 +115,3 @@ async finishPipelineLogger(
     }
   }
 }
-
