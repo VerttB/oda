@@ -18,7 +18,8 @@
     "etl": "pnpm -F @oda/etl start",
     "etl:grupo": "pnpm -F @oda/etl start grupo",
     "etl:pesquisador": "pnpm -F @oda/etl start pesquisador",
-    "ingest:db": "pnpm -F @oda/langchain run ingest-db"
+    "ingest:db": "pnpm -F @oda/langchain run ingest-db",
+    "web:dev": "pnpm -F @oda/web run dev"
   },
   "engines": {
     "node": ">=20"
