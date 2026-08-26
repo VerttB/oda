@@ -249,7 +249,7 @@ export async function runDgpScraper(dgpIds: string[] = []) {
                     mensagemErro: error.message,
                     detalhesErro: JSON.stringify(error, Object.getOwnPropertyNames(error))
                 });
-                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.CONCLUIDO);
+                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PENDENTE);
                 await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
             }
         },

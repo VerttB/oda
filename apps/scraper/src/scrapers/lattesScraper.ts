@@ -15,47 +15,10 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 function normalizeName(n: string): string {
     return n.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ' ');
 }
-let pipelineLogger: SharedPipelineLogger | null = null;
-
-async function getPaginationStatus(page: Page) {
-    try {
-        const info = await page.evaluate(() => {
-            const scripts = Array.from(document.querySelectorAll('script'));
-            const targetScript = scripts.find(s => s.textContent && s.textContent.includes('intLTotReg'));
-            if (!targetScript || !targetScript.textContent) return null;
-            
-            const text = targetScript.textContent;
-            const totMatch = text.match(/var\s+intLTotReg\s*=\s*(\d+)/);
-            const regMatch = text.match(/var\s+intLRegPagina\s*=\s*(\d+)/);
-            
-            const redFont = document.querySelector('a[data-role="paginacao"] font[color="#ff0000"]');
-            let currentPage = 1;
-            if (redFont) {
-                const pageNum = parseInt(redFont.textContent || '', 10);
-                if (!isNaN(pageNum)) currentPage = pageNum;
-            } else {
-                const activeLink = document.querySelector('a[data-role="paginacao"].is-current');
-                if (activeLink) {
-                    const pageNum = parseInt(activeLink.textContent || '', 10);
-                    if (!isNaN(pageNum)) currentPage = pageNum;
-                }
-            }
-
-            return {
-                totalRecords: totMatch ? parseInt(totMatch[1], 10) : 0,
-                recordsPerPage: regMatch ? parseInt(regMatch[1], 10) : 10,
-                currentPage
-            };
-        });
-        return info;
-    } catch (e) {
-        return null;
-    }
-}
 
 async function downloadProfileImage(page: Page, lattesId: string) {
     try {
-        const imgElement = await page.$("img[src*='servlet/foto']");
+        const imgElement = await page.$("img.foto");
         if (imgElement) {
             const src = await imgElement.getAttribute('src');
             if (src) {
@@ -110,10 +73,11 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
             targets.push({ nome: name, lattesId: row ? row.lattesId : '' });
         }
     }
-    
+
+    let pipelineLogger: SharedPipelineLogger;
     let pipelineLogId: string | null = null;
-    if(pipelineLoggerPrev){
-        if(!dgpGrupo){ throw new Error("Para reutilizar logger, o parâmetro dgpGrupo deve ser fornecido."); }
+
+    if (pipelineLoggerPrev != null && pipelineLoggerPrev != undefined) {
         pipelineLogger = pipelineLoggerPrev;
     } else {
         pipelineLogger = new SharedPipelineLogger(prisma);
@@ -165,14 +129,19 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
             await page.goto(LATTES_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
             
             await page.fill("input[id='textoBusca']", name);
-            await page.click("input[id='buscarDemais']");
-            await page.click("a[id='botaoBuscaFiltros']");
+            const buscarDemais = await page.$("input[id='buscarDemais']");
+            if (buscarDemais) await buscarDemais.click();
+
+            await Promise.all([
+                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 45000 }),
+                page.click("a[id='botaoBuscaFiltros']"),
+            ]);
             
             try {
-                await page.waitForSelector(".resultado", { timeout: 40000 });
-            } catch (e:any) {
+                await page.waitForSelector(".resultado", { timeout: 30000 });
+            } catch (e: any) {
                 log.warning(`⚠️ [Lattes] Pesquisador não encontrado: ${name}`);
-                if (targetLattesId && pipelineLogger) {
+                if (targetLattesId) {
                     await pipelineLogger.pipelineLogItem(
                         pipelineLogId,
                         'PESQUISADOR_LATTES',
@@ -185,152 +154,133 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                             detalhesErro: e.stack || null,
                         }
                     );
+                    await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.PENDENTE);
                 }
                 return;
             }
 
+            const results = page.locator(".resultado b a");
+            const count = await results.count();
+            log.info(`[Lattes] Encontrados ${count} resultados na busca para o nome: ${name}`);
+
             let success = false;
 
-            while (true) {
-                const pagStatus = await getPaginationStatus(page);
-                if (!pagStatus) {
-                    log.warning("[Lattes] Não foi possível ler informações de paginação.");
-                    break;
+            for (let i = 0; i < count; i++) {
+                const resultLink = results.nth(i);
+                const linkText = (await resultLink.textContent())?.trim() || "";
+
+                if (normalizeName(linkText) !== normalizeName(name) && !targetLattesId) {
+                    log.info(`[Lattes] Nome no resultado "${linkText}" não corresponde exatamente a "${name}". Pulando...`);
+                    continue;
                 }
 
-                const pageNumber = pagStatus.currentPage;
-                const totalPages = Math.ceil(pagStatus.totalRecords / pagStatus.recordsPerPage);
+                log.info(`[Lattes] Verificando resultado ${i + 1} de ${count}: ${linkText}...`);
+                await resultLink.click();
 
-                log.info(`[Lattes] Analisando página ${pageNumber} de ${totalPages} (Total de registros: ${pagStatus.totalRecords}) para: ${name}`);
+                try {
+                    await page.waitForSelector(".moldal-interna", { state: "visible", timeout: 15000 });
+                } catch (e) {
+                    log.warning(`⚠️ [Lattes] Modal de detalhes não abriu para o resultado ${i + 1}`);
+                    continue;
+                }
 
-                const resultItems = await page.$$("ol li");
+                const frame = page.frameLocator("iframe.iframe-modal");
+                const cvLink = frame.locator("a:has-text('Currículo Lattes')");
 
-                for (let i = 0; i < resultItems.length; i++) {
-                    const li = resultItems[i];
-                    const text = await li.innerText();
-                    const cleanText = text.replace(/\s+/g, ' ');
+                const activePopups = new Set<Page>();
+                const popupListener = (p: Page) => {
+                    activePopups.add(p);
+                    p.once('close', () => activePopups.delete(p));
+                };
+                page.on('popup', popupListener);
 
-                    const match = cleanText.match(/(.*?)\s+Endereço para acessar este CV:\s*http:\/\/lattes\.cnpq\.br\/(\d{16})/);
-                    if (!match) continue;
+                try {
+                    const [openedPopup] = await Promise.all([
+                        page.waitForEvent('popup', { timeout: 30000 }),
+                        cvLink.evaluate(el => (el as HTMLElement).click()),
+                    ]);
 
-                    const extractedName = match[1].trim();
-                    const parsedLattesId = match[2];
+                    await openedPopup.waitForLoadState("domcontentloaded");
+                    await sleep(500);
 
-                    if (targetLattesId && targetLattesId !== parsedLattesId) {
-                        continue;
-                    }
+                    const html = await openedPopup.content();
+                    const $ = cheerio.load(html);
 
-                    if (!targetLattesId && normalizeName(extractedName) !== normalizeName(name)) {
-                        continue;
-                    }
+                    const basicInfo = parser.extractBasicInfo($);
+                    const parsedLattesId = basicInfo.lattes ? basicInfo.lattes.replace(/https?:\/\/lattes\.cnpq\.br\//, '').trim() : '';
 
-                    log.info(`🎯 Encontrado resultado correspondente: ${extractedName} (ID: ${parsedLattesId})`);
+                    log.info(`[Lattes] ID do Lattes analisado no CV: ${parsedLattesId} (Esperado: ${targetLattesId || 'Qualquer'})`);
 
-                    const link = await li.$("a[href*='abrirExtrato']");
-                    if (!link) continue;
-
-                    const activePopups = new Set<Page>();
-                    const popupListener = (p: Page) => {
-                        activePopups.add(p);
-                        p.once('close', () => activePopups.delete(p));
-                    };
-                    page.on('popup', popupListener);
-
-                    try {
-                        const [openedPopup] = await Promise.all([
-                            page.waitForEvent('popup', { timeout: 30000 }),
-                            link.click(),
-                        ]);
-
-                        await openedPopup.waitForLoadState('domcontentloaded');
-                        await openedPopup.waitForSelector('.title-wrapper', { timeout: 30000 });
-                        await downloadProfileImage(openedPopup, parsedLattesId);
-
-                        const html = await openedPopup.content();
-                        const $ = cheerio.load(html);
-
-                        const basicInfo = parser.extractBasicInfo($);
-                        const projects = parser.extractProjectDetails($);
-                        const events = parser.extractEventDetails($);
-                        const formations = parser.extractFormationDetails($);
-                        const productions = parser.extractProductionDetails($);
-
-                        const endTimer = performance.now();
-                        const tempoMs = Math.round(endTimer - startTimer);
-
-                        const fullData = {
-                            nome: name,
-                            lattesId: parsedLattesId,
-                            ...basicInfo,
-                            ...projects,
-                            ...events,
-                            ...formations,
-                            ...productions
-                        };
-
-                        const fileName = parsedLattesId;
-                        saveJson(fullData, LATTES_DATA_DIR, fileName);
-                        log.info(`✅ [Lattes] Sucesso: ${name} (ID: ${parsedLattesId})`);
-
-                        if (targetLattesId && pipelineLogger) {
-                            await pipelineLogger.pipelineLogItem(
-                                pipelineLogId,
-                                'PESQUISADOR_LATTES',
-                                StatusItemLog.SUCESSO,
-                                {
-                                    entidadeId: parsedLattesId,
-                                    tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-                                    tempoMs,
-                                }
-                            );
-                        }
-
+                    if (targetLattesId && parsedLattesId !== targetLattesId) {
+                        log.warning(`[Lattes] ID do Lattes diferente do esperado (${parsedLattesId} vs ${targetLattesId}). Fechando e tentando próximo...`);
                         await openedPopup.close();
                         await closeModal(page);
-                        success = true;
-                        break;
-                    } catch (e: any) {
-                        log.error(`❌ [Lattes] Erro ao extrair no popup: ${e.message}`);
-                        await closeModal(page);
-                    } finally {
-                        page.off('popup', popupListener);
-                        for (const p of activePopups) {
-                            if (p !== page) {
-                                try {
-                                    await p.close();
-                                } catch (e) {}
-                            }
-                        }
-                        activePopups.clear();
+                        continue;
                     }
-                }
 
-                if (success) {
+                    const projects = parser.extractProjectDetails($);
+                    const events = parser.extractEventDetails($);
+                    const formations = parser.extractFormationDetails ? parser.extractFormationDetails($) : {};
+                    const productions = parser.extractProductionDetails ? parser.extractProductionDetails($) : {};
+
+                    await downloadProfileImage(openedPopup, parsedLattesId || targetLattesId);
+
+                    const endTimer = performance.now();
+                    const tempoMs = Math.round(endTimer - startTimer);
+
+                    const fullData = {
+                        nome: name,
+                        lattesId: parsedLattesId || targetLattesId,
+                        ...basicInfo,
+                        ...projects,
+                        ...events,
+                        ...formations,
+                        ...productions
+                    };
+
+                    const finalId = parsedLattesId || targetLattesId;
+                    if (finalId) {
+                        saveJson(fullData, LATTES_DATA_DIR, finalId);
+                        log.info(`✅ [Lattes] Sucesso: ${name} (ID: ${finalId})`);
+                        await db.updatePesquisadorQueueStatus(finalId, FilaExtracaoStatus.CONCLUIDO);
+
+                        await pipelineLogger.pipelineLogItem(
+                            pipelineLogId,
+                            'PESQUISADOR_LATTES',
+                            StatusItemLog.SUCESSO,
+                            {
+                                entidadeId: finalId,
+                                tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                                tempoMs,
+                            }
+                        );
+                    }
+
+                    await openedPopup.close();
+                    await closeModal(page);
+                    success = true;
                     break;
-                }
-
-                const nextPage = pageNumber + 1;
-                const nextInicio = (nextPage - 1) * pagStatus.recordsPerPage;
-
-                if (nextInicio < pagStatus.totalRecords) {
-                    log.info(`[Lattes] ID não encontrado na página ${pageNumber} de ${totalPages}. Avançando para a página ${nextPage}...`);
-                    await Promise.all([
-                        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 45000 }),
-                        page.evaluate((inicio) => {
-                            (window as any).submeterPaginacao(inicio, 10);
-                        }, nextInicio)
-                    ]);
-                    await sleep(1000);
-                } else {
-                    log.info(`[Lattes] Fim de todas as páginas de resultados (${totalPages}) alcançado sem encontrar o pesquisador.`);
-                    break;
+                } catch (e: any) {
+                    log.error(`❌ [Lattes] Erro ao extrair no popup: ${e.message}`);
+                    await closeModal(page);
+                } finally {
+                    page.off('popup', popupListener);
+                    for (const p of activePopups) {
+                        if (p !== page) {
+                            try {
+                                await p.close();
+                            } catch (e) {}
+                        }
+                    }
+                    activePopups.clear();
                 }
             }
 
-            if (!success && targetLattesId && pipelineLogger) {
-                log.warning(`⚠️ [Lattes] Nenhum resultado coincidiram com o ID esperado (${targetLattesId}) para ${name}`);
+            if (!success && targetLattesId) {
+                log.warning(`⚠️ [Lattes] Nenhum resultado coincidiu com o ID esperado (${targetLattesId}) para ${name}`);
                 const endTimer = performance.now();
                 const tempoMs = Math.round(endTimer - startTimer);
+
                 await pipelineLogger.pipelineLogItem(
                     pipelineLogId,
                     'PESQUISADOR_LATTES',
@@ -343,6 +293,7 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                         tempoMs,
                     }
                 );
+                await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.PENDENTE);
             }
         },
     });
@@ -354,9 +305,9 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
     })));
 
     await crawler.run();
-    log.info('[Lattes] Scraper Lattes finalizado.');
+    log.info('🏁 Scraper Lattes finalizado.');
 
-    if (!pipelineLoggerPrev && pipelineLogger && pipelineLogId) {
+    if (!pipelineLoggerPrev && pipelineLogId) {
         await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO);
     }
 }

@@ -165,7 +165,7 @@ export class GruposPesquisaService {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
     return await this.prismaService.$transaction(async (tx) => {
       await tx.membroGrupo.deleteMany({ where: { grupoId: id } })
-      await tx.logColetaItem.deleteMany({ where: { entidadeId: id } })
+      await tx.pipelineLogItem.deleteMany({ where: { entidadeId: id } })
       return await tx.grupoPesquisa.delete({ where: { id } })
 
     })

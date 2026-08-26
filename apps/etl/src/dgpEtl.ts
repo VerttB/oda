@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica } from '@oda/database';
+import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog } from '@oda/database';
 import { LATTES_DIR, PROCESSED_DATA_DIR } from './commom/config';
 import { runPesquisadorEtl } from './lattesEtl';
 import { createLinhaPesquisa, getOrCreateAreaConhecimentoHierarchy } from './commom/database';
@@ -102,7 +102,7 @@ export async function saveGroupToDb(data: any) {
             }
 
             return grupo;
-        }, { timeout: 10000 });
+        }, { timeout: 60000 });
 
         grupoId = grupo.id;
         console.log(`[ETL] 🏢 Grupo "${grupo.nome}" (ID: ${grupoId}) inserido e confirmado.`);
@@ -132,7 +132,7 @@ export async function saveGroupToDb(data: any) {
 
                     console.log(`[ETL] 🔬 Linha de Pesquisa criada -> ID: ${novaLinha.id} | Nome: "${novaLinha.titulo}"`);
                 }
-            }, { timeout: 15000 });
+            }, { timeout: 60000 });
             console.log(`[ETL] ✅ Linhas de pesquisa inseridas e confirmadas.`);
         }
 
@@ -260,7 +260,7 @@ export async function saveGroupToDb(data: any) {
                         }
                     });
                 }
-            }, { timeout: 15000 });
+            }, { timeout: 60000 });
             console.log(`[ETL] 👥 Pesquisadores vinculados ao grupo.`);
         }
 
@@ -290,11 +290,40 @@ export async function runGroupEtl(jsonPath: string) {
 
     const content = fs.readFileSync(resolvedPath, 'utf-8');
     const groupData = JSON.parse(content);
+    const dgpId = groupData.idDgp || groupData.id_dgp || path.basename(jsonPath, '.json');
 
-    await saveGroupToDb(groupData);
+    const pipelineLogger = new SharedPipelineLogger(prisma);
+    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+        ModuloSistema.ETL,
+        dgpId,
+        ModoExecucao.COMPLETA
+    );
+
+    let pesquisadoresAtualizados = 0;
+    let linhasPesquisaGravadas = groupData.linhas && Array.isArray(groupData.linhas) ? groupData.linhas.length : 0;
+
+    const t0 = performance.now();
+    try {
+        await saveGroupToDb(groupData);
+        const tempoGroupMs = Math.round(performance.now() - t0);
+
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.SUCESSO, {
+            entidadeId: dgpId,
+            tipoEntidade: TipoEntidadeLog.GRUPO,
+            tempoMs: tempoGroupMs,
+        });
+    } catch (err: any) {
+        console.error(`[ETL] ❌ Erro na carga do grupo ${dgpId}: ${err.message}`);
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.ERRO, {
+            entidadeId: dgpId,
+            tipoEntidade: TipoEntidadeLog.GRUPO,
+            tipoErro: TipoErroColeta.FALHA_ETL,
+            mensagemErro: err.message,
+            detalhesErro: err.stack,
+        });
+    }
 
     if (groupData.membros && Array.isArray(groupData.membros)) {
-       
         console.log(`[ETL] Encontrados ${groupData.membros.length} membros elegíveis (Pesquisador/Líder) no grupo.`);
 
         for (const membro of groupData.membros) {
@@ -303,10 +332,35 @@ export async function runGroupEtl(jsonPath: string) {
             const lattesFilePath = path.join(LATTES_DIR, lattesFileName);
             if (fs.existsSync(lattesFilePath)) {
                 console.log(`[ETL] 👤 Iniciando ETL encadeado do pesquisador: ${membro.nome}`);
-                await runPesquisadorEtl(lattesFilePath);
+                const tMembro = performance.now();
+                try {
+                    await runPesquisadorEtl(lattesFilePath);
+                    const tempoMembroMs = Math.round(performance.now() - tMembro);
+                    pesquisadoresAtualizados++;
+
+                    await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
+                        entidadeId: membro.lattes.trim(),
+                        tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                        tempoMs: tempoMembroMs,
+                    });
+                } catch (mErr: any) {
+                    await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.ERRO, {
+                        entidadeId: membro.lattes.trim(),
+                        tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                        tipoErro: TipoErroColeta.FALHA_ETL,
+                        mensagemErro: mErr.message,
+                        detalhesErro: mErr.stack,
+                    });
+                }
             }
         }
     }
+
+    await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
+        gruposGravados: 1,
+        pesquisadoresAtualizados,
+        linhasPesquisaGravadas,
+    });
 
     const groupFileName = path.basename(resolvedPath);
     const processedDgpDir = path.join(PROCESSED_DATA_DIR, 'dgp');

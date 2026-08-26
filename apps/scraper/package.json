@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node src/main.ts",
     "update-groups": "ts-node src/updateGroupsOnly.ts",
+    "reset-queue": "ts-node src/resetQueue.ts",
     "build": "tsc"
   },
   "dependencies": {

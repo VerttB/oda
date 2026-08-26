@@ -2,25 +2,43 @@ import { PrismaClient, prismaConfig } from '@oda/database';
 import { normalizeString } from './normalize';
 const prisma = new PrismaClient(prismaConfig);
 export async function getOrCreateAreaConhecimentoHierarchy(tx: any, areaStr: string) {
+    if (!areaStr) return null;
     const parts = areaStr.split(/[>;]/).map(p => p.trim()).filter(p => p.length > 0);
     let currentParentId: string | null = null;
     let leafArea = null;
 
     for (const part of parts) {
         const nomeNormalizado = normalizeString(part);
-        const area = await tx.areaConhecimento.upsert({
-            where: { nomeNormalizado },
-            update: {
-                areaPaiId: currentParentId || undefined
-            },
-            create: {
-                nome: part,
-                nomeNormalizado,
-                areaPaiId: currentParentId
-            }
+        let area = await tx.areaConhecimento.findUnique({
+            where: { nomeNormalizado }
         });
-        currentParentId = area.id;
-        leafArea = area;
+
+        if (!area) {
+            try {
+                area = await tx.areaConhecimento.create({
+                    data: {
+                        nome: part,
+                        nomeNormalizado,
+                        areaPaiId: currentParentId
+                    }
+                });
+            } catch (e) {
+                area = await tx.areaConhecimento.findUnique({
+                    where: { nomeNormalizado }
+                });
+            }
+        } else if (currentParentId && area.areaPaiId !== currentParentId) {
+            try {
+                await tx.areaConhecimento.update({
+                    where: { id: area.id },
+                    data: { areaPaiId: currentParentId }
+                });
+            } catch (e) {}
+        }
+        if (area) {
+            currentParentId = area.id;
+            leafArea = area;
+        }
     }
     return leafArea;
 }

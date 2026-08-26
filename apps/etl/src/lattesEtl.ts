@@ -1,11 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, Prisma } from '@oda/database';
+import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog } from '@oda/database';
 import { OPEN_ALEX_URL, DOI_URL, PROCESSED_DATA_DIR } from './commom/config';
-import { TipoProducao, Qualis } from '@oda/database';
 import { stripHtml } from './commom/normalize';
 import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
-import { SharedPipelineLogger } from '@oda/database';
+
 const prisma = new PrismaClient(prismaConfig);
 const pipelineLogger = new SharedPipelineLogger(prisma);
 export async function getOpenAlexData(orcid:string) {
@@ -293,8 +292,43 @@ export async function runPesquisadorEtl(jsonPath: string) {
 
     const content = fs.readFileSync(jsonPath, 'utf-8');
     const lattesData = JSON.parse(content);
+    const lattesId = lattesData.lattesId || path.basename(jsonPath, '.json');
 
-    await saveLattesToDb(lattesData);
+    const pipelineLogger = new SharedPipelineLogger(prisma);
+    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+        ModuloSistema.ETL,
+        lattesId,
+        ModoExecucao.APENAS_LATTES
+    );
+
+    const t0 = performance.now();
+    try {
+        await saveLattesToDb(lattesData);
+        const tempoMs = Math.round(performance.now() - t0);
+
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
+            entidadeId: lattesId,
+            tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+            tempoMs,
+        });
+
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
+            gruposGravados: 0,
+            pesquisadoresAtualizados: 1,
+        });
+    } catch (err: any) {
+        console.error(`[ETL] ❌ Erro na carga Lattes do pesquisador ${lattesId}: ${err.message}`);
+        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.ERRO, {
+            entidadeId: lattesId,
+            tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+            tipoErro: TipoErroColeta.FALHA_ETL,
+            mensagemErro: err.message,
+            detalhesErro: err.stack,
+        });
+
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
+    }
+
     const lattesFileName = path.basename(jsonPath);
     const processedLattesDir = path.join(PROCESSED_DATA_DIR, 'lattes');
     if (!fs.existsSync(processedLattesDir)) fs.mkdirSync(processedLattesDir, { recursive: true });
