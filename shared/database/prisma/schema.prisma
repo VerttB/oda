@@ -17,16 +17,40 @@ datasource db {
 
 // Domínio da API
 model Instituicao {
-  id             String          @id @default(uuid())
-  nome           String
-  sigla          String
-  estado             Estado?             @relation(fields: [estadoId], references: [id])
-  estadoId           String?         @map("estado_id")
-  gruposPesquisa GrupoPesquisa[]
-  criadoEm       DateTime        @default(now()) @map("criado_em")
-  atualizadoEm   DateTime        @updatedAt @map("atualizado_em")
+  id                     String                     @id @default(uuid())
+  nome                   String
+  sigla                  String
+  estado                 Estado?                    @relation(fields: [estadoId], references: [id])
+  estadoId               String?                    @map("estado_id")
+  gruposPesquisaVinculos GrupoPesquisaInstituicao[]
+
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
 
   @@map("instituicao")
+}
+
+enum TipoRelacaoGrupoInstituicao {
+  SEDE     @map("sede")
+  PARCEIRA @map("parceira")
+
+  @@map("tipo_relacao_grupo_instituicao")
+}
+
+model GrupoPesquisaInstituicao {
+  grupoId       String                      @map("grupo_id")
+  instituicaoId String                      @map("instituicao_id")
+  tipoRelacao   TipoRelacaoGrupoInstituicao @map("tipo_relacao")
+  unidade       String?
+  grupoPesquisa GrupoPesquisa               @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  instituicao   Instituicao                 @relation(fields: [instituicaoId], references: [id])
+  criadoEm      DateTime                    @default(now()) @map("criado_em")
+  atualizadoEm  DateTime                    @updatedAt @map("atualizado_em")
+
+  @@id([grupoId, instituicaoId])
+  @@index([instituicaoId])
+  @@index([tipoRelacao])
+  @@map("grupo_pesquisa_instituicao")
 }
 
 model Estado {
@@ -50,33 +74,31 @@ enum Situacao {
 }
 
 model GrupoPesquisa {
-  id                 String            @id @default(uuid())
-  dgpId              String?           @unique @map("dgp_id")
-  nome               String
-  anoFormacao        Int?              @map("ano_formacao")
-  areaPredominante   String            @map("area_predominante")
-  repercussao        String?
-  unidade            String?
-  email              String?
-  telefone           String?
-  website            String?
-  logradouro         String?
-  numero             String?
-  complemento        String?
-  bairro             String?
-  cidade             String?
-  uf                 String?
-  cep                String?
-  latitude           Float?
-  longitude          Float?
+  id                String                          @id @default(uuid())
+  dgpId             String?                         @unique @map("dgp_id")
+  nome              String
+  anoFormacao       Int?                            @map("ano_formacao")
+  areaPredominante  String                          @map("area_predominante")
+  repercussao       String?
+  email             String?
+  telefone          String?
+  website           String?
+  logradouro        String?
+  numero            String?
+  complemento       String?
+  bairro            String?
+  cidade            String?
+  uf                String?
+  cep               String?
+  latitude          Float?
+  longitude         Float?
   areasConhecimento GrupoPesquisaAreaConhecimento[]
-  situacao           Situacao          @default(ATIVO)
-  instituicao        Instituicao       @relation(fields: [instituicaoId], references: [id])
-  instituicaoId      String            @map("instituicao_id")
-  membros            MembroGrupo[]
-  linhasPesquisa     LinhaPesquisa[]
-  criadoEm           DateTime          @default(now()) @map("criado_em")
-  atualizadoEm       DateTime          @updatedAt @map("atualizado_em")
+  instituicoes      GrupoPesquisaInstituicao[]
+  situacao          Situacao                        @default(ATIVO)
+  membros           MembroGrupo[]
+  linhasPesquisa    LinhaPesquisa[]
+  criadoEm          DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm      DateTime                        @updatedAt @map("atualizado_em")
 
   @@map("grupo_pesquisa")
 }
@@ -117,22 +139,22 @@ enum FormacaoAcademica {
 }
 
 model Pesquisador {
-  id                   String                   @id @default(uuid())
-  lattesId             String?                  @unique @map("lattes_id")
+  id                   String                          @id @default(uuid())
+  lattesId             String?                         @unique @map("lattes_id")
   nome                 String
   tipo                 TipoPesquisador?
-  formacaoAcademica    FormacaoAcademica?       @map("formacao_academica")
+  formacaoAcademica    FormacaoAcademica?              @map("formacao_academica")
   membrosGrupo         MembroGrupo[]
   membrosLinhaPesquisa MembroLinhaPesquisa[]
   producoes            ProducaoPesquisador[]
-  areasConhecimento    PesquisadoresAreaConhecimento[] 
-  openAlexId           String? @unique @map("open_alex_id")
-  orcidId              String? @unique @map("orcid_id")
-  imageUrl             String? @map("image_url")
-  indexH               Int? @map("index_h")
-  indexI10             Int? @map("index_i_10")
-  criadoEm             DateTime                 @default(now()) @map("criado_em")
-  atualizadoEm         DateTime                 @updatedAt @map("atualizado_em")
+  areasConhecimento    PesquisadoresAreaConhecimento[]
+  openAlexId           String?                         @unique @map("open_alex_id")
+  orcidId              String?                         @unique @map("orcid_id")
+  imageUrl             String?                         @map("image_url")
+  indexH               Int?                            @map("index_h")
+  indexI10             Int?                            @map("index_i_10")
+  criadoEm             DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm         DateTime                        @updatedAt @map("atualizado_em")
 
   @@map("pesquisador")
 }
@@ -146,6 +168,7 @@ model MembroGrupo {
   dataEntrada   DateTime?     @map("data_entrada")
   criadoEm      DateTime      @default(now()) @map("criado_em")
   atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
+
   @@id([pesquisadorId, grupoId])
   @@map("membro_grupo")
 }
@@ -162,35 +185,40 @@ model MembroLinhaPesquisa {
 }
 
 model AreaConhecimento {
-  id             String             @id @default(uuid())
-  nome           String
-  nomeNormalizado String @unique
-  areaPai        AreaConhecimento?  @relation("AreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
-  areaPaiId      String?            @map("area_pai_id")
-  subareas       AreaConhecimento[] @relation("AreaConhecimentoHierarquia")
-  gruposPesquisa GrupoPesquisaAreaConhecimento[]
-  pesquisadores PesquisadoresAreaConhecimento[]
-  criadoEm       DateTime           @default(now()) @map("criado_em")
-  atualizadoEm   DateTime           @updatedAt @map("atualizado_em")
+  id              String                          @id @default(uuid())
+  nome            String
+  nomeNormalizado String                          @unique
+  areaPai         AreaConhecimento?               @relation("AreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
+  areaPaiId       String?                         @map("area_pai_id")
+  subareas        AreaConhecimento[]              @relation("AreaConhecimentoHierarquia")
+  gruposPesquisa  GrupoPesquisaAreaConhecimento[]
+  pesquisadores   PesquisadoresAreaConhecimento[]
+  criadoEm        DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm    DateTime                        @updatedAt @map("atualizado_em")
 
   @@map("area_conhecimento")
 }
-model PesquisadoresAreaConhecimento{
-  pesquisador Pesquisador @relation(fields: [pesquisadorId], references: [id])
-  pesquisadorId String @map("pesquisador_id")
-  area AreaConhecimento @relation(fields: [areaId], references: [id])
-  areaId String @map("area_conhecimento_id")
+
+model PesquisadoresAreaConhecimento {
+  pesquisador   Pesquisador      @relation(fields: [pesquisadorId], references: [id])
+  pesquisadorId String           @map("pesquisador_id")
+  area          AreaConhecimento @relation(fields: [areaId], references: [id])
+  areaId        String           @map("area_conhecimento_id")
+
   @@id([pesquisadorId, areaId])
   @@map("pesquisador_area_conhecimento")
 }
-model GrupoPesquisaAreaConhecimento{
-  grupo GrupoPesquisa @relation(fields: [grupoId], references: [id])
-  grupoId String @map("grupo_id")
-  area AreaConhecimento @relation(fields: [areaId], references: [id])
-  areaId String @map("area_conhecimento_id")
+
+model GrupoPesquisaAreaConhecimento {
+  grupo   GrupoPesquisa    @relation(fields: [grupoId], references: [id])
+  grupoId String           @map("grupo_id")
+  area    AreaConhecimento @relation(fields: [areaId], references: [id])
+  areaId  String           @map("area_conhecimento_id")
+
   @@id([grupoId, areaId])
   @@map("grupo_pesquisa_area_conhecimento")
 }
+
 model PalavraChave {
   id               String                      @id @default(uuid())
   termo            String                      @unique
@@ -237,9 +265,9 @@ model LinhaPesquisaPalavraChave {
 }
 
 enum TipoProducao {
-  ARTIGO            @map("artigo")
-  LIVROCAPITULO     @map("livro_capitulo")
-  OUTRA             @map("outra")
+  ARTIGO        @map("artigo")
+  LIVROCAPITULO @map("livro_capitulo")
+  OUTRA         @map("outra")
 
   @@map("tipo_producao")
 }
@@ -370,7 +398,7 @@ model IndexingJob {
 
 enum StatusColeta {
   EMANDAMENTO @map("em_andamento")
-  CONCLUIDA    @map("concluida")
+  CONCLUIDA   @map("concluida")
 
   @@map("status_coleta")
 }
@@ -448,7 +476,7 @@ model PipelineLogItem {
   entidadeId    String?         @map("entidade_id")
   tipoEntidade  TipoEntidadeLog @default(GRUPO) @map("tipo_entidade")
   etapa         String?
-  status        StatusItemLog   
+  status        StatusItemLog
   tipoErro      TipoErroColeta? @map("tipo_erro")
   mensagemErro  String?         @map("mensagem_erro")
   detalhesErro  String?         @map("detalhes_erro")
@@ -466,39 +494,41 @@ enum FilaExtracaoStatus {
   CONCLUIDO
   PROCESSANDO
 }
+
 model FilaExtracaoGrupo {
-  dgpId             String @unique @id @map("dgp_id")
+  dgpId             String             @id @unique @map("dgp_id")
   nome              String
   area              String
   instituicao       String
-  status            FilaExtracaoStatus   @default(PENDENTE)
-  tentativas        Int      @default(0)
-  similares         Int      @default(1)
-  criadoEm          DateTime @default(now()) @map("criado_em")
-  ultimaAtualizacao DateTime @default(now()) @updatedAt @map("ultima_atualizacao")
+  status            FilaExtracaoStatus @default(PENDENTE)
+  tentativas        Int                @default(0)
+  similares         Int                @default(1)
+  criadoEm          DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
 
   @@map("fila_extracao_grupo")
 }
 
 model FilaExtracaoPesquisador {
-  lattesId String @unique @id @map("lattes_id")
-  nome String
-  status FilaExtracaoStatus @default(PENDENTE)
-  tentativas        Int      @default(0)
-  criadoEm          DateTime @default(now()) @map("criado_em")
-  ultimaAtualizacao DateTime @default(now()) @updatedAt @map("ultima_atualizacao")
+  lattesId          String             @id @unique @map("lattes_id")
+  nome              String
+  status            FilaExtracaoStatus @default(PENDENTE)
+  tentativas        Int                @default(0)
+  criadoEm          DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
 
   @@map("fila_extracao_pesquisador")
 }
+
 model StgGrupoPesquisa {
-  id               Int     @id @default(autoincrement())
-  dgp_id           String?
-  nome             String?
-  ano_formacao     Int?
+  id                Int     @id @default(autoincrement())
+  dgp_id            String?
+  nome              String?
+  ano_formacao      Int?
   area_predominante String?
-  repercussao      String?
-  instituicao_nome String?
-  estado               String?
+  repercussao       String?
+  instituicao_nome  String?
+  estado            String?
 
   @@map("stg_grupo_pesquisa")
 }
@@ -516,12 +546,12 @@ model StgPesquisador {
 }
 
 model StgLinhaPesquisa {
-  id               Int     @id @default(autoincrement())
-  dgp_id           String?
-  titulo           String?
-  objetivo         String?
-  setor_aplicacao  String?
-  palavra_chave    String?
+  id              Int     @id @default(autoincrement())
+  dgp_id          String?
+  titulo          String?
+  objetivo        String?
+  setor_aplicacao String?
+  palavra_chave   String?
 
   @@map("stg_linha_pesquisa")
 }
