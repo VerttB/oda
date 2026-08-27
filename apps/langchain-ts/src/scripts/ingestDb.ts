@@ -58,6 +58,29 @@ async function needVectorization(sourceType: any, sourceId: string, dbUpdatedAt:
 
 const textSplitter = { splitText };
 
+function formatInstituicoesGrupo(grupo: any): string {
+  const vinculos = Array.isArray(grupo.instituicoes) ? grupo.instituicoes : [];
+  if (vinculos.length > 0) {
+    return vinculos.map((vinculo: any) => {
+      const instituicao = vinculo.instituicao;
+      const tipo = vinculo.tipoRelacao === 'SEDE' ? 'Sede' : 'Parceira';
+      const sigla = instituicao?.sigla ? ` (${instituicao.sigla})` : '';
+      const estado = instituicao?.estado?.nome ? ` - Estado: ${instituicao.estado.nome}` : '';
+      const unidade = vinculo.unidade ? ` - Unidade: ${vinculo.unidade}` : '';
+      return `${tipo}: ${instituicao?.nome || 'N/A'}${sigla}${estado}${unidade}`;
+    }).join('\n');
+  }
+
+  return 'Sede: N/A';
+}
+
+function getInstituicaoResumoGrupo(grupo: any): string {
+  const vinculos = Array.isArray(grupo?.instituicoes) ? grupo.instituicoes : [];
+  const sede = vinculos.find((vinculo: any) => vinculo.tipoRelacao === 'SEDE') ?? vinculos[0];
+  const instituicao = sede?.instituicao;
+  return `${instituicao?.sigla || instituicao?.nome || ''}`;
+}
+
 async function main() {
   console.log('🔄 Iniciando sincronização incremental de embeddings (apenas novos e atualizados)...');
 
@@ -67,7 +90,7 @@ async function main() {
   console.log('📦 Analisando Grupos de Pesquisa...');
   const grupos = await prisma.grupoPesquisa.findMany({
     include: {
-      instituicao: { include: { estado: true } },
+      instituicoes: { include: { instituicao: { include: { estado: true } } } },
       linhasPesquisa: true,
       membros: { include: { pesquisador: true } },
       areasConhecimento: { include: { area: true } }
@@ -81,10 +104,9 @@ async function main() {
 
     let content = `Grupo de Pesquisa: ${g.nome}\n`;
     content += `DGP ID: ${g.dgpId || 'N/A'}\n`;
-    content += `Instituição: ${g.instituicao?.nome || 'N/A'} (${g.instituicao?.sigla || ''}) - Estado: ${g.instituicao?.estado?.nome || 'N/A'}\n`;
-    content += `Área Predominante: ${g.areaPredominante || 'N/A'}\n`;
+    content += `Instituicoes:\n${formatInstituicoesGrupo(g)}\n`;
+    content += `Area Predominante: ${g.areaPredominante || 'N/A'}\n`;
     content += `Ano de Formação: ${g.anoFormacao || 'N/A'}\n`;
-    if (g.unidade) content += `Unidade: ${g.unidade}\n`;
     if (g.cidade || g.uf || g.logradouro) {
       content += `Localização: ${[g.logradouro, g.bairro, g.cidade, g.uf, g.cep].filter(Boolean).join(', ')}\n`;
     }
@@ -124,7 +146,15 @@ async function main() {
   console.log('👥 Analisando Pesquisadores...');
   const pesquisadores = await prisma.pesquisador.findMany({
     include: {
-      membrosGrupo: { include: { grupoPesquisa: { include: { instituicao: true } } } },
+      membrosGrupo: {
+        include: {
+          grupoPesquisa: {
+            include: {
+              instituicoes: { include: { instituicao: true } },
+            },
+          },
+        },
+      },
       producoes: { include: { producao: true } },
       areasConhecimento: { include: { area: true } }
     }
@@ -147,7 +177,7 @@ async function main() {
       content += `Áreas de Conhecimento: ${areas.join(', ')}\n`;
     }
 
-    const gruposAssoc = p.membrosGrupo.map(mg => `${mg.grupoPesquisa.nome} (${mg.grupoPesquisa.instituicao?.sigla || ''})`);
+    const gruposAssoc = p.membrosGrupo.map(mg => `${mg.grupoPesquisa.nome} (${getInstituicaoResumoGrupo(mg.grupoPesquisa)})`);
     if (gruposAssoc.length > 0) {
       content += `Grupos de Pesquisa Associados: ${gruposAssoc.join(', ')}\n`;
     }
@@ -202,7 +232,11 @@ async function main() {
   console.log('🔬 Analisando Linhas de Pesquisa...');
   const linhas = await prisma.linhaPesquisa.findMany({
     include: {
-      grupo: { include: { instituicao: true } },
+      grupo: {
+        include: {
+          instituicoes: { include: { instituicao: true } },
+        },
+      },
       palavrasChave: { include: { palavraChave: true } },
       setoresAplicacao: { include: { setorAplicacao: true } }
     }
@@ -226,7 +260,7 @@ async function main() {
       content += `Setores de Atividade/Aplicação: ${sectors.join(', ')}\n`;
     }
 
-    content += `Grupo de Pesquisa Associado: ${lp.grupo?.nome || 'N/A'} (${lp.grupo?.instituicao?.sigla || ''})\n`;
+    content += `Grupo de Pesquisa Associado: ${lp.grupo?.nome || 'N/A'} (${getInstituicaoResumoGrupo(lp.grupo)})\n`;
 
     await saveRagDocument('LINHA_PESQUISA', lp.id, lp.titulo, content, { grupoId: lp.grupoId });
     linhasSincronizadas++;

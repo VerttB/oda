@@ -1,4 +1,4 @@
-import { PrismaClient, prismaConfig } from '@oda/database';
+import { PrismaClient, prismaConfig, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { DATA_DIR, DGP_DIR, LATTES_DIR } from '../commom/config';
 const prisma = new PrismaClient(prismaConfig);
 
@@ -37,7 +37,6 @@ async function saveGroupToDb(data: any) {
                     anoFormacao: ano,
                     areaPredominante: data.area || 'N/A',
                     repercussao: data.repercussao || null,
-                    instituicaoId: instituicao.id,
                 },
                 create: {
                     dgpId,
@@ -45,8 +44,26 @@ async function saveGroupToDb(data: any) {
                     anoFormacao: ano,
                     areaPredominante: data.area || 'N/A',
                     repercussao: data.repercussao || null,
-                    instituicaoId: instituicao.id,
                 }
+            });
+
+            await tx.grupoPesquisaInstituicao.upsert({
+                where: {
+                    grupoId_instituicaoId: {
+                        grupoId: grupo.id,
+                        instituicaoId: instituicao.id,
+                    },
+                },
+                update: {
+                    tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+                    unidade: data.unidade || null,
+                },
+                create: {
+                    grupoId: grupo.id,
+                    instituicaoId: instituicao.id,
+                    tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+                    unidade: data.unidade || null,
+                },
             });
 
             // 3. Membros

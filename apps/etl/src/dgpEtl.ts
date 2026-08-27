@@ -1,11 +1,119 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog } from '@oda/database';
+import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LATTES_DIR, PROCESSED_DATA_DIR } from './commom/config';
 import { runPesquisadorEtl } from './lattesEtl';
 import { createLinhaPesquisa, getOrCreateAreaConhecimentoHierarchy } from './commom/database';
 
 const prisma = new PrismaClient(prismaConfig);
+
+type GrupoInstituicaoInput = {
+    nome: string;
+    sigla?: string | null;
+    tipoRelacao: TipoRelacaoGrupoInstituicao;
+    unidade?: string | null;
+};
+
+function cleanOptional(value: unknown): string | null {
+    if (typeof value !== 'string') return null;
+    const clean = value.trim();
+    return clean.length > 0 ? clean : null;
+}
+
+function escapeRegex(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function splitInstitutionNameAndSigla(rawName: string, fallbackSigla?: string | null) {
+    const trimmedName = rawName.trim();
+    const dashMatch = trimmedName.match(/\s+-\s+([A-Z0-9 .]{2,20})$/);
+    const parenMatch = trimmedName.match(/\(([A-Z0-9 .]{2,20})\)$/);
+    const sigla = cleanOptional(fallbackSigla) ?? dashMatch?.[1]?.trim() ?? parenMatch?.[1]?.trim() ?? null;
+    const nome = sigla
+        ? trimmedName
+            .replace(new RegExp(`\\s+-\\s+${escapeRegex(sigla)}$`), '')
+            .replace(new RegExp(`\\s*\\(${escapeRegex(sigla)}\\)$`), '')
+            .trim()
+        : trimmedName;
+
+    return {
+        nome: nome || trimmedName || 'Instituição Desconhecida',
+        sigla: sigla || 'INST',
+    };
+}
+
+function normalizeInstitutionRelation(value: unknown): TipoRelacaoGrupoInstituicao {
+    return value === TipoRelacaoGrupoInstituicao.SEDE || value === 'SEDE'
+        ? TipoRelacaoGrupoInstituicao.SEDE
+        : TipoRelacaoGrupoInstituicao.PARCEIRA;
+}
+
+function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): GrupoInstituicaoInput[] {
+    const instituicoes = new Map<string, GrupoInstituicaoInput>();
+
+    const addInstituicao = (input: Partial<GrupoInstituicaoInput> & { nome?: string | null }) => {
+        const nome = cleanOptional(input.nome);
+        if (!nome) return;
+
+        const parsed = splitInstitutionNameAndSigla(nome, input.sigla);
+        const key = `${parsed.nome.toLowerCase()}|${parsed.sigla.toLowerCase()}`;
+        const current = instituicoes.get(key);
+        const tipoRelacao = input.tipoRelacao ?? TipoRelacaoGrupoInstituicao.PARCEIRA;
+
+        instituicoes.set(key, {
+            nome: parsed.nome,
+            sigla: parsed.sigla,
+            tipoRelacao: current?.tipoRelacao === TipoRelacaoGrupoInstituicao.SEDE
+                ? TipoRelacaoGrupoInstituicao.SEDE
+                : tipoRelacao,
+            unidade: cleanOptional(input.unidade) ?? current?.unidade ?? null,
+        });
+    };
+
+    addInstituicao({
+        nome: data.instituicao,
+        sigla: filaInstituicao,
+        tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+        unidade: data.unidade,
+    });
+
+    if (Array.isArray(data.instituicoes)) {
+        for (const instituicao of data.instituicoes) {
+            addInstituicao({
+                nome: instituicao.nome ?? instituicao.instituicao,
+                sigla: instituicao.sigla,
+                tipoRelacao: normalizeInstitutionRelation(instituicao.tipoRelacao ?? instituicao.relacao),
+                unidade: instituicao.unidade,
+            });
+        }
+    }
+
+    return Array.from(instituicoes.values());
+}
+
+async function getOrCreateInstituicao(tx: any, input: GrupoInstituicaoInput, estadoId?: string | null) {
+    let instituicao = await tx.instituicao.findFirst({
+        where: { nome: { equals: input.nome, mode: 'insensitive' } }
+    });
+
+    if (!instituicao && input.sigla && input.sigla !== 'INST') {
+        instituicao = await tx.instituicao.findFirst({
+            where: { sigla: { equals: input.sigla, mode: 'insensitive' } }
+        });
+    }
+
+    if (!instituicao) {
+        instituicao = await tx.instituicao.create({
+            data: {
+                nome: input.nome,
+                sigla: input.sigla || 'INST',
+                estadoId: estadoId || null
+            }
+        });
+    }
+
+    return instituicao;
+}
 
 export async function saveGroupToDb(data: any) {
     const dgpId = data.idDgp;
@@ -13,39 +121,31 @@ export async function saveGroupToDb(data: any) {
 
     try {
         const grupo = await prisma.$transaction(async (tx) => {
-            const instSigla = await tx.filaExtracaoGrupo.findFirst({where: { dgpId }})
-            const instClean = data.instituicao.replace(instSigla, "").replace(/-\s*$/, "")
-            let instName = instClean || "Instituição Desconhecida";
-            let instituicao = await tx.instituicao.findFirst({
-                where: { nome: { contains: instName, mode: 'insensitive' } }
+            const filaGrupo = await tx.filaExtracaoGrupo.findFirst({ where: { dgpId } });
+            const estado = await tx.estado.findUnique({
+                where: { sigla: data.endereco?.uf?.trim() || 'BA' }
             });
-
-            if (!instituicao) {
-                const filaGrupo = await tx.filaExtracaoGrupo.findFirst({ where: { dgpId } });
-                const sigla = filaGrupo?.instituicao?.trim() || "INST";
-                const estado = await tx.estado.findUnique({
-                    where: { sigla: 'BA' }
-                });
-                instituicao = await tx.instituicao.create({
-                    data: {
-                        nome: instName.trim(),
-                        sigla: sigla,
-                        estadoId: estado?.id || null
-                    }
-                });
-            }
-
+            const instituicoesGrupo = buildGrupoInstituicoes(data, filaGrupo?.instituicao);
+            const sedeInput = instituicoesGrupo.find((item) => item.tipoRelacao === TipoRelacaoGrupoInstituicao.SEDE)
+                ?? instituicoesGrupo[0]
+                ?? {
+                    nome: 'Instituicao Desconhecida',
+                    sigla: 'INST',
+                    tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+                    unidade: null,
+                };
+            const instituicao = await getOrCreateInstituicao(tx, sedeInput, estado?.id);
             const anoStr = data.anoFormacao?.replace(/\D/g, '');
             const ano = anoStr ? parseInt(anoStr, 10) : null;
+            const areaPredominante = data.areaPredominante?.trim() || data.area?.trim() || 'N/A';
 
             const grupo = await tx.grupoPesquisa.upsert({
                 where: { dgpId },
                 update: {
                     nome: data.nome.trim(),
                     anoFormacao: ano,
-                    areaPredominante: data.areaPredominante?.trim() || 'N/A',
+                    areaPredominante,
                     repercussao: data.repercussao?.trim() || null,
-                    unidade: data.unidade?.trim() || null,
                     email: data.email?.trim() || null,
                     telefone: data.telefone?.trim() || null,
                     website: data.website?.trim() || null,
@@ -58,15 +158,13 @@ export async function saveGroupToDb(data: any) {
                     cep: data.endereco?.cep?.trim() || null,
                     latitude: data.latitude ?? null,
                     longitude: data.longitude ?? null,
-                    instituicaoId: instituicao.id,
                 },
                 create: {
                     dgpId,
                     nome: data.nome.trim(),
                     anoFormacao: ano,
-                    areaPredominante: data.areaPredominante?.trim() || 'N/A',
+                    areaPredominante,
                     repercussao: data.repercussao?.trim() || null,
-                    unidade: data.unidade?.trim() || null,
                     email: data.email?.trim() || null,
                     telefone: data.telefone?.trim() || null,
                     website: data.website?.trim() || null,
@@ -79,12 +177,36 @@ export async function saveGroupToDb(data: any) {
                     cep: data.endereco?.cep?.trim() || null,
                     latitude: data.latitude ?? null,
                     longitude: data.longitude ?? null,
-                    instituicaoId: instituicao.id,
                 }
             });
 
+            for (const item of instituicoesGrupo) {
+                const instituicaoVinculo = item.tipoRelacao === TipoRelacaoGrupoInstituicao.SEDE
+                    ? instituicao
+                    : await getOrCreateInstituicao(tx, item, estado?.id);
+
+                await tx.grupoPesquisaInstituicao.upsert({
+                    where: {
+                        grupoId_instituicaoId: {
+                            grupoId: grupo.id,
+                            instituicaoId: instituicaoVinculo.id,
+                        },
+                    },
+                    update: {
+                        tipoRelacao: item.tipoRelacao,
+                        unidade: item.unidade || null,
+                    },
+                    create: {
+                        grupoId: grupo.id,
+                        instituicaoId: instituicaoVinculo.id,
+                        tipoRelacao: item.tipoRelacao,
+                        unidade: item.unidade || null,
+                    },
+                });
+            }
+
             // Parse and link areaConhecimento
-            const leafArea = await getOrCreateAreaConhecimentoHierarchy(tx, data.area || data.areaPredominante);
+            const leafArea = await getOrCreateAreaConhecimentoHierarchy(tx, data.area || areaPredominante);
             if (leafArea) {
                 await tx.grupoPesquisaAreaConhecimento.upsert({
                     where: {
@@ -271,6 +393,7 @@ export async function saveGroupToDb(data: any) {
         });
     } catch (e: any) {
         console.error(`[ETL] ❌ Erro ao processar grupo ${dgpId}: ${e.message}`);
+        throw e;
     }
 }
 
@@ -306,6 +429,21 @@ export async function runGroupEtl(jsonPath: string) {
     try {
         await saveGroupToDb(groupData);
         const tempoGroupMs = Math.round(performance.now() - t0);
+
+        const groupFileName = path.basename(resolvedPath);
+        const processedDgpDir = path.join(PROCESSED_DATA_DIR, 'dgp');
+        if (!fs.existsSync(processedDgpDir)) fs.mkdirSync(processedDgpDir, { recursive: true });
+        const destGroupPath = path.join(processedDgpDir, groupFileName);
+        if (resolvedPath !== destGroupPath) {
+            try {
+                if (fs.existsSync(resolvedPath)) {
+                    fs.renameSync(resolvedPath, destGroupPath);
+                    console.log(`[ETL] 📁 JSON Grupo ${groupFileName} movido para ${destGroupPath}`);
+                }
+            } catch (renameError: any) {
+                console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Grupo ${groupFileName}: ${renameError.message}`);
+            }
+        }
 
         await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.SUCESSO, {
             entidadeId: dgpId,
@@ -361,23 +499,4 @@ export async function runGroupEtl(jsonPath: string) {
         pesquisadoresAtualizados,
         linhasPesquisaGravadas,
     });
-
-    const groupFileName = path.basename(resolvedPath);
-    const processedDgpDir = path.join(PROCESSED_DATA_DIR, 'dgp');
-    if (!fs.existsSync(processedDgpDir)) fs.mkdirSync(processedDgpDir, { recursive: true });
-    const destGroupPath = path.join(processedDgpDir, groupFileName);
-    if (resolvedPath !== destGroupPath) {
-        try {
-            if (fs.existsSync(resolvedPath)) {
-                fs.renameSync(resolvedPath, destGroupPath);
-                console.log(`[ETL] 📁 JSON Grupo ${groupFileName} movido para ${destGroupPath}`);
-            } else {
-                console.log(`[ETL] 📁 JSON Grupo ${groupFileName} já foi movido por outro processo.`);
-            }
-        } catch (renameError: any) {
-            console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Grupo ${groupFileName}: ${renameError.message}`);
-        }
-    } else {
-        console.log(`[ETL] 📁 JSON Grupo ${groupFileName} já está na pasta processed-data.`);
-    }
 }

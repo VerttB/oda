@@ -1,12 +1,29 @@
 import { Situacao } from '@/prisma/prisma.enums';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
+  ArrayNotEmpty,
   IsEnum,
   IsInt,
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator';
+import { TipoRelacaoGrupoInstituicao } from '@oda/database';
+
+export class CreateGrupoPesquisaInstituicaoDto {
+  @IsUUID()
+  instituicaoId!: string;
+
+  @IsOptional()
+  @IsEnum(TipoRelacaoGrupoInstituicao)
+  tipoRelacao?: TipoRelacaoGrupoInstituicao;
+
+  @IsOptional()
+  @IsString()
+  unidade?: string;
+}
 
 export class CreateGruposPesquisaDto {
   @IsOptional()
@@ -32,6 +49,9 @@ export class CreateGruposPesquisaDto {
   @IsEnum(Situacao)
   situacao?: Situacao;
 
-  @IsUUID()
-  instituicaoId!: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateGrupoPesquisaInstituicaoDto)
+  instituicoes!: CreateGrupoPesquisaInstituicaoDto[];
 }

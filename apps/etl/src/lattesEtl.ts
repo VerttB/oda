@@ -244,38 +244,38 @@ export async function saveLattesToDb(data: any) {
                 where: { lattesId: data.lattes}
             });
 
-            if (pesquisador) {
-                await tx.pesquisador.update({
-                    where: { id: pesquisador.id },
-                    data: {
-                        orcidId: data?.orcidId || null,
-                        indexH: openAlexData?.h_index || null,
-                        indexI10: openAlexData?.i10_index || null,
-                        openAlexId: openAlexData?.openAlexId.split("/").pop() || null,
-                        imageUrl: `/static/${data.lattes}.webp`
-                    }
-                });
-
-               await saveResearcherProductions(tx, pesquisador.id, artigosEnriquecidos, livrosCapitulos);
-
-                await tx.filaExtracaoPesquisador.upsert({
-                    where: { lattesId: data.lattes },
-                    update: { status: 'CONCLUIDO' },
-                    create: {
-                        lattesId: data.lattes,
-                        nome: data.nome,
-                        status: 'CONCLUIDO'
-                    }
-                });
-
-                console.log(`[ETL] ✅ Lattes e produções de ${data.nome} processados com sucesso.`);
-            } else {
-                console.log(`[ETL] ⚠️ Pesquisador ${data.nome} não encontrado no banco de dados relacional.`);
+            if (!pesquisador) {
+                throw new Error(`Pesquisador "${data.nome}" (ID: ${data.lattes}) não encontrado no banco de dados relacional.`);
             }
-        }, { timeout: 30000 });
+
+            await tx.pesquisador.update({
+                where: { id: pesquisador.id },
+                data: {
+                    orcidId: data?.orcidId || null,
+                    indexH: openAlexData?.h_index || null,
+                    indexI10: openAlexData?.i10_index || null,
+                    openAlexId: openAlexData?.openAlexId.split("/").pop() || null,
+                    imageUrl: `/static/${data.lattes}.webp`
+                }
+            });
+
+            await saveResearcherProductions(tx, pesquisador.id, artigosEnriquecidos, livrosCapitulos);
+
+            await tx.filaExtracaoPesquisador.upsert({
+                where: { lattesId: data.lattes },
+                update: { status: 'CONCLUIDO' },
+                create: {
+                    lattesId: data.lattes,
+                    nome: data.nome,
+                    status: 'CONCLUIDO'
+                }
+            });
+
+            console.log(`[ETL] ✅ Lattes e produções de ${data.nome} processados com sucesso.`);
+        }, { maxWait: 15000, timeout: 60000 });
     } catch (error) {
-        
         console.error(`[ETL] ❌ Erro no Lattes de ${data.nome}:`, error);
+        throw error;
     }
 }
 
@@ -306,6 +306,21 @@ export async function runPesquisadorEtl(jsonPath: string) {
         await saveLattesToDb(lattesData);
         const tempoMs = Math.round(performance.now() - t0);
 
+        const lattesFileName = path.basename(jsonPath);
+        const processedLattesDir = path.join(PROCESSED_DATA_DIR, 'lattes');
+        if (!fs.existsSync(processedLattesDir)) fs.mkdirSync(processedLattesDir, { recursive: true });
+        const destPath = path.join(processedLattesDir, lattesFileName);
+        if (jsonPath !== destPath) {
+            try {
+                if (fs.existsSync(jsonPath)) {
+                    fs.renameSync(jsonPath, destPath);
+                    console.log(`[ETL] 📁 JSON Lattes ${lattesFileName} movido para ${destPath}`);
+                }
+            } catch (renameError: any) {
+                console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Lattes ${lattesFileName}: ${renameError.message}`);
+            }
+        }
+
         await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
             entidadeId: lattesId,
             tipoEntidade: TipoEntidadeLog.PESQUISADOR,
@@ -327,24 +342,5 @@ export async function runPesquisadorEtl(jsonPath: string) {
         });
 
         await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
-    }
-
-    const lattesFileName = path.basename(jsonPath);
-    const processedLattesDir = path.join(PROCESSED_DATA_DIR, 'lattes');
-    if (!fs.existsSync(processedLattesDir)) fs.mkdirSync(processedLattesDir, { recursive: true });
-    const destPath = path.join(processedLattesDir, lattesFileName);
-    if (jsonPath !== destPath) {
-        try {
-            if (fs.existsSync(jsonPath)) {
-                fs.renameSync(jsonPath, destPath);
-                console.log(`[ETL] 📁 JSON Lattes ${lattesFileName} movido para ${destPath}`);
-            } else {
-                console.log(`[ETL] 📁 JSON Lattes ${lattesFileName} já foi movido por outro processo.`);
-            }
-        } catch (renameError: any) {
-            console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Lattes ${lattesFileName}: ${renameError.message}`);
-        }
-    } else {
-        console.log(`[ETL] 📁 JSON Lattes ${lattesFileName} já está na pasta processed-data.`);
     }
 }

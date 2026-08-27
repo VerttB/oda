@@ -18,6 +18,95 @@ export const getAdjacentField = ($: cheerio.CheerioAPI, labelPattern: string | R
   return '';
 };
 
+type InstituicaoGrupoRelacao = {
+  nome: string;
+  tipoRelacao: 'SEDE' | 'PARCEIRA';
+  unidade?: string | null;
+};
+
+const normalizeText = (text: string): string => (
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+);
+
+const hasPartnerInstitutionContext = (text: string): boolean => {
+  const normalized = normalizeText(text);
+  return normalized.includes('instituic') && normalized.includes('parceir');
+};
+
+const addInstitutionRelation = (
+  target: InstituicaoGrupoRelacao[],
+  input: InstituicaoGrupoRelacao,
+) => {
+  const nome = cleanText(input.nome);
+  if (!nome || nome === 'N/A') return;
+
+  const unidade = input.unidade ? cleanText(input.unidade) : null;
+  const key = `${input.tipoRelacao}|${normalizeText(nome)}|${normalizeText(unidade || '')}`;
+  const exists = target.some(
+    (item) => `${item.tipoRelacao}|${normalizeText(item.nome)}|${normalizeText(item.unidade || '')}` === key,
+  );
+
+  if (!exists) {
+    target.push({ nome, tipoRelacao: input.tipoRelacao, unidade });
+  }
+};
+
+const getElementContextText = ($: cheerio.CheerioAPI, element: any): string => {
+  const current = $(element);
+  const headings = current.prevAll('h1, h2, h3, h4, h5, legend, label, .control-label').slice(0, 3).text();
+  const parentHeadings = current.parent().prevAll('h1, h2, h3, h4, h5, legend, label, .control-label').slice(0, 3).text();
+  const containerText = current.closest('[id], .control-group, .controls, fieldset, section, div').first().text();
+  return cleanText(`${headings} ${parentHeadings} ${containerText}`);
+};
+
+const extractPartnerInstitutions = ($: cheerio.CheerioAPI): InstituicaoGrupoRelacao[] => {
+  const parceiros: InstituicaoGrupoRelacao[] = [];
+
+  $('table').each((_, table) => {
+    const contextText = getElementContextText($, table);
+    if (!hasPartnerInstitutionContext(contextText)) return;
+
+    const headers = $(table).find('thead th, tr:first-child th, tr:first-child td')
+      .map((__, th) => normalizeText(cleanText($(th).text())))
+      .get();
+    const instituicaoIndex = headers.findIndex((header) => header.includes('instituic'));
+    const unidadeIndex = headers.findIndex((header) => header.includes('unidade'));
+
+    $(table).find('tbody tr, tr').each((__, tr) => {
+      const cells = $(tr).find('td');
+      if (!cells.length || $(tr).find('th').length) return;
+
+      const nomeCellIndex = instituicaoIndex >= 0 ? instituicaoIndex : 0;
+      const unidadeCellIndex = unidadeIndex >= 0 ? unidadeIndex : 1;
+      const nome = cleanText($(cells[nomeCellIndex]).text());
+      const unidade = cells.length > unidadeCellIndex ? cleanText($(cells[unidadeCellIndex]).text()) : null;
+
+      addInstitutionRelation(parceiros, {
+        nome,
+        tipoRelacao: 'PARCEIRA',
+        unidade,
+      });
+    });
+  });
+
+  $('[id*="parceir"], [class*="parceir"]').each((_, container) => {
+    const contextText = getElementContextText($, container);
+    if (!hasPartnerInstitutionContext(contextText)) return;
+
+    $(container).find('li').each((__, li) => {
+      addInstitutionRelation(parceiros, {
+        nome: cleanText($(li).text()),
+        tipoRelacao: 'PARCEIRA',
+      });
+    });
+  });
+
+  return parceiros;
+};
+
 export class DGPExtractor {
   /**
    * Extrai detalhes de um único Pesquisador (Pesquisador/Estudante)
@@ -145,6 +234,15 @@ export class DGPExtractor {
     data.area = getAdjacentField($, /Área predominante/);
     data.instituicao = getAdjacentField($, /Instituição do grupo/);
     data.unidade = getAdjacentField($, /Unidade/) || null;
+    data.instituicoes = [];
+    addInstitutionRelation(data.instituicoes, {
+      nome: data.instituicao,
+      tipoRelacao: 'SEDE',
+      unidade: data.unidade,
+    });
+    for (const instituicao of extractPartnerInstitutions($)) {
+      addInstitutionRelation(data.instituicoes, instituicao);
+    }
     data.email = getAdjacentField($, /Contato do grupo/) || null;
     const rawTelefone = getAdjacentField($, /Telefone/);
     data.telefone = rawTelefone ? rawTelefone.replace(/_$/, '').trim() : null;

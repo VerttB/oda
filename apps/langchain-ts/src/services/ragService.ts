@@ -5,6 +5,19 @@ import { ANSWER_PROMPT, embeddings, model, SUMMARIZE_PROMPT } from "../core/conf
 import { prisma } from "../core/db";
 
 
+function formatResearchGroupInstitutions(data: any): string {
+  if (Array.isArray(data.instituicoes) && data.instituicoes.length > 0) {
+    return data.instituicoes.map((item: any) => {
+      const tipo = item.tipoRelacao === 'SEDE' ? 'Sede' : 'Parceira';
+      const unidade = item.unidade ? ` - Unidade: ${item.unidade}` : '';
+      return `${tipo}: ${item.nome || item.instituicao || ''}${unidade}`;
+    }).join('\n');
+  }
+
+  const unidade = data.unidade ? ` - Unidade: ${data.unidade}` : '';
+  return `Sede: ${data.instituicao || ''}${unidade}`;
+}
+
 
 export async function askQuestion(question: string, chatHistory: string = "") {
   const [questionVector] = await embeddings.embedDocuments([question]);
@@ -58,11 +71,11 @@ export async function ingestDocument(content: string, metadata: any = {}) {
 
 export async function ingestResearchGroup(data: any) {
   const nome = data.nome || "Desconhecido";
-  const dgpId = data.id_dgp || "";
+  const dgpId = data.id_dgp || data.idDgp || "";
 
   let content = `Grupo de Pesquisa: ${nome}\n`;
   content += `DGP ID: ${dgpId}\n`;
-  content += `Instituição: ${data.instituicao || ""}\n`;
+  content += `Instituicoes:\n${formatResearchGroupInstitutions(data)}\n`;
   content += `Área: ${data.area || ""}\n`;
   content += `Ano de Formação: ${data.ano_formacao || ""}\n`;
   content += `Repercussão: ${data.repercussao || ""}\n`;

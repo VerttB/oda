@@ -91,6 +91,14 @@ export const LinhaPesquisaGrupoSchema = z.object({
 });
 export type LinhaPesquisaGrupo = z.infer<typeof LinhaPesquisaGrupoSchema>;
 
+export const InstituicaoGrupoRelacaoSchema = z.object({
+  nome: z.string(),
+  sigla: z.string().optional().nullable(),
+  tipoRelacao: z.enum(['SEDE', 'PARCEIRA']),
+  unidade: z.string().optional().nullable(),
+});
+export type InstituicaoGrupoRelacao = z.infer<typeof InstituicaoGrupoRelacaoSchema>;
+
 export const DgpGroupSchema = z.object({
   id_dgp: z.string().optional().nullable(),
   idDgp: z.string().optional().nullable(),
@@ -99,6 +107,8 @@ export const DgpGroupSchema = z.object({
   repercussao: z.string().optional().nullable(),
   area: z.string().optional().nullable(),
   instituicao: z.string(),
+  unidade: z.string().optional().nullable(),
+  instituicoes: z.array(InstituicaoGrupoRelacaoSchema).optional().nullable(),
   ano_formacao: z.union([z.number(), z.string()]).optional().nullable(),
   anoFormacao: z.union([z.number(), z.string()]).optional().nullable(),
   endereco: AddressSchema,

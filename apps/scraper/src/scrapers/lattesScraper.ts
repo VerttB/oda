@@ -108,6 +108,8 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
         },
         browserPoolOptions: {
             useFingerprints: true,
+            maxOpenPagesPerBrowser: 5,
+            retireBrowserAfterPageCount: 20,
             fingerprintOptions: {
                 fingerprintGeneratorOptions: {
                     browsers: ['chrome'],

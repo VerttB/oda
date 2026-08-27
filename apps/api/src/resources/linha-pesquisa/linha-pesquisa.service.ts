@@ -138,7 +138,7 @@ export class LinhaPesquisaService {
     const linhas = await this.prismaService.linhaPesquisa.findMany({
       where: { id: { in: ids } },
       include: {
-        grupo: { include: { instituicao: true } }
+        grupo: { include: { instituicoes: { include: { instituicao: true } } } }
       }
     });
 
