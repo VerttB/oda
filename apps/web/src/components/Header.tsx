@@ -1,82 +1,204 @@
-import { Link } from '@tanstack/react-router'
-import ThemeToggle from './ThemeToggle'
+import React, { useState } from 'react';
+import { Search, Bell, User, Sparkles, X, ArrowRight } from 'lucide-react';
 
-export default function Header() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-lg">
-      <nav className="page-wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:py-4">
-        <h2 className="m-0 flex-shrink-0 text-base font-semibold tracking-tight">
-          
-            <span className="h-2 w-2 rounded-full bg-[linear-gradient(90deg,#56c6be,#7ed3bf)]" />
-            TanStack Start
-        </h2>
-
-        <div className="order-3 flex w-full flex-wrap items-center gap-x-4 gap-y-1 pb-1 text-sm font-semibold sm:order-none sm:w-auto sm:flex-nowrap sm:pb-0">
-         
-            Home
-          <Link
-            to="/about"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            About
-          </Link>
-          <a
-            href="https://tanstack.com/start/latest/docs/framework/react/overview"
-            className="nav-link"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Docs
-          </a>
-          <details className="relative w-full sm:w-auto">
-            <summary className="nav-link list-none cursor-pointer">
-              Demos
-            </summary>
-            <div className="mt-2 min-w-56 rounded-xl border border-[var(--line)] bg-[var(--header-bg)] p-2 shadow-lg sm:absolute sm:right-0">
-              <a
-                href="/demo/tanstack-query"
-                className="block rounded-lg px-3 py-2 text-sm text-[var(--sea-ink-soft)] no-underline transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]"
-              >
-                TanStack Query
-              </a>
-            </div>
-          </details>
-        </div>
-
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-          <a
-            href="https://x.com/tan_stack"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)] sm:block"
-          >
-            <span className="sr-only">Follow TanStack on X</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true" width="24" height="24">
-              <path
-                fill="currentColor"
-                d="M12.6 1h2.2L10 6.48 15.64 15h-4.41L7.78 9.82 3.23 15H1l5.14-5.84L.72 1h4.52l3.12 4.73L12.6 1zm-.77 12.67h1.22L4.57 2.26H3.26l8.57 11.41z"
-              />
-            </svg>
-          </a>
-          <a
-            href="https://github.com/TanStack"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)] sm:block"
-          >
-            <span className="sr-only">Go to TanStack GitHub</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true" width="24" height="24">
-              <path
-                fill="currentColor"
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-              />
-            </svg>
-          </a>
-
-          <ThemeToggle />
-        </div>
-      </nav>
-    </header>
-  )
+interface NavbarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onSubmitResearchClick: () => void;
+  isDarkTheme?: boolean;
 }
+
+export const Header: React.FC<NavbarProps> = ({
+  activeTab,
+  onTabChange,
+  searchQuery,
+  onSearchChange,
+  isDarkTheme = false
+}) => {
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const navItems: { id: string; label: string }[] = [
+    { id: 'discover', label: 'Discover' },
+    { id: 'groups', label: 'Groups' },
+    { id: 'publications', label: 'Publications' },
+    { id: 'institutions', label: 'Institutions' },
+    { id: 'docs', label: 'API Docs' },
+  ];
+
+  // Dark variant for discover and custom screens, light variant for others
+  const isNavyNav = activeTab === 'discover' || isDarkTheme;
+
+  return (
+    <header
+      id="top-navbar"
+      className={`fixed top-0 w-full z-50 transition-colors duration-200 ${
+        isNavyNav
+          ? 'bg-secondary border-b border-secondary text-white'
+          : 'bg-white border-b border-border-subtle text-secondary shadow-xs'
+      }`}
+    >
+      <div className="max-w-[1280px] mx-auto flex justify-between items-center h-[72px] md:h-[80px] px-4 md:px-8">
+        {/* Brand & Search */}
+        <div className="flex items-center gap-6">
+          <button
+            id="brand-logo"
+            onClick={() => onTabChange('discover')}
+            className={`font-semibold text-2xl md:text-3xl tracking-tight transition-transform hover:opacity-90 flex items-center gap-2 ${
+              isNavyNav ? 'text-white' : 'text-secondary'
+            }`}
+          >
+            <span>ODA</span>
+          
+          </button>
+
+          {/* Search Input */}
+          <div
+            className={`hidden md:flex items-center px-3.5 py-1.5 rounded-lg border transition-all w-[280px] lg:w-[320px] ${
+              isNavyNav
+                ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-within:border-accent focus-within:bg-white/15'
+                : 'bg-slate-50 border-border-subtle text-foreground placeholder:text-muted-foreground focus-within:border-secondary focus-within:bg-white'
+            }`}
+          >
+            <Search className={`w-4 h-4 mr-2.5 shrink-0 ${isNavyNav ? 'text-white/70' : 'text-muted-foreground'}`} />
+            <input
+              id="global-search-input"
+              type="text"
+              placeholder="Procurar Pesquisadores, Grupos, Publicações..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="bg-transparent border-none focus:outline-hidden text-sm w-full p-0 font-normal"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => onSearchChange('')}
+                className="text-xs p-1 hover:opacity-80 rounded-full"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Center Nav Links */}
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                id={`nav-link-${item.id}`}
+                onClick={() => onTabChange(item.id)}
+                className={`text-sm md:text-base font-medium transition-all relative py-1 cursor-pointer ${
+                  isActive
+                    ? isNavyNav
+                      ? 'text-white font-semibold border-b-2 border-white'
+                      : 'text-secondary font-semibold border-b-2 border-secondary'
+                    : isNavyNav
+                    ? 'text-white/70 hover:text-white'
+                    : 'text-muted-foreground hover:text-secondary'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-3 md:gap-4 relative">
+      
+
+          {/* Notification Button */}
+            
+
+          {/* Profile Button */}
+          <div className="relative">
+            <button
+              id="profile-btn"
+              onClick={() => {
+                setUserMenuOpen(!userMenuOpen);
+                setNotificationsOpen(false);
+              }}
+              className={`p-1.5 rounded-full transition-colors flex items-center gap-2 cursor-pointer ${
+                isNavyNav
+                  ? 'text-white/80 hover:text-white hover:bg-white/10'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-slate-100'
+              }`}
+              title="Researcher Account"
+            >
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7pIzfuk-eLdC6Nxn0ePVr_99DzfWdGIpClj5V6n4AnFHnvAMLY0s76dXJhh9N1nf-zzcKOm7aFpPmR9G4zSoOdp_VR3DN2B6PlTRJZrfMKOOgv2S3Zlbp5QyzGPEJ4J2MbuaolT4Sm8UccsUncpmh4zVNS2ANfUsZHkjTcEJoWO2DBMCVKaw4JYCOkqKV4RVAae6n38Fcq6hSX7mjOgeRsFAZIHpCs28O_BqqLc-w7G5ayrwdc48_"
+                alt="Account profile avatar"
+                className="w-8 h-8 rounded-full object-cover border border-accent"
+              />
+            </button>
+
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-60 bg-white text-foreground rounded-xl shadow-xl border border-border-subtle p-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-2 border-b border-slate-100 mb-1">
+                  <p className="font-semibold text-secondary">Dr. Elena Rostova</p>
+                  <p className="text-muted-foreground text-[11px]">elena.rostova@mit.edu</p>
+                </div>
+                <button
+                  onClick={() => {
+                    onTabChange('publications');
+                    setUserMenuOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
+                >
+                  <span>My Researcher Profile</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+                <button
+                  onClick={() => {
+                    onTabChange('groups');
+                    setUserMenuOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
+                >
+                  <span>My DGP Groups</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+                <button
+                  onClick={() => {
+                    onTabChange('docs');
+                    setUserMenuOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
+                >
+                  <span>API Keys & Docs</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Sub-Navigation Bar */}
+      <div className="md:hidden flex items-center overflow-x-auto px-4 py-2 border-t border-white/10 gap-3 text-xs">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => onTabChange(item.id)}
+            className={`whitespace-nowrap px-3 py-1 rounded-full font-medium transition-colors ${
+              activeTab === item.id
+                ? isNavyNav
+                  ? 'bg-white text-secondary font-semibold'
+                  : 'bg-secondary text-white font-semibold'
+                : isNavyNav
+                ? 'text-white/70 bg-white/10'
+                : 'text-muted-foreground bg-muted'
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+    </header>
+  );
+};

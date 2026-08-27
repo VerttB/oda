@@ -90,42 +90,155 @@ code {
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-primary: #00687a;
+  --color-primary-hover: #005261;
+  --color-primary-light: #ecfeff;
+  --color-primary-dark: #003842;
+  --color-primary-border: #a5f3fc;
+  --color-primary-foreground: #ffffff;
+
+  /* Secondary (Deep Oxford Navy - Hero Headers, Dark Cards, Solid Accents) */
+  --color-secondary: #0f172a;
+  --color-secondary-hover: #1e293b;
+  --color-secondary-light: #f1f5f9;
+  --color-secondary-dark: #020617;
+  --color-secondary-border: #334155;
+  --color-secondary-foreground: #ffffff;
+
+  /* Accent (Electric Mint & Emerald - Metrics, Success, Badges) */
+  --color-accent: #10b981;
+  --color-accent-hover: #059669;
+  --color-accent-light: #ecfdf5;
+  --color-accent-dark: #047857;
+  --color-accent-border: #a7f3d0;
+  --color-accent-foreground: #ffffff;
+
+  /* Canvas, Background & Surface */
+  --color-background: #f4faff;
+  --color-foreground: #141d21;
+  
+  --color-surface: #ecf5fb;
+  --color-surface-hover: #e0eef7;
+  --color-surface-alt: #e6eff5;
+  --color-surface-card: #f8fbfe;
+  --color-surface-dark: #0f172a;
+  --color-surface-darker: #090e17;
+
+  /* Muted & Subtle Elements */
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-muted-border: #e2e8f0;
+
+  /* Borders & Dividers */
+  --color-border: #e0f2fe;
+  --color-border-subtle: #e2e8f0;
+  --color-border-strong: #7dd3fc;
+  --color-border-dark: #1e293b;
+  --color-border-dashed: #cbd5e1;
+  --color-ring: #00687a;
+
+  /* --------------------------------------------------------------------------
+     2. STATUS & FEEDBACK TOKENS
+     -------------------------------------------------------------------------- */
+  --color-success: #10b981;
+  --color-success-light: #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-success-foreground: #064e3b;
+
+  --color-warning: #f59e0b;
+  --color-warning-light: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-foreground: #78350f;
+
+  --color-error: #ef4444;
+  --color-error-light: #fef2f2;
+  --color-error-border: #fecaca;
+  --color-error-foreground: #7f1d1d;
+  --color-destructive: #ef4444;
+
+  --color-info: #0284c7;
+  --color-info-light: #f0f9ff;
+  --color-info-border: #bae6fd;
+  --color-info-foreground: #0c4a6e;
+
+  /* --------------------------------------------------------------------------
+     3. NUMERIC SCALES (50 - 950)
+     -------------------------------------------------------------------------- */
+
+  /* Primary Scale (Teal) */
+  --color-primary-50: #ecfeff;
+  --color-primary-100: #cffafe;
+  --color-primary-200: #a5f3fc;
+  --color-primary-300: #67e8f9;
+  --color-primary-400: #22d3ee;
+  --color-primary-500: #06b6d4;
+  --color-primary-600: #0891b2;
+  --color-primary-700: #0e7490;
+  --color-primary-800: #00687a;
+  --color-primary-900: #004d5b;
+  --color-primary-950: #002d36;
+
+  /* Secondary Scale (Navy / Slate) */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+  --color-secondary-950: #020617;
+
+  /* Accent Scale (Emerald / Mint) */
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+  --color-accent-950: #022c22;
+
+  /* Neutral Scale */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
+
+  /* --------------------------------------------------------------------------
+     4. BRAND ALIASES & ACADEMIC TAXONOMY
+     -------------------------------------------------------------------------- */
+
+  /* Legacy & Domain Names (Backward Compatibility) */
+  --color-oda-canvas: #f4faff;
+  --color-oda-surface: #ecf5fb;
+  --color-oda-surface-alt: #e6eff5;
+  --color-oda-surface-card: #f8fbfe;
+  --color-oda-surface-dark: #0f172a;
+  --color-oda-border: #e0f2fe;
+  --color-oda-text: #141d21;
+  --color-oda-text-heading: #0f172a;
+  --color-oda-text-muted: #64748b;
+
+  /* Academic Fields */
+  --color-academic-cs: #0284c7;
+  --color-academic-bio: #059669;
+  --color-academic-physics: #7c3aed;
+  --color-academic-medicine: #e11d48;
+  --color-academic-eng: #ea580c;
+  --color-academic-math: #0d9488;
 }
 
 @layer base {
