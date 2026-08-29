@@ -4,8 +4,14 @@ export const cleanText = (text: string): string => {
   return text?.replace(/\s+/g, ' ').trim() || '';
 };
 
-export const getAdjacentField = ($: cheerio.CheerioAPI, labelPattern: string | RegExp): string => {
-  const labels = $('label').toArray();
+const byId = (id: string): string => `[id="${id.replace(/"/g, '\\"')}"]`;
+
+export const getAdjacentField = ($: cheerio.CheerioAPI, labelPattern: string | RegExp, section?: string): string => {
+  const sectionSelector = section ? byId(section) : null;
+  const labelsToLook = sectionSelector
+    ? `${sectionSelector} label, ${sectionSelector} ~ label, ${sectionSelector} ~ * label`
+    : 'label';
+  const labels = $(labelsToLook).toArray();
   for (const label of labels) {
     const text = $(label).text();
     if (typeof labelPattern === 'string' ? text.includes(labelPattern) : labelPattern.test(text)) {
@@ -20,8 +26,13 @@ export const getAdjacentField = ($: cheerio.CheerioAPI, labelPattern: string | R
 
 type InstituicaoGrupoRelacao = {
   nome: string;
+  sigla?: string | null;
+  uf?: string | null;
   tipoRelacao: 'SEDE' | 'PARCEIRA';
-  unidade?: string | null;
+  unidade?: string | {
+    nome?: string | null;
+    uf?: string | null;
+  } | null;
 };
 
 const normalizeText = (text: string): string => (
@@ -31,10 +42,6 @@ const normalizeText = (text: string): string => (
     .toLowerCase()
 );
 
-const hasPartnerInstitutionContext = (text: string): boolean => {
-  const normalized = normalizeText(text);
-  return normalized.includes('instituic') && normalized.includes('parceir');
-};
 
 const addInstitutionRelation = (
   target: InstituicaoGrupoRelacao[],
@@ -43,71 +50,58 @@ const addInstitutionRelation = (
   const nome = cleanText(input.nome);
   if (!nome || nome === 'N/A') return;
 
-  const unidade = input.unidade ? cleanText(input.unidade) : null;
-  const key = `${input.tipoRelacao}|${normalizeText(nome)}|${normalizeText(unidade || '')}`;
+  const unidade = typeof input.unidade === 'string'
+    ? { nome: cleanText(input.unidade), uf: null }
+    : {
+        nome: input.unidade?.nome ? cleanText(input.unidade.nome) : null,
+        uf: input.unidade?.uf ? cleanText(input.unidade.uf) : null,
+      };
+  const unidadeNome = unidade.nome || null;
+  const unidadeUf = unidade.uf || null;
+  const uf = input.uf ? cleanText(input.uf) : null;
+  const key = `${input.tipoRelacao}|${normalizeText(nome)}|${normalizeText(uf || '')}|${normalizeText(unidadeNome || '')}|${normalizeText(unidadeUf || '')}`;
   const exists = target.some(
-    (item) => `${item.tipoRelacao}|${normalizeText(item.nome)}|${normalizeText(item.unidade || '')}` === key,
+    (item) => {
+      const itemUnidade = typeof item.unidade === 'string'
+        ? { nome: item.unidade, uf: null }
+        : item.unidade;
+      return `${item.tipoRelacao}|${normalizeText(item.nome)}|${normalizeText(item.uf || '')}|${normalizeText(itemUnidade?.nome || '')}|${normalizeText(itemUnidade?.uf || '')}` === key;
+    },
   );
 
   if (!exists) {
-    target.push({ nome, tipoRelacao: input.tipoRelacao, unidade });
+    target.push({
+      nome,
+      sigla: input.sigla ? cleanText(input.sigla) : null,
+      uf,
+      tipoRelacao: input.tipoRelacao,
+      unidade: unidadeNome || unidadeUf ? { nome: unidadeNome, uf: unidadeUf } : null,
+    });
   }
 };
 
-const getElementContextText = ($: cheerio.CheerioAPI, element: any): string => {
-  const current = $(element);
-  const headings = current.prevAll('h1, h2, h3, h4, h5, legend, label, .control-label').slice(0, 3).text();
-  const parentHeadings = current.parent().prevAll('h1, h2, h3, h4, h5, legend, label, .control-label').slice(0, 3).text();
-  const containerText = current.closest('[id], .control-group, .controls, fieldset, section, div').first().text();
-  return cleanText(`${headings} ${parentHeadings} ${containerText}`);
-};
-
-const extractPartnerInstitutions = ($: cheerio.CheerioAPI): InstituicaoGrupoRelacao[] => {
-  const parceiros: InstituicaoGrupoRelacao[] = [];
-
-  $('table').each((_, table) => {
-    const contextText = getElementContextText($, table);
-    if (!hasPartnerInstitutionContext(contextText)) return;
-
-    const headers = $(table).find('thead th, tr:first-child th, tr:first-child td')
-      .map((__, th) => normalizeText(cleanText($(th).text())))
-      .get();
-    const instituicaoIndex = headers.findIndex((header) => header.includes('instituic'));
-    const unidadeIndex = headers.findIndex((header) => header.includes('unidade'));
-
-    $(table).find('tbody tr, tr').each((__, tr) => {
-      const cells = $(tr).find('td');
-      if (!cells.length || $(tr).find('th').length) return;
-
-      const nomeCellIndex = instituicaoIndex >= 0 ? instituicaoIndex : 0;
-      const unidadeCellIndex = unidadeIndex >= 0 ? unidadeIndex : 1;
-      const nome = cleanText($(cells[nomeCellIndex]).text());
-      const unidade = cells.length > unidadeCellIndex ? cleanText($(cells[unidadeCellIndex]).text()) : null;
-
-      addInstitutionRelation(parceiros, {
-        nome,
-        tipoRelacao: 'PARCEIRA',
-        unidade,
-      });
-    });
-  });
-
-  $('[id*="parceir"], [class*="parceir"]').each((_, container) => {
-    const contextText = getElementContextText($, container);
-    if (!hasPartnerInstitutionContext(contextText)) return;
-
-    $(container).find('li').each((__, li) => {
-      addInstitutionRelation(parceiros, {
-        nome: cleanText($(li).text()),
-        tipoRelacao: 'PARCEIRA',
-      });
-    });
-  });
-
-  return parceiros;
-};
 
 export class DGPExtractor {
+  extractPartnerInstitutions(html: string){
+    const $ = cheerio.load(html);
+    let details = {
+      nome: "",
+      sigla: "",
+      uf: "",
+      unidade: {
+        nome: "",
+        uf: ""
+      }
+    };
+    details.nome = getAdjacentField($, /Nome Fantasia:/)
+    details.sigla = getAdjacentField($, /Sigla:/)
+    details.uf = getAdjacentField($, /UF:/)
+    details.unidade.nome = getAdjacentField($, /Unidade:/, 'idFormVisualizarParceira:painelUnidade')
+    details.unidade.uf = getAdjacentField($, /UF:/, 'idFormVisualizarParceira:painelUnidade')
+
+
+    return details;
+  }
   /**
    * Extrai detalhes de um único Pesquisador (Pesquisador/Estudante)
    */
@@ -198,7 +192,7 @@ export class DGPExtractor {
   /**
    * Consolida a extração completa do espelho do grupo
    */
-  extractGroupMirror(html: string, linesMap: Map<string, ReturnType<typeof this.extractLineDetails>>, rhDetailsMap: Map<string, ReturnType<typeof this.extractRHDetails>>) {
+  extractGroupMirror(html: string, linesMap: Map<string, ReturnType<typeof this.extractLineDetails>>, rhDetailsMap: Map<string, ReturnType<typeof this.extractRHDetails>>, instMap: Map<string, ReturnType<typeof this.extractPartnerInstitutions>>) {
     const $ = cheerio.load(html);
     const data: any = {
       idDgp: '000000',
@@ -238,11 +232,9 @@ export class DGPExtractor {
     addInstitutionRelation(data.instituicoes, {
       nome: data.instituicao,
       tipoRelacao: 'SEDE',
-      unidade: data.unidade,
+      unidade: { nome: data.unidade, uf: null },
     });
-    for (const instituicao of extractPartnerInstitutions($)) {
-      addInstitutionRelation(data.instituicoes, instituicao);
-    }
+   
     data.email = getAdjacentField($, /Contato do grupo/) || null;
     const rawTelefone = getAdjacentField($, /Telefone/);
     data.telefone = rawTelefone ? rawTelefone.replace(/_$/, '').trim() : null;
@@ -334,17 +326,18 @@ export class DGPExtractor {
     linesMap.forEach((lineDetails, lineName) => {
       data.linhas.push(lineDetails);
     });
-    // Linhas
-    // let lineIdx = 0;
-    // $('#linhaPesquisa tbody tr').each((_, tr) => {
-    //    const tds = $(tr).find('td');
-    //    if (tds.length > 0 && !$(tds[0]).attr('colspan')) {
-    //        const title = cleanText($(tds[0]).text());
-    //        const popupHtml = linesPopups[lineIdx] || '';
-    //        data.linhas.push(this.extractLineDetails(popupHtml, title));
-    //        lineIdx++;
-    //    }
-    // });
+    instMap.forEach((instDetails, instName) => {
+      addInstitutionRelation(data.instituicoes, {
+        nome: instDetails.nome || instName,
+        sigla: instDetails.sigla || null,
+        uf: instDetails.uf || null,
+        tipoRelacao: 'PARCEIRA',
+        unidade: {
+          nome: instDetails.unidade?.nome || null,
+          uf: instDetails.unidade?.uf || null,
+        },
+      });
+    })
 
     return data;
   }

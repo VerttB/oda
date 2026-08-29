@@ -58,6 +58,14 @@ async function needVectorization(sourceType: any, sourceId: string, dbUpdatedAt:
 
 const textSplitter = { splitText };
 
+function formatUnidadeVinculo(vinculo: any): string {
+  const nome = vinculo.unidade;
+  const uf = vinculo.unidadeUf ? ` - UF: ${vinculo.unidadeUf}` : '';
+
+  if (!nome && !uf) return '';
+  return ` - Unidade: ${nome || 'N/A'}${uf}`;
+}
+
 function formatInstituicoesGrupo(grupo: any): string {
   const vinculos = Array.isArray(grupo.instituicoes) ? grupo.instituicoes : [];
   if (vinculos.length > 0) {
@@ -66,7 +74,7 @@ function formatInstituicoesGrupo(grupo: any): string {
       const tipo = vinculo.tipoRelacao === 'SEDE' ? 'Sede' : 'Parceira';
       const sigla = instituicao?.sigla ? ` (${instituicao.sigla})` : '';
       const estado = instituicao?.estado?.nome ? ` - Estado: ${instituicao.estado.nome}` : '';
-      const unidade = vinculo.unidade ? ` - Unidade: ${vinculo.unidade}` : '';
+      const unidade = formatUnidadeVinculo(vinculo);
       return `${tipo}: ${instituicao?.nome || 'N/A'}${sigla}${estado}${unidade}`;
     }).join('\n');
   }

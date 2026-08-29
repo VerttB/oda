@@ -5,16 +5,31 @@ import { ANSWER_PROMPT, embeddings, model, SUMMARIZE_PROMPT } from "../core/conf
 import { prisma } from "../core/db";
 
 
+function formatUnidade(value: any): string {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+
+  const nome = typeof value.nome === 'string' ? value.nome.trim() : '';
+  const uf = typeof value.uf === 'string' ? value.uf.trim().toUpperCase() : '';
+
+  if (!nome && !uf) return '';
+  return `${nome || 'N/A'}${uf ? ` - UF: ${uf}` : ''}`;
+}
+
 function formatResearchGroupInstitutions(data: any): string {
   if (Array.isArray(data.instituicoes) && data.instituicoes.length > 0) {
     return data.instituicoes.map((item: any) => {
       const tipo = item.tipoRelacao === 'SEDE' ? 'Sede' : 'Parceira';
-      const unidade = item.unidade ? ` - Unidade: ${item.unidade}` : '';
-      return `${tipo}: ${item.nome || item.instituicao || ''}${unidade}`;
+      const unidadeFormatada = formatUnidade(item.unidade);
+      const unidade = unidadeFormatada ? ` - Unidade: ${unidadeFormatada}` : '';
+      const sigla = item.sigla ? ` (${item.sigla})` : '';
+      const uf = item.uf ? ` - UF: ${item.uf}` : '';
+      return `${tipo}: ${item.nome || item.instituicao || ''}${sigla}${uf}${unidade}`;
     }).join('\n');
   }
 
-  const unidade = data.unidade ? ` - Unidade: ${data.unidade}` : '';
+  const unidadeFormatada = formatUnidade(data.unidade);
+  const unidade = unidadeFormatada ? ` - Unidade: ${unidadeFormatada}` : '';
   return `Sede: ${data.instituicao || ''}${unidade}`;
 }
 

@@ -91,11 +91,18 @@ export const LinhaPesquisaGrupoSchema = z.object({
 });
 export type LinhaPesquisaGrupo = z.infer<typeof LinhaPesquisaGrupoSchema>;
 
+export const UnidadeInstituicaoSchema = z.object({
+  nome: z.string().optional().nullable(),
+  uf: z.string().optional().nullable(),
+});
+export type UnidadeInstituicao = z.infer<typeof UnidadeInstituicaoSchema>;
+
 export const InstituicaoGrupoRelacaoSchema = z.object({
   nome: z.string(),
   sigla: z.string().optional().nullable(),
+  uf: z.string().optional().nullable(),
   tipoRelacao: z.enum(['SEDE', 'PARCEIRA']),
-  unidade: z.string().optional().nullable(),
+  unidade: z.union([z.string(), UnidadeInstituicaoSchema]).optional().nullable(),
 });
 export type InstituicaoGrupoRelacao = z.infer<typeof InstituicaoGrupoRelacaoSchema>;
 

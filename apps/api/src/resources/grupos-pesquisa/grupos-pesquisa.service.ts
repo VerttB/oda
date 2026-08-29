@@ -226,13 +226,18 @@ export class GruposPesquisaService {
   ) {
     const desired = new Map<
       string,
-      { tipoRelacao: TipoRelacaoGrupoInstituicao; unidade?: string | null }
+      {
+        tipoRelacao: TipoRelacaoGrupoInstituicao;
+        unidade?: string | null;
+        unidadeUf?: string | null;
+      }
     >();
 
     for (const vinculo of instituicoes ?? []) {
       desired.set(vinculo.instituicaoId, {
         tipoRelacao: vinculo.tipoRelacao ?? TipoRelacaoGrupoInstituicao.PARCEIRA,
         unidade: vinculo.unidade ?? null,
+        unidadeUf: vinculo.unidadeUf ?? null,
       });
     }
 
@@ -247,6 +252,7 @@ export class GruposPesquisaService {
         desired.set(firstInstituicaoId, {
           tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
           unidade: current?.unidade ?? null,
+          unidadeUf: current?.unidadeUf ?? null,
         });
       }
     }
@@ -271,12 +277,14 @@ export class GruposPesquisaService {
         update: {
           tipoRelacao: vinculo.tipoRelacao,
           unidade: vinculo.unidade,
+          unidadeUf: vinculo.unidadeUf,
         },
         create: {
           grupoId,
           instituicaoId,
           tipoRelacao: vinculo.tipoRelacao,
           unidade: vinculo.unidade,
+          unidadeUf: vinculo.unidadeUf,
         },
       });
     }

@@ -81,7 +81,40 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
             }
         }
 
-        const linesMap = new Map<string, ReturnType<typeof extractor.extractLineDetails>>();
+        const instMap = new Map<string, ReturnType<typeof extractor.extractPartnerInstitutions>>();
+        const instButtons = await groupPage.$$("tbody[id$='j_idt388_data'] a[id$=':visualizar']");
+        
+        for (const btn of instButtons) {
+            await randomSleep(500, 1500);
+            const instNome = await btn.evaluate(el => {
+                const row = el.closest('tr');
+                return row ? (row.querySelector('td')?.textContent || '').trim() : '';
+            });
+            try {
+                const [openedPopup] = await Promise.all([
+                    groupPage.waitForEvent('popup', { timeout: 20000 }),
+                    btn.click(),
+                ]);
+                await openedPopup.waitForLoadState('domcontentloaded');
+                await sleep(500);
+                const html = await openedPopup.content();
+                instMap.set(instNome || "Desconhecido", extractor.extractPartnerInstitutions(html));
+                await openedPopup.close();
+            } catch(err: any){
+                console.error(`[Scraper] Erro ao extrair detalhes da instituição: ${err.message}`);
+                await pipelineLogger.pipelineLogItem(pipelineLogId, 'INSTITUICOES_PARCEIRAS', StatusItemLog.ERRO, {
+                    tipoEntidade: TipoEntidadeLog.GRUPO,
+                    entidadeId: dgpId,
+                    tipoErro: TipoErroColeta.DESCONHECIDO,
+                    mensagemErro: `Erro ao extrair detalhes da instituição ${instNome}: ${err.message}`,
+                    detalhesErro: err.stack
+                });
+            } finally {
+                await closePopup(activePopups, groupPage);
+            }
+        }
+
+          const linesMap = new Map<string, ReturnType<typeof extractor.extractLineDetails>>();
         const linesButtons = await groupPage.$$("a[id*='idBtnVisualizarEspelhoLinhaPesquisa']");
         
         for (const btn of linesButtons) {
@@ -115,7 +148,7 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
         }
 
         const mainHtml = await groupPage.content();
-        const data = extractor.extractGroupMirror(mainHtml, linesMap, rhDetailsMap);
+        const data = extractor.extractGroupMirror(mainHtml, linesMap, rhDetailsMap, instMap);
         
         data.id_dgp = dgpId;
         saveJson(data, DGP_DATA_DIR, dgpId);

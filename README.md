@@ -7,7 +7,7 @@ Sistema completo e unificado em TypeScript para extração, processamento, estru
 ## Tecnologias Principais
 * **Node.js** (v20+) & **PNPM Workspaces**
 * **NestJS** (API REST principal)
-* **LangChain.js** (Serviço de RAG & busca semântica com OpenAI)
+* **LangChain.js** (Serviço de RAG & busca semântica)
 * **Crawlee & Playwright** (Web Scraping dos dados públicos)
 * **Prisma ORM & PostgreSQL** (Persistência relacional e vetorial pgvector)
 * **Redis** (Gerenciamento de cache da API)
@@ -52,15 +52,15 @@ pnpm run run:scraper
 Processa os JSONs gerados pelo scraper e salva no banco de dados estruturado do PostgreSQL:
 * **Importar Grupos de Pesquisa:**
   ```bash
-  pnpm --filter @oda/etl etl:grupo
+  pnpm run etl:grupo
   ```
 * **Importar Pesquisadores e Produções:**
   ```bash
-  pnpm --filter @oda/etl etl:pesquisador
+  pnpm run etl:pesquisador
   ```
 * **Vincular ISSN / Qualis retroativamente (Mapeamento de Metadados):**
   ```bash
-  pnpm --filter @oda/etl start fix -qualis
+  pnpm -F @oda/etl start fix -qualis
   ```
 
 ### C. API REST (Servidor Principal)
@@ -89,3 +89,29 @@ Se desejar rodar todos os serviços da aplicação conteinerizados de uma única
 ```bash
 docker compose up --build -d
 ```
+
+---
+
+## Banco de Dados e Prisma
+
+O projeto usa Prisma com PostgreSQL. Como o projeto ainda está em fase inicial, o fluxo atual de evolução do schema é feito com `db push`, não com migrations versionadas.
+
+Comandos principais:
+
+```bash
+pnpm run prisma:push
+pnpm run prisma:generate
+pnpm run prisma:studio
+```
+
+Antes de mudanças destrutivas no schema, gere um backup do banco. Em especial, a modelagem atual de grupos de pesquisa usa uma tabela intermediária entre `GrupoPesquisa` e `Instituicao`; portanto, a relação direta antiga `grupo_pesquisa.instituicao_id` não faz mais parte do modelo.
+
+Relação atual entre grupos e instituições:
+
+- `GrupoPesquisa` representa os dados próprios do grupo.
+- `Instituicao` representa instituições de ensino/pesquisa.
+- `GrupoPesquisaInstituicao` representa o vínculo N:N entre grupo e instituição.
+- Cada vínculo possui `tipoRelacao`, com valores `SEDE` ou `PARCEIRA`.
+- Cada vínculo também pode possuir `unidade`, permitindo registrar a unidade da instituição naquele relacionamento específico.
+
+Essa modelagem permite que um grupo tenha uma instituição sede e múltiplas instituições parceiras, sem duplicar dados institucionais.

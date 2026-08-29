@@ -23,6 +23,10 @@ export class CreateGrupoPesquisaInstituicaoDto {
   @IsOptional()
   @IsString()
   unidade?: string;
+
+  @IsOptional()
+  @IsString()
+  unidadeUf?: string;
 }
 
 export class CreateGruposPesquisaDto {

@@ -42,6 +42,7 @@ model GrupoPesquisaInstituicao {
   instituicaoId String                      @map("instituicao_id")
   tipoRelacao   TipoRelacaoGrupoInstituicao @map("tipo_relacao")
   unidade       String?
+  unidadeUf     String?                     @map("unidade_uf")
   grupoPesquisa GrupoPesquisa               @relation(fields: [grupoId], references: [id], onDelete: Cascade)
   instituicao   Instituicao                 @relation(fields: [instituicaoId], references: [id])
   criadoEm      DateTime                    @default(now()) @map("criado_em")

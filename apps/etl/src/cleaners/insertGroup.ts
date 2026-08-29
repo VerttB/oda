@@ -2,6 +2,29 @@ import { PrismaClient, prismaConfig, TipoRelacaoGrupoInstituicao } from '@oda/da
 import { DATA_DIR, DGP_DIR, LATTES_DIR } from '../commom/config';
 const prisma = new PrismaClient(prismaConfig);
 
+function cleanOptional(value: any): string | null {
+    if (typeof value !== 'string') return null;
+    const clean = value.trim();
+    return clean.length > 0 ? clean : null;
+}
+
+function normalizeUf(value: any): string | null {
+    const clean = cleanOptional(value);
+    return clean ? clean.toUpperCase() : null;
+}
+
+function getUnidadeNome(value: any): string | null {
+    if (typeof value === 'string') return value.trim() || null;
+    if (!value || typeof value !== 'object') return null;
+
+    return cleanOptional(value.nome);
+}
+
+function getUnidadeUf(value: any): string | null {
+    if (!value || typeof value !== 'object') return null;
+    return normalizeUf(value.uf);
+}
+
 async function saveGroupToDb(data: any) {
     const dgpId = data.id_dgp;
     
@@ -56,13 +79,15 @@ async function saveGroupToDb(data: any) {
                 },
                 update: {
                     tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
-                    unidade: data.unidade || null,
+                    unidade: getUnidadeNome(data.unidade),
+                    unidadeUf: getUnidadeUf(data.unidade),
                 },
                 create: {
                     grupoId: grupo.id,
                     instituicaoId: instituicao.id,
                     tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
-                    unidade: data.unidade || null,
+                    unidade: getUnidadeNome(data.unidade),
+                    unidadeUf: getUnidadeUf(data.unidade),
                 },
             });
 

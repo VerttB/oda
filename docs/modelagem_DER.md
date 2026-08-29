@@ -1,6 +1,8 @@
 # Modelagem DER
 
-Diagrama entidade-relacionamento derivado do schema Prisma em `apps/api/prisma/schema.prisma`.
+Diagrama entidade-relacionamento derivado do schema Prisma em `shared/database/prisma/schema.prisma`.
+
+Observação sobre a modelagem atual: `GrupoPesquisa` não possui mais uma relação direta com `Instituicao`. O vínculo é representado pela tabela intermediária `grupo_pesquisa_instituicao`, permitindo que um grupo tenha uma instituição sede e múltiplas instituições parceiras. A unidade pertence ao vínculo, não ao grupo.
 
 ```plantuml
 @startuml
@@ -47,7 +49,21 @@ entity "grupo_pesquisa" as GrupoPesquisa {
   * area_predominante : string
   repercussao : text
   * situacao : situacao
+  email : string
+  telefone : string
+  website : string
+  cidade : string
+  uf : string
+  * criado_em : datetime
+  * atualizado_em : datetime
+}
+
+entity "grupo_pesquisa_instituicao" as GrupoPesquisaInstituicao {
+  * grupo_id : uuid
   * instituicao_id : uuid
+  --
+  * tipo_relacao : tipo_relacao_grupo_instituicao
+  unidade : string
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -226,9 +242,14 @@ entity "log_coleta_grupo" as LogColetaGrupo {
 }
 
 enum "situacao" as Situacao {
-  ativo
+  certificado
   inativo
   em_analise
+}
+
+enum "tipo_relacao_grupo_instituicao" as TipoRelacaoGrupoInstituicao {
+  sede
+  parceira
 }
 
 enum "tipo_pesquisador" as TipoPesquisador {
@@ -283,7 +304,8 @@ enum "acao_coleta" as AcaoColeta {
 }
 
 Estado ||--o{ Instituicao
-Instituicao ||--o{ GrupoPesquisa
+Instituicao ||--o{ GrupoPesquisaInstituicao
+GrupoPesquisa ||--o{ GrupoPesquisaInstituicao
 GrupoPesquisa ||--o{ GrupoPesquisaAreaConhecimento
 AreaConhecimento ||--o{ GrupoPesquisaAreaConhecimento
 Pesquisador ||--o{ PesquisadorAreaConhecimento
@@ -307,6 +329,7 @@ ColetaScraper ||--o{ LogColetaGrupo
 GrupoPesquisa ||--o{ LogColetaGrupo
 
 GrupoPesquisa }o--|| Situacao
+GrupoPesquisaInstituicao }o--|| TipoRelacaoGrupoInstituicao
 Pesquisador }o--|| TipoPesquisador
 Pesquisador }o--|| FormacaoAcademica
 Producao }o--|| TipoProducao

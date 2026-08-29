@@ -31,10 +31,11 @@ Fonte inicial:
 
 - Páginas públicas do DGP/CNPq via web scraping.
 
-Formato inicial de saída da coleta:
+Formato atual de saída da coleta:
 
-- XML coletado a partir do DGP/CNPq.
-- O XML será enviado posteriormente para a etapa de ETL.
+- JSON estruturado gerado a partir das páginas públicas do DGP/CNPq.
+- Imagens de pesquisadores, quando disponíveis, são armazenadas como artefatos de coleta.
+- Os JSONs são enviados posteriormente para a etapa de ETL.
 
 Fontes futuras previstas:
 
@@ -51,14 +52,15 @@ Acionamento inicial:
 
 ### 3.1.1 ETL e Orquestração
 
-O ETL será planejado como responsabilidade separada do scraper. A ferramenta escolhida é o **Apache Hop**.
+O ETL é tratado como responsabilidade separada do scraper e implementado em TypeScript no pacote `apps/etl`.
 
-Responsabilidades atuais do ETL (Apache Hop):
-- `load_cnpq_xmls`: Lê e mapeia os arquivos XML gerados pelo scraper.
-- `clean_research_group_data`: Padroniza nomes (caixa alta) e limpa IDs para garantir consistência antes da inserção no banco relacional.
-- `clean_researchers_data`: Pipeline dedicado para padronizar e limpar dados dos pesquisadores (ex: limpar máscaras de Lattes ID e padronização nominal).
-- `enrich_researcher_data` (Pipeline de Enriquecimento Futuro): Preparado para realizar chamadas REST a APIs externas (OpenAlex, ORCID, DOI) a partir do Lattes ID para complementar os dados de pesquisadores e produções.
-- `main_workflow`: Workflow orquestrador que conecta sequencialmente todos os pipelines acima.
+Responsabilidades atuais do ETL:
+- Ler JSONs gerados pelo scraper em `data/raw-data`.
+- Normalizar grupos, instituições, pesquisadores, linhas de pesquisa, áreas, palavras-chave e setores de aplicação.
+- Criar ou reutilizar registros existentes no PostgreSQL via Prisma.
+- Registrar vínculos N:N entre grupos de pesquisa e instituições, distinguindo instituição sede e instituições parceiras.
+- Mover arquivos processados para `processed-data` somente após carga bem-sucedida.
+- Registrar logs do pipeline para acompanhamento de sucesso, falhas e metadados da execução.
 
 Responsabilidades esperadas:
 - Limpeza de dados coletados.
@@ -68,10 +70,8 @@ Responsabilidades esperadas:
 - Registro de qualidade dos dados.
 - Carga no banco transacional e/ou nas tabelas de indexação semântica.
 
-#### Gerenciamento de Variáveis no Apache Hop
-Para conciliar o desenvolvimento local (Hop Desktop) com a execução em produção (Docker), o projeto adota uma estratégia híbrida:
-- **Variáveis de Ambiente (Segredos):** Senhas de banco de dados e tokens de API devem ser injetados localmente via "Edit Environment Variables" no Hop Desktop ou através do `.env` do Docker Compose. **Nunca versionados.**
-- **Hop Environments (Configurações):** O arquivo `config/dev-env.json` é utilizado para versionar URLs base (ex: OpenAlex) e padrões estruturais não-sensíveis (`DB_HOST` como `localhost` para dev).
+#### Gerenciamento de Variáveis
+As credenciais e chaves de API são carregadas a partir do `.env` da raiz do monorepo e não devem ser versionadas. O acesso ao banco é centralizado pelo pacote `@oda/database`, que expõe o Prisma Client configurado.
 
 ### 3.2 API REST e Microservices
 
@@ -114,11 +114,13 @@ Ponto técnico em aberto:
 - RF06: O sistema deve oferecer busca semântica sobre áreas e linhas de pesquisa.
 - RF07: O sistema deve permitir que o serviço LangChain recupere trechos relevantes para responder perguntas sobre grupos de pesquisa.
 - RF08: O pipeline de dados deve registrar informações que permitam avaliar qualidade, completude e duplicidade dos dados.
-- RF09: O sistema deve coletar inicialmente dados em formato XML.
+- RF09: O sistema deve gerar JSON estruturado como artefato de coleta para consumo pelo ETL.
 - RF10: O sistema deve permitir execução agendada do scraper.
 - RF11: O sistema deve persistir e expor dados de pesquisadores vinculados aos grupos de pesquisa.
 - RF12: O sistema deve persistir e expor dados de produções acadêmicas relacionadas.
 - RF13: O sistema deve permitir geração ou atualização de embeddings a partir de dados inseridos ou alterados no banco.
+- RF14: O sistema deve permitir que um grupo de pesquisa esteja vinculado a uma instituição sede e a zero ou mais instituições parceiras.
+- RF15: O sistema deve registrar a unidade da instituição no vínculo com o grupo, pois a unidade pode variar entre sede e parceiras.
 
 ### 4.2 Requisitos Não Funcionais
 
@@ -137,8 +139,8 @@ Ponto técnico em aberto:
 - RN03: APIs externas serão adicionadas em etapas posteriores, após validação do fluxo inicial de scraping.
 - RN04: O LangChain deve responder apenas com base em dados disponíveis no sistema ou contexto recuperado.
 - RN05: A busca semântica inicial será limitada a temas, áreas e linhas de pesquisa dos grupos.
-- RN06: O scraper deve gerar XML como artefato inicial de coleta.
-- RN07: O ETL será responsável por transformar XML em dados estruturados.
+- RN06: O scraper deve gerar JSON como artefato inicial de coleta.
+- RN07: O ETL será responsável por transformar JSON em dados estruturados no banco relacional.
 - RN08: Pesquisadores e produções acadêmicas fazem parte do escopo do MVP.
 
 ## 5. Arquitetura
@@ -150,18 +152,18 @@ flowchart LR
   FE[Frontend] --> API[NestJS API REST]
   API --> DB[(PostgreSQL)]
   API --> LC[Typescript LangChain Service]
-  LC --> GEMINI[Google Gemini API]
-  SCRAPER[Scraper Service] --> XML[(XML Output)]
+  LC --> OPENAI[OpenAI API]
+  SCRAPER[Scraper Service] --> JSON[(JSON Output)]
   ETL[ETL/Orchestration] --> DB
-  XML --> ETL
+  JSON --> ETL
   ETL --> IDX[Indexing Trigger]
   IDX --> LC
 ```
 
 Observações:
 - **API REST (Node.js/NestJS):** Responsável pelo CRUD transacional, gerenciamento de usuários e orquestração de alto nível.
-- **LangChain Service (Typescript):** Microserviço especializado em busca semântica e RAG. Utiliza Google Gemini (LLM e Embeddings).
-- **Vetorização:** No estágio atual do MVP, utiliza vector store em memória (FAISS) alimentado por arquivos XML.
+- **LangChain Service (Typescript):** Microserviço especializado em busca semântica e RAG.
+- **Vetorização:** No estágio atual do MVP, utiliza PostgreSQL com extensão pgvector para persistir documentos e chunks vetoriais.
 
 ## 6.5 Estado Atual do Scraper Service (TypeScript)
 
@@ -189,8 +191,8 @@ Estrutura atual:
 
 - `package.json` na raiz de `oda`: declara `workspaces`, scripts agregados, dependências comuns do NestJS e ferramentas de desenvolvimento compartilhadas.
 - `apps/api/package.json`: mantém scripts e dependências específicas da API REST, como Prisma, cache, validação e PostgreSQL.
-- `apps/langchain/package.json`: mantém scripts e dependências específicas do serviço LangChain/RAG.
-- `package-lock.json` canônico fica na raiz de `oda`.
+- `apps/langchain-ts/package.json`: mantém scripts e dependências específicas do serviço LangChain/RAG.
+- `pnpm-lock.yaml` canônico fica na raiz de `oda`.
 
 Decisões:
 
@@ -198,7 +200,7 @@ Decisões:
 - Todos os pacotes `@nestjs/*` devem ser mantidos no `package.json` raiz.
 - Dependências específicas de cada aplicação permanecem no respectivo app.
 - A unificação de dependências por workspace não altera a separação lógica dos serviços: `api` e `langchain` continuam sendo aplicações executáveis separadamente.
-- Os scripts da raiz devem usar `pnpm --workspace` para executar comandos em cada app.
+- Os scripts da raiz devem usar filtros do `pnpm`, como `pnpm -F @oda/api ...`, para executar comandos em cada app.
 
 ## 6. Modelagem de Dados
 
@@ -212,6 +214,7 @@ Entidades mínimas candidatas para o MVP:
 
 - `GrupoPesquisa`.
 - `Instituicao`.
+- `GrupoPesquisaInstituicao`.
 - `LinhaPesquisa`.
 - `AreaConhecimento`.
 - `PalavraChave`.
@@ -243,6 +246,7 @@ Tabelas/modelos atualmente presentes no schema Prisma:
 - `Instituicao`.
 - `Estado`.
 - `GrupoPesquisa`.
+- `GrupoPesquisaInstituicao`.
 - `LinhaPesquisa`.
 - `Pesquisador`.
 - `MembroGrupo`.
@@ -273,6 +277,7 @@ Enums atualmente presentes:
 - `IndexingJobStatus`.
 - `StatusColeta`.
 - `AcaoColeta`.
+- `TipoRelacaoGrupoInstituicao`.
 
 Tabelas/modelos adicionados para fechar o MVP:
 
@@ -301,6 +306,9 @@ Correções e complementos aplicados:
 
 - `GrupoPesquisa` recebeu `dgpId` para rastrear identificador externo do DGP/CNPq.
 - `GrupoPesquisa` recebeu `repercussao`.
+- `GrupoPesquisa` deixou de possuir `instituicaoId` e `unidade` diretamente.
+- O vínculo entre grupo e instituição passou a ser N:N por meio de `GrupoPesquisaInstituicao`.
+- `GrupoPesquisaInstituicao` registra `tipoRelacao` (`SEDE` ou `PARCEIRA`) e `unidade`.
 - `Pesquisador` recebeu `lattesId`.
 - `Pesquisador.name` foi corrigido para `Pesquisador.nome`.
 - `Pesquisador` recebeu `tipo`, com valores técnico, estudante, pesquisador e colaborador estrangeiro.
@@ -344,12 +352,12 @@ Endpoints scaffold existentes por recurso:
 
 Observações:
 
-- A API compila via `pnpm run api:build` no workspace monorepo.
+- A API compila pelo build agregado da raiz com `pnpm run build:all` ou diretamente pelo pacote `@oda/api`.
 - `linha-pesquisa` possui CRUD real com transações para manter vínculos em `membro_linha_pesquisa`, `linha_pesquisa_palavra_chave` e `linha_pesquisa_setor_aplicacao`.
 - `producoes` possui CRUD real com transações para manter vínculos em `producao_pesquisador` e `producao_palavra_chave`.
 - `instituicao` e `pesquisadores` possuem CRUD real simples com Prisma.
 - `pesquisadores.remove` remove vínculos em `membro_grupo`, `membro_linha_pesquisa` e `producao_pesquisador` antes de excluir o pesquisador.
-- `grupos-pesquisa` possui `create` e `findAll` reais, mas `findOne`, `update` e `remove` ainda precisam ser finalizados.
+- `grupos-pesquisa` cria, atualiza, lista, busca e remove grupos com suporte aos vínculos N:N em `instituicoes`.
 - `estado`, `area-conhecimento`, `setor-aplicacao` e `palavra-chave` existem como services/DTOs auxiliares internos, mas ainda não estão expostos como módulos/controllers REST no `AppModule`.
 - DTOs de criação foram preenchidos para os recursos existentes com `class-validator` e `class-transformer`.
 - DTOs de atualização usam `PartialType` de `@nestjs/mapped-types`.
@@ -365,9 +373,9 @@ Observações:
   - `P2003` para `422 Unprocessable Entity`.
   - `P2014` para `422 Unprocessable Entity`.
 - Cache manual com `cacheManager.wrap` é usado principalmente em listagens (`findAll`) e invalidado em operações de escrita quando implementadas.
-- Ainda não há paginação, filtros, ordenação ou padronização de resposta.
+- A listagem principal de grupos já possui paginação e filtros básicos; a padronização global de resposta ainda pode evoluir.
 - Testes unitários reais existem para `linha-pesquisa.service` e `producoes.service`, com mocks de Prisma/cache.
-- Validação recente: `pnpm --workspace @oda/api run test -- resources/linha-pesquisa/linha-pesquisa.service.spec.ts resources/producoes/producoes.service.spec.ts --runInBand` passou com 2 suítes e 8 testes.
+- Validação recente: `pnpm -F @oda/api test -- resources/linha-pesquisa/linha-pesquisa.service.spec.ts resources/producoes/producoes.service.spec.ts --runInBand` passou com 2 suítes e 8 testes.
 - A suíte completa de testes ainda precisa ser revisada e ampliada.
 
 ### 6.7 Normalização de Termos e Resolução de Conflitos
@@ -431,7 +439,21 @@ entity "grupo_pesquisa" as GrupoPesquisa {
   * area_predominante : string
   repercussao : text
   * situacao : situacao
+  email : string
+  telefone : string
+  website : string
+  cidade : string
+  uf : string
+  * criado_em : datetime
+  * atualizado_em : datetime
+}
+
+entity "grupo_pesquisa_instituicao" as GrupoPesquisaInstituicao {
+  * grupo_id : uuid
   * instituicao_id : uuid
+  --
+  * tipo_relacao : tipo_relacao_grupo_instituicao
+  unidade : string
   * criado_em : datetime
   * atualizado_em : datetime
 }
@@ -469,22 +491,6 @@ entity "pesquisador" as Pesquisador {
   formacao_academica : formacao_academica
   * criado_em : datetime
   * atualizado_em : datetime
-}
-
-entity "area_atuacao" as AreaAtuacao {
-  * id : uuid
-  --
-  * nome : string
-  * nome_normalizado : string
-  * criado_em : datetime
-  * atualizado_em : datetime
-}
-
-entity "pesquisador_area_atuacao" as PesquisadorAreaAtuacao {
-  * pesquisador_id : uuid
-  * area_atuacao_id : uuid
-  --
-  * criado_em : datetime
 }
 
 entity "membro_grupo" as MembroGrupo {
@@ -647,7 +653,8 @@ entity "fila_extracao_pesquisador" as FilaExtracaoPesquisador {
 }
 
 Estado ||--o{ Instituicao
-Instituicao ||--o{ GrupoPesquisa
+Instituicao ||--o{ GrupoPesquisaInstituicao
+GrupoPesquisa ||--o{ GrupoPesquisaInstituicao
 GrupoPesquisa ||--o{ GrupoPesquisaAreaConhecimento
 AreaConhecimento ||--o{ GrupoPesquisaAreaConhecimento
 Pesquisador ||--o{ PesquisadorAreaConhecimento
@@ -700,8 +707,8 @@ Para a evolução do MVP rumo a um sistema de produção escalável, foram defin
 - **Vantagens:** Maior resiliência contra falhas em APIs externas (Gemini/OpenAlex), controle refinado de *Rate Limit* e desacoplamento total entre a coleta de dados e a geração de inteligência semântica.
 
 ### 9.2 Persistência Vetorial
-- Migração do Vector Store em memória (FAISS) para o **PostgreSQL com extensão pgvector**.
-- Isso permitirá consultas híbridas (SQL + Vetor) e persistência de longo prazo dos embeddings sem necessidade de re-vetorização total em cada inicialização.
+- O projeto já usa **PostgreSQL com extensão pgvector** para persistir documentos e chunks vetoriais.
+- Evoluções futuras podem concentrar-se em consultas híbridas, reindexação incremental mais robusta, métricas de qualidade dos embeddings e versionamento dos modelos de embedding.
 
 
 # 10 Diagramas Arquiteturias
@@ -734,7 +741,7 @@ flowchart LR
         CNPq["CNPq DGP / Lattes (Web)"]:::extFill
         OpenAlex["OpenAlex API"]:::extFill
         DOI["DOI API"]:::extFill
-        GeminiAPI["Google Gemini API"]:::extFill
+        OpenAIAPI["OpenAI API"]:::extFill
     end
 
     %% Monorepo Open DGP
@@ -776,7 +783,7 @@ flowchart LR
     API <-->|Orquestração RAG| LangChain
     
     LangChain <-->|Busca Vetorial & Contexto| Postgres
-    LangChain <-->|Geração de Embeddings & LLM| GeminiAPI
+    LangChain <-->|Geração de Embeddings & LLM| OpenAIAPI
 ```
 ## 10.2 Fluxo de Coleta e ETL 
 ```
@@ -812,11 +819,11 @@ flowchart LR
     USER["Usuário\nPergunta"]
     API["NestJS API\nHTTP"]
     LANG["LangChain Service"]
-    EMB["Geração de Embeddings\n(Google Gemini)"]
+    EMB["Geração de Embeddings\n(OpenAI)"]
     VDB["Vector Database\n(PostgreSQL)"]
     RETRIEVE["Recuperação de contexto\n(cosseno)"]
     PROMPT["Construção do Prompt"]
-    LLM["Google Gemini\nResposta"]
+    LLM["OpenAI\nResposta"]
     RESPONSE["Resposta ao usuário"]
 
     USER --> API

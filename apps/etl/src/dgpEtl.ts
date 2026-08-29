@@ -10,14 +10,38 @@ const prisma = new PrismaClient(prismaConfig);
 type GrupoInstituicaoInput = {
     nome: string;
     sigla?: string | null;
+    uf?: string | null;
     tipoRelacao: TipoRelacaoGrupoInstituicao;
     unidade?: string | null;
+    unidadeUf?: string | null;
+};
+
+type GrupoInstituicaoRawInput = Omit<Partial<GrupoInstituicaoInput>, 'unidade'> & {
+    nome?: string | null;
+    unidade?: string | { nome?: unknown; uf?: unknown } | null;
 };
 
 function cleanOptional(value: unknown): string | null {
     if (typeof value !== 'string') return null;
     const clean = value.trim();
     return clean.length > 0 ? clean : null;
+}
+
+function normalizeUf(value: unknown): string | null {
+    const clean = cleanOptional(value);
+    return clean ? clean.toUpperCase() : null;
+}
+
+function getUnidadeNome(value: unknown): string | null {
+    if (typeof value === 'string') return cleanOptional(value);
+    if (!value || typeof value !== 'object') return null;
+
+    return cleanOptional((value as { nome?: unknown }).nome);
+}
+
+function getUnidadeUf(value: unknown): string | null {
+    if (!value || typeof value !== 'object') return null;
+    return normalizeUf((value as { uf?: unknown }).uf);
 }
 
 function escapeRegex(value: string): string {
@@ -51,7 +75,7 @@ function normalizeInstitutionRelation(value: unknown): TipoRelacaoGrupoInstituic
 function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): GrupoInstituicaoInput[] {
     const instituicoes = new Map<string, GrupoInstituicaoInput>();
 
-    const addInstituicao = (input: Partial<GrupoInstituicaoInput> & { nome?: string | null }) => {
+    const addInstituicao = (input: GrupoInstituicaoRawInput) => {
         const nome = cleanOptional(input.nome);
         if (!nome) return;
 
@@ -59,6 +83,8 @@ function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): Gru
         const key = `${parsed.nome.toLowerCase()}|${parsed.sigla.toLowerCase()}`;
         const current = instituicoes.get(key);
         const tipoRelacao = input.tipoRelacao ?? TipoRelacaoGrupoInstituicao.PARCEIRA;
+        const unidadeNome = getUnidadeNome(input.unidade);
+        const unidadeUf = normalizeUf(input.unidadeUf) ?? getUnidadeUf(input.unidade);
 
         instituicoes.set(key, {
             nome: parsed.nome,
@@ -66,13 +92,16 @@ function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): Gru
             tipoRelacao: current?.tipoRelacao === TipoRelacaoGrupoInstituicao.SEDE
                 ? TipoRelacaoGrupoInstituicao.SEDE
                 : tipoRelacao,
-            unidade: cleanOptional(input.unidade) ?? current?.unidade ?? null,
+            uf: normalizeUf(input.uf) ?? current?.uf ?? null,
+            unidade: unidadeNome ?? current?.unidade ?? null,
+            unidadeUf: unidadeUf ?? current?.unidadeUf ?? null,
         });
     };
 
     addInstituicao({
         nome: data.instituicao,
         sigla: filaInstituicao,
+        uf: data.endereco?.uf,
         tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
         unidade: data.unidade,
     });
@@ -82,6 +111,7 @@ function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): Gru
             addInstituicao({
                 nome: instituicao.nome ?? instituicao.instituicao,
                 sigla: instituicao.sigla,
+                uf: instituicao.uf,
                 tipoRelacao: normalizeInstitutionRelation(instituicao.tipoRelacao ?? instituicao.relacao),
                 unidade: instituicao.unidade,
             });
@@ -115,6 +145,17 @@ async function getOrCreateInstituicao(tx: any, input: GrupoInstituicaoInput, est
     return instituicao;
 }
 
+async function getEstadoIdByUf(tx: any, uf?: string | null, fallbackEstadoId?: string | null) {
+    const cleanUf = normalizeUf(uf);
+    if (!cleanUf) return fallbackEstadoId ?? null;
+
+    const estado = await tx.estado.findUnique({
+        where: { sigla: cleanUf }
+    });
+
+    return estado?.id ?? fallbackEstadoId ?? null;
+}
+
 export async function saveGroupToDb(data: any) {
     const dgpId = data.idDgp;
     let grupoId = "";
@@ -133,6 +174,7 @@ export async function saveGroupToDb(data: any) {
                     sigla: 'INST',
                     tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
                     unidade: null,
+                    unidadeUf: null,
                 };
             const instituicao = await getOrCreateInstituicao(tx, sedeInput, estado?.id);
             const anoStr = data.anoFormacao?.replace(/\D/g, '');
@@ -181,9 +223,10 @@ export async function saveGroupToDb(data: any) {
             });
 
             for (const item of instituicoesGrupo) {
+                const estadoVinculoId = await getEstadoIdByUf(tx, item.uf, estado?.id);
                 const instituicaoVinculo = item.tipoRelacao === TipoRelacaoGrupoInstituicao.SEDE
                     ? instituicao
-                    : await getOrCreateInstituicao(tx, item, estado?.id);
+                    : await getOrCreateInstituicao(tx, item, estadoVinculoId);
 
                 await tx.grupoPesquisaInstituicao.upsert({
                     where: {
@@ -195,12 +238,14 @@ export async function saveGroupToDb(data: any) {
                     update: {
                         tipoRelacao: item.tipoRelacao,
                         unidade: item.unidade || null,
+                        unidadeUf: item.unidadeUf || null,
                     },
                     create: {
                         grupoId: grupo.id,
                         instituicaoId: instituicaoVinculo.id,
                         tipoRelacao: item.tipoRelacao,
                         unidade: item.unidade || null,
+                        unidadeUf: item.unidadeUf || null,
                     },
                 });
             }
