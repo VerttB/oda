@@ -4,7 +4,7 @@ import { DGPExtractor } from '../parsers/dgpParser';
 import { db, prisma } from '../common/database';
 import { saveJson, DGP_DATA_DIR } from '../common/config';
 import { runLattesScraper } from './lattesScraper';
-import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao } from '@oda/database';
+import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, PipelineEtapa } from '@oda/database';
 import { sleep, randomSleep } from '../common/utils';
 import { SharedPipelineLogger } from '@oda/database';
 
@@ -69,7 +69,7 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 await openedPopup.close();
             } catch (err: any) {
                 log.error(`[Scraper] Erro ao extrair detalhes do RH para ${nome}: ${err.message}`);
-                await pipelineLogger.pipelineLogItem(pipelineLogId, 'RH_DETALHES', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.RH_DETALHES, StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
@@ -102,7 +102,7 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 await openedPopup.close();
             } catch(err: any){
                 console.error(`[Scraper] Erro ao extrair detalhes da instituição: ${err.message}`);
-                await pipelineLogger.pipelineLogItem(pipelineLogId, 'INSTITUICOES_PARCEIRAS', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.INSTITUICOES_PARCEIRAS, StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
@@ -135,7 +135,7 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
                 await openedPopup.close();
             } catch(err: any){
                 console.error(`[Scraper] Erro ao extrair detalhes da linha de pesquisa: ${err.message}`);
-                await pipelineLogger.pipelineLogItem(pipelineLogId, 'LINHA_PESQUISA', StatusItemLog.ERRO, {
+                await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.LINHA_PESQUISA, StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
@@ -175,19 +175,29 @@ async function scrapeGroupPage(context: BrowserContext, groupPage: Page, coletaI
             }
         }
         
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'GRUPO_ESPELHO', StatusItemLog.SUCESSO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.GRUPO_ESPELHO, StatusItemLog.SUCESSO, {
             tipoEntidade: TipoEntidadeLog.GRUPO,
             entidadeId: dgpId,
         });
 
+        return {
+            arquivosJsonGerados: 1,
+            arquivoJson: `${dgpId}.json`,
+            membrosExtraidos: Array.isArray(data.membros) ? data.membros.length : 0,
+            linhasExtraidas: Array.isArray(data.linhas) ? data.linhas.length : 0,
+            instituicoesExtraidas: Array.isArray(data.instituicoes) ? data.instituicoes.length : 0,
+            pesquisadoresEnfileirados: pesquisadoresParaScrapear.length,
+        };
+
     } catch (err: any) {
         log.error(`❌ Erro ao extrair grupo ${dgpId}: ${err.message}`);
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'GRUPO_ESPELHO', StatusItemLog.ERRO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.GRUPO_ESPELHO, StatusItemLog.ERRO, {
             tipoEntidade: TipoEntidadeLog.GRUPO,
             entidadeId: dgpId,
             mensagemErro: err.message,
             detalhesErro: err.stack
         });
+        throw err;
     } finally {
         groupPage.off('popup', popupListener);
         for (const p of activePopups) {
@@ -270,19 +280,31 @@ export async function runDgpScraper(dgpIds: string[] = []) {
             
             try {
                 await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PROCESSANDO);
-                pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, dgpId, ModoExecucao.COMPLETA);
-                await scrapeGroupPage(context, page, coletaId, pipelineLogId);
-                await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO);
+                pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, dgpId, ModoExecucao.COMPLETA, {
+                    comando: 'dgp-extract',
+                    itensFila: pendingGroups.length,
+                    gruposPendentes: pendingGroups.length,
+                });
+                const metadata = await scrapeGroupPage(context, page, coletaId, pipelineLogId);
+                await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
+                    comando: 'dgp-extract',
+                    itensFila: pendingGroups.length,
+                    gruposPendentes: pendingGroups.length,
+                    gruposExtraidos: 1,
+                    ...metadata,
+                });
             } catch (error: any) {
                 log.error(`[Scraper] Erro crítico no handler para o grupo '${dgpId}': ${error.message}`);
-                await pipelineLogger.pipelineLogItem(pipelineLogId, 'scrapeGroupPage', StatusItemLog.ERRO, {
+                const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.SCRAPE_GROUP_PAGE, StatusItemLog.ERRO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO,
                     entidadeId: dgpId,
                     tipoErro: TipoErroColeta.DESCONHECIDO,
                     mensagemErro: error.message,
                     detalhesErro: JSON.stringify(error, Object.getOwnPropertyNames(error))
                 });
-                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.PENDENTE);
+                await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.ERRO, {
+                    ultimoErroId: errorItem?.id,
+                });
                 await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
             }
         },

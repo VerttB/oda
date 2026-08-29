@@ -1,4 +1,4 @@
-import { ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PrismaClient } from '../generated/prisma';
+import { ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PrismaClient, PipelineEtapa } from '../generated/prisma';
 import { PipelineMetadata, PipelineMetadataSchema } from '@oda/shared-types';
 
 export interface LogItemOptions {
@@ -43,14 +43,14 @@ export class SharedPipelineLogger {
    */
   async pipelineLogItem(
     pipelineLogId: string | null | undefined,
-    etapa: string,
+    etapa: PipelineEtapa,
     status: StatusItemLog,
     options?: LogItemOptions
   ) {
-    if (!pipelineLogId) return;
+    if (!pipelineLogId) return null;
 
     try {
-      await this.prisma.pipelineLogItem.create({
+      const item = await this.prisma.pipelineLogItem.create({
         data: {
           pipelineLogId,
           etapa,
@@ -72,8 +72,11 @@ export class SharedPipelineLogger {
         where: { id: pipelineLogId },
         data: incrementData,
       });
+
+      return item;
     } catch (err: any) {
       console.error(`[SharedPipelineLogger] Erro ao gravar item: ${err.message}`);
+      return null;
     }
   }
 

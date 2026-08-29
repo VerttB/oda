@@ -6,7 +6,7 @@ dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
 });
 
-import { PrismaClient, prismaConfig, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog } from '@oda/database';
+import { PrismaClient, prismaConfig, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PipelineEtapa } from '@oda/database';
 import { saveGroupToDb } from './dgpEtl';
 import { saveLattesToDb } from './lattesEtl';
 import { PROCESSED_DATA_DIR } from './commom/config';
@@ -56,14 +56,14 @@ async function runAll() {
             linhasContador = groupData.linhas.length;
           }
 
-          await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.SUCESSO, {
+          await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.SUCESSO, {
             entidadeId: dgpId,
             tipoEntidade: TipoEntidadeLog.GRUPO,
             tempoMs: tempoGroupMs,
           });
         } catch (err: any) {
           console.error(`[ETL-ALL] Erro ao carregar grupo ${dgpId}: ${err.message}`);
-          await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.ERRO, {
+          await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
             entidadeId: dgpId,
             tipoEntidade: TipoEntidadeLog.GRUPO,
             tipoErro: TipoErroColeta.FALHA_ETL,
@@ -90,14 +90,14 @@ async function runAll() {
                       const tempoMembroMs = Math.round(performance.now() - tMembro);
                       pesquisadoresContador++;
 
-                      await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
+                      await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.SUCESSO, {
                         entidadeId: lattesId,
                         tipoEntidade: TipoEntidadeLog.PESQUISADOR,
                         tempoMs: tempoMembroMs,
                       });
                     } catch (mErr: any) {
                       console.error(`[ETL-ALL] Erro ao processar Lattes ${lattesId}: ${mErr.message}`);
-                      await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.ERRO, {
+                      await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
                         entidadeId: lattesId,
                         tipoEntidade: TipoEntidadeLog.PESQUISADOR,
                         tipoErro: TipoErroColeta.FALHA_ETL,

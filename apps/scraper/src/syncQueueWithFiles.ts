@@ -35,7 +35,12 @@ async function syncQueueWithFiles() {
   if (groupsToComplete.length > 0) {
     await prisma.filaExtracaoGrupo.updateMany({
       where: { dgpId: { in: groupsToComplete } },
-      data: { status: FilaExtracaoStatus.CONCLUIDO }
+      data: {
+        status: FilaExtracaoStatus.CONCLUIDO,
+        processamentoIniciadoEm: null,
+        ultimoErroId: null,
+        ultimoErroEm: null,
+      }
     });
     console.log(`✅ [Grupos] ${groupsToComplete.length} grupos atualizados de PENDENTE -> CONCLUIDO.`);
   } else {
@@ -64,7 +69,12 @@ async function syncQueueWithFiles() {
   if (researchersToComplete.length > 0) {
     await prisma.filaExtracaoPesquisador.updateMany({
       where: { lattesId: { in: researchersToComplete } },
-      data: { status: FilaExtracaoStatus.CONCLUIDO }
+      data: {
+        status: FilaExtracaoStatus.CONCLUIDO,
+        processamentoIniciadoEm: null,
+        ultimoErroId: null,
+        ultimoErroEm: null,
+      }
     });
     console.log(`✅ [Pesquisadores] ${researchersToComplete.length} pesquisadores atualizados de PENDENTE -> CONCLUIDO.`);
   } else {

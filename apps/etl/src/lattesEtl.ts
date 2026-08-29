@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog } from '@oda/database';
+import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, FilaExtracaoStatus, PipelineEtapa } from '@oda/database';
 import { OPEN_ALEX_URL, DOI_URL, PROCESSED_DATA_DIR } from './commom/config';
 import { stripHtml } from './commom/normalize';
 import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
@@ -263,11 +263,16 @@ export async function saveLattesToDb(data: any) {
 
             await tx.filaExtracaoPesquisador.upsert({
                 where: { lattesId: data.lattes },
-                update: { status: 'CONCLUIDO' },
+                update: {
+                    status: FilaExtracaoStatus.CONCLUIDO,
+                    processamentoIniciadoEm: null,
+                    ultimoErroId: null,
+                    ultimoErroEm: null,
+                },
                 create: {
                     lattesId: data.lattes,
                     nome: data.nome,
-                    status: 'CONCLUIDO'
+                    status: FilaExtracaoStatus.CONCLUIDO
                 }
             });
 
@@ -293,12 +298,20 @@ export async function runPesquisadorEtl(jsonPath: string) {
     const content = fs.readFileSync(jsonPath, 'utf-8');
     const lattesData = JSON.parse(content);
     const lattesId = lattesData.lattesId || path.basename(jsonPath, '.json');
+    const lattesFileStats = fs.statSync(jsonPath);
 
     const pipelineLogger = new SharedPipelineLogger(prisma);
     const pipelineLogId = await pipelineLogger.startPipelineLogger(
         ModuloSistema.ETL,
         lattesId,
-        ModoExecucao.APENAS_LATTES
+        ModoExecucao.APENAS_LATTES,
+        {
+            comando: 'etl-pesquisador',
+            arquivoJson: path.basename(jsonPath),
+            tamanhoTotalBytes: lattesFileStats.size,
+            artigosEncontrados: Array.isArray(lattesData.artigos) ? lattesData.artigos.length : 0,
+            livrosCapitulosEncontrados: Array.isArray(lattesData.livrosCapitulos) ? lattesData.livrosCapitulos.length : 0,
+        }
     );
 
     const t0 = performance.now();
@@ -321,7 +334,7 @@ export async function runPesquisadorEtl(jsonPath: string) {
             }
         }
 
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.SUCESSO, {
             entidadeId: lattesId,
             tipoEntidade: TipoEntidadeLog.PESQUISADOR,
             tempoMs,
@@ -330,16 +343,29 @@ export async function runPesquisadorEtl(jsonPath: string) {
         await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
             gruposGravados: 0,
             pesquisadoresAtualizados: 1,
+            arquivoJson: path.basename(jsonPath),
+            tamanhoTotalBytes: lattesFileStats.size,
+            artigosEncontrados: Array.isArray(lattesData.artigos) ? lattesData.artigos.length : 0,
+            livrosCapitulosEncontrados: Array.isArray(lattesData.livrosCapitulos) ? lattesData.livrosCapitulos.length : 0,
         });
     } catch (err: any) {
         console.error(`[ETL] ❌ Erro na carga Lattes do pesquisador ${lattesId}: ${err.message}`);
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.ERRO, {
+        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
             entidadeId: lattesId,
             tipoEntidade: TipoEntidadeLog.PESQUISADOR,
             tipoErro: TipoErroColeta.FALHA_ETL,
             mensagemErro: err.message,
             detalhesErro: err.stack,
         });
+        await prisma.filaExtracaoPesquisador.update({
+            where: { lattesId },
+            data: {
+                status: FilaExtracaoStatus.ERRO,
+                processamentoIniciadoEm: null,
+                ultimoErroId: errorItem?.id ?? null,
+                ultimoErroEm: new Date(),
+            }
+        }).catch(() => undefined);
 
         await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
     }

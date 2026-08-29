@@ -3,6 +3,45 @@ import { FilaExtracaoStatus, StatusColeta } from "@oda/database";
 import { cleanStr } from "./utils";
 export const prisma = new PrismaClient(prismaConfig)
 
+type QueueErrorData = {
+  ultimoErroId?: string | null;
+  ultimoErroEm?: Date;
+};
+
+function buildQueueStatusData(status: FilaExtracaoStatus, errorData?: QueueErrorData) {
+  if (status === FilaExtracaoStatus.PROCESSANDO) {
+    return {
+      status,
+      processamentoIniciadoEm: new Date(),
+      ultimoErroId: null,
+      ultimoErroEm: null,
+    };
+  }
+
+  if (status === FilaExtracaoStatus.CONCLUIDO) {
+    return {
+      status,
+      processamentoIniciadoEm: null,
+      ultimoErroId: null,
+      ultimoErroEm: null,
+    };
+  }
+
+  if (status === FilaExtracaoStatus.ERRO) {
+    return {
+      status,
+      processamentoIniciadoEm: null,
+      ultimoErroId: errorData?.ultimoErroId ?? null,
+      ultimoErroEm: errorData?.ultimoErroEm ?? new Date(),
+    };
+  }
+
+  return {
+    status,
+    processamentoIniciadoEm: null,
+  };
+}
+
 export const db = {
   /**
    * Registra o início de uma nova coleta do scrapper principal.
@@ -119,20 +158,20 @@ export const db = {
   /**
    * Atualiza o status de um item na fila de grupos.
    */
-  async updateGroupQueueStatus(dgpId: string, status: FilaExtracaoStatus) {
+  async updateGroupQueueStatus(dgpId: string, status: FilaExtracaoStatus, errorData?: QueueErrorData) {
       return prisma.filaExtracaoGrupo.update({
           where: { dgpId },
-          data: { status }
+          data: buildQueueStatusData(status, errorData)
       });
   },
 
   /**
    * Atualiza o status de um pesquisador na fila de extração.
    */
-  async updatePesquisadorQueueStatus(lattesId: string, status: FilaExtracaoStatus) {
+  async updatePesquisadorQueueStatus(lattesId: string, status: FilaExtracaoStatus, errorData?: QueueErrorData) {
       return prisma.filaExtracaoPesquisador.update({
           where: { lattesId },
-          data: { status }
+          data: buildQueueStatusData(status, errorData)
       });
   },
 

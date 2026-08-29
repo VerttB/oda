@@ -1,9 +1,11 @@
 import { PlaywrightCrawler, log } from 'crawlee';
-import { db } from '../common/database';
+import { db, prisma } from '../common/database';
 import { randomSleep, sleep, cleanStr } from '../common/utils';
 import { PageGroupItemInfo, RequestType } from '../common/interfaces';
 import { Locator, Page } from 'playwright';
+import { ModuloSistema, ModoExecucao, PipelineEtapa, SharedPipelineLogger, StatusItemLog, StatusSessao, TipoEntidadeLog, TipoErroColeta } from '@oda/database';
 const SEARCH_URL = 'http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf';
+const pipelineLogger = new SharedPipelineLogger(prisma);
 
 
 // Cache global de metadados em memória RAM para evitar navegações duplicadas (exclusão global)
@@ -188,9 +190,24 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
     await loadCacheIfNeeded();
     const initialCacheSize = processedKeys.size;
+    let paginasProcessadas = 0;
+    let itensDescobertos = 0;
+    let itensPulados = 0;
+    let itensComErro = 0;
 
     const concurrency = Math.min(Math.max(2, keys.length * 2), 8);
     log.info(`Configurando crawler com ${concurrency} workers concorrentes.`);
+
+    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+        ModuloSistema.SCRAPER,
+        'DGP_DISCOVERY',
+        ModoExecucao.APENAS_DGP,
+        {
+            comando: 'dgp-discovery',
+            chaves: keys,
+            tamanhoCacheInicial: initialCacheSize,
+        }
+    );
 
     const crawler = new PlaywrightCrawler({
         launchContext: {
@@ -248,6 +265,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                     }
 
                     log.info(`📍 [${direction.toUpperCase()}] Processando página ${pageNum} da chave '${chave}'`);
+                    const pageStart = performance.now();
                     await page.waitForSelector("li.ui-datalist-item a[id*='idBtnVisualizarEspelhoGrupo']", { timeout: 40000 });
                     
                     const items = await page.locator("li.ui-datalist-item").all();
@@ -331,6 +349,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                                 const text = await openedPage.locator("div:has-text('espelhogrupo')").first().textContent();
                                 const dgpId = text?.match(/espelhogrupo\/(\d+)/)?.[1] || "";                          
                                 await db.groupQeueDiscovery({ dgpId, nome, area, instituicao});
+                                itensDescobertos++;
                                 await openedPage.close();
                                 itemSuccess = true;
                             } catch (itemErr: any) {
@@ -343,6 +362,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                                 if (itemAttempts >= 3) {
                                     processedKeys.delete(key);
                                     pageProcessedKeys.delete(key);
+                                    itensComErro++;
+                                    await pipelineLogger.pipelineLogItem(
+                                        pipelineLogId,
+                                        PipelineEtapa.DGP_DISCOVERY_ITEM,
+                                        StatusItemLog.ERRO,
+                                        {
+                                            entidadeId: `${chave}:${direction}:pagina-${pageNum}:item-${index + 1}`,
+                                            tipoEntidade: TipoEntidadeLog.GERAL,
+                                            tipoErro: TipoErroColeta.DESCONHECIDO,
+                                            mensagemErro: `Falha ao descobrir item ${index + 1} (${nome}) na chave ${chave}, direção ${direction}, página ${pageNum}: ${itemErr.message}`,
+                                            detalhesErro: itemErr.stack,
+                                        }
+                                    );
                                     throw itemErr;
                                 }
                             } finally {
@@ -402,6 +434,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
                     // Adiciona a página concluída ao cache de páginas processadas
                     processedPages.add(pageKey);
+                    paginasProcessadas++;
+                    itensPulados += skippedCount;
+
+                    await pipelineLogger.pipelineLogItem(
+                        pipelineLogId,
+                        PipelineEtapa.DGP_DISCOVERY_PAGINA,
+                        StatusItemLog.SUCESSO,
+                        {
+                            entidadeId: pageKey,
+                            tipoEntidade: TipoEntidadeLog.GERAL,
+                            tempoMs: Math.round(performance.now() - pageStart),
+                        }
+                    );
 
                     log.info(`📊 [${direction.toUpperCase()}] Página ${pageNum} concluída. Itens pulados por já estarem no cache: ${skippedCount}. Total acumulado de itens cacheados: ${processedKeys.size}.`);
 
@@ -429,6 +474,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 }
             } catch (error: any) {
                 log.error(`Erro na busca da chave '${chave}' [${direction}]: ${error.message}`);
+                itensComErro++;
+                await pipelineLogger.pipelineLogItem(
+                    pipelineLogId,
+                    PipelineEtapa.DGP_DISCOVERY,
+                    StatusItemLog.ERRO,
+                    {
+                        entidadeId: `${chave}:${direction}`,
+                        tipoEntidade: TipoEntidadeLog.GERAL,
+                        tipoErro: TipoErroColeta.DESCONHECIDO,
+                        mensagemErro: `Erro na descoberta da chave '${chave}' [${direction}]: ${error.message}`,
+                        detalhesErro: error.stack,
+                    }
+                );
                 throw error;
             } finally {
                 // Remove a página atual de ambos os caches em caso de erro,
@@ -466,13 +524,55 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
         });
     }
 
-    await crawler.addRequests(requests);
-    await crawler.run();
+    try {
+        await crawler.addRequests(requests);
+        await crawler.run();
 
-    log.info("Recalculating column 'similares' in database...");
-    await db.normalizeQueueData();
+        log.info("Recalculating column 'similares' in database...");
+        await db.normalizeQueueData();
 
-    const finalCacheSize = processedKeys.size;
-    const newlyDiscovered = finalCacheSize - initialCacheSize;
-    log.info(`🏁 Discovery DGP finalizado. Total de itens cacheados: ${finalCacheSize} (Novos itens descobertos e cacheados nesta rodada: ${newlyDiscovered}).`);
+        const finalCacheSize = processedKeys.size;
+        const newlyDiscovered = finalCacheSize - initialCacheSize;
+        await pipelineLogger.pipelineLogItem(
+            pipelineLogId,
+            PipelineEtapa.DGP_DISCOVERY,
+            StatusItemLog.SUCESSO,
+            {
+                entidadeId: 'DGP_DISCOVERY',
+                tipoEntidade: TipoEntidadeLog.GERAL,
+            }
+        );
+        await pipelineLogger.finishPipelineLogger(
+            pipelineLogId,
+            itensComErro > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
+            {
+                comando: 'dgp-discovery',
+                chaves: keys,
+                paginasProcessadas,
+                itensDescobertos,
+                itensPulados,
+                itensComErro,
+                tamanhoCacheInicial: initialCacheSize,
+                tamanhoCacheFinal: finalCacheSize,
+                gruposPendentes: newlyDiscovered,
+            }
+        );
+        log.info(`🏁 Discovery DGP finalizado. Total de itens cacheados: ${finalCacheSize} (Novos itens descobertos e cacheados nesta rodada: ${newlyDiscovered}).`);
+    } catch (error: any) {
+        await pipelineLogger.finishPipelineLogger(
+            pipelineLogId,
+            StatusSessao.ERRO,
+            {
+                comando: 'dgp-discovery',
+                chaves: keys,
+                paginasProcessadas,
+                itensDescobertos,
+                itensPulados,
+                itensComErro,
+                tamanhoCacheInicial: initialCacheSize,
+                tamanhoCacheFinal: processedKeys.size,
+            }
+        );
+        throw error;
+    }
 }

@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 import { LattesParser } from '../parsers/lattesParser';
 import { saveJson, LATTES_DATA_DIR, IMAGE_DIR } from '../common/config';
 import { prisma, db } from '../common/database';
-import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, SharedPipelineLogger } from '@oda/database';
+import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, SharedPipelineLogger, PipelineEtapa } from '@oda/database';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
@@ -76,12 +76,18 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
 
     let pipelineLogger: SharedPipelineLogger;
     let pipelineLogId: string | null = null;
+    let pesquisadoresExtraidos = 0;
+    let pesquisadoresComErro = 0;
 
     if (pipelineLoggerPrev != null && pipelineLoggerPrev != undefined) {
         pipelineLogger = pipelineLoggerPrev;
     } else {
         pipelineLogger = new SharedPipelineLogger(prisma);
-        pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, "LATTES_EXTRACTION", ModoExecucao.APENAS_LATTES);
+        pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, "LATTES_EXTRACTION", ModoExecucao.APENAS_LATTES, {
+            comando: 'lattes-scraper',
+            itensFila: targets.length,
+            pesquisadoresPendentes: targets.length,
+        });
     }
 
     // Coloca os itens da fila em PROCESSANDO
@@ -144,9 +150,9 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
             } catch (e: any) {
                 log.warning(`⚠️ [Lattes] Pesquisador não encontrado: ${name}`);
                 if (targetLattesId) {
-                    await pipelineLogger.pipelineLogItem(
+                    const errorItem = await pipelineLogger.pipelineLogItem(
                         pipelineLogId,
-                        'PESQUISADOR_LATTES',
+                        PipelineEtapa.PESQUISADOR_LATTES,
                         StatusItemLog.ERRO,
                         {
                             entidadeId: targetLattesId || null,
@@ -156,7 +162,10 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                             detalhesErro: e.stack || null,
                         }
                     );
-                    await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.PENDENTE);
+                    await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.ERRO, {
+                        ultimoErroId: errorItem?.id,
+                    });
+                    pesquisadoresComErro++;
                 }
                 return;
             }
@@ -245,10 +254,11 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                         saveJson(fullData, LATTES_DATA_DIR, finalId);
                         log.info(`✅ [Lattes] Sucesso: ${name} (ID: ${finalId})`);
                         await db.updatePesquisadorQueueStatus(finalId, FilaExtracaoStatus.CONCLUIDO);
+                        pesquisadoresExtraidos++;
 
                         await pipelineLogger.pipelineLogItem(
                             pipelineLogId,
-                            'PESQUISADOR_LATTES',
+                            PipelineEtapa.PESQUISADOR_LATTES,
                             StatusItemLog.SUCESSO,
                             {
                                 entidadeId: finalId,
@@ -283,9 +293,9 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                 const endTimer = performance.now();
                 const tempoMs = Math.round(endTimer - startTimer);
 
-                await pipelineLogger.pipelineLogItem(
+                const errorItem = await pipelineLogger.pipelineLogItem(
                     pipelineLogId,
-                    'PESQUISADOR_LATTES',
+                    PipelineEtapa.PESQUISADOR_LATTES,
                     StatusItemLog.ERRO,
                     {
                         entidadeId: targetLattesId || null,
@@ -295,7 +305,10 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
                         tempoMs,
                     }
                 );
-                await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.PENDENTE);
+                await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.ERRO, {
+                    ultimoErroId: errorItem?.id,
+                });
+                pesquisadoresComErro++;
             }
         },
     });
@@ -310,6 +323,16 @@ export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?
     log.info('🏁 Scraper Lattes finalizado.');
 
     if (!pipelineLoggerPrev && pipelineLogId) {
-        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO);
+        await pipelineLogger.finishPipelineLogger(
+            pipelineLogId,
+            pesquisadoresComErro > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
+            {
+                comando: 'lattes-scraper',
+                itensFila: targets.length,
+                pesquisadoresPendentes: targets.length,
+                pesquisadoresExtraidos,
+                arquivosJsonGerados: pesquisadoresExtraidos,
+            }
+        );
     }
 }

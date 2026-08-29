@@ -143,7 +143,28 @@ export const ScraperMetadataSchema = z.object({
   tamanhoFormatado: z.string().optional(),
   arquivosJsonGerados: z.number().int().nonnegative().optional(),
   navegador: z.string().optional(),
-});
+  comando: z.string().optional(),
+  chaves: z.array(z.string()).optional(),
+  direcao: z.string().optional(),
+  pagina: z.number().int().positive().optional(),
+  itensFila: z.number().int().nonnegative().optional(),
+  gruposPendentes: z.number().int().nonnegative().optional(),
+  pesquisadoresPendentes: z.number().int().nonnegative().optional(),
+  paginasProcessadas: z.number().int().nonnegative().optional(),
+  itensDescobertos: z.number().int().nonnegative().optional(),
+  itensPulados: z.number().int().nonnegative().optional(),
+  itensComErro: z.number().int().nonnegative().optional(),
+  tamanhoCacheInicial: z.number().int().nonnegative().optional(),
+  tamanhoCacheFinal: z.number().int().nonnegative().optional(),
+  gruposExtraidos: z.number().int().nonnegative().optional(),
+  pesquisadoresExtraidos: z.number().int().nonnegative().optional(),
+  pesquisadoresComErro: z.number().int().nonnegative().optional(),
+  membrosExtraidos: z.number().int().nonnegative().optional(),
+  linhasExtraidas: z.number().int().nonnegative().optional(),
+  instituicoesExtraidas: z.number().int().nonnegative().optional(),
+  pesquisadoresEnfileirados: z.number().int().nonnegative().optional(),
+  arquivoJson: z.string().optional(),
+}).passthrough();
 export type ScraperMetadata = z.infer<typeof ScraperMetadataSchema>;
 
 export const EtlMetadataSchema = z.object({
@@ -152,7 +173,15 @@ export const EtlMetadataSchema = z.object({
   linhasPesquisaGravadas: z.number().int().nonnegative().optional(),
   producoesVinculadas: z.number().int().nonnegative().optional(),
   qualisAssociados: z.number().int().nonnegative().optional(),
-});
+  comando: z.string().optional(),
+  arquivoJson: z.string().optional(),
+  tamanhoTotalBytes: z.number().int().nonnegative().optional(),
+  linhasPesquisaEncontradas: z.number().int().nonnegative().optional(),
+  membrosEncontrados: z.number().int().nonnegative().optional(),
+  pesquisadoresElegiveis: z.number().int().nonnegative().optional(),
+  artigosEncontrados: z.number().int().nonnegative().optional(),
+  livrosCapitulosEncontrados: z.number().int().nonnegative().optional(),
+}).passthrough();
 export type EtlMetadata = z.infer<typeof EtlMetadataSchema>;
 
 export const RagMetadataSchema = z.object({
@@ -160,7 +189,7 @@ export const RagMetadataSchema = z.object({
   tamanhoMedioChunk: z.number().int().positive().optional(),
   modeloEmbedding: z.string().optional(),
   totalTokensEstimados: z.number().int().nonnegative().optional(),
-});
+}).passthrough();
 export type RagMetadata = z.infer<typeof RagMetadataSchema>;
 
 export const PipelineMetadataSchema = z.union([

@@ -7,12 +7,18 @@ async function resetQueue() {
 
   const updatedPesquisadores = await prisma.filaExtracaoPesquisador.updateMany({
     where: { status: FilaExtracaoStatus.PROCESSANDO },
-    data: { status: FilaExtracaoStatus.PENDENTE }
+    data: {
+      status: FilaExtracaoStatus.PENDENTE,
+      processamentoIniciadoEm: null,
+    }
   });
 
   const updatedGrupos = await prisma.filaExtracaoGrupo.updateMany({
     where: { status: FilaExtracaoStatus.PROCESSANDO },
-    data: { status: FilaExtracaoStatus.PENDENTE }
+    data: {
+      status: FilaExtracaoStatus.PENDENTE,
+      processamentoIniciadoEm: null,
+    }
   });
 
   console.log(`✅ [Fila Pesquisadores] ${updatedPesquisadores.count} registros alterados de PROCESSANDO -> PENDENTE.`);

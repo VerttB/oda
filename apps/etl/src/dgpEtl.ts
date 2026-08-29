@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, FilaExtracaoStatus, PipelineEtapa } from '@oda/database';
 import { LATTES_DIR, PROCESSED_DATA_DIR } from './commom/config';
 import { runPesquisadorEtl } from './lattesEtl';
 import { createLinhaPesquisa, getOrCreateAreaConhecimentoHierarchy } from './commom/database';
@@ -434,7 +434,12 @@ export async function saveGroupToDb(data: any) {
         console.log(`[ETL] ✅ Processamento do Grupo ${dgpId} concluído.`);
         await prisma.filaExtracaoGrupo.update({
             where: { dgpId },
-            data: { status: 'CONCLUIDO' }
+            data: {
+                status: FilaExtracaoStatus.CONCLUIDO,
+                processamentoIniciadoEm: null,
+                ultimoErroId: null,
+                ultimoErroEm: null,
+            }
         });
     } catch (e: any) {
         console.error(`[ETL] ❌ Erro ao processar grupo ${dgpId}: ${e.message}`);
@@ -459,12 +464,20 @@ export async function runGroupEtl(jsonPath: string) {
     const content = fs.readFileSync(resolvedPath, 'utf-8');
     const groupData = JSON.parse(content);
     const dgpId = groupData.idDgp || groupData.id_dgp || path.basename(jsonPath, '.json');
+    const groupFileStats = fs.statSync(resolvedPath);
 
     const pipelineLogger = new SharedPipelineLogger(prisma);
     const pipelineLogId = await pipelineLogger.startPipelineLogger(
         ModuloSistema.ETL,
         dgpId,
-        ModoExecucao.COMPLETA
+        ModoExecucao.COMPLETA,
+        {
+            comando: 'etl-grupo',
+            arquivoJson: path.basename(resolvedPath),
+            tamanhoTotalBytes: groupFileStats.size,
+            membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
+            linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
+        }
     );
 
     let pesquisadoresAtualizados = 0;
@@ -490,20 +503,29 @@ export async function runGroupEtl(jsonPath: string) {
             }
         }
 
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.SUCESSO, {
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.SUCESSO, {
             entidadeId: dgpId,
             tipoEntidade: TipoEntidadeLog.GRUPO,
             tempoMs: tempoGroupMs,
         });
     } catch (err: any) {
         console.error(`[ETL] ❌ Erro na carga do grupo ${dgpId}: ${err.message}`);
-        await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_GRUPO_CARGA', StatusItemLog.ERRO, {
+        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
             entidadeId: dgpId,
             tipoEntidade: TipoEntidadeLog.GRUPO,
             tipoErro: TipoErroColeta.FALHA_ETL,
             mensagemErro: err.message,
             detalhesErro: err.stack,
         });
+        await prisma.filaExtracaoGrupo.update({
+            where: { dgpId },
+            data: {
+                status: FilaExtracaoStatus.ERRO,
+                processamentoIniciadoEm: null,
+                ultimoErroId: errorItem?.id ?? null,
+                ultimoErroEm: new Date(),
+            }
+        }).catch(() => undefined);
     }
 
     if (groupData.membros && Array.isArray(groupData.membros)) {
@@ -521,13 +543,13 @@ export async function runGroupEtl(jsonPath: string) {
                     const tempoMembroMs = Math.round(performance.now() - tMembro);
                     pesquisadoresAtualizados++;
 
-                    await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.SUCESSO, {
+                    await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.SUCESSO, {
                         entidadeId: membro.lattes.trim(),
                         tipoEntidade: TipoEntidadeLog.PESQUISADOR,
                         tempoMs: tempoMembroMs,
                     });
                 } catch (mErr: any) {
-                    await pipelineLogger.pipelineLogItem(pipelineLogId, 'ETL_PESQUISADOR_CARGA', StatusItemLog.ERRO, {
+                    await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
                         entidadeId: membro.lattes.trim(),
                         tipoEntidade: TipoEntidadeLog.PESQUISADOR,
                         tipoErro: TipoErroColeta.FALHA_ETL,
@@ -539,9 +561,20 @@ export async function runGroupEtl(jsonPath: string) {
         }
     }
 
-    await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
+    const finalStatus = await prisma.pipelineLog.findUnique({
+        where: { id: pipelineLogId ?? '' },
+        select: { quantidadeErros: true },
+    }).catch(() => null);
+
+    await pipelineLogger.finishPipelineLogger(
+        pipelineLogId,
+        finalStatus && finalStatus.quantidadeErros > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
+        {
         gruposGravados: 1,
         pesquisadoresAtualizados,
         linhasPesquisaGravadas,
-    });
+        membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
+        linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
+        }
+    );
 }

@@ -434,6 +434,22 @@ enum StatusItemLog {
   ERRO
 }
 
+enum PipelineEtapa {
+  RH_DETALHES
+  INSTITUICOES_PARCEIRAS
+  LINHA_PESQUISA
+  GRUPO_ESPELHO
+  SCRAPE_GROUP_PAGE @map("scrapeGroupPage")
+  PESQUISADOR_LATTES
+  DGP_DISCOVERY
+  DGP_DISCOVERY_PAGINA
+  DGP_DISCOVERY_ITEM
+  ETL_GRUPO_CARGA
+  ETL_PESQUISADOR_CARGA
+
+  @@map("pipeline_etapa")
+}
+
 enum TipoErroColeta {
   TIMEOUT
   NAO_ENCONTRADO
@@ -476,13 +492,15 @@ model PipelineLogItem {
   pipelineLogId String          @map("pipeline_log_id")
   entidadeId    String?         @map("entidade_id")
   tipoEntidade  TipoEntidadeLog @default(GRUPO) @map("tipo_entidade")
-  etapa         String?
+  etapa         PipelineEtapa?
   status        StatusItemLog
   tipoErro      TipoErroColeta? @map("tipo_erro")
   mensagemErro  String?         @map("mensagem_erro")
   detalhesErro  String?         @map("detalhes_erro")
   tempoMs       Int?            @map("tempo_ms")
   criadoEm      DateTime        @default(now()) @map("criado_em")
+  errosFilaGrupo FilaExtracaoGrupo[] @relation("FilaExtracaoGrupoUltimoErro")
+  errosFilaPesquisador FilaExtracaoPesquisador[] @relation("FilaExtracaoPesquisadorUltimoErro")
 
   @@index([pipelineLogId])
   @@index([entidadeId])
@@ -494,30 +512,45 @@ enum FilaExtracaoStatus {
   PENDENTE
   CONCLUIDO
   PROCESSANDO
+  ERRO
 }
 
 model FilaExtracaoGrupo {
-  dgpId             String             @id @unique @map("dgp_id")
-  nome              String
-  area              String
-  instituicao       String
-  status            FilaExtracaoStatus @default(PENDENTE)
-  tentativas        Int                @default(0)
-  similares         Int                @default(1)
-  criadoEm          DateTime           @default(now()) @map("criado_em")
-  ultimaAtualizacao DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
+  dgpId                    String             @id @unique @map("dgp_id")
+  nome                     String
+  area                     String
+  instituicao              String
+  status                   FilaExtracaoStatus @default(PENDENTE)
+  tentativas               Int                @default(0)
+  similares                Int                @default(1)
+  processamentoIniciadoEm  DateTime?          @map("processamento_iniciado_em")
+  ultimoErro               PipelineLogItem?   @relation("FilaExtracaoGrupoUltimoErro", fields: [ultimoErroId], references: [id])
+  ultimoErroId             String?            @map("ultimo_erro_id")
+  ultimoErroEm             DateTime?          @map("ultimo_erro_em")
+  criadoEm                 DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao        DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
 
+  @@index([status])
+  @@index([processamentoIniciadoEm])
+  @@index([ultimoErroId])
   @@map("fila_extracao_grupo")
 }
 
 model FilaExtracaoPesquisador {
-  lattesId          String             @id @unique @map("lattes_id")
-  nome              String
-  status            FilaExtracaoStatus @default(PENDENTE)
-  tentativas        Int                @default(0)
-  criadoEm          DateTime           @default(now()) @map("criado_em")
-  ultimaAtualizacao DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
+  lattesId                 String             @id @unique @map("lattes_id")
+  nome                     String
+  status                   FilaExtracaoStatus @default(PENDENTE)
+  tentativas               Int                @default(0)
+  processamentoIniciadoEm  DateTime?          @map("processamento_iniciado_em")
+  ultimoErro               PipelineLogItem?   @relation("FilaExtracaoPesquisadorUltimoErro", fields: [ultimoErroId], references: [id])
+  ultimoErroId             String?            @map("ultimo_erro_id")
+  ultimoErroEm             DateTime?          @map("ultimo_erro_em")
+  criadoEm                 DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao        DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
 
+  @@index([status])
+  @@index([processamentoIniciadoEm])
+  @@index([ultimoErroId])
   @@map("fila_extracao_pesquisador")
 }
 
