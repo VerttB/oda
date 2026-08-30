@@ -15,7 +15,7 @@
     "scraper:dgp": "pnpm -F @oda/scraper start dgp",
     "scraper:discovery": "pnpm -F @oda/scraper start discovery",
     "scraper:lattes": "pnpm -F @oda/scraper start lattes",
-    "etl": "pnpm -F @oda/etl start",
+    "etl": "pnpm -F @oda/etl start all",
     "etl:grupo": "pnpm -F @oda/etl start grupo",
     "etl:pesquisador": "pnpm -F @oda/etl start pesquisador",
     "ingest:db": "pnpm -F @oda/langchain run ingest-db",
