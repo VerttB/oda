@@ -59,7 +59,12 @@ export class GruposPesquisaService {
       }
       if (query.instituicaoId) {
         andConditions.push({
-          instituicoes: { some: { instituicaoId: query.instituicaoId } },
+          instituicoes: {
+            some: {
+              instituicaoId: query.instituicaoId,
+              tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+            },
+          },
         });
       }
       if (query.estadoId) {

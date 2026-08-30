@@ -8,6 +8,25 @@ import { Prisma } from '@oda/database';
 
 const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list';
 
+const instituicaoInclude = {
+  estado: true,
+  gruposPesquisaVinculos: {
+    include: {
+      grupoPesquisa: {
+        select: {
+          id: true,
+          dgpId: true,
+          nome: true,
+          situacao: true,
+          uf: true,
+          cidade: true,
+        },
+      },
+    },
+  },
+  _count: { select: { gruposPesquisaVinculos: true } },
+} satisfies Prisma.InstituicaoInclude;
+
 @Injectable()
 export class InstituicaoService {
   constructor(
@@ -18,7 +37,10 @@ export class InstituicaoService {
 
   async create(createInstituicaoDto: CreateInstituicaoDto) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
-    return await this.prismaService.instituicao.create({data: createInstituicaoDto})
+    return await this.prismaService.instituicao.create({
+      data: createInstituicaoDto,
+      include: instituicaoInclude,
+    })
   }
 
   async findAll(query?: FindAllInstituicaoDto) {
@@ -34,6 +56,7 @@ export class InstituicaoService {
           where,
           skip: query?.skip,
           take: query?.take,
+          include: instituicaoInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.instituicao.count({ where }),
@@ -50,6 +73,7 @@ export class InstituicaoService {
         this.prismaService.instituicao.findMany({
           skip: query?.skip,
           take: query?.take,
+          include: instituicaoInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.instituicao.count(),
@@ -63,12 +87,19 @@ export class InstituicaoService {
   }
 
   async findOne(id: string) {
-    return await this.prismaService.instituicao.findUniqueOrThrow({ where: { id }})
+    return await this.prismaService.instituicao.findUniqueOrThrow({
+      where: { id },
+      include: instituicaoInclude,
+    })
   }
 
   async update(id: string, updateInstituicaoDto: UpdateInstituicaoDto) {
     await this.cacheManager.del(INSTITUICOES_LIST_CACHE_KEY);
-    return await this.prismaService.instituicao.update({ where: { id }, data: updateInstituicaoDto})
+    return await this.prismaService.instituicao.update({
+      where: { id },
+      data: updateInstituicaoDto,
+      include: instituicaoInclude,
+    })
   }
 
 

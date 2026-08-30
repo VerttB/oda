@@ -15,6 +15,7 @@ import { UfModule } from './resources/uf/uf.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { MetricasModule } from './resources/metricas/metricas.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     ProducoesModule,
     AreaConhecimentoModule,
     UfModule,
+    MetricasModule,
   ],
   controllers: [AppController],
   providers: [
