@@ -1,4 +1,12 @@
-export type TabType = 'discover' | 'groups' | 'publications' | 'institutions' | 'docs';
+export type TabType = 
+  | 'directory' 
+  | 'researchers' 
+  | 'productions' 
+  | 'docs' 
+  | 'discover' 
+  | 'groups' 
+  | 'publications' 
+  | 'institutions';
 
 export interface Author {
   id: string;
@@ -16,12 +24,71 @@ export interface ResearchArticle {
   tags: string[];
   author: Author;
   citations: number;
-  field: 'Computer Science' | 'Biology' | 'Physics' | 'Medicine' | 'Cognitive Science';
+  field: string;
   publicationDate: string;
   journal?: string;
   doi?: string;
   pdfUrl?: string;
 }
+
+export interface DirectoryGroupItem {
+  id: string;
+  name: string;
+  institution: string;
+  knowledgeArea: string;
+  status: 'Active' | 'Archived';
+  uf: string;
+  since: string;
+  membersCount?: number;
+  leaders?: string[];
+  description?: string;
+  linesOfResearch?: string[];
+}
+
+export interface ResearcherItem {
+  id: string;
+  name: string;
+  institution: string;
+  uf?: string;
+  degree?: string;
+  title?: string;
+  department?: string;
+  yearIndexed?: string;
+  isPQFellow?: boolean;
+  bolsaProdutividade?: string;
+  isActive?: boolean;
+  avatar?: string;
+  avatarUrl?: string;
+  initials?: string;
+  citationsCount: number;
+  hIndex: number;
+  productionsCount?: number;
+  lattesId: string;
+  primaryArea?: string;
+  field?: string;
+  bio?: string;
+  groups?: string[];
+}
+
+export interface ProductionItem {
+  id: string;
+  title: string;
+  authors: string[] | string;
+  venue?: string;
+  journalOrConference?: string;
+  year: number | string;
+  qualis?: string;
+  type: string;
+  openAccess?: boolean;
+  isOpenAccess?: boolean;
+  citations?: number;
+  doi?: string;
+  url?: string;
+  abstract?: string;
+  groupName?: string;
+  institution?: string;
+}
+
 
 export interface ResearchGroupSummary {
   id: string;
@@ -109,3 +176,4 @@ export interface FilterState {
   publicationDate: string;
   searchQuery: string;
 }
+

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as GruposIndexRouteImport } from './routes/grupos/index'
 import { Route as GruposGrupoIdRouteImport } from './routes/grupos/$grupoId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GruposIndexRoute = GruposIndexRouteImport.update({
+  id: '/grupos/',
+  path: '/grupos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GruposGrupoIdRoute = GruposGrupoIdRouteImport.update({
   id: '/grupos/$grupoId',
   path: '/grupos/$grupoId',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/grupos/': typeof GruposIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/grupos': typeof GruposIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,25 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/grupos/': typeof GruposIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/demo/tanstack-query' | '/grupos/$grupoId'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/demo/tanstack-query'
+    | '/grupos/$grupoId'
+    | '/grupos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/demo/tanstack-query' | '/grupos/$grupoId'
-  id: '__root__' | '/' | '/about' | '/demo/tanstack-query' | '/grupos/$grupoId'
+  to: '/' | '/about' | '/demo/tanstack-query' | '/grupos/$grupoId' | '/grupos'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/demo/tanstack-query'
+    | '/grupos/$grupoId'
+    | '/grupos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +87,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   GruposGrupoIdRoute: typeof GruposGrupoIdRoute
+  GruposIndexRoute: typeof GruposIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/grupos/': {
+      id: '/grupos/'
+      path: '/grupos'
+      fullPath: '/grupos/'
+      preLoaderRoute: typeof GruposIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/grupos/$grupoId': {
       id: '/grupos/$grupoId'
       path: '/grupos/$grupoId'
@@ -107,6 +135,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   GruposGrupoIdRoute: GruposGrupoIdRoute,
+  GruposIndexRoute: GruposIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

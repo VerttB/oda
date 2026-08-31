@@ -1,8 +1,13 @@
 import type {
   Author,
+  DirectoryGroupItem,
   ResearchGroupDetail,
   ResearchLine,
 } from '#/core/interfaces'
+
+export const researchGroupsQueryKey = ['research-groups']
+
+export const researchGroupsMetricsQueryKey = ['research-groups-metrics']
 
 export const researchGroupDetailQueryKey = (grupoId: string) => [
   'research-group',
@@ -81,12 +86,57 @@ type ApiGrupoPesquisa = {
   membros?: ApiMembroGrupo[] | null
 }
 
+type ApiPaginatedResponse<T> = {
+  data?: T[]
+  items?: T[]
+  results?: T[]
+  total?: number
+  meta?: {
+    total?: number
+    totalItems?: number
+  }
+}
+
 type ApiGrupoMetricas = {
   totais?: {
     pesquisadores?: number
     linhasPesquisa?: number
     producoes?: number
   }
+}
+
+type ApiGruposPesquisaMetricas = {
+  total: number
+  porUf: {
+    uf: string
+    total: number
+  }[]
+  porInstituicao: {
+    instituicaoId: string
+    nome?: string | null
+    sigla?: string | null
+    uf?: string | null
+    total: number
+    sede: number
+    parceira: number
+  }[]
+}
+
+export type ResearchGroupsDirectoryMetrics = {
+  total: number
+  topUfs: {
+    uf: string
+    count: number
+  }[]
+  topInstitutions: {
+    id: string
+    name: string
+    code: string
+    uf?: string
+    count: number
+    hostCount: number
+    partnerCount: number
+  }[]
 }
 
 function isPresent<T>(value: T | null | undefined): value is T {
@@ -211,13 +261,56 @@ function mapResearchLine(line: ApiLinhaPesquisa): ResearchLine | null {
   }
 }
 
+function getGroupHostInstitution(group: ApiGrupoPesquisa) {
+  const institutions = group.instituicoes ?? []
+
+  return institutions.find(isHostInstitution) ?? institutions[0]
+}
+
+function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
+  const hostInstitution = getGroupHostInstitution(group)
+  const members = (group.membros ?? []).map(mapMemberToAuthor).filter(isPresent)
+  const leaders = (group.membros ?? [])
+    .filter((member) => member.eLider)
+    .map((member) => member.pesquisador?.nome)
+    .filter(isPresent)
+
+  return {
+    id: group.id,
+    name: group.nome ?? 'Grupo sem nome',
+    institution: getInstitutionCode(hostInstitution),
+    knowledgeArea:
+      group.areaPredominante ??
+      group.areasConhecimento?.[0]?.area?.nome ??
+      'Área não informada',
+    status: 'Active',
+    uf: group.uf ?? getInstitutionLocation(hostInstitution) ?? '--',
+    since: group.anoFormacao ? String(group.anoFormacao) : 'Não informado',
+    membersCount: members.length,
+    leaders,
+    description: group.repercussao ?? undefined,
+    linesOfResearch: (group.linhasPesquisa ?? [])
+      .map((line) => line.titulo)
+      .filter(isPresent),
+  }
+}
+
+function getGroupsFromResponse(
+  response: ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>,
+) {
+  if (Array.isArray(response)) {
+    return response
+  }
+
+  return response.data ?? response.items ?? response.results ?? []
+}
+
 function mapGroupDetail(
   group: ApiGrupoPesquisa,
   metrics: ApiGrupoMetricas | null,
 ): ResearchGroupDetail {
   const institutions = group.instituicoes ?? []
-  const hostInstitution =
-    institutions.find(isHostInstitution) ?? institutions[0]
+  const hostInstitution = getGroupHostInstitution(group)
   const partnerInstitutions = institutions.filter(
     (institution) => institution !== hostInstitution,
   )
@@ -269,6 +362,39 @@ function mapGroupDetail(
       .filter(isPresent),
     leaders,
     members,
+  }
+}
+
+export async function getResearchGroups() {
+  const response = await fetchJson<
+    ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>
+  >('/grupos-pesquisa')
+
+  return getGroupsFromResponse(response).map(mapGroupListItem)
+}
+
+export async function getResearchGroupsMetrics(): Promise<ResearchGroupsDirectoryMetrics> {
+  const metrics = await fetchJson<ApiGruposPesquisaMetricas>(
+    '/metricas/grupos-pesquisa',
+  )
+
+  return {
+    total: metrics.total,
+    topUfs: metrics.porUf
+      .map((item) => ({
+        uf: item.uf,
+        count: item.total,
+      }))
+      .sort((a, b) => b.count - a.count),
+    topInstitutions: metrics.porInstituicao.map((item) => ({
+      id: item.instituicaoId,
+      name: item.sigla ?? item.nome ?? 'Instituição sem nome',
+      code: item.sigla ?? '--',
+      uf: item.uf ?? undefined,
+      count: item.total,
+      hostCount: item.sede,
+      partnerCount: item.parceira,
+    })),
   }
 }
 
