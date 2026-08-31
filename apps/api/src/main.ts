@@ -8,6 +8,9 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN?.split(',') ?? true,
+  });
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/static/',
   });
