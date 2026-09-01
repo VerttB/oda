@@ -14,6 +14,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as GruposIndexRouteImport } from './routes/grupos/index'
 import { Route as GruposGrupoIdRouteImport } from './routes/grupos/$grupoId'
+import { Route as PesquisadoresIndexRouteImport } from './routes/pesquisadores/index'
+import { Route as ProducoesIndexRouteImport } from './routes/producoes/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +42,16 @@ const GruposGrupoIdRoute = GruposGrupoIdRouteImport.update({
   path: '/grupos/$grupoId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PesquisadoresIndexRoute = PesquisadoresIndexRouteImport.update({
+  id: '/pesquisadores/',
+  path: '/pesquisadores/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProducoesIndexRoute = ProducoesIndexRouteImport.update({
+  id: '/producoes/',
+  path: '/producoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +59,8 @@ export interface FileRoutesByFullPath {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/grupos/': typeof GruposIndexRoute
+  '/pesquisadores/': typeof PesquisadoresIndexRoute
+  '/producoes/': typeof ProducoesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +68,8 @@ export interface FileRoutesByTo {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/grupos': typeof GruposIndexRoute
+  '/pesquisadores': typeof PesquisadoresIndexRoute
+  '/producoes': typeof ProducoesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +78,8 @@ export interface FileRoutesById {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/grupos/': typeof GruposIndexRoute
+  '/pesquisadores/': typeof PesquisadoresIndexRoute
+  '/producoes/': typeof ProducoesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,8 +89,17 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/grupos/$grupoId'
     | '/grupos/'
+    | '/pesquisadores/'
+    | '/producoes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/demo/tanstack-query' | '/grupos/$grupoId' | '/grupos'
+  to:
+    | '/'
+    | '/about'
+    | '/demo/tanstack-query'
+    | '/grupos/$grupoId'
+    | '/grupos'
+    | '/pesquisadores'
+    | '/producoes'
   id:
     | '__root__'
     | '/'
@@ -80,6 +107,8 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/grupos/$grupoId'
     | '/grupos/'
+    | '/pesquisadores/'
+    | '/producoes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +117,8 @@ export interface RootRouteChildren {
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   GruposGrupoIdRoute: typeof GruposGrupoIdRoute
   GruposIndexRoute: typeof GruposIndexRoute
+  PesquisadoresIndexRoute: typeof PesquisadoresIndexRoute
+  ProducoesIndexRoute: typeof ProducoesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -127,6 +158,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GruposGrupoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pesquisadores/': {
+      id: '/pesquisadores/'
+      path: '/pesquisadores'
+      fullPath: '/pesquisadores/'
+      preLoaderRoute: typeof PesquisadoresIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/producoes/': {
+      id: '/producoes/'
+      path: '/producoes'
+      fullPath: '/producoes/'
+      preLoaderRoute: typeof ProducoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -136,6 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   GruposGrupoIdRoute: GruposGrupoIdRoute,
   GruposIndexRoute: GruposIndexRoute,
+  PesquisadoresIndexRoute: PesquisadoresIndexRoute,
+  ProducoesIndexRoute: ProducoesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
