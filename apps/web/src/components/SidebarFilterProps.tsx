@@ -1,54 +1,63 @@
-import React from 'react';
-import type { FilterState } from '../core/interfaces';
-
+import React from 'react'
+import type { FilterState } from '../core/interfaces'
 
 interface SidebarFiltersProps {
-  filters: FilterState;
-  onFilterChange: (newFilters: FilterState) => void;
+  filters: FilterState
+  onFilterChange: (newFilters: FilterState) => void
 }
 
 const FIELD_OPTIONS = [
   'Ciência da Computação',
   'Biologia',
   'Física',
-  'Medicina'
-];
+  'Medicina',
+]
 
 const DATE_OPTIONS = [
   'Qualquer momento',
   'Último ano',
   'Últimos 5 anos',
-  'Últimos 10 anos'
-];
+  'Últimos 10 anos',
+]
 
-export const SidebarFilters: React.FC<SidebarFiltersProps> = ({ filters, onFilterChange }) => {
+export const SidebarFilters: React.FC<SidebarFiltersProps> = ({
+  filters,
+  onFilterChange,
+}) => {
   const toggleField = (field: string) => {
-    const exists = filters.fieldsOfStudy.includes(field);
+    const exists = filters.fieldsOfStudy.includes(field)
     const updated = exists
       ? filters.fieldsOfStudy.filter((f) => f !== field)
-      : [...filters.fieldsOfStudy, field];
+      : [...filters.fieldsOfStudy, field]
 
     onFilterChange({
       ...filters,
-      fieldsOfStudy: updated
-    });
-  };
+      fieldsOfStudy: updated,
+    })
+  }
 
   const handleDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onFilterChange({
       ...filters,
-      publicationDate: e.target.value
-    });
-  };
+      publicationDate: e.target.value,
+    })
+  }
 
   return (
     <aside id="sidebar-filters" className="space-y-6">
       <div className="bg-surface border border-border p-6 shadow-[0_4px_12px_rgba(15,23,42,0.05)] rounded-lg">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-secondary">Filtros</h3>
-          {(filters.fieldsOfStudy.length > 0 || filters.publicationDate !== 'Any time') && (
+          {(filters.fieldsOfStudy.length > 0 ||
+            filters.publicationDate !== 'Qualquer momento') && (
             <button
-              onClick={() => onFilterChange({ ...filters, fieldsOfStudy: [], publicationDate: 'Any time' })}
+              onClick={() =>
+                onFilterChange({
+                  ...filters,
+                  fieldsOfStudy: [],
+                  publicationDate: 'Qualquer momento',
+                })
+              }
               className="text-xs text-primary hover:underline font-medium cursor-pointer"
             >
               Resetar
@@ -56,14 +65,14 @@ export const SidebarFilters: React.FC<SidebarFiltersProps> = ({ filters, onFilte
           )}
         </div>
 
-        {/* Field of Study */}
+        {/* Campo de estudo */}
         <div className="mb-6">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
             Campo de Estudo
           </h4>
           <div className="space-y-2">
             {FIELD_OPTIONS.map((field) => {
-              const isChecked = filters.fieldsOfStudy.includes(field);
+              const isChecked = filters.fieldsOfStudy.includes(field)
               return (
                 <label
                   key={field}
@@ -77,12 +86,12 @@ export const SidebarFilters: React.FC<SidebarFiltersProps> = ({ filters, onFilte
                   />
                   <span>{field}</span>
                 </label>
-              );
+              )
             })}
           </div>
         </div>
 
-        {/* Publication Date */}
+        {/* Data de publicação */}
         <div>
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             Data de Publicação
@@ -101,5 +110,5 @@ export const SidebarFilters: React.FC<SidebarFiltersProps> = ({ filters, onFilte
         </div>
       </div>
     </aside>
-  );
-};
+  )
+}

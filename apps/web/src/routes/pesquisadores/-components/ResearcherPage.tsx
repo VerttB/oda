@@ -42,12 +42,12 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
   onPageChange,
 }) => {
   const [sortBy, setSortBy] = useState<
-    'relevance' | 'alphabetical' | 'recents' | 'citations'
-  >('relevance')
+    'relevancia' | 'alfabetica' | 'producoes' | 'citacoes'
+  >('relevancia')
 
   const filteredResearchers = useMemo(() => {
     return [...researchersPage.data].sort((a, b) => {
-      if (sortBy === 'relevance') {
+      if (sortBy === 'relevancia') {
         return (
           b.hIndex * 100 +
           b.citationsCount -
@@ -55,15 +55,15 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
         )
       }
 
-      if (sortBy === 'alphabetical') {
+      if (sortBy === 'alfabetica') {
         return a.name.localeCompare(b.name)
       }
 
-      if (sortBy === 'recents') {
+      if (sortBy === 'producoes') {
         return (b.productionsCount ?? 0) - (a.productionsCount ?? 0)
       }
 
-      if (sortBy === 'citations') {
+      if (sortBy === 'citacoes') {
         return (b.citationsCount ?? 0) - (a.citationsCount ?? 0)
       }
 
@@ -129,10 +129,10 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
                 }
                 className="cursor-pointer rounded-lg border border-border-subtle bg-background px-3 py-1 text-xs font-medium text-foreground focus:outline-none"
               >
-                <option value="relevance">Relevância</option>
-                <option value="alphabetical">Ordem alfabética</option>
-                <option value="recents">Produções</option>
-                <option value="citations">Mais citados</option>
+                <option value="relevancia">Relevância</option>
+                <option value="alfabetica">Ordem alfabética</option>
+                <option value="producoes">Produções</option>
+                <option value="citacoes">Mais citados</option>
               </select>
             </div>
           </div>

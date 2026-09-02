@@ -44,12 +44,12 @@ export const GroupMainPageListItem: FC<GroupMainPageListItemProps> = ({
           </span>
           <span
             className={`rounded border px-2.5 py-0.5 text-[11px] font-medium ${
-              group.status === 'Active'
+              group.status === 'Ativo'
                 ? 'border-accent/30 bg-accent-light text-accent-dark'
                 : 'border-border-subtle bg-surface/50 text-secondary'
             }`}
           >
-            {group.status === 'Active' ? 'Ativo' : 'Arquivado'}
+            {group.status}
           </span>
           {typeof group.membersCount === 'number' && group.membersCount > 0 && (
             <span className="text-[11px] text-secondary/70">

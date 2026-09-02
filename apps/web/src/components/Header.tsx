@@ -19,11 +19,11 @@ export const Header: React.FC<NavbarProps> = ({
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const navItems: { id: string; label: string }[] = [
-    { id: 'discover', label: 'Discover' },
-    { id: 'groups', label: 'Groups' },
-    { id: 'publications', label: 'Publications' },
-    { id: 'institutions', label: 'Institutions' },
-    { id: 'docs', label: 'API Docs' },
+    { id: 'discover', label: 'Descobrir' },
+    { id: 'groups', label: 'Grupos' },
+    { id: 'publications', label: 'Publicações' },
+    { id: 'institutions', label: 'Instituições' },
+    { id: 'docs', label: 'Docs da API' },
   ]
 
   const isNavyNav = activeTab === 'discover' || isDarkTheme
@@ -38,7 +38,7 @@ export const Header: React.FC<NavbarProps> = ({
       }`}
     >
       <div className="max-w-[1280px] mx-auto flex justify-between items-center h-[72px] md:h-[80px] px-4 md:px-8">
-        {/* Brand & Search */}
+        {/* Marca e busca */}
         <div className="flex items-center gap-6">
           <button
             id="brand-logo"
@@ -50,7 +50,7 @@ export const Header: React.FC<NavbarProps> = ({
             <span>ODA</span>
           </button>
 
-          {/* Search Input */}
+          {/* Campo de busca */}
           <div
             className={`hidden md:flex items-center px-3.5 py-1.5 rounded-lg border transition-all w-[280px] lg:w-[320px] ${
               isNavyNav
@@ -73,7 +73,7 @@ export const Header: React.FC<NavbarProps> = ({
               <button
                 onClick={() => onSearchChange('')}
                 className="text-xs p-1 hover:opacity-80 rounded-full"
-                title="Clear search"
+                title="Limpar busca"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -81,7 +81,7 @@ export const Header: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Center Nav Links */}
+        {/* Links centrais de navegação */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navItems.map((item) => {
             const isActive = activeTab === item.id
@@ -106,11 +106,11 @@ export const Header: React.FC<NavbarProps> = ({
           })}
         </nav>
 
-        {/* Right Actions */}
+        {/* Ações à direita */}
         <div className="flex items-center gap-3 md:gap-4 relative">
-          {/* Notification Button */}
+          {/* Botão de notificações */}
 
-          {/* Profile Button */}
+          {/* Botão de perfil */}
           <div className="relative">
             <button
               id="profile-btn"
@@ -122,11 +122,11 @@ export const Header: React.FC<NavbarProps> = ({
                   ? 'text-white/80 hover:text-white hover:bg-white/10'
                   : 'text-muted-foreground hover:text-foreground hover:bg-slate-100'
               }`}
-              title="Researcher Account"
+              title="Conta de pesquisador"
             >
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7pIzfuk-eLdC6Nxn0ePVr_99DzfWdGIpClj5V6n4AnFHnvAMLY0s76dXJhh9N1nf-zzcKOm7aFpPmR9G4zSoOdp_VR3DN2B6PlTRJZrfMKOOgv2S3Zlbp5QyzGPEJ4J2MbuaolT4Sm8UccsUncpmh4zVNS2ANfUsZHkjTcEJoWO2DBMCVKaw4JYCOkqKV4RVAae6n38Fcq6hSX7mjOgeRsFAZIHpCs28O_BqqLc-w7G5ayrwdc48_"
-                alt="Account profile avatar"
+                alt="Avatar da conta"
                 className="w-8 h-8 rounded-full object-cover border border-accent"
               />
             </button>
@@ -148,7 +148,7 @@ export const Header: React.FC<NavbarProps> = ({
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
                 >
-                  <span>My Researcher Profile</span>
+                  <span>Meu perfil de pesquisador</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
                 <button
@@ -158,7 +158,7 @@ export const Header: React.FC<NavbarProps> = ({
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
                 >
-                  <span>My DGP Groups</span>
+                  <span>Meus grupos DGP</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
                 <button
@@ -168,7 +168,7 @@ export const Header: React.FC<NavbarProps> = ({
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
                 >
-                  <span>API Keys & Docs</span>
+                  <span>Chaves e docs da API</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
               </div>
@@ -177,7 +177,7 @@ export const Header: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Sub-Navigation Bar */}
+      {/* Subnavegação mobile */}
       <div className="md:hidden flex items-center overflow-x-auto px-4 py-2 border-t border-white/10 gap-3 text-xs">
         {navItems.map((item) => (
           <button

@@ -1,40 +1,48 @@
-import React from 'react';
-import { ArrowRight, Microscope, Globe, Brain, Network, Cpu, Code } from 'lucide-react';
+import React from 'react'
+import {
+  ArrowRight,
+  Microscope,
+  Globe,
+  Brain,
+  Network,
+  Cpu,
+  Code,
+} from 'lucide-react'
 
 interface ResearchGroupSummary {
-  id: string;
-  name: string;
-  description: string;
-  membersCount: number;
-  icon: 'biotech' | 'public' | 'psychology' | 'hub' | 'code' | 'cpu';
+  id: string
+  name: string
+  description: string
+  membersCount: number
+  icon: 'biotech' | 'public' | 'psychology' | 'hub' | 'code' | 'cpu'
 }
 interface ResearchGroupCardsProps {
-  groups: ResearchGroupSummary[];
-  onSelectGroup: (groupId: string) => void;
-  onExploreAllGroups: () => void;
+  groups: ResearchGroupSummary[]
+  onSelectGroup: (groupId: string) => void
+  onExploreAllGroups: () => void
 }
 
 export const ResearchGroupCards: React.FC<ResearchGroupCardsProps> = ({
   groups,
   onSelectGroup,
-  onExploreAllGroups
+  onExploreAllGroups,
 }) => {
   const renderIcon = (iconType: ResearchGroupSummary['icon']) => {
     switch (iconType) {
       case 'biotech':
-        return <Microscope className="w-8 h-8 text-secondary" />;
+        return <Microscope className="w-8 h-8 text-secondary" />
       case 'public':
-        return <Globe className="w-8 h-8 text-secondary" />;
+        return <Globe className="w-8 h-8 text-secondary" />
       case 'psychology':
-        return <Brain className="w-8 h-8 text-secondary" />;
+        return <Brain className="w-8 h-8 text-secondary" />
       case 'hub':
-        return <Network className="w-8 h-8 text-secondary" />;
+        return <Network className="w-8 h-8 text-secondary" />
       case 'cpu':
-        return <Cpu className="w-8 h-8 text-secondary" />;
+        return <Cpu className="w-8 h-8 text-secondary" />
       default:
-        return <Code className="w-8 h-8 text-secondary" />;
+        return <Code className="w-8 h-8 text-secondary" />
     }
-  };
+  }
 
   return (
     <section id="top-research-groups" className="mt-12">
@@ -69,11 +77,11 @@ export const ResearchGroupCards: React.FC<ResearchGroupCardsProps> = ({
               {group.description}
             </p>
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-auto bg-white/70 px-3 py-1 rounded-full border border-border">
-              {group.membersCount.toLocaleString()} Members
+              {group.membersCount.toLocaleString('pt-BR')} membros
             </span>
           </div>
         ))}
       </div>
     </section>
-  );
-};
+  )
+}

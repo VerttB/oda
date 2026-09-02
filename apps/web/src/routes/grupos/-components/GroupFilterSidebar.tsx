@@ -50,7 +50,7 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
     Boolean(searchQuery) ||
     Boolean(selectedUf) ||
     Boolean(selectedArea) ||
-    selectedStatus !== 'All'
+    selectedStatus !== 'Todos'
 
   return (
     <aside className="w-full shrink-0 border-border-subtle lg:w-64 lg:border-r lg:pr-6">
@@ -73,7 +73,7 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
         </div>
 
         <div className="flex flex-col gap-5">
-          {/* Group Name Filter */}
+          {/* Filtro por nome do grupo */}
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-secondary">
               Nome do grupo
@@ -141,7 +141,7 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
               Status do Grupo
             </label>
             <div className="flex gap-2">
-              {['All', 'Active', 'Archived'].map((st) => (
+              {['Todos', 'Ativo', 'Arquivado'].map((st) => (
                 <button
                   key={st}
                   type="button"
@@ -152,11 +152,7 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
                       : 'border-border-subtle bg-background text-secondary hover:bg-surface'
                   }`}
                 >
-                  {st === 'All'
-                    ? 'Todos'
-                    : st === 'Active'
-                      ? 'Ativo'
-                      : 'Arquivado'}
+                  {st}
                 </button>
               ))}
             </div>

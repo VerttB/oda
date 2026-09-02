@@ -42,7 +42,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({
                 <div className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                   Portal Web
                 </div>
-                <span className="text-base font-medium">Website do Grupo</span>
+                <span className="text-base font-medium">Site do grupo</span>
               </div>
             </a>
           )}

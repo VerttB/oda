@@ -283,7 +283,7 @@ function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
       group.areaPredominante ??
       group.areasConhecimento?.[0]?.area?.nome ??
       'Área não informada',
-    status: 'Active',
+    status: 'Ativo',
     uf: group.uf ?? getInstitutionLocation(hostInstitution) ?? '--',
     since: group.anoFormacao ? String(group.anoFormacao) : 'Não informado',
     membersCount: members.length,

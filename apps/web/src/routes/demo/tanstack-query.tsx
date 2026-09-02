@@ -22,7 +22,7 @@ function TanStackQueryDemo() {
       <section className="demo-panel w-full max-w-2xl">
         <p className="island-kicker mb-2">TanStack Query</p>
         <h1 className="demo-title mb-6">
-          TanStack Query Simple Promise Handling
+          Tratamento simples de promessas com TanStack Query
         </h1>
         <ul className="mb-4 space-y-2">
           {data.map((todo) => (

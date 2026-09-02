@@ -43,8 +43,8 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
   const [selectedInstitution, setSelectedInstitution] = useState(
     'Todas as instituições',
   )
-  const [sortBy, setSortBy] = useState<'recents' | 'citations' | 'relevance'>(
-    'recents',
+  const [sortBy, setSortBy] = useState<'recentes' | 'citacoes' | 'titulo'>(
+    'recentes',
   )
   const [copiedCitationId, setCopiedCitationId] = useState<string | null>(null)
 
@@ -112,11 +112,11 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
         return true
       })
       .sort((a, b) => {
-        if (sortBy === 'recents') {
+        if (sortBy === 'recentes') {
           return parseProductionYear(b.year) - parseProductionYear(a.year)
         }
 
-        if (sortBy === 'citations') {
+        if (sortBy === 'citacoes') {
           return (b.citations ?? 0) - (a.citations ?? 0)
         }
 
@@ -187,9 +187,9 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
                 }
                 className="cursor-pointer border-none bg-transparent p-0 pr-4 text-xs font-semibold text-primary focus:ring-0"
               >
-                <option value="recents">Mais recentes</option>
-                <option value="citations">Mais citadas</option>
-                <option value="relevance">Título</option>
+                <option value="recentes">Mais recentes</option>
+                <option value="citacoes">Mais citadas</option>
+                <option value="titulo">Título</option>
               </select>
             </div>
           </div>

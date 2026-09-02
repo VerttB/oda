@@ -17,7 +17,7 @@ function RouteComponent() {
   const [searchQuery] = useState('')
   const [filters, setFilters] = useState<FilterState>({
     fieldsOfStudy: [],
-    publicationDate: 'Any time',
+    publicationDate: 'Qualquer momento',
     searchQuery: '',
   })
   const [, setSelectedArticle] = useState<ResearchArticle | null>(null)

@@ -14,7 +14,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Laboratório de Inteligência Artificial Aplicada',
     institution: 'USP',
     knowledgeArea: 'Engenharia',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'SP',
     since: '2015',
     membersCount: 38,
@@ -27,7 +27,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Grupo de Estudos em Ecologia de Paisagens',
     institution: 'UNESP',
     knowledgeArea: 'Ciências Biológicas',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'SP',
     since: '2018',
     membersCount: 22,
@@ -40,7 +40,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Núcleo de Pesquisa em Redes Complexas',
     institution: 'UFRJ',
     knowledgeArea: 'Ciências da Computação',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'RJ',
     since: '2010',
     membersCount: 45,
@@ -53,7 +53,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Observatório de Dinâmicas Urbanas',
     institution: 'UFMG',
     knowledgeArea: 'Sociologia',
-    status: 'Archived',
+    status: 'Arquivado',
     uf: 'MG',
     since: '2005 - 2021',
     membersCount: 16,
@@ -66,7 +66,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Centro de Biologia Molecular e Genômica Funcional',
     institution: 'UNICAMP',
     knowledgeArea: 'Ciências Biológicas',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'SP',
     since: '2012',
     membersCount: 52,
@@ -79,7 +79,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Laboratório de Informação e Matéria Quântica',
     institution: 'UFRGS',
     knowledgeArea: 'Física',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'RS',
     since: '2016',
     membersCount: 29,
@@ -92,7 +92,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Núcleo de Epidemiologia e Saúde Coletiva',
     institution: 'UFBA',
     knowledgeArea: 'Ciências da Saúde',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'BA',
     since: '2014',
     membersCount: 34,
@@ -105,7 +105,7 @@ export const MOCK_DIRECTORY_GROUPS: DirectoryGroupItem[] = [
     name: 'Grupo de Pesquisa em Energias Renováveis e Hidrogênio Verde',
     institution: 'UFPE',
     knowledgeArea: 'Engenharia',
-    status: 'Active',
+    status: 'Ativo',
     uf: 'PE',
     since: '2019',
     membersCount: 27,
@@ -293,10 +293,11 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
   {
     id: 'prod-1',
     title:
-      'Machine learning approaches for predictive maintenance in industrial manufacturing systems',
+      'Abordagens de aprendizado de máquina para manutenção preditiva em sistemas industriais de manufatura',
     authors: 'Silva, J. M., Santos, R. A., & Oliveira, C. L.',
-    venue: 'Journal of Manufacturing Systems, v. 45, p. 112-128.',
-    journalOrConference: 'Journal of Manufacturing Systems, v. 45, p. 112-128.',
+    venue: 'Revista de Sistemas de Manufatura, v. 45, p. 112-128.',
+    journalOrConference:
+      'Revista de Sistemas de Manufatura, v. 45, p. 112-128.',
     year: '2023',
     qualis: 'A1',
     type: 'Artigo',
@@ -307,7 +308,7 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
     institution: 'Universidade de São Paulo (USP)',
     groupName: 'Laboratório de Inteligência Artificial Aplicada',
     abstract:
-      'We present state-of-the-art predictive maintenance paradigms evaluating multimodal sensor streams using self-supervised Transformer models, achieving high accuracy in industrial settings.',
+      'Apresentamos paradigmas avançados de manutenção preditiva que avaliam fluxos multimodais de sensores com modelos Transformer auto-supervisionados, alcançando alta precisão em ambientes industriais.',
   },
   {
     id: 'prod-2',
@@ -352,7 +353,7 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
   {
     id: 'prod-4',
     title:
-      'Topological Qubits at Room Temperature: High-Coherence Graphene Architectures',
+      'Qubits topológicos em temperatura ambiente: arquiteturas de grafeno de alta coerência',
     authors: 'Chen, A., Vance, E., & Rostova, E.',
     venue: 'Physical Review Letters, 131(12), 120401.',
     journalOrConference: 'Physical Review Letters, 131(12), 120401.',
@@ -366,7 +367,7 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
     institution: 'Universidade de São Paulo (USP)',
     groupName: 'Laboratório de Matéria Quântica e Nanotecnologia',
     abstract:
-      'Experimental demonstration of topological braiding phases maintained at ambient conditions using synthetic superlattice heterostructures.',
+      'Demonstração experimental de fases topológicas de entrelaçamento mantidas em condições ambientes com heteroestruturas sintéticas de super-redes.',
   },
   {
     id: 'prod-5',
@@ -390,11 +391,11 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
   {
     id: 'prod-6',
     title:
-      'Low-Latency Quantization of Large Language Models for Edge Inference',
+      'Quantização de baixa latência de grandes modelos de linguagem para inferência em borda',
     authors: 'Rostova, E., Jenkins, S., & Chen, J.',
     venue:
-      'Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL), pp. 240-255.',
-    journalOrConference: 'Proceedings of the 61st ACL, pp. 240-255.',
+      'Anais do 61º Encontro Anual da Association for Computational Linguistics (ACL), pp. 240-255.',
+    journalOrConference: 'Anais do 61º ACL, pp. 240-255.',
     year: '2023',
     qualis: 'A1',
     type: 'Trabalhos em Eventos',
@@ -405,7 +406,7 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
     institution: 'Universidade de São Paulo (USP)',
     groupName: 'Laboratório de Inteligência Artificial Aplicada',
     abstract:
-      'Sub-4-bit uniform integer quantization methods for transformer attention layers allowing real-time text generation on embedded microprocessors.',
+      'Métodos de quantização inteira uniforme abaixo de 4 bits para camadas de atenção Transformer, permitindo geração de texto em tempo real em microprocessadores embarcados.',
   },
   {
     id: 'prod-7',
@@ -432,9 +433,9 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
       'Produção de Hidrogênio Verde via Eletrólise Solar de Alta Eficiência no Semiárido Brasileiro',
     authors: 'Henrique, P., Toledo, F., & Prado, A.',
     venue:
-      'International Journal of Hydrogen Energy, v. 48, n. 32, pp. 11980-11995.',
+      'Revista Internacional de Energia do Hidrogênio, v. 48, n. 32, pp. 11980-11995.',
     journalOrConference:
-      'Int. Journal of Hydrogen Energy, v. 48, pp. 11980-11995.',
+      'Rev. Int. de Energia do Hidrogênio, v. 48, pp. 11980-11995.',
     year: '2024',
     qualis: 'A1',
     type: 'Artigo',
@@ -490,80 +491,82 @@ export const MOCK_PRODUCTIONS: ProductionItem[] = [
 export const MOCK_ARTICLES: ResearchArticle[] = [
   {
     id: 'art-1',
-    title: 'Algorithmic Bias in Predictive Policing Models',
+    title: 'Viés algorítmico em modelos de policiamento preditivo',
     abstract:
-      'A comprehensive review of algorithmic fairness in predictive policing, analyzing datasets from major metropolitan areas to identify systemic biases and propose mitigation strategies.',
-    tags: ['AI Ethics', 'Peer Reviewed'],
+      'Uma revisão abrangente sobre justiça algorítmica no policiamento preditivo, analisando bases de dados de grandes regiões metropolitanas para identificar vieses sistêmicos e propor estratégias de mitigação.',
+    tags: ['Ética em IA', 'Revisado por pares'],
     author: {
       id: 'author-e-vance',
       name: 'Dr. E. Vance',
-      role: 'Associate Professor',
+      role: 'Professor associado',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuCqdZWXLizGJ7j01uVQH5eJoklhisTp4ZNR6vy_oQX6G7vFN9wAsZ9_cTh6wQUo5sK6MszCxDK1Q3N1Q4q1xHqdWoW1F4O3i0cCUXHTdFAwuYN60wNw8PBvWHIA6q0dup9N1DxYcUKVN4bhfntto2rBhUc4KyP4hv51w2yCB0pWLjwhd4snfhQYq-XMu6wUW-B1am2n1aVmOOXWo21DIvVWmKnYKk7ljXdxo54vS-7utKozgHgX9vdj',
-      institution: 'Stanford University',
+      institution: 'Universidade Stanford',
     },
     citations: 142,
-    field: 'Computer Science',
+    field: 'Ciência da Computação',
     publicationDate: '2024-01-15',
-    journal: 'Journal of Artificial Intelligence Ethics, Vol. 8',
+    journal: 'Revista de Ética em Inteligência Artificial, Vol. 8',
     doi: '10.1016/j.aie.2024.01.004',
   },
   {
     id: 'art-2',
-    title: 'Topological Qubits at Room Temperature',
+    title: 'Qubits topológicos em temperatura ambiente',
     abstract:
-      'We present experimental evidence of topological stabilization of qubits operating near room temperature using a novel graphene-based lattice structure.',
-    tags: ['Quantum Computing', 'Open Access'],
+      'Apresentamos evidências experimentais da estabilização topológica de qubits operando próximos à temperatura ambiente com uma nova estrutura de rede baseada em grafeno.',
+    tags: ['Computação quântica', 'Acesso aberto'],
     author: {
       id: 'author-chen-et-al',
       name: 'A. Chen et al.',
-      role: 'Principal Researcher',
+      role: 'Pesquisador principal',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuD5aD6SOQZyNjCAEoRHlUQJTZgJsxaUNrzBJ3iuhYmzKyEozN0o27js-MQp_pCY4JXER1GT3NdZexVs7isXI6zOSC5Apmahhs0zja4C1V-DBAN576-MaHUpaucznBowurCvatygJmq-9b2koqikZrZvIbQwXLcXHPZwDD46QZ4hA-JVKALnK1feggoxZDQfdC1eR-rO-psFEFocWoG9iUSQNG4Wjf2kfatDpAZ_P8Wlid0yv8EHZCAO',
-      institution: 'Max Planck Institute',
+      institution: 'Instituto Max Planck',
     },
     citations: 89,
-    field: 'Physics',
+    field: 'Física',
     publicationDate: '2023-11-20',
-    journal: 'Nature Quantum Information, 34(4)',
+    journal: 'Nature Informação Quântica, 34(4)',
     doi: '10.1038/s41534-023-00789-2',
   },
   {
     id: 'art-3',
-    title: 'Synthetic Biology Circuits for Targeted Oncology Delivery',
+    title:
+      'Circuitos de biologia sintética para entrega oncológica direcionada',
     abstract:
-      'Engineered cellular logic gates implemented within synthetic bacterial strains demonstrate high selectivity in tumor microenvironment sensing and payload release.',
-    tags: ['Synthetic Biology', 'Preprint'],
+      'Portas lógicas celulares projetadas em cepas bacterianas sintéticas demonstram alta seletividade na detecção do microambiente tumoral e na liberação de cargas terapêuticas.',
+    tags: ['Biologia sintética', 'Pré-print'],
     author: {
       id: 'author-sarah-jenkins',
       name: 'Dr. Sarah Jenkins',
-      role: 'Postdoctoral Fellow',
+      role: 'Pesquisadora de pós-doutorado',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuCTByR863c-ADuvSMo4teqCnL1UkHT0_MEdoEdQUkIYKv8TGUYkkVl3zS9LrWdn6wa6CPLbWEWg6k97YEo79CEN-8topeFBiqZcow433A8GUr1og6TX0EOrG5yyyLRlK26xt_b1NjXR8IC3L3QF5cy-FnhQRIo7BgQzWq5sy5S2FvoOwKrLmx44Y_sWiyD5GoJLHWBZ2-FQ4-h5fRzEj5onL06VoG1tMA5W1ATznK8DNkfvlMabIen6',
-      institution: 'MIT Synthetic Biology Center',
+      institution: 'Centro de Biologia Sintética do MIT',
     },
     citations: 64,
-    field: 'Biology',
+    field: 'Biologia',
     publicationDate: '2023-09-12',
     journal: 'Cellular & Molecular Bioengineering',
     doi: '10.1007/s12195-023-00774-1',
   },
   {
     id: 'art-4',
-    title: 'High-Resolution Neural Decoding via Low-Power Edge Accelerators',
+    title:
+      'Decodificação neural de alta resolução com aceleradores de borda de baixo consumo',
     abstract:
-      'A quantized Transformer architecture implemented on custom ASICs achieving real-time invasive motor cortex decoding with sub-5ms latency and milliwatt power consumption.',
-    tags: ['Neuroengineering', 'Peer Reviewed'],
+      'Uma arquitetura Transformer quantizada implementada em ASICs customizados, alcançando decodificação invasiva do córtex motor em tempo real com latência abaixo de 5 ms e consumo em miliwatts.',
+    tags: ['Neuroengenharia', 'Revisado por pares'],
     author: {
       id: 'author-elena-rostova',
       name: 'Dr. Elena Rostova',
-      role: 'Professor of Computational Linguistics',
+      role: 'Professora de Linguística Computacional',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuB68LF8ioTigmnBpzASI-EXJ7TAw7CzhmDjvT-M9cQIe7M4wgE55AlT-QTN8DVyyk0fD8PZOmDKUiE4etvoFu-hgemc52e20MXlvSKN7oARbxAKS3MwyJuDtIvw1GNGFFtTng7G_cDhnXV1nQv5UF81daM-LgYLa-UQxima0x0ZgocLbPEY0iieJcqJbBoyMI-5dm3BgnsMkfEgPPfkSSfanDdZaK0RBj9gcVGMvxm8fGajOmieKp7n',
-      institution: 'Massachusetts Institute of Technology',
+      institution: 'Instituto de Tecnologia de Massachusetts',
     },
     citations: 215,
-    field: 'Medicine',
+    field: 'Medicina',
     publicationDate: '2024-02-01',
     journal: 'IEEE Transactions on Biomedical Circuits and Systems',
     doi: '10.1109/TBCAS.2024.3359012',
@@ -676,21 +679,21 @@ export const MOCK_GROUP_DETAIL: ResearchGroupDetail = {
     {
       id: 'res-maria-silva',
       name: 'Dra. Maria Silva Oliveira',
-      role: 'Principal Investigator',
+      role: 'Investigadora principal',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuDAP-bzR_2RU2gw1j2raRyIOTEbnAXn6h4Rw3hY8pJgDQbzmQfQVTV1gAKcTGUJNgaS5oIifjoznpJQACcnMHRElNJ7Grk3hIHugGmE-V_Ws2lZtc1Q9Du2hoF0vYo_NAu1lQykjbREARVBD29d-ZWV4W6Lxt8o5Py8Ome6uhlsqpcl_LC5JFBdaEohPPukROSYARP8L45lPKyUvlYXkeyHrHZt8QjZxPJDwUnzPdaPhBmLdniL3VpR',
     },
     {
       id: 'author-james-chen',
       name: 'James Chen, Ph.D.',
-      role: 'Senior Researcher',
+      role: 'Pesquisador sênior',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuDJUBWwPjnNLomIG6njYbqkjl-Txrctart6PloNRzk9HzAT8F2Yb4d4kWK435R69FRrrBY93inUDNcBj0WfEkDkzi0byU98zFNbBmHx-sTA1m1Fos66ZjQcXhsbr0-mTGN7Abf5guufGUx-xzD1Jvwpgp6CyaplpI4F_jUHL7S7p4R_jfTqmYvze7t7V3gtwlfs7HdunsFeq8Sv6WkMtcTV5GC-srUNmN8cGP4pXhu-qOLYCgv_tonb',
     },
     {
       id: 'author-sarah-jenkins',
       name: 'Sarah Jenkins',
-      role: 'Postdoctoral Fellow',
+      role: 'Pesquisadora de pós-doutorado',
       avatar:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuCTByR863c-ADuvSMo4teqCnL1UkHT0_MEdoEdQUkIYKv8TGUYkkVl3zS9LrWdn6wa6CPLbWEWg6k97YEo79CEN-8topeFBiqZcow433A8GUr1og6TX0EOrG5yyyLRlK26xt_b1NjXR8IC3L3QF5cy-FnhQRIo7BgQzWq5sy5S2FvoOwKrLmx44Y_sWiyD5GoJLHWBZ2-FQ4-h5fRzEj5onL06VoG1tMA5W1ATznK8DNkfvlMabIen6',
     },
@@ -712,9 +715,9 @@ export const MOCK_RESEARCHER_PROFILE: ResearcherProfile = {
   },
   interests: [
     'Inteligência Artificial',
-    'Machine Learning',
+    'Aprendizado de máquina',
     'Visão Computacional',
-    'Deep Learning',
+    'Aprendizado profundo',
     'Processamento de Linguagem Natural',
   ],
   affiliatedGroups: [
@@ -735,9 +738,9 @@ export const MOCK_RESEARCHER_PROFILE: ResearcherProfile = {
     {
       id: 'prod-1',
       title:
-        'Machine learning approaches for predictive maintenance in industrial manufacturing systems',
+        'Abordagens de aprendizado de máquina para manutenção preditiva em sistemas industriais de manufatura',
       authors: 'Silva, J. M., Santos, R. A., & Oliveira, C. L.',
-      journal: 'Journal of Manufacturing Systems, v. 45, p. 112-128.',
+      journal: 'Revista de Sistemas de Manufatura, v. 45, p. 112-128.',
       year: 2023,
       citations: 84,
       pdfAvailable: true,
@@ -745,9 +748,9 @@ export const MOCK_RESEARCHER_PROFILE: ResearcherProfile = {
     {
       id: 'prod-6',
       title:
-        'Low-Latency Quantization of Large Language Models for Edge Inference',
+        'Quantização de baixa latência de grandes modelos de linguagem para inferência em borda',
       authors: 'Rostova, E., Jenkins, S., & Chen, J.',
-      journal: 'Proceedings of the 61st ACL, pp. 240-255.',
+      journal: 'Anais do 61º ACL, pp. 240-255.',
       year: 2023,
       citations: 218,
       pdfAvailable: true,

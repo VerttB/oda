@@ -32,9 +32,9 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
 }) => {
   const [selectedUf, setSelectedUf] = useState('')
   const [selectedArea, setSelectedArea] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState<string>('All')
-  const [sortBy, setSortBy] = useState<'Relevance' | 'Newest' | 'Name'>(
-    'Relevance',
+  const [selectedStatus, setSelectedStatus] = useState<string>('Todos')
+  const [sortBy, setSortBy] = useState<'relevancia' | 'recentes' | 'nome'>(
+    'relevancia',
   )
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -69,18 +69,18 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
           return false
         }
 
-        if (selectedStatus !== 'All' && group.status !== selectedStatus) {
+        if (selectedStatus !== 'Todos' && group.status !== selectedStatus) {
           return false
         }
 
         return true
       })
       .sort((a, b) => {
-        if (sortBy === 'Newest') {
+        if (sortBy === 'recentes') {
           return parseGroupYear(b.since) - parseGroupYear(a.since)
         }
 
-        if (sortBy === 'Name') {
+        if (sortBy === 'nome') {
           return a.name.localeCompare(b.name)
         }
 
@@ -106,7 +106,7 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
     onSearchChange('')
     setSelectedUf('')
     setSelectedArea('')
-    setSelectedStatus('All')
+    setSelectedStatus('Todos')
     setCurrentPage(1)
   }
 
@@ -154,9 +154,9 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
                   }
                   className="cursor-pointer border-none bg-transparent px-2 py-1 text-xs font-semibold text-primary focus:outline-hidden"
                 >
-                  <option value="Relevance">Relevância</option>
-                  <option value="Newest">Mais recentes</option>
-                  <option value="Name">Ordem alfabética</option>
+                  <option value="relevancia">Relevância</option>
+                  <option value="recentes">Mais recentes</option>
+                  <option value="nome">Ordem alfabética</option>
                 </select>
               </div>
             </div>

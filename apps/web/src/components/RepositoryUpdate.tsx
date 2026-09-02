@@ -1,21 +1,20 @@
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import { ArticleCard } from './ArticleCard';
-import type { ResearchArticle } from '../core/interfaces';
-
+import React from 'react'
+import { ArrowRight } from 'lucide-react'
+import { ArticleCard } from './ArticleCard'
+import type { ResearchArticle } from '../core/interfaces'
 
 interface RepositoryUpdatesProps {
-  articles: ResearchArticle[];
-  onSelectArticle: (article: ResearchArticle) => void;
-  onSelectAuthor: (authorId: string) => void;
-  onViewAllClick?: () => void;
+  articles: ResearchArticle[]
+  onSelectArticle: (article: ResearchArticle) => void
+  onSelectAuthor: (authorId: string) => void
+  onViewAllClick?: () => void
 }
 
 export const RepositoryUpdates: React.FC<RepositoryUpdatesProps> = ({
   articles,
   onSelectArticle,
   onSelectAuthor,
-  onViewAllClick
+  onViewAllClick,
 }) => {
   return (
     <section id="recent-repository-updates">
@@ -27,14 +26,14 @@ export const RepositoryUpdates: React.FC<RepositoryUpdatesProps> = ({
           onClick={onViewAllClick}
           className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-secondary transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5"
         >
-          <span>Ver Todos</span>
+          <span>Ver todos</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {articles.length === 0 ? (
         <div className="bg-surface border border-border rounded-lg p-8 text-center text-muted-foreground text-sm">
-            Nenhuma atualização recente encontrada.
+          Nenhuma atualização recente encontrada.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -49,5 +48,5 @@ export const RepositoryUpdates: React.FC<RepositoryUpdatesProps> = ({
         </div>
       )}
     </section>
-  );
-};
+  )
+}
