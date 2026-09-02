@@ -2,13 +2,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import { GroupMainPage } from '#/components/grupo/GroupMainPage'
 import {
   getResearchGroupsMetrics,
   getResearchGroups,
   researchGroupsMetricsQueryKey,
   researchGroupsQueryKey,
 } from '#/api/grupos-pesquisa'
+import { GroupMainPage } from './-components/GroupMainPage'
 
 export const Route = createFileRoute('/grupos/')({
   loader: ({ context }) =>

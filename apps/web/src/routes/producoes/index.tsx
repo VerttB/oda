@@ -4,10 +4,10 @@ import {
   type ProductionTypeFilter,
   type ProductionsFilters,
 } from '#/api/producoes'
-import { ProductionMainPage } from '#/components/production/ProductionMainPage'
 import type { ProductionItem } from '#/core/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { ProductionMainPage } from './-components/ProductionMainPage'
 
 const PAGE_SIZE = 30
 

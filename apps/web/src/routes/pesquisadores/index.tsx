@@ -7,10 +7,10 @@ import {
   type ResearchersFilters,
   type ResearcherTypeFilter,
 } from '#/api/pesquisadores'
-import { ResearchersPage } from '#/components/pesquisador/ResearcherPage'
 import type { ResearcherItem } from '#/core/interfaces'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { ResearchersPage } from './-components/ResearcherPage'
 
 const PAGE_SIZE = 30
 

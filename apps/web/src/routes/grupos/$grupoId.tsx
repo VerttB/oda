@@ -1,15 +1,15 @@
-import { ContactInfo } from '#/components/grupo/ContactInfo'
-import { GroupHero } from '#/components/grupo/GroupHero'
-import { GroupLeaders } from '#/components/grupo/GroupLeaders'
-import { GroupMembers } from '#/components/grupo/GroupMembers'
-import { InstitutionalAffiliation } from '#/components/grupo/InstitutionalAffiliation'
-import { ResearchLines } from '#/components/grupo/ResearcherLinks'
 import {
   getResearchGroupDetail,
   researchGroupDetailQueryKey,
 } from '#/api/grupos-pesquisa'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { ContactInfo } from './-components/ContactInfo'
+import { GroupHero } from './-components/GroupHero'
+import { GroupLeaders } from './-components/GroupLeaders'
+import { GroupMembers } from './-components/GroupMembers'
+import { InstitutionalAffiliation } from './-components/InstitutionalAffiliation'
+import { ResearchLines } from './-components/ResearcherLinks'
 
 export const Route = createFileRoute('/grupos/$grupoId')({
   loader: ({ context, params }) =>
