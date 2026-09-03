@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
 import {
   getResearchGroupsMetrics,
@@ -13,13 +12,15 @@ import { GroupMainPage } from './-components/GroupMainPage'
 export const Route = createFileRoute('/grupos/')({
   loader: ({ context }) =>
     Promise.all([
-      context.queryClient.ensureQueryData({
+      context.queryClient.query({
         queryKey: researchGroupsQueryKey,
         queryFn: getResearchGroups,
+        staleTime: 'static',
       }),
-      context.queryClient.ensureQueryData({
+      context.queryClient.query({
         queryKey: researchGroupsMetricsQueryKey,
         queryFn: getResearchGroupsMetrics,
+        staleTime: 'static',
       }),
     ]),
   component: GroupsRoute,
@@ -85,15 +86,8 @@ function GroupsErrorState({
 
 function GroupsRoute() {
   const navigate = Route.useNavigate()
+  const [groups, metrics] = Route.useLoaderData()
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: groups = [] } = useQuery({
-    queryKey: researchGroupsQueryKey,
-    queryFn: getResearchGroups,
-  })
-  const { data: metrics } = useQuery({
-    queryKey: researchGroupsMetricsQueryKey,
-    queryFn: getResearchGroupsMetrics,
-  })
 
   return (
     <GroupMainPage

@@ -8,7 +8,6 @@ import {
   type ResearcherTypeFilter,
 } from '#/api/pesquisadores'
 import type { ResearcherItem } from '#/core/interfaces'
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { ResearchersPage } from './-components/ResearcherPage'
 
@@ -74,13 +73,15 @@ export const Route = createFileRoute('/pesquisadores/')({
     const filters = getResearchersFilters(deps)
 
     return Promise.all([
-      context.queryClient.ensureQueryData({
+      context.queryClient.query({
         queryKey: researchersQueryKey(filters),
         queryFn: () => getResearchers(filters),
+        staleTime: 'static',
       }),
-      context.queryClient.ensureQueryData({
+      context.queryClient.query({
         queryKey: researchersMetricsQueryKey,
         queryFn: getResearchersMetrics,
+        staleTime: 'static',
       }),
     ])
   },
@@ -148,19 +149,7 @@ function ResearchersErrorState({
 function ResearchersRoute() {
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
-  const filters = getResearchersFilters(search)
-  const { data: researchersPage } = useQuery({
-    queryKey: researchersQueryKey(filters),
-    queryFn: () => getResearchers(filters),
-  })
-  const { data: metrics } = useQuery({
-    queryKey: researchersMetricsQueryKey,
-    queryFn: getResearchersMetrics,
-  })
-
-  if (!researchersPage) {
-    return <ResearchersPendingState />
-  }
+  const [researchersPage, metrics] = Route.useLoaderData()
 
   const updateSearch = (nextSearch: ResearchersSearch) =>
     void navigate({

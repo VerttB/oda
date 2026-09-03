@@ -2,7 +2,6 @@ import {
   getResearchGroupDetail,
   researchGroupDetailQueryKey,
 } from '#/api/grupos-pesquisa'
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { ContactInfo } from './-components/ContactInfo'
 import { GroupHero } from './-components/GroupHero'
@@ -16,6 +15,7 @@ export const Route = createFileRoute('/grupos/$grupoId')({
     context.queryClient.query({
       queryKey: researchGroupDetailQueryKey(params.grupoId),
       queryFn: () => getResearchGroupDetail(params.grupoId),
+      staleTime: 'static',
     }),
   component: RouteComponent,
   errorComponent: ({ error, reset }) => (
@@ -57,35 +57,7 @@ function GroupErrorState({
 }
 
 function RouteComponent() {
-  const { grupoId } = Route.useParams()
-  const {
-    data: group,
-    error,
-    isError,
-    isPending,
-    refetch,
-  } = useQuery({
-    queryKey: researchGroupDetailQueryKey(grupoId),
-    queryFn: () => getResearchGroupDetail(grupoId),
-  })
-
-  if (isPending) {
-    return (
-      <main className="bg-background pt-28">
-        <div className="mx-auto max-w-[1280px] px-4 py-12 md:px-10">
-          <div className="h-64 animate-pulse rounded-lg bg-surface" />
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="h-40 animate-pulse rounded-lg bg-surface" />
-            <div className="h-40 animate-pulse rounded-lg bg-surface md:col-span-2" />
-          </div>
-        </div>
-      </main>
-    )
-  }
-
-  if (isError) {
-    return <GroupErrorState error={error} onRetry={() => void refetch()} />
-  }
+  const group = Route.useLoaderData()
 
   return (
     <div>

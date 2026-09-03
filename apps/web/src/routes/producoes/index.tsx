@@ -5,7 +5,6 @@ import {
   type ProductionsFilters,
 } from '#/api/producoes'
 import type { ProductionItem } from '#/core/interfaces'
-import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { ProductionMainPage } from './-components/ProductionMainPage'
 
@@ -48,9 +47,10 @@ export const Route = createFileRoute('/producoes/')({
   loader: ({ context, deps }) => {
     const filters = getProductionsFilters(deps)
 
-    return context.queryClient.ensureQueryData({
+    return context.queryClient.query({
       queryKey: productionsQueryKey(filters),
       queryFn: () => getProductions(filters),
+      staleTime: 'static',
     })
   },
   pendingComponent: ProductionsPendingState,
@@ -117,15 +117,7 @@ function ProductionsErrorState({
 function ProductionsRoute() {
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
-  const filters = getProductionsFilters(search)
-  const { data: productionsPage } = useQuery({
-    queryKey: productionsQueryKey(filters),
-    queryFn: () => getProductions(filters),
-  })
-
-  if (!productionsPage) {
-    return <ProductionsPendingState />
-  }
+  const productionsPage = Route.useLoaderData()
 
   const updateSearch = (nextSearch: ProductionsSearch) =>
     void navigate({
