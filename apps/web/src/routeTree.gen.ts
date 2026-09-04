@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as DocsIndexRouteImport } from './routes/docs/index'
+import { Route as DocsEndpointRouteImport } from './routes/docs/endpoint'
+import { Route as DocsFiltrosRouteImport } from './routes/docs/filtros'
+import { Route as DocsGeralRouteImport } from './routes/docs/geral'
 import { Route as GruposIndexRouteImport } from './routes/grupos/index'
 import { Route as GruposGrupoIdRouteImport } from './routes/grupos/$grupoId'
 import { Route as PesquisadoresIndexRouteImport } from './routes/pesquisadores/index'
@@ -30,6 +34,26 @@ const AboutRoute = AboutRouteImport.update({
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsIndexRoute = DocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsEndpointRoute = DocsEndpointRouteImport.update({
+  id: '/docs/endpoint',
+  path: '/docs/endpoint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsFiltrosRoute = DocsFiltrosRouteImport.update({
+  id: '/docs/filtros',
+  path: '/docs/filtros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsGeralRoute = DocsGeralRouteImport.update({
+  id: '/docs/geral',
+  path: '/docs/geral',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GruposIndexRoute = GruposIndexRouteImport.update({
@@ -57,7 +81,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/docs/endpoint': typeof DocsEndpointRoute
+  '/docs/filtros': typeof DocsFiltrosRoute
+  '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
   '/producoes/': typeof ProducoesIndexRoute
@@ -66,7 +94,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/docs/endpoint': typeof DocsEndpointRoute
+  '/docs/filtros': typeof DocsFiltrosRoute
+  '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/docs': typeof DocsIndexRoute
   '/grupos': typeof GruposIndexRoute
   '/pesquisadores': typeof PesquisadoresIndexRoute
   '/producoes': typeof ProducoesIndexRoute
@@ -76,7 +108,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/docs/endpoint': typeof DocsEndpointRoute
+  '/docs/filtros': typeof DocsFiltrosRoute
+  '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
   '/producoes/': typeof ProducoesIndexRoute
@@ -87,7 +123,11 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/demo/tanstack-query'
+    | '/docs/endpoint'
+    | '/docs/filtros'
+    | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
     | '/producoes/'
@@ -96,7 +136,11 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/demo/tanstack-query'
+    | '/docs/endpoint'
+    | '/docs/filtros'
+    | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/docs'
     | '/grupos'
     | '/pesquisadores'
     | '/producoes'
@@ -105,7 +149,11 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/demo/tanstack-query'
+    | '/docs/endpoint'
+    | '/docs/filtros'
+    | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
     | '/producoes/'
@@ -115,7 +163,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  DocsEndpointRoute: typeof DocsEndpointRoute
+  DocsFiltrosRoute: typeof DocsFiltrosRoute
+  DocsGeralRoute: typeof DocsGeralRoute
   GruposGrupoIdRoute: typeof GruposGrupoIdRoute
+  DocsIndexRoute: typeof DocsIndexRoute
   GruposIndexRoute: typeof GruposIndexRoute
   PesquisadoresIndexRoute: typeof PesquisadoresIndexRoute
   ProducoesIndexRoute: typeof ProducoesIndexRoute
@@ -142,6 +194,34 @@ declare module '@tanstack/react-router' {
       path: '/demo/tanstack-query'
       fullPath: '/demo/tanstack-query'
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/': {
+      id: '/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/endpoint': {
+      id: '/docs/endpoint'
+      path: '/docs/endpoint'
+      fullPath: '/docs/endpoint'
+      preLoaderRoute: typeof DocsEndpointRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/filtros': {
+      id: '/docs/filtros'
+      path: '/docs/filtros'
+      fullPath: '/docs/filtros'
+      preLoaderRoute: typeof DocsFiltrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/geral': {
+      id: '/docs/geral'
+      path: '/docs/geral'
+      fullPath: '/docs/geral'
+      preLoaderRoute: typeof DocsGeralRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/grupos/': {
@@ -179,7 +259,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  DocsEndpointRoute: DocsEndpointRoute,
+  DocsFiltrosRoute: DocsFiltrosRoute,
+  DocsGeralRoute: DocsGeralRoute,
   GruposGrupoIdRoute: GruposGrupoIdRoute,
+  DocsIndexRoute: DocsIndexRoute,
   GruposIndexRoute: GruposIndexRoute,
   PesquisadoresIndexRoute: PesquisadoresIndexRoute,
   ProducoesIndexRoute: ProducoesIndexRoute,

@@ -25,13 +25,14 @@ export const ApiBanner = () => {
         </div>
 
         <div className="shrink-0">
-          <button
+          <a
             id="explore-api-cta"
+            href="/docs/geral"
             className="bg-[#0f172a] text-white text-xs font-semibold uppercase tracking-wider px-8 py-4 hover:bg-[#1e293b] active:scale-95 transition-all flex items-center gap-2.5 shadow-lg rounded-lg cursor-pointer"
           >
             <span>Explorar Documentação da API</span>
             <ExternalLink className="w-4 h-4 text-emerald-400" />
-          </button>
+          </a>
         </div>
       </div>
     </section>

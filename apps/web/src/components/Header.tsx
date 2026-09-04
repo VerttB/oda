@@ -18,12 +18,12 @@ export const Header: React.FC<NavbarProps> = ({
 }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
-  const navItems: { id: string; label: string }[] = [
-    { id: 'discover', label: 'Descobrir' },
-    { id: 'groups', label: 'Grupos' },
-    { id: 'publications', label: 'Publicações' },
-    { id: 'institutions', label: 'Instituições' },
-    { id: 'docs', label: 'Docs da API' },
+  const navItems: { id: string; label: string; href: string }[] = [
+    { id: 'discover', label: 'Descobrir', href: '/' },
+    { id: 'groups', label: 'Grupos', href: '/grupos' },
+    { id: 'publications', label: 'Publicações', href: '/producoes' },
+    { id: 'institutions', label: 'Instituições', href: '/' },
+    { id: 'docs', label: 'Docs da API', href: '/docs/geral' },
   ]
 
   const isNavyNav = activeTab === 'discover' || isDarkTheme
@@ -40,15 +40,16 @@ export const Header: React.FC<NavbarProps> = ({
       <div className="max-w-[1280px] mx-auto flex justify-between items-center h-[72px] md:h-[80px] px-4 md:px-8">
         {/* Marca e busca */}
         <div className="flex items-center gap-6">
-          <button
+          <a
             id="brand-logo"
+            href="/"
             onClick={() => onTabChange('discover')}
             className={`font-semibold text-2xl md:text-3xl tracking-tight transition-transform hover:opacity-90 flex items-center gap-2 ${
               isNavyNav ? 'text-white' : 'text-secondary'
             }`}
           >
             <span>ODA</span>
-          </button>
+          </a>
 
           {/* Campo de busca */}
           <div
@@ -86,9 +87,10 @@ export const Header: React.FC<NavbarProps> = ({
           {navItems.map((item) => {
             const isActive = activeTab === item.id
             return (
-              <button
+              <a
                 key={item.id}
                 id={`nav-link-${item.id}`}
+                href={item.href}
                 onClick={() => onTabChange(item.id)}
                 className={`text-sm md:text-base font-medium transition-all relative py-1 cursor-pointer ${
                   isActive
@@ -101,7 +103,7 @@ export const Header: React.FC<NavbarProps> = ({
                 }`}
               >
                 {item.label}
-              </button>
+              </a>
             )
           })}
         </nav>
@@ -141,7 +143,8 @@ export const Header: React.FC<NavbarProps> = ({
                     elena.rostova@mit.edu
                   </p>
                 </div>
-                <button
+                <a
+                  href="/pesquisadores"
                   onClick={() => {
                     onTabChange('publications')
                     setUserMenuOpen(false)
@@ -150,8 +153,9 @@ export const Header: React.FC<NavbarProps> = ({
                 >
                   <span>Meu perfil de pesquisador</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
-                <button
+                </a>
+                <a
+                  href="/grupos"
                   onClick={() => {
                     onTabChange('groups')
                     setUserMenuOpen(false)
@@ -160,8 +164,9 @@ export const Header: React.FC<NavbarProps> = ({
                 >
                   <span>Meus grupos DGP</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
-                <button
+                </a>
+                <a
+                  href="/docs/geral"
                   onClick={() => {
                     onTabChange('docs')
                     setUserMenuOpen(false)
@@ -170,7 +175,7 @@ export const Header: React.FC<NavbarProps> = ({
                 >
                   <span>Chaves e docs da API</span>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
+                </a>
               </div>
             )}
           </div>
@@ -180,8 +185,9 @@ export const Header: React.FC<NavbarProps> = ({
       {/* Subnavegação mobile */}
       <div className="md:hidden flex items-center overflow-x-auto px-4 py-2 border-t border-white/10 gap-3 text-xs">
         {navItems.map((item) => (
-          <button
+          <a
             key={item.id}
+            href={item.href}
             onClick={() => onTabChange(item.id)}
             className={`whitespace-nowrap px-3 py-1 rounded-full font-medium transition-colors ${
               activeTab === item.id
@@ -194,7 +200,7 @@ export const Header: React.FC<NavbarProps> = ({
             }`}
           >
             {item.label}
-          </button>
+          </a>
         ))}
       </div>
     </header>
