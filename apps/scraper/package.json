@@ -7,7 +7,10 @@
     "start": "ts-node src/main.ts",
     "update-groups": "ts-node src/updateGroupsOnly.ts",
     "reset-queue": "ts-node src/resetQueue.ts",
-    "build": "tsc"
+    "reset-researchers-queue": "ts-node src/resetResearchersQueue.ts",
+    "check-pending-lattes-raw": "ts-node src/checkPendingLattesRawFiles.ts",
+    "build": "tsc",
+    "test": "node --test tests/*.test.cjs"
   },
   "dependencies": {
     "@crawlee/playwright": "^3.17.0",
