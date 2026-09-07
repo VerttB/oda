@@ -9,14 +9,19 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import type { UUID } from "node:crypto";
+import {
+  type CreateGruposPesquisaRequest,
+  CreateGruposPesquisaRequestSchema,
+  type UpdateGruposPesquisaRequest,
+  UpdateGruposPesquisaRequestSchema,
+} from '@oda/shared-types';
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import { GruposPesquisaService } from './grupos-pesquisa.service';
-import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
-import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 
 import { FindAllPesquisadoresDto } from '../pesquisadores/dto/find-all-pesquisadores.dto';
 import { PesquisadoresService } from '../pesquisadores/pesquisadores.service';
+import { MetricasService } from '../metricas/metricas.service';
 
 import { FindPesquisadoresByGrupoQueryDto } from './dto/find-pesquisadores-by-grupo-query.dto';
 
@@ -25,10 +30,14 @@ export class GruposPesquisaController {
   constructor(
     private readonly gruposPesquisaService: GruposPesquisaService,
     private readonly pesquisadoresService: PesquisadoresService,
+    private readonly metricasService: MetricasService,
   ) {}
 
   @Post()
-  create(@Body() createGruposPesquisaDto: CreateGruposPesquisaDto) {
+  create(
+    @Body(new ZodValidationPipe(CreateGruposPesquisaRequestSchema))
+    createGruposPesquisaDto: CreateGruposPesquisaRequest,
+  ) {
     return this.gruposPesquisaService.create(createGruposPesquisaDto);
   }
 
@@ -56,6 +65,11 @@ export class GruposPesquisaController {
     return this.pesquisadoresService.findAll(serviceQuery);
   }
 
+  @Get(':id/metricas')
+  findMetricas(@Param('id', ParseUUIDPipe) id: string) {
+    return this.metricasService.findMetricasGrupoPesquisa(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.gruposPesquisaService.findOne(id);
@@ -64,7 +78,8 @@ export class GruposPesquisaController {
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateGruposPesquisaDto: UpdateGruposPesquisaDto,
+    @Body(new ZodValidationPipe(UpdateGruposPesquisaRequestSchema))
+    updateGruposPesquisaDto: UpdateGruposPesquisaRequest,
   ) {
     return this.gruposPesquisaService.update(id, updateGruposPesquisaDto);
   }

@@ -9,13 +9,18 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import type { UUID } from "node:crypto";
+import {
+  type CreatePesquisadorRequest,
+  CreatePesquisadorRequestSchema,
+  type UpdatePesquisadorRequest,
+  UpdatePesquisadorRequestSchema,
+} from '@oda/shared-types';
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import { PesquisadoresService } from './pesquisadores.service';
-import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
-import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
 import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 import { ProducoesService } from '../producoes/producoes.service';
 import { FindAllProducoesDto } from '../producoes/dto/find-all-producoes.dto';
+import { MetricasService } from '../metricas/metricas.service';
 
 import { FindProducoesByPesquisadorQueryDto } from './dto/find-producoes-by-pesquisador-query.dto';
 
@@ -23,11 +28,15 @@ import { FindProducoesByPesquisadorQueryDto } from './dto/find-producoes-by-pesq
 export class PesquisadoresController {
   constructor(
     private readonly pesquisadoresService: PesquisadoresService, 
-    private readonly producoesService:ProducoesService
+    private readonly producoesService: ProducoesService,
+    private readonly metricasService: MetricasService,
   ) {}
 
   @Post()
-  create(@Body() createPesquisadoreDto: CreatePesquisadoreDto) {
+  create(
+    @Body(new ZodValidationPipe(CreatePesquisadorRequestSchema))
+    createPesquisadoreDto: CreatePesquisadorRequest,
+  ) {
     return this.pesquisadoresService.create(createPesquisadoreDto);
   }
 
@@ -50,6 +59,11 @@ export class PesquisadoresController {
     return this.pesquisadoresService.findOne(id);
   }
 
+  @Get(':id/metricas')
+  findMetricas(@Param('id', ParseUUIDPipe) id: string) {
+    return this.metricasService.findMetricasPesquisador(id);
+  }
+
   @Get(':id/producoes')
   findProductions(
     @Param('id', ParseUUIDPipe) id: string,
@@ -62,7 +76,8 @@ export class PesquisadoresController {
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updatePesquisadoreDto: UpdatePesquisadoreDto,
+    @Body(new ZodValidationPipe(UpdatePesquisadorRequestSchema))
+    updatePesquisadoreDto: UpdatePesquisadorRequest,
   ) {
     return this.pesquisadoresService.update(id, updatePesquisadoreDto);
   }

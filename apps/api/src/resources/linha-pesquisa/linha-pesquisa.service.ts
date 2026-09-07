@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
-import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
+import {
+  CreateLinhaPesquisaRequest,
+  UpdateLinhaPesquisaRequest,
+} from '@oda/shared-types';
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
@@ -17,7 +19,7 @@ export class LinhaPesquisaService {
     private readonly cacheManager: Cache,
   ) { }
 
-  async create(createLinhaPesquisaDto: CreateLinhaPesquisaDto) {
+  async create(createLinhaPesquisaDto: CreateLinhaPesquisaRequest) {
     const {
       pesquisadorIds,
       palavraChaveIds,
@@ -159,7 +161,7 @@ export class LinhaPesquisaService {
     });
   }
 
-  async update(id: string, updateLinhaPesquisaDto: UpdateLinhaPesquisaDto) {
+  async update(id: string, updateLinhaPesquisaDto: UpdateLinhaPesquisaRequest) {
     const {
       pesquisadorIds,
       palavraChaveIds,

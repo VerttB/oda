@@ -197,4 +197,59 @@ export class MetricasService {
       })),
     };
   }
+
+  async findMetricasPesquisador(id: string) {
+    const pesquisador = await this.prismaService.pesquisador.findUniqueOrThrow({
+      where: { id },
+      select: {
+        id: true,
+        lattesId: true,
+        nome: true,
+        tipo: true,
+        formacaoAcademica: true,
+        orcidId: true,
+        openAlexId: true,
+      },
+    });
+
+    const [
+      totalGrupos,
+      totalGruposComoLider,
+      totalLinhasPesquisa,
+      totalAreasConhecimento,
+      totalProducoes,
+      producoesPorTipo,
+    ] = await this.prismaService.$transaction([
+      this.prismaService.membroGrupo.count({ where: { pesquisadorId: id } }),
+      this.prismaService.membroGrupo.count({ where: { pesquisadorId: id, eLider: true } }),
+      this.prismaService.membroLinhaPesquisa.count({ where: { pesquisadorId: id } }),
+      this.prismaService.pesquisadoresAreaConhecimento.count({ where: { pesquisadorId: id } }),
+      this.prismaService.producaoPesquisador.count({ where: { pesquisadorId: id } }),
+      this.prismaService.producao.groupBy({
+        by: ['tipo'],
+        where: {
+          autores: {
+            some: { pesquisadorId: id },
+          },
+        },
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
+      }),
+    ]);
+
+    return {
+      pesquisador,
+      totais: {
+        grupos: totalGrupos,
+        gruposComoLider: totalGruposComoLider,
+        linhasPesquisa: totalLinhasPesquisa,
+        areasConhecimento: totalAreasConhecimento,
+        producoes: totalProducoes,
+      },
+      producoesPorTipo: producoesPorTipo.map((item) => ({
+        tipo: item.tipo,
+        total: getGroupCount(item, 'id'),
+      })),
+    };
+  }
 }

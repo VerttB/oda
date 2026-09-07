@@ -72,6 +72,13 @@ export class ProducoesService {
       if (query.tipo) {
         where.tipo = query.tipo;
       }
+      if (query.qualis) {
+        where.qualis = query.qualis;
+      }
+      if (query.issn) {
+        const issn = query.issn.replace('-', '').toUpperCase();
+        where.issn = { in: [issn, `${issn.slice(0, 4)}-${issn.slice(4)}`], mode: 'insensitive' };
+      }
 
       if (query.pesquisadorId || query.grupoId) {
         where.autores = {

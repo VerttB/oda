@@ -9,10 +9,14 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import type { UUID } from "node:crypto";
+import {
+  type CreateLinhaPesquisaRequest,
+  CreateLinhaPesquisaRequestSchema,
+  type UpdateLinhaPesquisaRequest,
+  UpdateLinhaPesquisaRequestSchema,
+} from '@oda/shared-types';
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import { LinhaPesquisaService } from './linha-pesquisa.service';
-import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
-import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 
 @Controller('linha-pesquisa')
@@ -20,7 +24,10 @@ export class LinhaPesquisaController {
   constructor(private readonly linhaPesquisaService: LinhaPesquisaService) {}
 
   @Post()
-  create(@Body() createLinhaPesquisaDto: CreateLinhaPesquisaDto) {
+  create(
+    @Body(new ZodValidationPipe(CreateLinhaPesquisaRequestSchema))
+    createLinhaPesquisaDto: CreateLinhaPesquisaRequest,
+  ) {
     return this.linhaPesquisaService.create(createLinhaPesquisaDto);
   }
 
@@ -46,7 +53,8 @@ export class LinhaPesquisaController {
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateLinhaPesquisaDto: UpdateLinhaPesquisaDto,
+    @Body(new ZodValidationPipe(UpdateLinhaPesquisaRequestSchema))
+    updateLinhaPesquisaDto: UpdateLinhaPesquisaRequest,
   ) {
     return this.linhaPesquisaService.update(id, updateLinhaPesquisaDto);
   }

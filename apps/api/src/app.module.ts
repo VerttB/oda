@@ -13,7 +13,8 @@ import { CacheModule } from './cache/cache.module';
 import { AreaConhecimentoModule } from './resources/area-conhecimento/area-conhecimento.module';
 import { UfModule } from './resources/uf/uf.module';
 import { AuthModule } from './resources/auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { OmitAuditFieldsInterceptor } from './common/interceptors/omit-audit-fields.interceptor';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { MetricasModule } from './resources/metricas/metricas.module';
 
@@ -42,6 +43,7 @@ import { MetricasModule } from './resources/metricas/metricas.module';
   controllers: [AppController],
   providers: [
     AppService,
+    { provide: APP_INTERCEPTOR, useClass: OmitAuditFieldsInterceptor },
     // {
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,
