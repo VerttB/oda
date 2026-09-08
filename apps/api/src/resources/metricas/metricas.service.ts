@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { FilaExtracaoStatus, TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { toGrupoPesquisaResponse } from '../grupos-pesquisa/grupos-pesquisa.response';
 
 type PrismaGroupCount = {
   _count?: number | true | Record<string, number | undefined>;
@@ -130,22 +131,16 @@ export class MetricasService {
   async findMetricasGrupoPesquisa(id: string) {
     const grupo = await this.prismaService.grupoPesquisa.findUniqueOrThrow({
       where: { id },
-      select: {
-        id: true,
-        dgpId: true,
-        nome: true,
+      include: {
         instituicoes: {
           include: {
             instituicao: {
-              select: {
-                id: true,
-                nome: true,
-                sigla: true,
-                estado: { select: { sigla: true, nome: true } },
-              },
+              include: { estado: true },
             },
           },
         },
+        areaConhecimento: true,
+        areasConhecimento: { include: { area: true } },
       },
     });
 
@@ -247,7 +242,7 @@ export class MetricasService {
     ]);
 
     return {
-      grupo,
+      grupo: toGrupoPesquisaResponse(grupo),
       totais: {
         pesquisadores: totalPesquisadores,
         pesquisadoresComLattes: totalPesquisadoresComLattes,
@@ -335,6 +330,9 @@ export class MetricasService {
         formacaoAcademica: true,
         orcidId: true,
         openAlexId: true,
+        imageUrl: true,
+        indexH: true,
+        indexI10: true,
       },
     });
 

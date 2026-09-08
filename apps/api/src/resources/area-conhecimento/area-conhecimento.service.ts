@@ -8,6 +8,18 @@ import { Prisma } from '@oda/database';
 
 const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v2';
 
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
+
 const areaConhecimentoResumoSelect = {
   id: true,
   nome: true,
@@ -47,6 +59,7 @@ export class AreaConhecimentoService {
     
       async findAll(query?: FindAllAreaConhecimentoDto) {
         const where: Prisma.AreaConhecimentoWhereInput = {};
+        const pagination = getPagination(query);
 
         if (query?.nome) {
           where.nome = { contains: query.nome, mode: 'insensitive' };
@@ -58,39 +71,35 @@ export class AreaConhecimentoService {
           where.areaPaiId = query.areaPaiId;
         }
 
-        if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+        if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
               where,
-              skip: query?.skip,
-              take: query?.take,
+              skip: pagination.skip,
+              take: pagination.take,
               select: areaConhecimentoResumoSelect,
               orderBy: { nome: 'asc' },
             }),
             this.prismaService.areaConhecimento.count({ where }),
           ]);
-          const size = query?.size ?? 30;
-          const page = query?.page ?? 1;
-          const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-          return { data, meta: { page, size, totalItems, totalPages } };
+          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
         }
 
         return this.cacheManager.wrap(AREA_CONHECIMENTO_LIST_KEY, async () => {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
-              skip: query?.skip,
-              take: query?.take,
+              skip: pagination.skip,
+              take: pagination.take,
               select: areaConhecimentoResumoSelect,
               orderBy: { nome: 'asc' },
             }),
             this.prismaService.areaConhecimento.count(),
           ]);
-          const size = query?.size ?? 30;
-          const page = query?.page ?? 1;
-          const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-          return { data, meta: { page, size, totalItems, totalPages } };
+          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
         });
       }
       

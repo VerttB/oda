@@ -11,6 +11,18 @@ import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toPesquisadorResponse } from './pesquisadores.response';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v2';
 
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
+
 @Injectable()
 export class PesquisadoresService {
   constructor(
@@ -36,6 +48,7 @@ export class PesquisadoresService {
 
   async findAll(query?: FindAllPesquisadoresDto) {
     const where: Prisma.PesquisadorWhereInput = {};
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.nome) {
@@ -63,37 +76,49 @@ export class PesquisadoresService {
       }
     }
 
-    if (Object.keys(where).length > 0 || (query && (query.page! > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data: data.map(toPesquisadorResponse), meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toPesquisadorResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     }
 
     return this.cacheManager.wrap(PESQUISADORES_LIST_CACHE_KEY, async () => {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count(),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data: data.map(toPesquisadorResponse), meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toPesquisadorResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     });
   }
 

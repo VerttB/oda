@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateProducoeDto } from './create-producoe.dto';
+import { UpdateProducaoRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class UpdateProducoeDto extends PartialType(CreateProducoeDto) {}
+export class UpdateProducoeDto extends createZodDto(
+  UpdateProducaoRequestSchema,
+) {}

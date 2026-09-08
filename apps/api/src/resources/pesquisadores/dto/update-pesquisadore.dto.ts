@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePesquisadoreDto } from './create-pesquisadore.dto';
+import { UpdatePesquisadorRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class UpdatePesquisadoreDto extends PartialType(CreatePesquisadoreDto) {}
+export class UpdatePesquisadoreDto extends createZodDto(
+  UpdatePesquisadorRequestSchema,
+) {}

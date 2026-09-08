@@ -1,16 +1,6 @@
-import { TipoAreaConhecimento } from '@oda/database';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { CreateAreaConhecimentoRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class CreateAreaConhecimentoDto{
-    @IsString()
-    @IsNotEmpty()
-    nome!:string
-
-    @IsOptional()
-    @IsEnum(TipoAreaConhecimento)
-    tipo?: TipoAreaConhecimento;
-
-    @IsOptional()
-    @IsUUID()
-    areaPaiId?: string | null;
-}
+export class CreateAreaConhecimentoDto extends createZodDto(
+  CreateAreaConhecimentoRequestSchema,
+) {}

@@ -11,6 +11,18 @@ import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
 
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
+
 const grupoPesquisaInclude = {
   instituicoes: { include: { instituicao: { include: { estado: true } } } },
   areaConhecimento: true,
@@ -55,6 +67,7 @@ export class GruposPesquisaService {
   async findAll(query?: FindAllGruposPesquisaDto) {
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.situacao) {
@@ -95,39 +108,51 @@ export class GruposPesquisaService {
       where.AND = andConditions;
     }
 
-    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.grupoPesquisa.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data: data.map(toGrupoPesquisaResponse), meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toGrupoPesquisaResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     }
 
     return this.cacheManager.wrap(GRUPOS_PESQUISA_LIST_CACHE_KEY, async () => {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.grupoPesquisa.count(),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data: data.map(toGrupoPesquisaResponse), meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toGrupoPesquisaResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     });
   }
 

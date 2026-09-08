@@ -1,17 +1,6 @@
-import { TipoAreaConhecimento } from '@oda/database';
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { PaginationDto } from '@/common/dto/pagination.dto';
+import { FindAllAreaConhecimentoQuerySchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class FindAllAreaConhecimentoDto extends PaginationDto {
-  @IsOptional()
-  @IsString()
-  nome?: string;
-
-  @IsOptional()
-  @IsEnum(TipoAreaConhecimento)
-  tipo?: TipoAreaConhecimento;
-
-  @IsOptional()
-  @IsUUID()
-  areaPaiId?: string;
-}
+export class FindAllAreaConhecimentoDto extends createZodDto(
+  FindAllAreaConhecimentoQuerySchema,
+) {}

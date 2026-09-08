@@ -1,12 +1,6 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
-import { PaginationDto } from '@/common/dto/pagination.dto';
+import { FindAllLinhaPesquisaQuerySchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class FindAllLinhaPesquisaDto extends PaginationDto {
-  @IsOptional()
-  @IsUUID()
-  grupo?: string;
-
-  @IsOptional()
-  @IsString()
-  nome?: string;
-}
+export class FindAllLinhaPesquisaDto extends createZodDto(
+  FindAllLinhaPesquisaQuerySchema,
+) {}

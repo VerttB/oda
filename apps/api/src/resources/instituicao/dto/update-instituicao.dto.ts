@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateInstituicaoDto } from './create-instituicao.dto';
+import { UpdateInstituicaoRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class UpdateInstituicaoDto extends PartialType(CreateInstituicaoDto) {}
+export class UpdateInstituicaoDto extends createZodDto(
+  UpdateInstituicaoRequestSchema,
+) {}

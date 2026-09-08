@@ -9,6 +9,18 @@ import { LangchainGatewayService } from '../langchain/langchain.service';
 
 const PRODUCOES_LIST_CACHE_KEY = 'producoes:list';
 
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
+
 @Injectable()
 export class ProducoesService {
   constructor(
@@ -61,6 +73,7 @@ export class ProducoesService {
 
   async findAll(query?: FindAllProducoesDto) {
     const where: Prisma.ProducaoWhereInput = {};
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.titulo) {
@@ -100,37 +113,33 @@ export class ProducoesService {
       }
     }
 
-    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.producao.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.producao.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
     }
 
     return this.cacheManager.wrap(PRODUCOES_LIST_CACHE_KEY, async () => {
       const [data, totalItems] = await Promise.all([
         this.prismaService.producao.findMany({
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.producao.count(),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
     });
   }
 
@@ -153,7 +162,10 @@ export class ProducoesService {
       }
     });
 
-    const data = ids.map(id => artigos.find(a => a.id === id)).filter(Boolean);
+    const data = ids.flatMap(id => {
+      const artigo = artigos.find(a => a.id === id);
+      return artigo ? [artigo] : [];
+    });
     const totalPages = Math.ceil(totalItems / sizeNum);
 
     return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
