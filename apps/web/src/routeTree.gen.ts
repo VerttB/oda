@@ -20,6 +20,7 @@ import { Route as GruposIndexRouteImport } from './routes/grupos/index'
 import { Route as GruposGrupoIdRouteImport } from './routes/grupos/$grupoId'
 import { Route as PesquisadoresIndexRouteImport } from './routes/pesquisadores/index'
 import { Route as ProducoesIndexRouteImport } from './routes/producoes/index'
+import { Route as ProducoesProducaoIdRouteImport } from './routes/producoes/$producaoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,11 @@ const ProducoesIndexRoute = ProducoesIndexRouteImport.update({
   path: '/producoes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProducoesProducaoIdRoute = ProducoesProducaoIdRouteImport.update({
+  id: '/producoes/$producaoId',
+  path: '/producoes/$producaoId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/docs/filtros': typeof DocsFiltrosRoute
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
   '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/docs/filtros': typeof DocsFiltrosRoute
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
   '/docs': typeof DocsIndexRoute
   '/grupos': typeof GruposIndexRoute
   '/pesquisadores': typeof PesquisadoresIndexRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/docs/filtros': typeof DocsFiltrosRoute
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
+  '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
   '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/docs/filtros'
     | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/producoes/$producaoId'
     | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/docs/filtros'
     | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/producoes/$producaoId'
     | '/docs'
     | '/grupos'
     | '/pesquisadores'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/docs/filtros'
     | '/docs/geral'
     | '/grupos/$grupoId'
+    | '/producoes/$producaoId'
     | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   DocsFiltrosRoute: typeof DocsFiltrosRoute
   DocsGeralRoute: typeof DocsGeralRoute
   GruposGrupoIdRoute: typeof GruposGrupoIdRoute
+  ProducoesProducaoIdRoute: typeof ProducoesProducaoIdRoute
   DocsIndexRoute: typeof DocsIndexRoute
   GruposIndexRoute: typeof GruposIndexRoute
   PesquisadoresIndexRoute: typeof PesquisadoresIndexRoute
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProducoesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/producoes/$producaoId': {
+      id: '/producoes/$producaoId'
+      path: '/producoes/$producaoId'
+      fullPath: '/producoes/$producaoId'
+      preLoaderRoute: typeof ProducoesProducaoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsFiltrosRoute: DocsFiltrosRoute,
   DocsGeralRoute: DocsGeralRoute,
   GruposGrupoIdRoute: GruposGrupoIdRoute,
+  ProducoesProducaoIdRoute: ProducoesProducaoIdRoute,
   DocsIndexRoute: DocsIndexRoute,
   GruposIndexRoute: GruposIndexRoute,
   PesquisadoresIndexRoute: PesquisadoresIndexRoute,

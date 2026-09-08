@@ -92,8 +92,11 @@ type ApiPaginatedResponse<T> = {
   results?: T[]
   total?: number
   meta?: {
+    page?: number
+    size?: number
     total?: number
     totalItems?: number
+    totalPages?: number
   }
 }
 
@@ -305,6 +308,42 @@ function getGroupsFromResponse(
   return response.data ?? response.items ?? response.results ?? []
 }
 
+function getGroupsPageFromResponse(
+  response: ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>,
+) {
+  if (Array.isArray(response)) {
+    return {
+      data: response,
+      meta: {
+        page: 1,
+        size: response.length,
+        totalItems: response.length,
+        totalPages: 1,
+      },
+    }
+  }
+
+  const data = getGroupsFromResponse(response)
+  const totalItems =
+    response.meta?.totalItems ??
+    response.meta?.total ??
+    response.total ??
+    data.length
+  const size = response.meta?.size ?? data.length
+
+  return {
+    data,
+    meta: {
+      page: response.meta?.page ?? 1,
+      size,
+      totalItems,
+      totalPages:
+        response.meta?.totalPages ??
+        (size > 0 ? Math.ceil(totalItems / size) : 1),
+    },
+  }
+}
+
 function mapGroupDetail(
   group: ApiGrupoPesquisa,
   metrics: ApiGrupoMetricas | null,
@@ -365,12 +404,30 @@ function mapGroupDetail(
   }
 }
 
-export async function getResearchGroups() {
+const RESEARCH_GROUPS_PAGE_SIZE = 100
+
+async function fetchResearchGroupsPage(page: number) {
   const response = await fetchJson<
     ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>
-  >('/grupos-pesquisa')
+  >(`/grupos-pesquisa?page=${page}&size=${RESEARCH_GROUPS_PAGE_SIZE}`)
 
-  return getGroupsFromResponse(response).map(mapGroupListItem)
+  return getGroupsPageFromResponse(response)
+}
+
+export async function getResearchGroups() {
+  const firstPage = await fetchResearchGroupsPage(1)
+  const remainingPages = Array.from(
+    { length: Math.max(0, firstPage.meta.totalPages - 1) },
+    (_, index) => index + 2,
+  )
+
+  const remainingGroups = await Promise.all(
+    remainingPages.map(fetchResearchGroupsPage),
+  )
+
+  return [firstPage, ...remainingGroups]
+    .flatMap((page) => page.data)
+    .map(mapGroupListItem)
 }
 
 export async function getResearchGroupsMetrics(): Promise<ResearchGroupsDirectoryMetrics> {

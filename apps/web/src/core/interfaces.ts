@@ -87,6 +87,35 @@ export interface ProductionItem {
   abstract?: string
   groupName?: string
   institution?: string
+  keywords?: string[]
+  issn?: string
+  pages?: string
+  qualisArea?: string
+}
+
+export interface AcademicAuthor {
+  id?: string
+  name: string
+  isExternal?: boolean
+  institution?: string
+}
+
+export interface AcademicProductionDetailData extends Omit<
+  ProductionItem,
+  'authors'
+> {
+  authors: AcademicAuthor[]
+  abstract: string
+  doi: string
+  groupName: string
+  institution: string
+  issn: string
+  journal: string
+  keywords: string[]
+  pages: string
+  qualis: string
+  qualisArea: string
+  citations: number
 }
 
 export interface ResearchGroupSummary {

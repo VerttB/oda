@@ -128,9 +128,10 @@ function ProductionsRoute() {
     })
 
   const handleSelectProduction = (production: ProductionItem) => {
-    if (production.url) {
-      window.open(production.url, '_blank', 'noopener,noreferrer')
-    }
+    void navigate({
+      to: '/producoes/$producaoId',
+      params: { producaoId: production.id },
+    })
   }
 
   return (
