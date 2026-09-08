@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PaginationQuerySchema } from './pagination';
 
 const uniqueUuidArray = z.array(z.string().uuid()).refine(
   (items) => new Set(items).size === items.length,
@@ -17,9 +18,17 @@ export const CreateLinhaPesquisaRequestSchema = z.object({
 export const UpdateLinhaPesquisaRequestSchema =
   CreateLinhaPesquisaRequestSchema.partial();
 
+export const FindAllLinhaPesquisaQuerySchema = PaginationQuerySchema.extend({
+  grupo: z.string().uuid().optional(),
+  nome: z.string().optional(),
+});
+
 export type CreateLinhaPesquisaRequest = z.infer<
   typeof CreateLinhaPesquisaRequestSchema
 >;
 export type UpdateLinhaPesquisaRequest = z.infer<
   typeof UpdateLinhaPesquisaRequestSchema
+>;
+export type FindAllLinhaPesquisaQuery = z.infer<
+  typeof FindAllLinhaPesquisaQuerySchema
 >;

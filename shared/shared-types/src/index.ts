@@ -1,8 +1,14 @@
 import { z } from 'zod';
 
+export * from './api/area-conhecimento';
+export * from './api/auth';
 export * from './api/grupos-pesquisa';
+export * from './api/instituicoes';
+export * from './api/langchain';
 export * from './api/linha-pesquisa';
+export * from './api/pagination';
 export * from './api/pesquisadores';
+export * from './api/producoes';
 export * from './api/responses';
 
 export const PageGroupItemInfoSchema = z.object({
