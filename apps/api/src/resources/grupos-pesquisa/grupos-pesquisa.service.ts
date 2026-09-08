@@ -13,6 +13,7 @@ const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
 
 const grupoPesquisaInclude = {
   instituicoes: { include: { instituicao: { include: { estado: true } } } },
+  areaConhecimento: true,
   areasConhecimento: { include: { area: true } },
 } satisfies Prisma.GrupoPesquisaInclude;
 
@@ -74,6 +75,9 @@ export class GruposPesquisaService {
             },
           },
         });
+      }
+      if (query.areaConhecimentoId) {
+        where.areaConhecimentoId = query.areaConhecimentoId;
       }
       if (query.estadoId) {
         andConditions.push({
@@ -156,6 +160,7 @@ export class GruposPesquisaService {
   async findOne(id: string) {
     const grupo = await this.prismaService.grupoPesquisa.findUniqueOrThrow({
       where: { id }, include: {
+        areaConhecimento: true,
         areasConhecimento: {
           include: {
             area: true

@@ -12,9 +12,9 @@ const grupoBase = {
   id: 'grupo-1', dgpId: '456', nome: 'Grupo', anoFormacao: 2020, areaPredominante: 'Computacao',
   repercussao: null, situacao: 'ATIVO' as const, email: null, telefone: null, website: null,
   logradouro: null, numero: null, complemento: null, bairro: null, cidade: null, uf: 'BA', cep: null,
-  latitude: 0, longitude: 0, ...audit,
+  latitude: 0, longitude: 0, areaConhecimentoId: 'area-1', ...audit,
 };
-const area = { id: 'area-1', nome: 'Computacao', nomeNormalizado: 'computacao', areaPaiId: 'area-pai', ...audit };
+const area = { id: 'area-1', nome: 'Computacao', nomeNormalizado: 'computacao', tipo: 'AREA' as const, areaPaiId: 'area-pai', ...audit };
 function grupoFixture() {
   return { ...grupoBase,
     instituicoes: [{ grupoId: grupoBase.id, instituicaoId: 'instituicao-1', tipoRelacao: 'SEDE' as const,
@@ -22,7 +22,18 @@ function grupoFixture() {
       instituicao: { id: 'instituicao-1', nome: 'Universidade', sigla: 'UNEB', estadoId: 'estado-1', ...audit,
         estado: { id: 'estado-1', nome: 'Bahia', sigla: 'BA', regiao: 'Nordeste', ...audit } },
     }],
-    areasConhecimento: [{ grupoId: grupoBase.id, areaId: area.id, area }],
+    areaConhecimento: area,
+    areasConhecimento: [{
+      grupoId: grupoBase.id,
+      areaId: area.id,
+      relacao: 'PRINCIPAL' as const,
+      metodoInferencia: 'DGP' as const,
+      confianca: 1,
+      justificativa: 'Area principal informada pelo DGP.',
+      metadata: { origem: 'DGP' },
+      ...audit,
+      area,
+    }],
     linhasPesquisa: [{ id: 'linha-1', dgpId: null, titulo: 'Linha', objetivo: null, grupoId: grupoBase.id, ...audit }],
     membros: [{ grupoId: grupoBase.id, pesquisadorId: pesquisadorBase.id,
       eLider: true, dataEntrada: new Date('2025-01-01T00:00:00Z'), pesquisador: pesquisadorBase, ...audit }],
@@ -76,7 +87,15 @@ describe('Contratos publicos de grupos e pesquisadores', () => {
     expect(result.instituicoes?.[0]).toEqual({ id: 'instituicao-1', nome: 'Universidade', sigla: 'UNEB', tipoRelacao: 'SEDE',
       unidade: { nome: 'Departamento', uf: 'BA' }, estado: { id: 'estado-1', nome: 'Bahia', sigla: 'BA', regiao: 'Nordeste' } });
     expect(result.membros?.[0]).toMatchObject({ id: 'pesquisador-1', eLider: true, dataEntrada: '2025-01-01T00:00:00.000Z' });
-    expect(result.areasConhecimento?.[0]).toMatchObject({ id: 'area-1', areaPaiId: 'area-pai' });
+    expect(result.areaConhecimento).toMatchObject({ id: 'area-1', areaPaiId: 'area-pai', tipo: 'AREA' });
+    expect(result.areasConhecimento?.[0]).toMatchObject({
+      id: 'area-1',
+      areaPaiId: 'area-pai',
+      tipo: 'AREA',
+      relacao: 'PRINCIPAL',
+      metodoInferencia: 'DGP',
+      confianca: 1,
+    });
     expect(result.latitude).toBe(0);
     expect(grupo.criadoEm).toBeInstanceOf(Date);
   });
@@ -116,6 +135,8 @@ describe('Contratos publicos de grupos e pesquisadores', () => {
     expect(prisma.grupoPesquisa.findMany.mock.calls[1][0].where.AND[0]).toEqual({ instituicoes: {
       some: { instituicaoId: 'instituicao-1', tipoRelacao: 'SEDE' },
     } });
+    expectClean(await grupos.findAll({ areaConhecimentoId: 'area-1', page: 1, size: 10 } as never));
+    expect(prisma.grupoPesquisa.findMany.mock.calls[2][0].where.areaConhecimentoId).toBe('area-1');
     expectClean(await pesquisadores.findAll({ nome: 'Teste', page: 1, size: 10 } as never));
   });
 

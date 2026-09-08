@@ -23,6 +23,10 @@ export class FindAllGruposPesquisaDto extends PaginationDto {
 
   @IsOptional()
   @IsUUID()
+  areaConhecimentoId?: string;
+
+  @IsOptional()
+  @IsUUID()
   estadoId?: string;
 
   @IsOptional()

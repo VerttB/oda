@@ -154,6 +154,8 @@ export class MetricasService {
       totalPesquisadoresComLattes,
       totalLinhasPesquisa,
       totalAreasConhecimento,
+      totalAreasPrincipais,
+      totalAreasAdicionais,
       totalProducoes,
       totalProducoesComDoi,
       totalProducoesComQualis,
@@ -170,6 +172,12 @@ export class MetricasService {
       }),
       this.prismaService.linhaPesquisa.count({ where: { grupoId: id } }),
       this.prismaService.grupoPesquisaAreaConhecimento.count({ where: { grupoId: id } }),
+      this.prismaService.grupoPesquisaAreaConhecimento.count({
+        where: { grupoId: id, relacao: 'PRINCIPAL' },
+      }),
+      this.prismaService.grupoPesquisaAreaConhecimento.count({
+        where: { grupoId: id, relacao: 'ADICIONAL' },
+      }),
       this.prismaService.producao.count({
         where: {
           autores: {
@@ -245,6 +253,8 @@ export class MetricasService {
         pesquisadoresComLattes: totalPesquisadoresComLattes,
         linhasPesquisa: totalLinhasPesquisa,
         areasConhecimento: totalAreasConhecimento,
+        areasConhecimentoPrincipais: totalAreasPrincipais,
+        areasConhecimentoAdicionais: totalAreasAdicionais,
         producoes: totalProducoes,
         instituicoesParceiras: totalInstituicoesParceiras,
       },
@@ -411,14 +421,23 @@ export class MetricasService {
       totalRaizes,
       totalComPai,
       totalMapeadasOpenAlex,
+      cnpqPorTipo,
       openAlexPorTipo,
       mapeamentosPorStatus,
+      gruposAreasPorRelacao,
+      gruposAreasPorMetodo,
+      gruposComAreaPrincipal,
     ] = await this.prismaService.$transaction([
       this.prismaService.areaConhecimento.count(),
       this.prismaService.areaConhecimento.count({ where: { areaPaiId: null } }),
       this.prismaService.areaConhecimento.count({ where: { areaPaiId: { not: null } } }),
       this.prismaService.areaConhecimento.count({
         where: { mapeamentosOpenAlex: { some: {} } },
+      }),
+      this.prismaService.areaConhecimento.groupBy({
+        by: ['tipo'],
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
       }),
       this.prismaService.openAlexAreaConhecimento.groupBy({
         by: ['tipo'],
@@ -430,17 +449,43 @@ export class MetricasService {
         _count: { id: true },
         orderBy: { status: 'asc' },
       }),
+      this.prismaService.grupoPesquisaAreaConhecimento.groupBy({
+        by: ['relacao'],
+        _count: { grupoId: true },
+        orderBy: { relacao: 'asc' },
+      }),
+      this.prismaService.grupoPesquisaAreaConhecimento.groupBy({
+        by: ['metodoInferencia'],
+        _count: { grupoId: true },
+        orderBy: { metodoInferencia: 'asc' },
+      }),
+      this.prismaService.grupoPesquisa.count({
+        where: { areaConhecimentoId: { not: null } },
+      }),
     ]);
 
     return {
       total,
       raizes: totalRaizes,
       comAreaPai: totalComPai,
+      gruposComAreaPrincipal,
       mapeadasOpenAlex: totalMapeadasOpenAlex,
       mapeadasOpenAlexPercentual: percentual(totalMapeadasOpenAlex, total),
+      cnpqPorTipo: cnpqPorTipo.map((item) => ({
+        tipo: item.tipo ?? 'NAO_INFORMADO',
+        total: getGroupCount(item, 'id'),
+      })),
       openAlexPorTipo: openAlexPorTipo.map((item) => ({
         tipo: item.tipo,
         total: getGroupCount(item, 'id'),
+      })),
+      gruposAreasPorRelacao: gruposAreasPorRelacao.map((item) => ({
+        relacao: item.relacao,
+        total: getGroupCount(item, 'grupoId'),
+      })),
+      gruposAreasPorMetodo: gruposAreasPorMetodo.map((item) => ({
+        metodoInferencia: item.metodoInferencia,
+        total: getGroupCount(item, 'grupoId'),
       })),
       mapeamentosPorStatus: mapeamentosPorStatus.map((item) => ({
         status: item.status,
