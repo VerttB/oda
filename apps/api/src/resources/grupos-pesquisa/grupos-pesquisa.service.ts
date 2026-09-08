@@ -1,15 +1,31 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
-import { UpdateGruposPesquisaDto } from './dto/update-grupos-pesquisa.dto';
+import {
+  CreateGruposPesquisaRequest,
+  UpdateGruposPesquisaRequest,
+} from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
-import { Prisma, TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
-const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list';
+import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
+const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
+
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
 
 const grupoPesquisaInclude = {
   instituicoes: { include: { instituicao: { include: { estado: true } } } },
+  areaConhecimento: true,
   areasConhecimento: { include: { area: true } },
 } satisfies Prisma.GrupoPesquisaInclude;
 
@@ -22,11 +38,16 @@ export class GruposPesquisaService {
     private readonly cacheManager: Cache,
   ) { }
 
-  async create(createGruposPesquisa: CreateGruposPesquisaDto) {
-    const { instituicoes, ...grupoData } = createGruposPesquisa;
+  async create(createGruposPesquisa: CreateGruposPesquisaRequest) {
+    const { instituicoes, situacao, ...grupoData } = createGruposPesquisa;
 
     const grupo = await this.prismaService.$transaction(async (tx) => {
-      const created = await tx.grupoPesquisa.create({ data: grupoData });
+      const created = await tx.grupoPesquisa.create({
+        data: {
+          ...grupoData,
+          situacao: situacao as Situacao | undefined,
+        },
+      });
       await this.syncGrupoInstituicoes(
         tx,
         created.id,
@@ -40,12 +61,13 @@ export class GruposPesquisaService {
     });
 
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return grupo;
+    return toGrupoPesquisaResponse(grupo);
   }
 
   async findAll(query?: FindAllGruposPesquisaDto) {
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.situacao) {
@@ -67,6 +89,9 @@ export class GruposPesquisaService {
           },
         });
       }
+      if (query.areaConhecimentoId) {
+        where.areaConhecimentoId = query.areaConhecimentoId;
+      }
       if (query.estadoId) {
         andConditions.push({
           instituicoes: { some: { instituicao: { estadoId: query.estadoId } } },
@@ -83,39 +108,51 @@ export class GruposPesquisaService {
       where.AND = andConditions;
     }
 
-    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.grupoPesquisa.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toGrupoPesquisaResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     }
 
     return this.cacheManager.wrap(GRUPOS_PESQUISA_LIST_CACHE_KEY, async () => {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.grupoPesquisa.count(),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toGrupoPesquisaResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     });
   }
 
@@ -136,15 +173,19 @@ export class GruposPesquisaService {
       include: grupoPesquisaInclude,
     });
 
-    const data = ids.map(id => grupos.find(g => g.id === id)).filter(Boolean);
+    const data = ids.flatMap(id => {
+      const grupo = grupos.find(g => g.id === id);
+      return grupo ? [toGrupoPesquisaResponse(grupo)] : [];
+    });
     const totalPages = Math.ceil(totalItems / sizeNum);
 
     return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
   async findOne(id: string) {
-    return await this.prismaService.grupoPesquisa.findUniqueOrThrow({
+    const grupo = await this.prismaService.grupoPesquisa.findUniqueOrThrow({
       where: { id }, include: {
+        areaConhecimento: true,
         areasConhecimento: {
           include: {
             area: true
@@ -158,14 +199,21 @@ export class GruposPesquisaService {
           }
         },
       }
-    })
+    });
+    return toGrupoPesquisaResponse(grupo);
   }
 
-  async update(id: string, updateGruposPesquisa: UpdateGruposPesquisaDto) {
-    const { instituicoes, ...grupoData } = updateGruposPesquisa;
+  async update(id: string, updateGruposPesquisa: UpdateGruposPesquisaRequest) {
+    const { instituicoes, situacao, ...grupoData } = updateGruposPesquisa;
 
     const grupo = await this.prismaService.$transaction(async (tx) => {
-      const updated = await tx.grupoPesquisa.update({ where: { id }, data: grupoData });
+      const updated = await tx.grupoPesquisa.update({
+        where: { id },
+        data: {
+          ...grupoData,
+          situacao: situacao as Situacao | undefined,
+        },
+      });
 
       if (instituicoes !== undefined) {
         await this.syncGrupoInstituicoes(
@@ -183,7 +231,7 @@ export class GruposPesquisaService {
     });
 
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return grupo;
+    return toGrupoPesquisaResponse(grupo);
   }
 
 
@@ -214,19 +262,20 @@ export class GruposPesquisaService {
 
   async remove(id: string) {
     await this.cacheManager.del(GRUPOS_PESQUISA_LIST_CACHE_KEY);
-    return await this.prismaService.$transaction(async (tx) => {
+    const grupo = await this.prismaService.$transaction(async (tx) => {
       await tx.membroGrupo.deleteMany({ where: { grupoId: id } })
       await tx.grupoPesquisaInstituicao.deleteMany({ where: { grupoId: id } })
       await tx.pipelineLogItem.deleteMany({ where: { entidadeId: id } })
       return await tx.grupoPesquisa.delete({ where: { id } })
 
-    })
+    });
+    return toGrupoPesquisaResponse(grupo);
   }
 
   private async syncGrupoInstituicoes(
     tx: Prisma.TransactionClient,
     grupoId: string,
-    instituicoes?: CreateGruposPesquisaDto['instituicoes'],
+    instituicoes?: CreateGruposPesquisaRequest['instituicoes'],
     replace = false,
   ) {
     const desired = new Map<
@@ -240,7 +289,9 @@ export class GruposPesquisaService {
 
     for (const vinculo of instituicoes ?? []) {
       desired.set(vinculo.instituicaoId, {
-        tipoRelacao: vinculo.tipoRelacao ?? TipoRelacaoGrupoInstituicao.PARCEIRA,
+        tipoRelacao:
+          (vinculo.tipoRelacao as TipoRelacaoGrupoInstituicao | undefined) ??
+          TipoRelacaoGrupoInstituicao.PARCEIRA,
         unidade: vinculo.unidade ?? null,
         unidadeUf: vinculo.unidadeUf ?? null,
       });

@@ -1,30 +1,6 @@
-import { Type } from 'class-transformer';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { LangchainSummarizeRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class SummarizeLangchainDto {
-  @IsString()
-  @MinLength(1)
-  text: string;
-
-  @IsOptional()
-  @IsString()
-  instructions?: string;
-
-  @IsOptional()
-  @IsString()
-  model?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  @Max(2)
-  temperature?: number;
-}
+export class SummarizeLangchainDto extends createZodDto(
+  LangchainSummarizeRequestSchema,
+) {}

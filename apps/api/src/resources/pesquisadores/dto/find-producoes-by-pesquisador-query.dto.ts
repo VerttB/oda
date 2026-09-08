@@ -1,6 +1,6 @@
-import { OmitType } from '@nestjs/mapped-types';
-import { FindAllProducoesDto } from '../../producoes/dto/find-all-producoes.dto';
+import { FindProducoesByPesquisadorQuerySchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class FindProducoesByPesquisadorQueryDto extends OmitType(FindAllProducoesDto, [
-  'pesquisadorId',
-] as const) {}
+export class FindProducoesByPesquisadorQueryDto extends createZodDto(
+  FindProducoesByPesquisadorQuerySchema,
+) {}

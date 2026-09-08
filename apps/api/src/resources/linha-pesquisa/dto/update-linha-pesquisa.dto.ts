@@ -1,6 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateLinhaPesquisaDto } from './create-linha-pesquisa.dto';
+import { UpdateLinhaPesquisaRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class UpdateLinhaPesquisaDto extends PartialType(
-  CreateLinhaPesquisaDto,
+export class UpdateLinhaPesquisaDto extends createZodDto(
+  UpdateLinhaPesquisaRequestSchema,
 ) {}

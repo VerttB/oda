@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export * from './api/grupos-pesquisa';
+export * from './api/linha-pesquisa';
+export * from './api/pesquisadores';
+export * from './api/responses';
+
 export const PageGroupItemInfoSchema = z.object({
   nome: z.string(),
   area: z.string(),

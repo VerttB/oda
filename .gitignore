@@ -1,16 +1,20 @@
 dist
 node_modules
+.pnpm-store/
 .env
 .env.*
 !.env.example
 session-log.md
 generated
+*.tsbuildinfo
 storage
+storage-*
 data
 # Apache Hop Local
 .hop/
 hop-config.json
 audit/
+backups/
 metadata/hop-config.json
 *.hpl.cache
 *.hwf.cache

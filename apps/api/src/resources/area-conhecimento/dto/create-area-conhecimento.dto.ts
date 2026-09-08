@@ -1,10 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { CreateAreaConhecimentoRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class CreateAreaConhecimentoDto{
-    @IsString()
-    @IsNotEmpty()
-    nome!:string
-
-
-
-}
+export class CreateAreaConhecimentoDto extends createZodDto(
+  CreateAreaConhecimentoRequestSchema,
+) {}

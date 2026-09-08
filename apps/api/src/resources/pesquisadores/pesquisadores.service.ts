@@ -1,12 +1,27 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
-import { UpdatePesquisadoreDto } from './dto/update-pesquisadore.dto';
+import {
+  CreatePesquisadorRequest,
+  UpdatePesquisadorRequest,
+} from '@oda/shared-types';
 import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
-import { Prisma } from '@oda/database';
+import { FormacaoAcademica, Prisma, TipoPesquisador } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
-const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list';
+import { toPesquisadorResponse } from './pesquisadores.response';
+const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v2';
+
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
 
 @Injectable()
 export class PesquisadoresService {
@@ -17,15 +32,23 @@ export class PesquisadoresService {
     private readonly cacheManager: Cache,
   ) { }
 
-  async create(createPesquisadoreDto: CreatePesquisadoreDto) {
+  async create(createPesquisadoreDto: CreatePesquisadorRequest) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
-    return await this.prismaService.pesquisador.create({
-      data: createPesquisadoreDto,
+    const pesquisador = await this.prismaService.pesquisador.create({
+      data: {
+        ...createPesquisadoreDto,
+        tipo: createPesquisadoreDto.tipo as TipoPesquisador | undefined,
+        formacaoAcademica: createPesquisadoreDto.formacaoAcademica as
+          | FormacaoAcademica
+          | undefined,
+      },
     });
+    return toPesquisadorResponse(pesquisador);
   }
 
   async findAll(query?: FindAllPesquisadoresDto) {
     const where: Prisma.PesquisadorWhereInput = {};
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.nome) {
@@ -53,37 +76,49 @@ export class PesquisadoresService {
       }
     }
 
-    if (Object.keys(where).length > 0 || (query && (query.page! > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toPesquisadorResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     }
 
     return this.cacheManager.wrap(PESQUISADORES_LIST_CACHE_KEY, async () => {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count(),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return {
+        data: data.map(toPesquisadorResponse),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages,
+        },
+      };
     });
   }
 
@@ -106,14 +141,17 @@ export class PesquisadoresService {
       }
     });
 
-    const data = ids.map(id => pesquisadores.find(p => p.id === id)).filter(Boolean);
+    const data = ids.flatMap(id => {
+      const pesquisador = pesquisadores.find(p => p.id === id);
+      return pesquisador ? [toPesquisadorResponse(pesquisador)] : [];
+    });
     const totalPages = Math.ceil(totalItems / sizeNum);
 
     return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
-  findOne(id: string) {
-    return this.prismaService.pesquisador.findUnique({
+  async findOne(id: string) {
+    const pesquisador = await this.prismaService.pesquisador.findUnique({
       where: { id: id }, include: {
         producoes: {
           include: {
@@ -131,12 +169,23 @@ export class PesquisadoresService {
           }
         }
       }
-    })
+    });
+    return pesquisador ? toPesquisadorResponse(pesquisador) : null;
   }
 
-  async update(id: string, updatePesquisadoreDto: UpdatePesquisadoreDto) {
+  async update(id: string, updatePesquisadoreDto: UpdatePesquisadorRequest) {
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
-    return await this.prismaService.pesquisador.update({ where: { id: id }, data: updatePesquisadoreDto },)
+    const pesquisador = await this.prismaService.pesquisador.update({
+      where: { id: id },
+      data: {
+        ...updatePesquisadoreDto,
+        tipo: updatePesquisadoreDto.tipo as TipoPesquisador | undefined,
+        formacaoAcademica: updatePesquisadoreDto.formacaoAcademica as
+          | FormacaoAcademica
+          | undefined,
+      },
+    });
+    return toPesquisadorResponse(pesquisador);
   }
 
   async remove(id: string) {
@@ -160,6 +209,6 @@ export class PesquisadoresService {
 
     await this.cacheManager.del(PESQUISADORES_LIST_CACHE_KEY);
 
-    return pesquisador;
+    return toPesquisadorResponse(pesquisador);
   }
 }

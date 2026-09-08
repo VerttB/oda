@@ -6,7 +6,36 @@ import { UpdateAreaConhecimentoDto } from './dto/update-area-conhecimento.dto';
 import { FindAllAreaConhecimentoDto } from './dto/find-all-area-conhecimento.dto';
 import { Prisma } from '@oda/database';
 
-const AREA_CONHECIMENTO_LIST_KEY = 'areaconhecimento:list';
+const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v2';
+
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
+
+const areaConhecimentoResumoSelect = {
+  id: true,
+  nome: true,
+  nomeNormalizado: true,
+  tipo: true,
+  areaPaiId: true,
+} satisfies Prisma.AreaConhecimentoSelect;
+
+const areaConhecimentoDetalheSelect = {
+  ...areaConhecimentoResumoSelect,
+  areaPai: { select: areaConhecimentoResumoSelect },
+  subareas: {
+    select: areaConhecimentoResumoSelect,
+    orderBy: { nome: 'asc' },
+  },
+} satisfies Prisma.AreaConhecimentoSelect;
 
 @Injectable()
 export class AreaConhecimentoService {
@@ -23,54 +52,63 @@ export class AreaConhecimentoService {
           data: {
             ...createAreaConhecimento,
             nomeNormalizado,
-          }
+          },
+          select: areaConhecimentoResumoSelect,
         });
       }
     
       async findAll(query?: FindAllAreaConhecimentoDto) {
         const where: Prisma.AreaConhecimentoWhereInput = {};
+        const pagination = getPagination(query);
 
         if (query?.nome) {
           where.nome = { contains: query.nome, mode: 'insensitive' };
         }
+        if (query?.tipo) {
+          where.tipo = query.tipo;
+        }
+        if (query?.areaPaiId) {
+          where.areaPaiId = query.areaPaiId;
+        }
 
-        if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+        if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
               where,
-              skip: query?.skip,
-              take: query?.take,
-              omit: { criadoEm: true, atualizadoEm: true },
+              skip: pagination.skip,
+              take: pagination.take,
+              select: areaConhecimentoResumoSelect,
+              orderBy: { nome: 'asc' },
             }),
             this.prismaService.areaConhecimento.count({ where }),
           ]);
-          const size = query?.size ?? 30;
-          const page = query?.page ?? 1;
-          const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-          return { data, meta: { page, size, totalItems, totalPages } };
+          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
         }
 
         return this.cacheManager.wrap(AREA_CONHECIMENTO_LIST_KEY, async () => {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
-              skip: query?.skip,
-              take: query?.take,
-              omit: { criadoEm: true, atualizadoEm: true },
+              skip: pagination.skip,
+              take: pagination.take,
+              select: areaConhecimentoResumoSelect,
+              orderBy: { nome: 'asc' },
             }),
             this.prismaService.areaConhecimento.count(),
           ]);
-          const size = query?.size ?? 30;
-          const page = query?.page ?? 1;
-          const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-          return { data, meta: { page, size, totalItems, totalPages } };
+          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
         });
       }
       
       
       async findById(id: string) {
-        return await this.prismaService.areaConhecimento.findUnique({ where: { id: id}})
+        return await this.prismaService.areaConhecimento.findUnique({
+          where: { id },
+          select: areaConhecimentoDetalheSelect,
+        })
       }
     
 
@@ -79,7 +117,13 @@ export class AreaConhecimentoService {
         if (updateAreaConhecimento.nome) {
           updateData.nomeNormalizado = this.normalizeString(updateAreaConhecimento.nome);
         }
-        return await this.prismaService.areaConhecimento.update({ where: { id}, data: updateData})
+        const area = await this.prismaService.areaConhecimento.update({
+          where: { id },
+          data: updateData,
+          select: areaConhecimentoResumoSelect,
+        });
+        await this.cacheManager.del(AREA_CONHECIMENTO_LIST_KEY);
+        return area;
       }
 
       private normalizeString(str: string): string {

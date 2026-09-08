@@ -1,12 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
-import { CreateLinhaPesquisaDto } from './dto/create-linha-pesquisa.dto';
-import { UpdateLinhaPesquisaDto } from './dto/update-linha-pesquisa.dto';
+import {
+  CreateLinhaPesquisaRequest,
+  UpdateLinhaPesquisaRequest,
+} from '@oda/shared-types';
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list';
+
+const getPagination = (query?: { page?: number; size?: number }) => {
+  const page = query?.page ?? 1;
+  const size = query?.size ?? 30;
+
+  return {
+    page,
+    size,
+    skip: (page - 1) * size,
+    take: size === 0 ? undefined : size,
+  };
+};
 
 @Injectable()
 export class LinhaPesquisaService {
@@ -17,7 +31,7 @@ export class LinhaPesquisaService {
     private readonly cacheManager: Cache,
   ) { }
 
-  async create(createLinhaPesquisaDto: CreateLinhaPesquisaDto) {
+  async create(createLinhaPesquisaDto: CreateLinhaPesquisaRequest) {
     const {
       pesquisadorIds,
       palavraChaveIds,
@@ -75,6 +89,7 @@ export class LinhaPesquisaService {
   async findAll(query?: FindAllLinhaPesquisaDto) {
 
     const where: Prisma.LinhaPesquisaWhereInput = {};
+    const pagination = getPagination(query);
 
     if (query) {
       if (query.grupo) {
@@ -86,21 +101,19 @@ export class LinhaPesquisaService {
     }
 
     // Bypass cache if filters or pagination are present (except default pagination)
-    if (Object.keys(where).length > 0 || (query && (query.page > 1 || query.size !== 30))) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.linhaPesquisa.findMany({
           where,
-          skip: query?.skip,
-          take: query?.take,
+          skip: pagination.skip,
+          take: pagination.take,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.linhaPesquisa.count({ where }),
       ]);
-      const size = query?.size ?? 30;
-      const page = query?.page ?? 1;
-      const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-      return { data, meta: { page, size, totalItems, totalPages } };
+      return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
     }
 
     return await this.cacheManager.wrap(
@@ -108,17 +121,15 @@ export class LinhaPesquisaService {
       async () => {
         const [data, totalItems] = await Promise.all([
           this.prismaService.linhaPesquisa.findMany({
-            skip: query?.skip,
-            take: query?.take,
+            skip: pagination.skip,
+            take: pagination.take,
             omit: { criadoEm: true, atualizadoEm: true },
           }),
           this.prismaService.linhaPesquisa.count(),
         ]);
-        const size = query?.size ?? 30;
-        const page = query?.page ?? 1;
-        const totalPages = size === 0 ? 1 : Math.ceil(totalItems / size);
+        const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
 
-        return { data, meta: { page, size, totalItems, totalPages } };
+        return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
       },
     );
   }
@@ -142,7 +153,10 @@ export class LinhaPesquisaService {
       }
     });
 
-    const data = ids.map(id => linhas.find(lp => lp.id === id)).filter(Boolean);
+    const data = ids.flatMap(id => {
+      const linha = linhas.find(lp => lp.id === id);
+      return linha ? [linha] : [];
+    });
     const totalPages = Math.ceil(totalItems / sizeNum);
 
     return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
@@ -159,7 +173,7 @@ export class LinhaPesquisaService {
     });
   }
 
-  async update(id: string, updateLinhaPesquisaDto: UpdateLinhaPesquisaDto) {
+  async update(id: string, updateLinhaPesquisaDto: UpdateLinhaPesquisaRequest) {
     const {
       pesquisadorIds,
       palavraChaveIds,

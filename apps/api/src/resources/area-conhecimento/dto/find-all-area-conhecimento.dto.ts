@@ -1,8 +1,6 @@
-import { IsOptional, IsString } from 'class-validator';
-import { PaginationDto } from '@/common/dto/pagination.dto';
+import { FindAllAreaConhecimentoQuerySchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class FindAllAreaConhecimentoDto extends PaginationDto {
-  @IsOptional()
-  @IsString()
-  nome?: string;
-}
+export class FindAllAreaConhecimentoDto extends createZodDto(
+  FindAllAreaConhecimentoQuerySchema,
+) {}

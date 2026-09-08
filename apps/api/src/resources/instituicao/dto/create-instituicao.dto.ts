@@ -1,23 +1,6 @@
-import {
-  IsOptional,
-  IsString,
-  IsUUID,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { CreateInstituicaoRequestSchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class CreateInstituicaoDto {
-  @IsString()
-  @MinLength(2)
-  @MaxLength(255)
-  nome!: string;
-
-  @IsString()
-  @MinLength(2)
-  @MaxLength(30)
-  sigla!: string;
-
-  @IsOptional()
-  @IsUUID()
-  estadoId?: string;
-}
+export class CreateInstituicaoDto extends createZodDto(
+  CreateInstituicaoRequestSchema,
+) {}

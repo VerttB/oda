@@ -1,6 +1,6 @@
-import { OmitType } from '@nestjs/mapped-types';
-import { FindAllPesquisadoresDto } from '../../pesquisadores/dto/find-all-pesquisadores.dto';
+import { FindPesquisadoresByGrupoQuerySchema } from '@oda/shared-types';
+import { createZodDto } from 'nestjs-zod';
 
-export class FindPesquisadoresByGrupoQueryDto extends OmitType(FindAllPesquisadoresDto, [
-  'grupoPesquisaId',
-] as const) {}
+export class FindPesquisadoresByGrupoQueryDto extends createZodDto(
+  FindPesquisadoresByGrupoQuerySchema,
+) {}
