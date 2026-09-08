@@ -6,6 +6,8 @@ ENV_FILE="${ENV_FILE:-$ROOT_DIR/.env}"
 OUTPUT_DIR="$ROOT_DIR/backups/db"
 FORMAT="plain"
 DOCKER_CONTAINER=""
+RETENTION_DAYS="7"
+CLEANUP_OLD_BACKUPS="true"
 
 usage() {
   cat <<'USAGE'
@@ -14,6 +16,7 @@ Uso:
   scripts/backup-db.sh --output-dir backups/db
   scripts/backup-db.sh --format custom
   scripts/backup-db.sh --docker-container nome_do_container
+  scripts/backup-db.sh --retention-days 14
 
 Variaveis lidas:
   DATABASE_URL
@@ -30,8 +33,31 @@ Opcoes:
   --output-dir <pasta>     Pasta de destino. Padrao: backups/db.
   --format <plain|custom>  plain gera .sql; custom gera .dump para pg_restore.
   --docker-container <nome> Usa pg_dump dentro de um container Docker.
+  --retention-days <dias>  Remove backups com mais de N dias. Padrao: 7.
+  --no-cleanup             Nao remove backups antigos nesta execucao.
   --help                   Mostra esta ajuda.
 USAGE
+}
+
+cleanup_old_backups() {
+  if [[ "$CLEANUP_OLD_BACKUPS" != "true" ]]; then
+    echo "[backup-db] Limpeza de backups antigos desativada."
+    return
+  fi
+
+  if ! [[ "$RETENTION_DAYS" =~ ^[0-9]+$ ]]; then
+    echo "[backup-db] retention-days invalido: $RETENTION_DAYS" >&2
+    exit 1
+  fi
+
+  echo "[backup-db] Removendo backups com mais de ${RETENTION_DAYS} dias em: $OUTPUT_DIR"
+  find "$OUTPUT_DIR" \
+    -maxdepth 1 \
+    -type f \
+    \( -name 'backup_*.sql' -o -name 'backup_*.dump' \) \
+    -mtime +"$RETENTION_DAYS" \
+    -print \
+    -delete
 }
 
 load_env_file() {
@@ -69,6 +95,14 @@ while [[ $# -gt 0 ]]; do
     --docker-container)
       DOCKER_CONTAINER="$2"
       shift 2
+      ;;
+    --retention-days)
+      RETENTION_DAYS="$2"
+      shift 2
+      ;;
+    --no-cleanup)
+      CLEANUP_OLD_BACKUPS="false"
+      shift
       ;;
     --help|-h)
       usage
@@ -158,3 +192,4 @@ fi
 
 echo "[backup-db] Backup concluido: $BACKUP_FILE"
 ls -lh "$BACKUP_FILE"
+cleanup_old_backups
