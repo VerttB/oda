@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { FilaExtracaoStatus, TipoRelacaoGrupoInstituicao } from '@oda/database';
 
 type PrismaGroupCount = {
-  _count?: true | Record<string, number | undefined>;
+  _count?: number | true | Record<string, number | undefined>;
 };
 
 const getGroupCount = (item: PrismaGroupCount, field: string) => {
@@ -11,7 +11,19 @@ const getGroupCount = (item: PrismaGroupCount, field: string) => {
     return 0;
   }
 
+  if (typeof item._count === 'number') {
+    return item._count;
+  }
+
   return item._count[field] ?? item._count._all ?? 0;
+};
+
+const percentual = (parte: number, total: number) => {
+  if (total === 0) {
+    return 0;
+  }
+
+  return Number(((parte / total) * 100).toFixed(2));
 };
 
 @Injectable()
@@ -19,14 +31,29 @@ export class MetricasService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll() {
-    const [gruposDePesquisa, pesquisadores] = await Promise.all([
+    const [
+      gruposDePesquisa,
+      pesquisadores,
+      areasConhecimento,
+      producoes,
+      instituicoes,
+      filasExtracao,
+    ] = await Promise.all([
       this.findMetricasGruposPesquisa(),
       this.findMetricasPesquisadores(),
+      this.findMetricasAreasConhecimento(),
+      this.findMetricasProducoes(),
+      this.findMetricasInstituicoes(),
+      this.findMetricasFilasExtracao(),
     ]);
 
     return {
       gruposDePesquisa,
       pesquisadores,
+      areasConhecimento,
+      producoes,
+      instituicoes,
+      filasExtracao,
     };
   }
 
@@ -128,6 +155,14 @@ export class MetricasService {
       totalLinhasPesquisa,
       totalAreasConhecimento,
       totalProducoes,
+      totalProducoesComDoi,
+      totalProducoesComQualis,
+      totalInstituicoesParceiras,
+      producoesPorAno,
+      producoesPorTipo,
+      producoesPorQualis,
+      pesquisadoresPorTipo,
+      pesquisadoresPorFormacao,
     ] = await this.prismaService.$transaction([
       this.prismaService.membroGrupo.count({ where: { grupoId: id } }),
       this.prismaService.membroGrupo.count({
@@ -148,6 +183,59 @@ export class MetricasService {
           },
         },
       }),
+      this.prismaService.producao.count({
+        where: {
+          doi: { not: null },
+          autores: { some: { pesquisador: { membrosGrupo: { some: { grupoId: id } } } } },
+        },
+      }),
+      this.prismaService.producao.count({
+        where: {
+          qualis: { not: null },
+          autores: { some: { pesquisador: { membrosGrupo: { some: { grupoId: id } } } } },
+        },
+      }),
+      this.prismaService.grupoPesquisaInstituicao.count({
+        where: { grupoId: id, tipoRelacao: TipoRelacaoGrupoInstituicao.PARCEIRA },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['ano'],
+        where: {
+          ano: { not: null },
+          autores: { some: { pesquisador: { membrosGrupo: { some: { grupoId: id } } } } },
+        },
+        _count: { id: true },
+        orderBy: { ano: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['tipo'],
+        where: {
+          autores: { some: { pesquisador: { membrosGrupo: { some: { grupoId: id } } } } },
+        },
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['qualis'],
+        where: {
+          qualis: { not: null },
+          autores: { some: { pesquisador: { membrosGrupo: { some: { grupoId: id } } } } },
+        },
+        _count: { id: true },
+        orderBy: { qualis: 'asc' },
+      }),
+      this.prismaService.pesquisador.groupBy({
+        by: ['tipo'],
+        where: { membrosGrupo: { some: { grupoId: id } } },
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
+      }),
+      this.prismaService.pesquisador.groupBy({
+        by: ['formacaoAcademica'],
+        where: { membrosGrupo: { some: { grupoId: id } } },
+        _count: { id: true },
+        orderBy: { formacaoAcademica: 'asc' },
+      }),
     ]);
 
     return {
@@ -158,7 +246,35 @@ export class MetricasService {
         linhasPesquisa: totalLinhasPesquisa,
         areasConhecimento: totalAreasConhecimento,
         producoes: totalProducoes,
+        instituicoesParceiras: totalInstituicoesParceiras,
       },
+      cobertura: {
+        pesquisadoresComLattesPercentual: percentual(totalPesquisadoresComLattes, totalPesquisadores),
+        producoesComDoi: totalProducoesComDoi,
+        producoesComDoiPercentual: percentual(totalProducoesComDoi, totalProducoes),
+        producoesComQualis: totalProducoesComQualis,
+        producoesComQualisPercentual: percentual(totalProducoesComQualis, totalProducoes),
+      },
+      pesquisadoresPorTipo: pesquisadoresPorTipo.map((item) => ({
+        tipo: item.tipo ?? 'NAO_INFORMADO',
+        total: getGroupCount(item, 'id'),
+      })),
+      pesquisadoresPorFormacao: pesquisadoresPorFormacao.map((item) => ({
+        formacao: item.formacaoAcademica ?? 'NAO_INFORMADA',
+        total: getGroupCount(item, 'id'),
+      })),
+      producoesPorAno: producoesPorAno.map((item) => ({
+        ano: item.ano,
+        total: getGroupCount(item, 'id'),
+      })),
+      producoesPorTipo: producoesPorTipo.map((item) => ({
+        tipo: item.tipo,
+        total: getGroupCount(item, 'id'),
+      })),
+      producoesPorQualis: producoesPorQualis.map((item) => ({
+        qualis: item.qualis,
+        total: getGroupCount(item, 'id'),
+      })),
     };
   }
 
@@ -192,7 +308,7 @@ export class MetricasService {
         total: getGroupCount(item, 'id'),
       })),
       porTipo: porTipo.map((item) => ({
-        tipo: item.tipo ?? 'NAO_INFORMADO',
+        tipo: item.tipo ?? 'NAO_INFORMADO', 
         total: getGroupCount(item, 'id'),
       })),
     };
@@ -218,13 +334,23 @@ export class MetricasService {
       totalLinhasPesquisa,
       totalAreasConhecimento,
       totalProducoes,
+      totalProducoesComDoi,
+      totalProducoesComQualis,
       producoesPorTipo,
+      producoesPorAno,
+      producoesPorQualis,
     ] = await this.prismaService.$transaction([
       this.prismaService.membroGrupo.count({ where: { pesquisadorId: id } }),
       this.prismaService.membroGrupo.count({ where: { pesquisadorId: id, eLider: true } }),
       this.prismaService.membroLinhaPesquisa.count({ where: { pesquisadorId: id } }),
       this.prismaService.pesquisadoresAreaConhecimento.count({ where: { pesquisadorId: id } }),
       this.prismaService.producaoPesquisador.count({ where: { pesquisadorId: id } }),
+      this.prismaService.producao.count({
+        where: { doi: { not: null }, autores: { some: { pesquisadorId: id } } },
+      }),
+      this.prismaService.producao.count({
+        where: { qualis: { not: null }, autores: { some: { pesquisadorId: id } } },
+      }),
       this.prismaService.producao.groupBy({
         by: ['tipo'],
         where: {
@@ -234,6 +360,18 @@ export class MetricasService {
         },
         _count: { id: true },
         orderBy: { tipo: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['ano'],
+        where: { ano: { not: null }, autores: { some: { pesquisadorId: id } } },
+        _count: { id: true },
+        orderBy: { ano: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['qualis'],
+        where: { qualis: { not: null }, autores: { some: { pesquisadorId: id } } },
+        _count: { id: true },
+        orderBy: { qualis: 'asc' },
       }),
     ]);
 
@@ -246,10 +384,239 @@ export class MetricasService {
         areasConhecimento: totalAreasConhecimento,
         producoes: totalProducoes,
       },
+      cobertura: {
+        producoesComDoi: totalProducoesComDoi,
+        producoesComDoiPercentual: percentual(totalProducoesComDoi, totalProducoes),
+        producoesComQualis: totalProducoesComQualis,
+        producoesComQualisPercentual: percentual(totalProducoesComQualis, totalProducoes),
+      },
       producoesPorTipo: producoesPorTipo.map((item) => ({
         tipo: item.tipo,
         total: getGroupCount(item, 'id'),
       })),
+      producoesPorAno: producoesPorAno.map((item) => ({
+        ano: item.ano,
+        total: getGroupCount(item, 'id'),
+      })),
+      producoesPorQualis: producoesPorQualis.map((item) => ({
+        qualis: item.qualis,
+        total: getGroupCount(item, 'id'),
+      })),
+    };
+  }
+
+  async findMetricasAreasConhecimento() {
+    const [
+      total,
+      totalRaizes,
+      totalComPai,
+      totalMapeadasOpenAlex,
+      openAlexPorTipo,
+      mapeamentosPorStatus,
+    ] = await this.prismaService.$transaction([
+      this.prismaService.areaConhecimento.count(),
+      this.prismaService.areaConhecimento.count({ where: { areaPaiId: null } }),
+      this.prismaService.areaConhecimento.count({ where: { areaPaiId: { not: null } } }),
+      this.prismaService.areaConhecimento.count({
+        where: { mapeamentosOpenAlex: { some: {} } },
+      }),
+      this.prismaService.openAlexAreaConhecimento.groupBy({
+        by: ['tipo'],
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
+      }),
+      this.prismaService.mapeamentoAreaTaxonomia.groupBy({
+        by: ['status'],
+        _count: { id: true },
+        orderBy: { status: 'asc' },
+      }),
+    ]);
+
+    return {
+      total,
+      raizes: totalRaizes,
+      comAreaPai: totalComPai,
+      mapeadasOpenAlex: totalMapeadasOpenAlex,
+      mapeadasOpenAlexPercentual: percentual(totalMapeadasOpenAlex, total),
+      openAlexPorTipo: openAlexPorTipo.map((item) => ({
+        tipo: item.tipo,
+        total: getGroupCount(item, 'id'),
+      })),
+      mapeamentosPorStatus: mapeamentosPorStatus.map((item) => ({
+        status: item.status,
+        total: getGroupCount(item, 'id'),
+      })),
+    };
+  }
+
+  async findMetricasProducoes() {
+    const [
+      total,
+      doiNulos,
+      qualisNulos,
+      issnNulos,
+      resumoNulos,
+      urlNulos,
+      totalPorQualis,
+      totalPorTipo,
+      totalPorAno,
+    ] = await this.prismaService.$transaction([
+      this.prismaService.producao.count(),
+      this.prismaService.producao.count({ where: { doi: null } }),
+      this.prismaService.producao.count({ where: { qualis: null } }),
+      this.prismaService.producao.count({ where: { issn: null } }),
+      this.prismaService.producao.count({ where: { resumo: null } }),
+      this.prismaService.producao.count({ where: { url: null } }),
+      this.prismaService.producao.groupBy({
+        by: ['qualis'],
+        where: {
+          qualis: { not: null },
+        },
+        _count: { id: true },
+        orderBy: { qualis: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['tipo'],
+        _count: { id: true },
+        orderBy: { tipo: 'asc' },
+      }),
+      this.prismaService.producao.groupBy({
+        by: ['ano'],
+        where: { ano: { not: null } },
+        _count: { id: true },
+        orderBy: { ano: 'asc' },
+      }),
+    ]);
+
+    return {
+      total,
+      valoresNulos: {
+        doi: doiNulos,
+        resumo: resumoNulos,
+        issn: issnNulos,
+        qualis: qualisNulos,
+        url: urlNulos,
+      },
+      cobertura: {
+        doiPercentual: percentual(total - doiNulos, total),
+        resumoPercentual: percentual(total - resumoNulos, total),
+        issnPercentual: percentual(total - issnNulos, total),
+        qualisPercentual: percentual(total - qualisNulos, total),
+        urlPercentual: percentual(total - urlNulos, total),
+      },
+      totalPorQualis: totalPorQualis.map((item) => ({
+        qualis: item.qualis,
+        total: getGroupCount(item, 'id'),
+      })),
+      totalPorTipo: totalPorTipo.map((item) => ({
+        tipo: item.tipo,
+        total: getGroupCount(item, 'id'),
+      })),
+      totalPorAno: totalPorAno.map((item) => ({
+        ano: item.ano,
+        total: getGroupCount(item, 'id'),
+      })),
+    };
+  }
+
+  async findMetricasInstituicoes() {
+    const [
+      total,
+      totalSemUf,
+      totalPorEstadoId,
+      estados,
+      vinculosSede,
+      vinculosParceria,
+      instituicoesComSede,
+      instituicoesComParceria,
+    ] = await this.prismaService.$transaction([
+      this.prismaService.instituicao.count(),
+      this.prismaService.instituicao.count({ where: { estadoId: null } }),
+      this.prismaService.instituicao.groupBy({
+        by: ['estadoId'],
+        where: { estadoId: { not: null } },
+        _count: { id: true },
+        orderBy: { estadoId: 'asc' },
+      }),
+      this.prismaService.estado.findMany({
+        select: { id: true, nome: true, sigla: true, regiao: true },
+      }),
+      this.prismaService.grupoPesquisaInstituicao.count({
+        where: { tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE },
+      }),
+      this.prismaService.grupoPesquisaInstituicao.count({
+        where: { tipoRelacao: TipoRelacaoGrupoInstituicao.PARCEIRA },
+      }),
+      this.prismaService.instituicao.count({
+        where: { gruposPesquisaVinculos: { some: { tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE } } },
+      }),
+      this.prismaService.instituicao.count({
+        where: { gruposPesquisaVinculos: { some: { tipoRelacao: TipoRelacaoGrupoInstituicao.PARCEIRA } } },
+      }),
+    ]);
+
+    const estadosPorId = new Map(estados.map((estado) => [estado.id, estado]));
+
+    return {
+      total,
+      semUf: totalSemUf,
+      porUf: totalPorEstadoId.map((item) => {
+        const estado = item.estadoId ? estadosPorId.get(item.estadoId) : null;
+
+        return {
+          uf: estado?.sigla ?? 'SEM_UF',
+          estado: estado?.nome ?? null,
+          regiao: estado?.regiao ?? null,
+          total: getGroupCount(item, 'id'),
+        };
+      }),
+      vinculosComGrupos: {
+        sede: vinculosSede,
+        parceira: vinculosParceria,
+      },
+      instituicoesComGrupos: {
+        sede: instituicoesComSede,
+        parceira: instituicoesComParceria,
+      },
+    };
+  }
+
+  async findMetricasFilasExtracao() {
+    const [gruposPorStatus, pesquisadoresPorStatus, gruposComErro, pesquisadoresComErro] =
+      await this.prismaService.$transaction([
+        this.prismaService.filaExtracaoGrupo.groupBy({
+          by: ['status'],
+          _count: { dgpId: true },
+          orderBy: { status: 'asc' },
+        }),
+        this.prismaService.filaExtracaoPesquisador.groupBy({
+          by: ['status'],
+          _count: { lattesId: true },
+          orderBy: { status: 'asc' },
+        }),
+        this.prismaService.filaExtracaoGrupo.count({
+          where: { status: FilaExtracaoStatus.ERRO },
+        }),
+        this.prismaService.filaExtracaoPesquisador.count({
+          where: { status: FilaExtracaoStatus.ERRO },
+        }),
+      ]);
+
+    return {
+      gruposPesquisa: {
+        comErro: gruposComErro,
+        porStatus: gruposPorStatus.map((item) => ({
+          status: item.status,
+          total: getGroupCount(item, 'dgpId'),
+        })),
+      },
+      pesquisadores: {
+        comErro: pesquisadoresComErro,
+        porStatus: pesquisadoresPorStatus.map((item) => ({
+          status: item.status,
+          total: getGroupCount(item, 'lattesId'),
+        })),
+      },
     };
   }
 }

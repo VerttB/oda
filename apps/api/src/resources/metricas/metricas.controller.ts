@@ -19,4 +19,18 @@ export class MetricasController {
   findMetricasPesquisadores() {
     return this.metricasService.findMetricasPesquisadores();
   }
+
+  @Get('areas-conhecimento')
+  findMetricasAreasConhecimento(){
+    return this.metricasService.findMetricasAreasConhecimento();
+  }
+  @Get('producoes')
+  findMetricasProducoes(){
+    return this.metricasService.findMetricasProducoes();
+  }
+
+  @Get('instituicoes')
+  findMetricasInstituicoes(){
+    return this.metricasService.findMetricasInstituicoes();
+  }
 }
