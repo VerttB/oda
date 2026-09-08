@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PaginationQuerySchema } from './pagination';
 
 export const SituacaoGrupoPesquisaSchema = z.enum([
   'ATIVO',
@@ -28,6 +29,17 @@ export const CreateGruposPesquisaRequestSchema = z.object({
 export const UpdateGruposPesquisaRequestSchema =
   CreateGruposPesquisaRequestSchema.partial();
 
+export const FindAllGruposPesquisaQuerySchema = PaginationQuerySchema.extend({
+  situacao: SituacaoGrupoPesquisaSchema.optional(),
+  nome: z.string().optional(),
+  anoFormacao: z.coerce.number().int().optional(),
+  instituicaoId: z.string().uuid().optional(),
+  areaConhecimentoId: z.string().uuid().optional(),
+  estadoId: z.string().uuid().optional(),
+  cidade: z.string().optional(),
+  uf: z.string().optional(),
+});
+
 export type SituacaoGrupoPesquisa = z.infer<typeof SituacaoGrupoPesquisaSchema>;
 export type TipoRelacaoGrupoInstituicaoRequest = z.infer<
   typeof TipoRelacaoGrupoInstituicaoSchema
@@ -40,4 +52,7 @@ export type CreateGruposPesquisaRequest = z.infer<
 >;
 export type UpdateGruposPesquisaRequest = z.infer<
   typeof UpdateGruposPesquisaRequestSchema
+>;
+export type FindAllGruposPesquisaQuery = z.infer<
+  typeof FindAllGruposPesquisaQuerySchema
 >;
