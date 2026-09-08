@@ -93,6 +93,8 @@ model GrupoPesquisa {
   cep               String?
   latitude          Float?
   longitude         Float?
+  areaConhecimentoId String?                         @map("area_conhecimento_id")
+  areaConhecimento   AreaConhecimento?               @relation("GrupoPesquisaAreaPrincipal", fields: [areaConhecimentoId], references: [id])
   areasConhecimento GrupoPesquisaAreaConhecimento[]
   instituicoes      GrupoPesquisaInstituicao[]
   situacao          Situacao                        @default(ATIVO)
@@ -101,6 +103,7 @@ model GrupoPesquisa {
   criadoEm          DateTime                        @default(now()) @map("criado_em")
   atualizadoEm      DateTime                        @updatedAt @map("atualizado_em")
 
+  @@index([areaConhecimentoId])
   @@map("grupo_pesquisa")
 }
 
@@ -185,19 +188,107 @@ model MembroLinhaPesquisa {
   @@map("membro_linha_pesquisa")
 }
 
+enum TipoAreaConhecimento {
+  GRANDE_AREA
+  AREA
+  SUBAREA
+  TOPICO
+
+  @@map("tipo_area_conhecimento")
+}
+
 model AreaConhecimento {
   id              String                          @id @default(uuid())
   nome            String
   nomeNormalizado String                          @unique
+  tipo            TipoAreaConhecimento?
   areaPai         AreaConhecimento?               @relation("AreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
   areaPaiId       String?                         @map("area_pai_id")
   subareas        AreaConhecimento[]              @relation("AreaConhecimentoHierarquia")
+  gruposPesquisaPrincipal GrupoPesquisa[]         @relation("GrupoPesquisaAreaPrincipal")
   gruposPesquisa  GrupoPesquisaAreaConhecimento[]
   pesquisadores   PesquisadoresAreaConhecimento[]
+  mapeamentosOpenAlex MapeamentoAreaTaxonomia[]
   criadoEm        DateTime                        @default(now()) @map("criado_em")
   atualizadoEm    DateTime                        @updatedAt @map("atualizado_em")
 
   @@map("area_conhecimento")
+}
+
+enum TipoOpenAlexAreaConhecimento {
+  DOMAIN
+  FIELD
+  SUBFIELD
+  TOPIC
+
+  @@map("tipo_open_alex_area_conhecimento")
+}
+
+model OpenAlexAreaConhecimento {
+  id               String                         @id @default(uuid())
+  termo            String
+  termoNormalizado String                         @map("termo_normalizado")
+  termoEstrangeiro String?                        @map("termo_estrangeiro")
+  externalId       String                         @unique @map("external_id")
+  tipo             TipoOpenAlexAreaConhecimento
+  descricao        String?
+  nomesAlternativos String[]                      @default([]) @map("nomes_alternativos")
+  wikidataUrl      String?                         @map("wikidata_url")
+  wikipediaUrl     String?                         @map("wikipedia_url")
+  areaPai          OpenAlexAreaConhecimento?      @relation("OpenAlexAreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
+  areaPaiId        String?                        @map("area_pai_id")
+  subareas         OpenAlexAreaConhecimento[]     @relation("OpenAlexAreaConhecimentoHierarquia")
+  mapeamentosCnpq  MapeamentoAreaTaxonomia[]
+  criadoEm         DateTime                       @default(now()) @map("criado_em")
+  atualizadoEm     DateTime                       @updatedAt @map("atualizado_em")
+
+  @@index([termoNormalizado])
+  @@index([tipo])
+  @@index([areaPaiId])
+  @@map("open_alex_area_conhecimento")
+}
+
+enum TipoRelacaoAreaTaxonomia {
+  EQUIVALENTE
+  OPENALEX_MAIS_AMPLO
+  OPENALEX_MAIS_ESPECIFICO
+  RELACIONADO
+
+  @@map("tipo_relacao_area_taxonomia")
+}
+
+enum MetodoMapeamentoAreaTaxonomia {
+  MANUAL
+  TEXTO_NORMALIZADO
+
+  @@map("metodo_mapeamento_area_taxonomia")
+}
+
+enum StatusMapeamentoAreaTaxonomia {
+  PENDENTE
+  APROVADO
+  REJEITADO
+
+  @@map("status_mapeamento_area_taxonomia")
+}
+
+model MapeamentoAreaTaxonomia {
+  id                  String                        @id @default(uuid())
+  openAlexArea        OpenAlexAreaConhecimento       @relation(fields: [openAlexAreaId], references: [id], onDelete: Restrict)
+  openAlexAreaId      String                        @map("open_alex_area_id")
+  areaConhecimento    AreaConhecimento               @relation(fields: [areaConhecimentoId], references: [id], onDelete: Restrict)
+  areaConhecimentoId  String                        @map("area_conhecimento_id")
+  tipoRelacao         TipoRelacaoAreaTaxonomia?      @map("tipo_relacao")
+  metodo              MetodoMapeamentoAreaTaxonomia
+  status              StatusMapeamentoAreaTaxonomia  @default(PENDENTE)
+  observacao          String?
+  criadoEm            DateTime                       @default(now()) @map("criado_em")
+  atualizadoEm        DateTime                       @updatedAt @map("atualizado_em")
+
+  @@unique([openAlexAreaId, areaConhecimentoId])
+  @@index([areaConhecimentoId])
+  @@index([status])
+  @@map("mapeamento_area_taxonomia")
 }
 
 model PesquisadoresAreaConhecimento {
@@ -210,13 +301,38 @@ model PesquisadoresAreaConhecimento {
   @@map("pesquisador_area_conhecimento")
 }
 
+enum TipoRelacaoGrupoArea {
+  PRINCIPAL
+  ADICIONAL
+
+  @@map("tipo_relacao_grupo_area")
+}
+
+enum MetodoInferenciaGrupoArea {
+  DGP
+  IA
+  MANUAL
+
+  @@map("metodo_inferencia_grupo_area")
+}
+
 model GrupoPesquisaAreaConhecimento {
-  grupo   GrupoPesquisa    @relation(fields: [grupoId], references: [id])
-  grupoId String           @map("grupo_id")
-  area    AreaConhecimento @relation(fields: [areaId], references: [id])
-  areaId  String           @map("area_conhecimento_id")
+  grupo             GrupoPesquisa              @relation(fields: [grupoId], references: [id])
+  grupoId           String                     @map("grupo_id")
+  area              AreaConhecimento           @relation(fields: [areaId], references: [id])
+  areaId            String                     @map("area_conhecimento_id")
+  relacao           TipoRelacaoGrupoArea       @default(ADICIONAL)
+  metodoInferencia  MetodoInferenciaGrupoArea  @default(MANUAL) @map("metodo_inferencia")
+  confianca         Float?
+  justificativa     String?
+  metadata          Json?
+  criadoEm          DateTime                   @default(now()) @map("criado_em")
+  atualizadoEm      DateTime?                   @updatedAt @map("atualizado_em")
 
   @@id([grupoId, areaId])
+  @@index([areaId])
+  @@index([relacao])
+  @@index([metodoInferencia])
   @@map("grupo_pesquisa_area_conhecimento")
 }
 
