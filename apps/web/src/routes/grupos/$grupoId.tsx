@@ -58,7 +58,6 @@ function GroupErrorState({
 
 function RouteComponent() {
   const group = Route.useLoaderData()
-
   return (
     <div>
       <GroupHero group={group} />

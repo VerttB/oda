@@ -5,10 +5,14 @@ interface InstitutionalAffiliationProps {
   hostInstitution: {
     name: string
     code: string
+    unidade: {nome: string | null, uf: string | null} | null
   }
   partnerInstitutions: {
     name: string
     code: string
+    unidade: {
+      nome: string | null
+      uf: string | null} | null
   }[]
 }
 
@@ -39,6 +43,11 @@ export const InstitutionalAffiliation: React.FC<
             <div className="mt-0.5 font-mono text-xs text-muted-foreground">
               Sigla: {hostInstitution.code}
             </div>
+            <span className="mt-0.5 font-mono text-xs text-muted-foreground">
+              Localização: {hostInstitution.unidade?.nome ?? 'Não informado'} -{' '}
+              {hostInstitution.unidade?.uf ?? 'Não informado'}
+            </span>
+        
           </div>
         </div>
 
@@ -59,6 +68,10 @@ export const InstitutionalAffiliation: React.FC<
                   </div>
                   <span className="text-center text-sm font-semibold text-foreground">
                     {partner.name}
+                  </span>
+                  <span className="mt-0.5 font-mono text-xs text-muted-foreground">
+                    {partner.unidade?.nome ?? ''}
+                    {partner.unidade?.uf ?? ''}
                   </span>
                 </div>
               ))}

@@ -37,11 +37,12 @@ type ApiInstituicao = {
   } | null
 }
 
-type ApiGrupoInstituicao = {
+type ApiGrupoInstituicao = ApiInstituicao & {
   tipoRelacao?: string | null
-  unidade?: string | null
-  unidadeUf?: string | null
-  instituicao?: ApiInstituicao | null
+  unidade: {
+    nome?: string | null
+    uf?: string | null
+  }  
 }
 
 type ApiAreaConhecimento = {
@@ -60,13 +61,9 @@ type ApiPesquisador = {
   id?: string | null
   nome?: string | null
   tipo?: string | null
+  eLider?: string | null
   formacaoAcademica?: string | null
   imageUrl?: string | null
-}
-
-type ApiMembroGrupo = {
-  eLider?: boolean | null
-  pesquisador?: ApiPesquisador | null
 }
 
 type ApiGrupoPesquisa = {
@@ -83,7 +80,7 @@ type ApiGrupoPesquisa = {
   instituicoes?: ApiGrupoInstituicao[] | null
   areasConhecimento?: ApiAreaConhecimento[] | null
   linhasPesquisa?: ApiLinhaPesquisa[] | null
-  membros?: ApiMembroGrupo[] | null
+  membros?: ApiPesquisador[] | null
 }
 
 type ApiPaginatedResponse<T> = {
@@ -198,30 +195,42 @@ async function fetchOptionalJson<T>(
 
 function getInstitutionName(vinculo?: ApiGrupoInstituicao) {
   return (
-    vinculo?.instituicao?.nome ??
-    vinculo?.unidade ??
+    vinculo?.nome ??
     'Instituição não informada'
   )
 }
 
 function getInstitutionCode(vinculo?: ApiGrupoInstituicao) {
-  return vinculo?.instituicao?.sigla ?? vinculo?.unidadeUf ?? '--'
+  return vinculo?.sigla ?? '--'
 }
 
 function getInstitutionLocation(vinculo?: ApiGrupoInstituicao) {
-  return vinculo?.instituicao?.estado?.sigla ?? vinculo?.unidadeUf ?? null
+  return vinculo?.estado?.sigla ?? null
 }
 
+function getInstitutionExtra(vinculo?: ApiGrupoInstituicao) {
+  const nome = vinculo?.unidade?.nome ?? null
+  const uf = vinculo?.unidade?.uf ?? null
+
+  if (!nome && !uf) {
+    return null
+  }
+
+  return {
+    nome,
+    uf,
+  }
+}
 function isHostInstitution(vinculo: ApiGrupoInstituicao) {
   return vinculo.tipoRelacao?.toUpperCase() === 'SEDE'
 }
 
-function formatResearcherRole(member: ApiMembroGrupo) {
+function formatResearcherRole(member: ApiPesquisador): string {
   if (member.eLider) {
     return 'Líder'
   }
 
-  const tipo = member.pesquisador?.tipo
+  const tipo = member.tipo
 
   if (!tipo) {
     return 'Membro'
@@ -233,19 +242,18 @@ function formatResearcherRole(member: ApiMembroGrupo) {
     .replace(/^\w/, (letter) => letter.toUpperCase())
 }
 
-function mapMemberToAuthor(member: ApiMembroGrupo): Author | null {
-  const researcher = member.pesquisador
+function mapMemberToAuthor(member: ApiPesquisador): Author | null {
 
-  if (!researcher?.id || !researcher.nome) {
+  if (!member?.id || !member.nome) {
     return null
   }
 
   return {
-    id: researcher.id,
-    name: researcher.nome,
+    id: member.id,
+    name: member.nome,
     role: formatResearcherRole(member),
-    avatar: normalizeApiAssetUrl(researcher.imageUrl),
-    institution: researcher.formacaoAcademica ?? undefined,
+    avatar: normalizeApiAssetUrl(member.imageUrl),
+    institution: member.formacaoAcademica ?? undefined,
   }
 }
 
@@ -275,7 +283,7 @@ function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
   const members = (group.membros ?? []).map(mapMemberToAuthor).filter(isPresent)
   const leaders = (group.membros ?? [])
     .filter((member) => member.eLider)
-    .map((member) => member.pesquisador?.nome)
+    .map((member) => member.nome)
     .filter(isPresent)
 
   return {
@@ -344,7 +352,8 @@ function getGroupsPageFromResponse(
   }
 }
 
-function mapGroupDetail(
+function 
+mapGroupDetail(
   group: ApiGrupoPesquisa,
   metrics: ApiGrupoMetricas | null,
 ): ResearchGroupDetail {
@@ -353,6 +362,7 @@ function mapGroupDetail(
   const partnerInstitutions = institutions.filter(
     (institution) => institution !== hostInstitution,
   )
+  console.log(group)
   const members = (group.membros ?? []).map(mapMemberToAuthor).filter(isPresent)
   const leaders = (group.membros ?? [])
     .filter((member) => member.eLider)
@@ -385,10 +395,12 @@ function mapGroupDetail(
       hostInstitution: {
         name: getInstitutionName(hostInstitution),
         code: getInstitutionCode(hostInstitution),
+        unidade: getInstitutionExtra(hostInstitution),
       },
       partnerInstitutions: partnerInstitutions.map((institution) => ({
         name: getInstitutionName(institution),
         code: getInstitutionCode(institution),
+        unidade: getInstitutionExtra(institution),
       })),
     },
     contactInfo: {
@@ -460,6 +472,5 @@ export async function getResearchGroupDetail(grupoId: string) {
     fetchJson<ApiGrupoPesquisa>(`/grupos-pesquisa/${grupoId}`),
     fetchOptionalJson<ApiGrupoMetricas>(`/metricas/grupos-pesquisa/${grupoId}`),
   ])
-
   return mapGroupDetail(group, metrics)
-}
+} 
