@@ -8,7 +8,11 @@
     "build": "tsc",
     "etl:grupo": "ts-node src/main.ts grupo",
     "etl:pesquisador": "ts-node src/main.ts pesquisador",
-    "etl:all": "ts-node src/run-all.ts"
+    "etl:all": "ts-node src/run-all.ts",
+    "export:openalex-areas": "ts-node src/exportOpenAlexAreas.ts",
+    "import:openalex-areas": "ts-node src/exportOpenAlexAreas.ts --import",
+    "relate:openalex-areas": "ts-node src/relateOpenAlexAreas.ts",
+    "test:openalex-areas": "node -r ts-node/register --test src/openAlexAreas.test.ts"
   },
   "dependencies": {
     "chokidar": "^4.0.3",
