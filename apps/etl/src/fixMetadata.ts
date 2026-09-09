@@ -109,14 +109,17 @@ async function fixSingleDoi(id: string, doi: string) {
     console.log(`[FIX] 🔍 Processando DOI: "${doi}"...`);
     const extra = await linkProductionDoi(doi);
     if (extra) {
-        const { abstract, publisher, licenseUrl } = extra;
+        const { abstract, publisher, licenseUrl, issn } = extra;
         const cleanAbstract = abstract ? stripHtml(abstract) : null;
+        const qualis = issn ? await linkProductionQualis(issn) : null;
         await prisma.producao.update({
             where: { id },
             data: {
                 resumo: cleanAbstract || undefined,
                 veiculo: publisher || undefined,
-                url: licenseUrl || undefined
+                url: licenseUrl || undefined,
+                issn: issn || undefined,
+                qualis: qualis || undefined,
             }
         });
         console.log(`[FIX] ✅ Produção com DOI "${doi}" updated.`);

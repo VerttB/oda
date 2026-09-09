@@ -1,9 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, FilaExtracaoStatus, PipelineEtapa } from '@oda/database';
-import { LATTES_DIR, PROCESSED_DATA_DIR } from './commom/config';
-import { runPesquisadorEtl } from './lattesEtl';
-import { createLinhaPesquisa, getOrCreateAreaConhecimentoHierarchy } from './commom/database';
+import { PROCESSED_DATA_DIR } from './commom/config';
+import {
+    createLinhaPesquisa,
+    getLeafAreaName,
+    getOrCreateAreaConhecimentoHierarchy,
+    upsertGrupoAreaPrincipalDgp,
+} from './commom/database';
 
 const prisma = new PrismaClient(prismaConfig);
 
@@ -70,6 +74,14 @@ function normalizeInstitutionRelation(value: unknown): TipoRelacaoGrupoInstituic
     return value === TipoRelacaoGrupoInstituicao.SEDE || value === 'SEDE'
         ? TipoRelacaoGrupoInstituicao.SEDE
         : TipoRelacaoGrupoInstituicao.PARCEIRA;
+}
+
+function isZeroDgpId(value: unknown): boolean {
+    return typeof value === 'string' && /^0+$/.test(value.trim());
+}
+
+function resolveQueueDgpId(data: any, jsonPath: string): string {
+    return data.id_dgp || data.idDgp || path.basename(jsonPath, '.json');
 }
 
 function buildGrupoInstituicoes(data: any, filaInstituicao?: string | null): GrupoInstituicaoInput[] {
@@ -179,7 +191,9 @@ export async function saveGroupToDb(data: any) {
             const instituicao = await getOrCreateInstituicao(tx, sedeInput, estado?.id);
             const anoStr = data.anoFormacao?.replace(/\D/g, '');
             const ano = anoStr ? parseInt(anoStr, 10) : null;
-            const areaPredominante = data.areaPredominante?.trim() || data.area?.trim() || 'N/A';
+            const areaHierarchy = data.area?.trim() || data.areaPredominante?.trim() || '';
+            const areaSourceField = data.area?.trim() ? 'area' : 'areaPredominante';
+            const areaPredominante = getLeafAreaName(areaHierarchy) || 'N/A';
 
             const grupo = await tx.grupoPesquisa.upsert({
                 where: { dgpId },
@@ -250,22 +264,8 @@ export async function saveGroupToDb(data: any) {
                 });
             }
 
-            // Parse and link areaConhecimento
-            const leafArea = await getOrCreateAreaConhecimentoHierarchy(tx, data.area || areaPredominante);
-            if (leafArea) {
-                await tx.grupoPesquisaAreaConhecimento.upsert({
-                    where: {
-                        grupoId_areaId: {
-                            grupoId: grupo.id,
-                            areaId: leafArea.id
-                        }
-                    },
-                    update: {},
-                    create: {
-                        grupoId: grupo.id,
-                        areaId: leafArea.id
-                    }
-                });
+            if (areaHierarchy) {
+                await upsertGrupoAreaPrincipalDgp(tx, grupo.id, areaHierarchy, areaSourceField);
             }
 
             return grupo;
@@ -362,6 +362,27 @@ export async function saveGroupToDb(data: any) {
                         });
                     }
 
+                    const pesquisadorAtual = await tx.pesquisador.findUniqueOrThrow({
+                        where: { id: pesquisador.id },
+                        select: { id: true }
+                    });
+
+                    const isLider = membro.eLider === true;
+                    await tx.membroGrupo.upsert({
+                        where: {
+                            pesquisadorId_grupoId: {
+                                pesquisadorId: pesquisadorAtual.id,
+                                grupoId: grupoId
+                            }
+                        },
+                        update: { eLider: isLider },
+                        create: {
+                            pesquisadorId: pesquisadorAtual.id,
+                            grupoId: grupoId,
+                            eLider: isLider
+                        }
+                    });
+
                     if (membro.areas && Array.isArray(membro.areas)) {
                         for (const areaStr of membro.areas) {
                             if (!areaStr.trim()) continue;
@@ -370,13 +391,13 @@ export async function saveGroupToDb(data: any) {
                                 await tx.pesquisadoresAreaConhecimento.upsert({
                                     where: {
                                         pesquisadorId_areaId: {
-                                            pesquisadorId: pesquisador.id,
+                                            pesquisadorId: pesquisadorAtual.id,
                                             areaId: leafArea.id
                                         }
                                     },
                                     update: {},
                                     create: {
-                                        pesquisadorId: pesquisador.id,
+                                        pesquisadorId: pesquisadorAtual.id,
                                         areaId: leafArea.id
                                     }
                                 });
@@ -398,34 +419,18 @@ export async function saveGroupToDb(data: any) {
                                     where: {
                                         linhaPesquisaId_pesquisadorId: {
                                             linhaPesquisaId: linha.id,
-                                            pesquisadorId: pesquisador.id
+                                            pesquisadorId: pesquisadorAtual.id
                                         }
                                     },
                                     update: {},
                                     create: {
                                         linhaPesquisaId: linha.id,
-                                        pesquisadorId: pesquisador.id
+                                        pesquisadorId: pesquisadorAtual.id
                                     }
                                 });
                             }
                         }
                     }
-                   
-                    const isLider = membro.eLider === true;
-                    await tx.membroGrupo.upsert({
-                        where: {
-                            pesquisadorId_grupoId: {
-                                pesquisadorId: pesquisador.id,
-                                grupoId: grupoId
-                            }
-                        },
-                        update: { eLider: isLider },
-                        create: {
-                            pesquisadorId: pesquisador.id,
-                            grupoId: grupoId,
-                            eLider: isLider
-                        }
-                    });
                 }
             }, { timeout: 60000 });
             console.log(`[ETL] 👥 Pesquisadores vinculados ao grupo.`);
@@ -463,7 +468,7 @@ export async function runGroupEtl(jsonPath: string) {
 
     const content = fs.readFileSync(resolvedPath, 'utf-8');
     const groupData = JSON.parse(content);
-    const dgpId = groupData.idDgp || groupData.id_dgp || path.basename(jsonPath, '.json');
+    const dgpId = resolveQueueDgpId(groupData, jsonPath);
     const groupFileStats = fs.statSync(resolvedPath);
 
     const pipelineLogger = new SharedPipelineLogger(prisma);
@@ -479,6 +484,44 @@ export async function runGroupEtl(jsonPath: string) {
             linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
         }
     );
+
+    if (isZeroDgpId(groupData.idDgp)) {
+        const message = `JSON de grupo ignorado porque idDgp veio zerado (${groupData.idDgp}). ID real identificado em id_dgp: ${groupData.id_dgp || 'não informado'}.`;
+        console.warn(`[ETL] ⚠️ ${message}`);
+
+        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
+            entidadeId: dgpId,
+            tipoEntidade: TipoEntidadeLog.GRUPO,
+            tipoErro: TipoErroColeta.FALHA_ETL,
+            mensagemErro: message,
+            detalhesErro: JSON.stringify({
+                arquivoJson: path.basename(resolvedPath),
+                idDgp: groupData.idDgp,
+                id_dgp: groupData.id_dgp,
+            }),
+        });
+
+        await prisma.filaExtracaoGrupo.update({
+            where: { dgpId },
+            data: {
+                status: FilaExtracaoStatus.ERRO,
+                processamentoIniciadoEm: null,
+                ultimoErroId: errorItem?.id ?? null,
+                ultimoErroEm: new Date(),
+            }
+        }).catch(() => undefined);
+
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO, {
+            gruposGravados: 0,
+            pesquisadoresAtualizados: 0,
+            linhasPesquisaGravadas: 0,
+            membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
+            linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
+            motivo: 'idDgp_zerado',
+        });
+
+        return;
+    }
 
     let pesquisadoresAtualizados = 0;
     let linhasPesquisaGravadas = groupData.linhas && Array.isArray(groupData.linhas) ? groupData.linhas.length : 0;
@@ -526,39 +569,6 @@ export async function runGroupEtl(jsonPath: string) {
                 ultimoErroEm: new Date(),
             }
         }).catch(() => undefined);
-    }
-
-    if (groupData.membros && Array.isArray(groupData.membros)) {
-        console.log(`[ETL] Encontrados ${groupData.membros.length} membros elegíveis (Pesquisador/Líder) no grupo.`);
-
-        for (const membro of groupData.membros) {
-            if (!membro.lattes) continue;
-            const lattesFileName = `${membro.lattes.trim()}.json`;
-            const lattesFilePath = path.join(LATTES_DIR, lattesFileName);
-            if (fs.existsSync(lattesFilePath)) {
-                console.log(`[ETL] 👤 Iniciando ETL encadeado do pesquisador: ${membro.nome}`);
-                const tMembro = performance.now();
-                try {
-                    await runPesquisadorEtl(lattesFilePath);
-                    const tempoMembroMs = Math.round(performance.now() - tMembro);
-                    pesquisadoresAtualizados++;
-
-                    await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.SUCESSO, {
-                        entidadeId: membro.lattes.trim(),
-                        tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-                        tempoMs: tempoMembroMs,
-                    });
-                } catch (mErr: any) {
-                    await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
-                        entidadeId: membro.lattes.trim(),
-                        tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-                        tipoErro: TipoErroColeta.FALHA_ETL,
-                        mensagemErro: mErr.message,
-                        detalhesErro: mErr.stack,
-                    });
-                }
-            }
-        }
     }
 
     const finalStatus = await prisma.pipelineLog.findUnique({
