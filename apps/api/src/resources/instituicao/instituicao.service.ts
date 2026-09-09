@@ -47,6 +47,7 @@ export function toInstituicaoResponse(instituicao: InstituicaoInput) {
     id: instituicao.id,
     nome: instituicao.nome,
     sigla: instituicao.sigla,
+    imageUrl: instituicao.imageUrl ?? null,
     estado: instituicao.estado,
     gruposPesquisa: instituicao.gruposPesquisaVinculos.map(vinculo => ({
       ...vinculo.grupoPesquisa,

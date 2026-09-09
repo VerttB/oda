@@ -33,6 +33,7 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY --from=build /app/deploy ./
+RUN mkdir -p /app/static
 
 EXPOSE 3000
 

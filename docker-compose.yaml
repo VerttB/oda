@@ -37,6 +37,8 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - LANGCHAIN_HOST=langchain
       - LANGCHAIN_PORT=8002
+    volumes:
+      - ./apps/api/static:/app/static
     ports:
       - "3000:3000"
     depends_on:

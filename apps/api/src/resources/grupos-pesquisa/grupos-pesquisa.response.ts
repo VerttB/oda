@@ -16,6 +16,7 @@ export function toGrupoPesquisaResponse(grupo: GrupoInput) {
     ...grupo,
     instituicoes: grupo.instituicoes?.map(vinculo => ({
       ...vinculo.instituicao,
+      imageUrl: vinculo.instituicao.imageUrl ?? null,
       tipoRelacao: vinculo.tipoRelacao,
       unidade: vinculo.unidade !== null || vinculo.unidadeUf !== null
         ? { nome: vinculo.unidade, uf: vinculo.unidadeUf } : null,
