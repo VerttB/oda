@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 import { cleanText } from './dgpParser';
 import { Article, BookChapters, Formation, FullPaper } from '../common/interfaces';
 import { Element } from 'crawlee';
+import { extractLattesId } from '../common/lattesIdentity';
 
 export class LattesParser {
   /**
@@ -21,7 +22,7 @@ export class LattesParser {
     if (infoAutor.length) {
       const att_lattes_element = infoAutor.find('li').last()
       basic.ultimaAttLattes = cleanText(att_lattes_element.text());
-      basic.lattes = cleanText(att_lattes_element.prev("li").find("span").last().text())
+      basic.lattes = extractLattesId($);
     }
   
     const resumo = $('p.resumo');
@@ -105,7 +106,7 @@ export class LattesParser {
           let emptyDiv = nameDiv.next('div');
           let descDiv = emptyDiv.next("div")
           
-          while(descDiv){
+          while(descDiv.length){
             let text = descDiv.text()
             if(text.includes("Projeto certificado")){
               descDiv = descDiv.next("div")
@@ -115,7 +116,7 @@ export class LattesParser {
             descDiv = descDiv.next("div")
           }
 
-          if(descDiv){
+          if(descDiv.length){
             const rawText = descDiv.html()
             let text = rawText?.split(/<[^>]+>/g) || []
             text.forEach(line => {

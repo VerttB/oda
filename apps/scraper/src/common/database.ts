@@ -69,7 +69,9 @@ export const db = {
    * Normaliza os dados da fila existentes e atualiza a coluna similares.
    */
   async normalizeQueueData() {
-    const allItems = await prisma.filaExtracaoGrupo.findMany();
+    const allItems = await prisma.filaExtracaoGrupo.findMany({
+      select: { dgpId: true, nome: true, area: true, instituicao: true, similares: true },
+    });
     let updatedCount = 0;
     for (const item of allItems) {
         const cleanNome = cleanStr(item.nome);
@@ -95,21 +97,20 @@ export const db = {
         console.log(`[Database] Normalizadas strings de ${updatedCount} registros no banco.`);
     }
 
-    const itemsAfterNormalization = await prisma.filaExtracaoGrupo.findMany();
-    const groupsMap = new Map<string, string[]>();
-    for (const item of itemsAfterNormalization) {
+    const groupsMap = new Map<string, typeof allItems>();
+    for (const item of allItems) {
         const key = `${item.nome}|${item.area}|${item.instituicao}`;
         if (!groupsMap.has(key)) {
             groupsMap.set(key, []);
         }
-        groupsMap.get(key)!.push(item.dgpId);
+        groupsMap.get(key)!.push(item);
     }
 
     let updatedSimilares = 0;
-    for (const [_, dgpIds] of groupsMap.entries()) {
-        const count = dgpIds.length;
-        const sampleItem = itemsAfterNormalization.find(i => i.dgpId === dgpIds[0]);
-        if (sampleItem && sampleItem.similares !== count) {
+    for (const items of groupsMap.values()) {
+        const count = items.length;
+        const dgpIds = items.filter(item => item.similares !== count).map(item => item.dgpId);
+        if (dgpIds.length > 0) {
             await prisma.filaExtracaoGrupo.updateMany({
                 where: { dgpId: { in: dgpIds } },
                 data: { similares: count }
@@ -172,6 +173,19 @@ export const db = {
       return prisma.filaExtracaoPesquisador.update({
           where: { lattesId },
           data: buildQueueStatusData(status, errorData)
+      });
+  },
+
+  /**
+   * Recupera itens que ficaram presos em PROCESSANDO apos queda fatal do processo.
+   */
+  async resetProcessingResearchersQueue() {
+      return prisma.filaExtracaoPesquisador.updateMany({
+          where: { status: FilaExtracaoStatus.PROCESSANDO },
+          data: {
+              status: FilaExtracaoStatus.PENDENTE,
+              processamentoIniciadoEm: null,
+          },
       });
   },
 

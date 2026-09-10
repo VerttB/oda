@@ -17,6 +17,14 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "dgp-extract";
 
+  if (command === "--help" || command === "-h" || args.slice(1).some(arg => arg === "--help" || arg === "-h")) {
+    console.log("Uso: pnpm scraper:dgp [idDgp ...]");
+    console.log("     pnpm scraper:lattes [nome ...]");
+    console.log("     pnpm scraper:discovery [chave ...]");
+    console.log("IDs DGP devem conter exatamente 16 dígitos.");
+    return;
+  }
+
   console.log(`[Pipeline] Iniciando Data Pipeline TS com comando: ${command}`);
 
   try {

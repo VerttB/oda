@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "start": "ts-node src/main.ts",
-    "update-groups": "ts-node src/updateGroupsOnly.ts",
     "reset-queue": "ts-node src/resetQueue.ts",
     "reset-researchers-queue": "ts-node src/resetResearchersQueue.ts",
     "check-pending-lattes-raw": "ts-node src/checkPendingLattesRawFiles.ts",

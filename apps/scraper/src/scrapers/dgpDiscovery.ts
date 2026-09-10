@@ -1,5 +1,6 @@
 import { PlaywrightCrawler, log } from 'crawlee';
 import { db, prisma } from '../common/database';
+import { createCrawlerConfig, createCrawlerOptions, CRAWLER_STORAGE_DIRS, purgeCrawlerStorage } from '../common/config';
 import { randomSleep, sleep, cleanStr } from '../common/utils';
 import { PageGroupItemInfo, RequestType } from '../common/interfaces';
 import { Locator, Page } from 'playwright';
@@ -8,39 +9,22 @@ const SEARCH_URL = 'http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada
 const pipelineLogger = new SharedPipelineLogger(prisma);
 
 
-// Cache global de metadados em memória RAM para evitar navegações duplicadas (exclusão global)
-const processedKeys = new Set<string>();
-// Cache de páginas processadas para evitar processar a mesma página duas vezes pelas duas direções
-const processedPages = new Set<string>();
-// Páginas em progresso
-const processingPages = new Set<string>();
-// Progresso atual da página
-const requestPageProgress = new Map<string, number>();
-
-
-
-let isCacheLoaded = false;
-
 /** 
 * 
 * Carrega itens da fila de extração no banco em memória
 */
-async function loadCacheIfNeeded() {
-    if (isCacheLoaded) return;
+async function loadCache(processedKeys: Set<string>) {
     try {
-        // Roda sempre para corrigir erros na coluna `similares`
-        await db.normalizeQueueData();
-
         log.info("Carregando cache de itens já descobertos a partir do banco de dados...");
         const alreadyDiscovered = await db.getGroupQueueDiscovery();
         for (const item of alreadyDiscovered) {
             const key = `${cleanStr(item.nome)}|${cleanStr(item.area)}|${cleanStr(item.instituicao)}`;
             processedKeys.add(key);
         }
-        isCacheLoaded = true;
         log.info(`Cache inicializado com ${processedKeys.size} itens do banco.`);
     } catch (err: any) {
         log.error(`Erro ao carregar cache do banco: ${err.message}`);
+        throw err;
     }
 }
 
@@ -188,15 +172,24 @@ async function prepareSearchPage(page: Page, chave: string, pageNum: number, dir
 export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]) {
     log.info(`Iniciando Discovery DGP para as chaves: ${keys.join(', ')}`);
 
-    await loadCacheIfNeeded();
+    // Caches pertencem apenas a esta execucao; as direcoes compartilham a deduplicacao.
+    const processedKeys = new Set<string>();
+    const processedPages = new Set<string>();
+    const processingPages = new Set<string>();
+    const requestPageProgress = new Map<string, number>();
+    await loadCache(processedKeys);
     const initialCacheSize = processedKeys.size;
     let paginasProcessadas = 0;
     let itensDescobertos = 0;
     let itensPulados = 0;
     let itensComErro = 0;
 
-    const concurrency = Math.min(Math.max(2, keys.length * 2), 8);
+    const options = createCrawlerOptions('discovery', keys.length);
+    const concurrency = options.maxConcurrency;
     log.info(`Configurando crawler com ${concurrency} workers concorrentes.`);
+    const crawlerConfig = createCrawlerConfig('discovery');
+    log.info(`[Discovery DGP] Storage Crawlee: ${CRAWLER_STORAGE_DIRS.discovery}`);
+    await purgeCrawlerStorage(crawlerConfig);
 
     const pipelineLogId = await pipelineLogger.startPipelineLogger(
         ModuloSistema.SCRAPER,
@@ -210,25 +203,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
     );
 
     const crawler = new PlaywrightCrawler({
-        launchContext: {
-            useIncognitoPages: true,
-        },
-        headless: true,
-        maxConcurrency: concurrency,
-        minConcurrency: concurrency,
-        requestHandlerTimeoutSecs: 5000,
-
-        preNavigationHooks: [
-            async ({ page }) => {
-                const context = page.context();
-                await context.route('**/*', (route) => {
-                    if (['image', 'font', 'stylesheet', 'media'].includes(route.request().resourceType())) {
-                        return route.abort();
-                    }
-                    return route.continue();
-                });
-            }
-        ],
+        ...options,
 
         async requestHandler({ page, request  }) {
             const chave = request.userData.chave;
@@ -244,6 +219,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
             const progressKey = `${chave}|${direction}`;
             let pageNum = requestPageProgress.get(progressKey) || 1;
+            let ownedPageKey: string | undefined;
 
             try {
                 let hasNextPage = true;
@@ -259,6 +235,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                         break;
                     }
                     processingPages.add(pageKey);
+                    ownedPageKey = pageKey;
 
                     if (await isLoginRedirect(page)) {
                         await handleSessionRecovery(page, chave, pageNum, direction, `Login detectado no início da página ${pageNum}`);
@@ -434,6 +411,8 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
                     // Adiciona a página concluída ao cache de páginas processadas
                     processedPages.add(pageKey);
+                    processingPages.delete(pageKey);
+                    ownedPageKey = undefined;
                     paginasProcessadas++;
                     itensPulados += skippedCount;
 
@@ -457,14 +436,11 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                         const isDisabled = await pageBtn.evaluate((el) => el.classList.contains('ui-state-disabled'));
                         if (!isDisabled) {
                             await randomSleep(1000, 2000);
+                            // Em falha de navegacao, a retentativa retoma a proxima pagina, ja que esta foi concluida.
+                            const nextPageNum = direction === 'forward' ? pageNum + 1 : pageNum - 1;
+                            requestPageProgress.set(progressKey, nextPageNum);
                             await handleNotDisabled(page, pageBtn);
-                            
-                            if (direction === 'forward') {
-                                pageNum++;
-                            } else {
-                                pageNum--;
-                            }
-                            requestPageProgress.set(progressKey, pageNum);
+                            pageNum = nextPageNum;
                         } else {
                             hasNextPage = false;
                         }
@@ -489,11 +465,8 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 );
                 throw error;
             } finally {
-                // Remove a página atual de ambos os caches em caso de erro,
-                // garantindo que a retentativa possa processar o canal livremente.
-                const pageKey = `${chave}|${pageNum}`;
-                processingPages.delete(pageKey);
-                processedPages.delete(pageKey);
+                // Libera apenas a pagina deste handler; paginas concluidas continuam no cache.
+                if (ownedPageKey) processingPages.delete(ownedPageKey);
 
                 page.off('popup', popupListener);
                 for (const p of activePopups) {
@@ -507,7 +480,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 } catch (closeErr) {}
             }
         },
-    });
+    }, crawlerConfig);
     
 
     const requests:RequestType[] = [];
@@ -574,5 +547,10 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
             }
         );
         throw error;
+    } finally {
+        processedKeys.clear();
+        processedPages.clear();
+        processingPages.clear();
+        requestPageProgress.clear();
     }
 }
