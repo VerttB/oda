@@ -20,6 +20,9 @@ services:
     image: redis:7-alpine
     container_name: oda_redis
     restart: always
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis_data:/data
     ports:
       - "6379:6379"
 
@@ -73,4 +76,5 @@ services:
       - postgres
 
 volumes:
+  redis_data:
   postgres_data:

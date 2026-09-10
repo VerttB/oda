@@ -6,4 +6,5 @@ dist
 .env
 .dockerignore
 **/*.tsbuildinfo
+apps/api/static
 

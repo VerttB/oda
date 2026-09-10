@@ -27,7 +27,14 @@
     "move:images": "node scripts/move-images-to-api-static.mjs",
     "download:instituicoes": "node scripts/download-instituicao-logos.mjs",
     "ingest:db": "pnpm -F @oda/langchain run ingest-db",
-    "web:dev": "pnpm -F @oda/web dev "
+    "web:dev": "pnpm -F @oda/web dev ",
+    "queue:demo:producer": "pnpm -F @oda/queue demo:producer",
+    "queue:demo:worker": "pnpm -F @oda/queue demo:worker",
+    "queue:prepare": "pnpm -F @oda/scraper queue:prepare",
+    "queue:dgp:enqueue": "pnpm -F @oda/scraper queue:dgp enqueue",
+    "queue:dgp:worker": "pnpm -F @oda/scraper queue:dgp worker",
+    "queue:dgp:status": "pnpm -F @oda/scraper queue:dgp status",
+    "queue:dgp:reconcile": "pnpm -F @oda/scraper queue:dgp reconcile"
   },
   "engines": {
     "node": ">=20"

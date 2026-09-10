@@ -20,6 +20,7 @@ model Instituicao {
   id                     String                     @id @default(uuid())
   nome                   String
   sigla                  String
+  imageUrl               String?                    @map("image_url")
   estado                 Estado?                    @relation(fields: [estadoId], references: [id])
   estadoId               String?                    @map("estado_id")
   gruposPesquisaVinculos GrupoPesquisaInstituicao[]

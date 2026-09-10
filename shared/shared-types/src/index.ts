@@ -174,6 +174,10 @@ export const ScraperMetadataSchema = z.object({
   linhasExtraidas: z.number().int().nonnegative().optional(),
   instituicoesExtraidas: z.number().int().nonnegative().optional(),
   pesquisadoresEnfileirados: z.number().int().nonnegative().optional(),
+  dgpRecuperacoesEspelho: z.number().int().nonnegative().optional(),
+  dgpRedirecionamentosLogin: z.number().int().nonnegative().optional(),
+  dgpTempoRecuperacaoMs: z.number().int().nonnegative().optional(),
+  dgpRecuperacoesPorEtapa: z.record(z.string(), z.number().int().nonnegative()).optional(),
   arquivoJson: z.string().optional(),
 }).passthrough();
 export type ScraperMetadata = z.infer<typeof ScraperMetadataSchema>;

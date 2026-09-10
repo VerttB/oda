@@ -51,6 +51,7 @@ export const ProducaoPesquisadorResponseSchema = z.object({
 
 export const GrupoPesquisaInstituicaoResponseSchema = z.object({
   id: z.string(), nome: z.string(), sigla: z.string(),
+  imageUrl: z.string().nullable(),
   tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
   unidade: z.object({ nome: z.string().nullable(), uf: z.string().nullable() }).nullable(),
   estado: z.object({ id: z.string(), sigla: z.string(), nome: z.string(), regiao: z.string() }).nullable(),
@@ -310,6 +311,7 @@ export type PesquisadorMetricasResponse = z.infer<typeof PesquisadorMetricasResp
 
 export const InstituicaoResponseSchema = z.object({
   id: z.string(), nome: z.string(), sigla: z.string(),
+  imageUrl: z.string().nullable(),
   estado: GrupoPesquisaInstituicaoResponseSchema.shape.estado,
   gruposPesquisa: z.array(GrupoPesquisaResumoResponseSchema.pick({
     id: true, dgpId: true, nome: true, situacao: true, uf: true, cidade: true,
@@ -323,6 +325,7 @@ export const InstituicaoResumoResponseSchema = z.object({
   id: z.string(),
   nome: z.string(),
   sigla: z.string(),
+  imageUrl: z.string().nullable(),
   estadoId: z.string().nullable(),
 });
 export const PaginatedInstituicaoResponseSchema =

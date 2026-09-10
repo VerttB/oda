@@ -1,0 +1,26 @@
+{
+  "name": "@oda/queue",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "pnpm run build && node --test tests/*.test.cjs",
+    "demo:producer": "pnpm run build && node --env-file=../../.env dist/demo-producer.js",
+    "demo:worker": "pnpm run build && node --env-file=../../.env dist/demo-worker.js"
+  },
+  "dependencies": {
+    "bullmq": "^5.79.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "typescript": "^5.9.3"
+  }
+}

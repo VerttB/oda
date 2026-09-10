@@ -4,6 +4,7 @@ import { PaginationQuerySchema } from './pagination';
 export const CreateInstituicaoRequestSchema = z.object({
   nome: z.string().min(2).max(255),
   sigla: z.string().min(2).max(30),
+  imageUrl: z.string().optional(),
   estadoId: z.string().uuid().optional(),
 });
 
