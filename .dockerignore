@@ -7,4 +7,6 @@ dist
 .dockerignore
 **/*.tsbuildinfo
 apps/api/static
+apps/scraper/data
+apps/scraper/storage
 

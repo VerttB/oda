@@ -16,7 +16,7 @@
     "scraper:dgp": "pnpm -F @oda/scraper start dgp",
     "scraper:discovery": "pnpm -F @oda/scraper start discovery",
     "scraper:lattes": "pnpm -F @oda/scraper start lattes",
-    "etl": "pnpm -F @oda/etl start all",
+    "etl": "pnpm -F @oda/etl etl:all",
     "etl:grupo": "pnpm -F @oda/etl start grupo",
     "etl:pesquisador": "pnpm -F @oda/etl start pesquisador",
     "openalex:areas": "pnpm -F @oda/etl run export:openalex-areas",
@@ -24,7 +24,6 @@
     "openalex:areas:relacionar": "pnpm -F @oda/etl run relate:openalex-areas",
     "fix:dgp-areas": "pnpm -F @oda/etl run fix:dgp-areas",
     "fix:producoes-doi-openalex": "pnpm -F @oda/etl run fix:producoes-doi-openalex",
-    "move:images": "node scripts/move-images-to-api-static.mjs",
     "download:instituicoes": "node scripts/download-instituicao-logos.mjs",
     "ingest:db": "pnpm -F @oda/langchain run ingest-db",
     "web:dev": "pnpm -F @oda/web dev ",
@@ -34,7 +33,20 @@
     "queue:dgp:enqueue": "pnpm -F @oda/scraper queue:dgp enqueue",
     "queue:dgp:worker": "pnpm -F @oda/scraper queue:dgp worker",
     "queue:dgp:status": "pnpm -F @oda/scraper queue:dgp status",
-    "queue:dgp:reconcile": "pnpm -F @oda/scraper queue:dgp reconcile"
+    "queue:dgp:reconcile": "pnpm -F @oda/scraper queue:dgp reconcile",
+    "queue:lattes:enqueue": "pnpm -F @oda/scraper queue:lattes enqueue",
+    "queue:lattes:worker": "pnpm -F @oda/scraper queue:lattes worker",
+    "queue:lattes:status": "pnpm -F @oda/scraper queue:lattes status",
+    "queue:lattes:reconcile": "pnpm -F @oda/scraper queue:lattes reconcile",
+    "queue:discovery:enqueue": "pnpm -F @oda/scraper queue:discovery enqueue",
+    "queue:discovery:worker": "pnpm -F @oda/scraper queue:discovery worker",
+    "queue:discovery:status": "pnpm -F @oda/scraper queue:discovery status",
+    "queue:discovery:reconcile": "pnpm -F @oda/scraper queue:discovery reconcile",
+    "queue:etl:prepare": "pnpm -F @oda/etl queue:prepare",
+    "queue:etl:enqueue": "pnpm -F @oda/etl queue:etl enqueue",
+    "queue:etl:worker": "pnpm -F @oda/etl queue:etl worker",
+    "queue:etl:status": "pnpm -F @oda/etl queue:etl status",
+    "queue:etl:reconcile": "pnpm -F @oda/etl queue:etl reconcile"
   },
   "engines": {
     "node": ">=20"

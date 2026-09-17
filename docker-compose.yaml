@@ -1,4 +1,25 @@
-version: '3.8'
+x-scraper-worker: &scraper-worker
+  image: oda-scraper:local
+  build:
+    context: .
+    dockerfile: apps/scraper/Dockerfile
+  restart: unless-stopped
+  init: true
+  env_file:
+    - .env
+  environment:
+    DATABASE_URL: ${DATABASE_URL}
+    REDIS_URL: redis://redis:6379/0
+  volumes:
+    - ./apps/scraper/data:/app/apps/scraper/data
+    - ./apps/api/static:/app/apps/api/static
+  shm_size: 1gb
+  stop_grace_period: 5m
+  depends_on:
+    postgres:
+      condition: service_started
+    redis:
+      condition: service_healthy
 
 services:
   postgres:
@@ -20,11 +41,34 @@ services:
     image: redis:7-alpine
     container_name: oda_redis
     restart: always
-    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory-policy", "noeviction"]
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - noeviction
+    # Reserva adicional para buffers, fragmentacao e reescrita do AOF.
+    mem_limit: 512m
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
 
   api:
     build:
@@ -36,7 +80,7 @@ services:
       - .env
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
+      - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=${JWT_SECRET}
       - LANGCHAIN_HOST=langchain
       - LANGCHAIN_PORT=8002
@@ -45,8 +89,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_started
 
   langchain:
     build:
@@ -64,16 +108,50 @@ services:
       - postgres
 
   etl:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: apps/etl/Dockerfile
     container_name: oda_etl
-    working_dir: /app
+    restart: always
+    env_file:
+      - .env
     volumes:
-      - .:/app
+      - ./apps/scraper/data:/data
     environment:
       - DATABASE_URL=${DATABASE_URL}
-    command: sh -c "pnpm install && pnpm -F @oda/etl start"
+      - REDIS_URL=redis://redis:6379/0
+      - SCRAPER_DATA_DIR=/data
+      - ETL_GROUP_WORKER_NAME=etl-grupos-docker
+      - ETL_RESEARCHER_WORKER_NAME=etl-pesquisadores-docker
     depends_on:
-      - postgres
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_healthy
+
+  scraper-dgp:
+    <<: *scraper-worker
+    container_name: oda_scraper_dgp
+    hostname: scraper-dgp
+    command: ["node", "dist/queue/dgp/dgpCli.js", "worker"]
+
+  scraper-simcc-enqueue:
+    <<: *scraper-worker
+    profiles: ["jobs"]
+    restart: "no"
+    command: ["node", "dist/queue/dgp/dgpCli.js", "enqueue", "--scope", "simcc"]
+
+  scraper-lattes:
+    <<: *scraper-worker
+    container_name: oda_scraper_lattes
+    hostname: scraper-lattes
+    command: ["node", "dist/queue/lattes/lattesCli.js", "worker"]
+
+  scraper-discovery:
+    <<: *scraper-worker
+    container_name: oda_scraper_discovery
+    hostname: scraper-discovery
+    command: ["node", "dist/queue/discovery/discoveryCli.js", "worker"]
 
 volumes:
   redis_data:

@@ -6,14 +6,11 @@ RUN corepack enable
 FROM base AS build
 WORKDIR /app
 ENV CI=true
-
 RUN pnpm config set package-import-method copy
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-
-COPY apps/api/package.json ./apps/api/
+COPY apps/etl/package.json ./apps/etl/
 COPY shared/database/package.json ./shared/database/
-COPY shared/cache/package.json ./shared/cache/
 COPY shared/queue/package.json ./shared/queue/
 COPY shared/shared-types/package.json ./shared/shared-types/
 
@@ -21,21 +18,19 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY shared/ ./shared/
-COPY apps/api/ ./apps/api/
+COPY apps/etl/ ./apps/etl/
 
 RUN pnpm --filter @oda/database run prisma:generate
-RUN pnpm --filter @oda/api... build
-
+RUN pnpm --filter @oda/etl... build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm --filter @oda/api --prod deploy /app/deploy --legacy
+    pnpm --filter @oda/etl --prod deploy /app/deploy --legacy
 
 FROM node:22-alpine AS prod
 ENV NODE_ENV=production
+ENV SCRAPER_DATA_DIR=/data
 WORKDIR /app
 
 COPY --from=build /app/deploy ./
-RUN mkdir -p /app/static
+COPY --from=build /app/apps/etl/src/commom/qualis-capes-2017-2020.json ./dist/commom/
 
-EXPOSE 3000
-
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/queue/etlCli.js", "worker"]
