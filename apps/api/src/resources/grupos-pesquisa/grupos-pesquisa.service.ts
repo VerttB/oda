@@ -3,6 +3,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateGruposPesquisaRequest,
+  SIMCC_INSTITUTIONS,
   UpdateGruposPesquisaRequest,
 } from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
@@ -10,6 +11,14 @@ import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
+
+const SIMCC_INSTITUICOES: Prisma.InstituicaoWhereInput = {
+  OR: [
+    { sigla: { in: SIMCC_INSTITUTIONS.filter(item => item.sigla !== 'FIOCRUZ').map(item => item.sigla) } },
+    { sigla: { startsWith: 'IFBA -', mode: 'insensitive' } },
+    { sigla: 'FIOCRUZ', nome: { contains: 'Moniz', mode: 'insensitive' } },
+  ],
+};
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -65,6 +74,14 @@ export class GruposPesquisaService {
   }
 
   async findAll(query?: FindAllGruposPesquisaDto) {
+    return this.list(query);
+  }
+
+  async findSimcc(query?: FindAllGruposPesquisaDto) {
+    return this.list(query, true);
+  }
+
+  private async list(query?: FindAllGruposPesquisaDto, simcc = false) {
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
     const pagination = getPagination(query);
@@ -78,16 +95,6 @@ export class GruposPesquisaService {
       }
       if (query.anoFormacao) {
         where.anoFormacao = query.anoFormacao;
-      }
-      if (query.instituicaoId) {
-        andConditions.push({
-          instituicoes: {
-            some: {
-              instituicaoId: query.instituicaoId,
-              tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
-            },
-          },
-        });
       }
       if (query.areaConhecimentoId) {
         where.areaConhecimentoId = query.areaConhecimentoId;
@@ -104,6 +111,14 @@ export class GruposPesquisaService {
         where.uf = { equals: query.uf, mode: 'insensitive' };
       }
     }
+    if (query?.instituicaoId || simcc) {
+      const vinculo: Prisma.GrupoPesquisaInstituicaoWhereInput = {
+        tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+        ...(query?.instituicaoId ? { instituicaoId: query.instituicaoId } : {}),
+        ...(simcc ? { instituicao: SIMCC_INSTITUICOES } : {}),
+      };
+      andConditions.push({ instituicoes: { some: vinculo } });
+    }
     if (andConditions.length > 0) {
       where.AND = andConditions;
     }
@@ -114,6 +129,7 @@ export class GruposPesquisaService {
           where,
           skip: pagination.skip,
           take: pagination.take,
+          ...(simcc ? { orderBy: [{ nome: 'asc' as const }, { id: 'asc' as const }] } : {}),
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
