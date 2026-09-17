@@ -23,6 +23,7 @@ export function createQueueConnection(role: QueueConnectionRole): ConnectionOpti
     password: url.password ? decodeURIComponent(url.password) : undefined,
     db: database,
     maxRetriesPerRequest: role === 'worker' ? null : 1,
+    ...(role === 'producer' ? { connectTimeout: 1500, retryStrategy: () => 5000 } : {}),
     ...(url.protocol === 'rediss:' ? { tls: {} } : {}),
   };
 }

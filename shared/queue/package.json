@@ -13,6 +13,7 @@
   "scripts": {
     "build": "tsc",
     "test": "pnpm run build && node --test tests/*.test.cjs",
+    "test:redis": "pnpm run build && node --env-file=../../.env --test tests/redis.integration.cjs",
     "demo:producer": "pnpm run build && node --env-file=../../.env dist/demo-producer.js",
     "demo:worker": "pnpm run build && node --env-file=../../.env dist/demo-worker.js"
   },

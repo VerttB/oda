@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export * from './api/area-conhecimento';
 export * from './api/auth';
+export * from './api/filas';
 export * from './api/grupos-pesquisa';
 export * from './api/instituicoes';
 export * from './api/langchain';
@@ -10,6 +11,7 @@ export * from './api/pagination';
 export * from './api/pesquisadores';
 export * from './api/producoes';
 export * from './api/responses';
+export * from './simcc';
 
 export const PageGroupItemInfoSchema = z.object({
   nome: z.string(),
