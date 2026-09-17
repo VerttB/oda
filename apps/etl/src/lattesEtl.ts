@@ -1,13 +1,24 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, FilaExtracaoStatus, PipelineEtapa, TipoPesquisador } from '@oda/database';
-import { OPEN_ALEX_URL, DOI_URL, PROCESSED_DATA_DIR } from './commom/config';
+import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PipelineEtapa, TipoPesquisador } from '@oda/database';
+import { OPEN_ALEX_URL, DOI_URL } from './commom/config';
 import { stripHtml } from './commom/normalize';
 import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
+import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
 
 const prisma = new PrismaClient(prismaConfig);
 const pipelineLogger = new SharedPipelineLogger(prisma);
 type TransactionClient = Omit<PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel, DefaultArgs>, "$connect" | "$disconnect" | "$on" | "$use" | "$extends">;
+
+export type ResearcherEtlProgressUpdate = {
+    etapa: 'LENDO_JSON' | 'VALIDANDO' | 'ENRIQUECENDO_ORCID' | 'ENRIQUECENDO_PRODUCOES' | 'SALVANDO_PESQUISADOR' | 'SALVANDO_PRODUCOES' | 'MOVENDO_ARQUIVO' | 'CONCLUIDO';
+    percentual: number;
+    itensProcessados: number | null;
+    itensTotal: number | null;
+    loteAtual: number | null;
+    lotesTotal: number | null;
+};
+export type ResearcherEtlProgressReporter = (progress: ResearcherEtlProgressUpdate) => Promise<void>;
 
 type ResearcherProductionInput = {
     titulo: string;
@@ -285,13 +296,14 @@ async function saveResearcherProductionsBatch(tx: TransactionClient, pesquisador
 /**
  * Lógica de persistência para Currículos Lattes
  */
-export async function saveLattesToDb(data: any) {
+export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlProgressReporter = async () => {}) {
     const lattesId = normalizeLattesId(data.lattes) ?? normalizeLattesId(data.lattesId);
     if (!lattesId) {
         throw new Error(`Currículo Lattes de "${data.nome || 'N/A'}" sem lattesId identificável.`);
     }
 
     console.log(`[ETL] 📡 Buscando dados acadêmicos externos para ${data.nome}...`);
+    await reportProgress({ etapa: 'ENRIQUECENDO_ORCID', percentual: 15, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
     let openAlexData = null
     if (typeof data.orcidId === 'string' && data.orcidId.trim() !== '') {
         data.orcidId = data.orcidId.trim().split("/").pop()
@@ -301,7 +313,7 @@ export async function saveLattesToDb(data: any) {
     }
     const artigosEnriquecidos = [] as any;
     if (data.artigos && Array.isArray(data.artigos)) {
-        for (const artigo of data.artigos) {
+        for (const [index, artigo] of data.artigos.entries()) {
             let resumo = null, veiculo = null, url = null, issnDoi = null, issnOpenAlex = null;
             let anoOpenAlex: number | null = null;
             const anoLattes = parsePublicationYear(artigo.ano);
@@ -337,12 +349,17 @@ export async function saveLattesToDb(data: any) {
                 veiculo,
                 url
             });
+            await reportProgress({
+                etapa: 'ENRIQUECENDO_PRODUCOES', percentual: 20 + Math.round(((index + 1) / Math.max(data.artigos.length, 1)) * 35),
+                itensProcessados: index + 1, itensTotal: data.artigos.length, loteAtual: null, lotesTotal: null,
+            });
         }
     }
     const livrosCapitulos = data.livrosCapitulos || [];
     const producoes = await buildResearcherProductions(artigosEnriquecidos, livrosCapitulos);
 
     try {
+        await reportProgress({ etapa: 'SALVANDO_PESQUISADOR', percentual: 60, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
         const pesquisadorId = await prisma.$transaction(async (tx) => {
             let pesquisador = await tx.pesquisador.findFirst({
                 where: {
@@ -380,120 +397,117 @@ export async function saveLattesToDb(data: any) {
         }, { maxWait: 15000, timeout: 30000 });
 
         const producoesLotes = chunkArray(producoes, 20);
+        if (!producoesLotes.length) {
+            await reportProgress({
+                etapa: 'SALVANDO_PRODUCOES', percentual: 90,
+                itensProcessados: 0, itensTotal: 0, loteAtual: 0, lotesTotal: 0,
+            });
+        }
         for (const [index, lote] of producoesLotes.entries()) {
             await prisma.$transaction(async (tx) => {
                 await saveResearcherProductionsBatch(tx, pesquisadorId, lote);
             }, { maxWait: 15000, timeout: 60000 });
+            await reportProgress({
+                etapa: 'SALVANDO_PRODUCOES', percentual: 65 + Math.round(((index + 1) / Math.max(producoesLotes.length, 1)) * 25),
+                itensProcessados: Math.min((index + 1) * 20, producoes.length), itensTotal: producoes.length,
+                loteAtual: index + 1, lotesTotal: producoesLotes.length,
+            });
             console.log(`[ETL] Produções de ${data.nome}: lote ${index + 1}/${producoesLotes.length} processado (${lote.length} itens).`);
         }
-
-        await prisma.$transaction(async (tx) => {
-            await tx.filaExtracaoPesquisador.upsert({
-                where: { lattesId },
-                update: {
-                    status: FilaExtracaoStatus.CONCLUIDO,
-                    processamentoIniciadoEm: null,
-                    ultimoErroId: null,
-                    ultimoErroEm: null,
-                },
-                create: {
-                    lattesId,
-                    nome: data.nome?.trim() || `Pesquisador ${lattesId}`,
-                    status: FilaExtracaoStatus.CONCLUIDO
-                }
-            });
-
-            console.log(`[ETL] ✅ Lattes e produções de ${data.nome} processados com sucesso.`);
-        }, { maxWait: 15000, timeout: 60000 });
+        console.log(`[ETL] ✅ Lattes e produções de ${data.nome} processados com sucesso.`);
+        return { lattesId, producoesProcessadas: producoes.length, lotesProducoes: producoesLotes.length };
     } catch (error) {
         console.error(`[ETL] ❌ Erro no Lattes de ${data.nome}:`, error);
         throw error;
     }
 }
 
-/**
- * Executa o ETL de um pesquisador específico a partir do caminho do seu arquivo JSON.
- * (Preparado para alterações na função interna de salvamento saveLattesToDb)
- */
-export async function runPesquisadorEtl(jsonPath: string) {
-    console.log(`[ETL] 🔍 Iniciando processamento do arquivo de pesquisador: ${jsonPath}`);
-    if (!fs.existsSync(jsonPath)) {
-        console.log(`[ETL] ⚠️ Arquivo de origem não existe (pode ter sido processado concorrentemente): ${jsonPath}`);
-        return;
+export type ResearcherEtlResult = {
+    lattesId: string;
+    arquivoJson: string;
+    tamanhoBytes: number;
+    artigosProcessados: number;
+    livrosCapitulosProcessados: number;
+    producoesProcessadas: number;
+    lotesProducoes: number;
+    arquivoMovido: boolean;
+};
+
+export async function processResearcherEtlFile(
+    jsonPath: string,
+    expectedLattesId?: string,
+    reportProgress: ResearcherEtlProgressReporter = async () => {},
+): Promise<ResearcherEtlResult> {
+    await reportProgress({ etapa: 'LENDO_JSON', percentual: 5, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
+    if (!fs.existsSync(jsonPath)) throw new Error(`Arquivo Lattes nao encontrado: ${jsonPath}`);
+
+    const fileInfo = inspectEtlFile(jsonPath);
+    let lattesData: any;
+    try {
+        lattesData = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+    } catch (error) {
+        throw new EtlInputError(`JSON Lattes invalido: ${error instanceof Error ? error.message : String(error)}`);
     }
 
-    const content = fs.readFileSync(jsonPath, 'utf-8');
-    const lattesData = JSON.parse(content);
-    const lattesId = lattesData.lattesId || path.basename(jsonPath, '.json');
-    const lattesFileStats = fs.statSync(jsonPath);
+    await reportProgress({ etapa: 'VALIDANDO', percentual: 10, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
+    const lattesId = normalizeLattesId(lattesData.lattes) ?? normalizeLattesId(lattesData.lattesId)
+        ?? normalizeLattesId(path.basename(jsonPath, '.json'));
+    if (!lattesId || !/^\d{16}$/.test(lattesId)) {
+        throw new EtlInputError(`ID Lattes invalido no JSON: ${lattesId || 'ausente'}.`);
+    }
+    if (expectedLattesId && lattesId !== expectedLattesId) {
+        throw new EtlInputError(`O JSON pertence ao pesquisador ${lattesId}, mas o job esperava ${expectedLattesId}.`);
+    }
+    lattesData.lattesId = lattesId;
 
-    const pipelineLogger = new SharedPipelineLogger(prisma);
-    const pipelineLogId = await pipelineLogger.startPipelineLogger(
-        ModuloSistema.ETL,
+    const saved = await saveLattesToDb(lattesData, reportProgress);
+    await reportProgress({ etapa: 'MOVENDO_ARQUIVO', percentual: 95, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
+    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'lattes');
+    const result = {
         lattesId,
-        ModoExecucao.APENAS_LATTES,
-        {
-            comando: 'etl-pesquisador',
-            arquivoJson: path.basename(jsonPath),
-            tamanhoTotalBytes: lattesFileStats.size,
-            artigosEncontrados: Array.isArray(lattesData.artigos) ? lattesData.artigos.length : 0,
-            livrosCapitulosEncontrados: Array.isArray(lattesData.livrosCapitulos) ? lattesData.livrosCapitulos.length : 0,
-        }
+        arquivoJson: fileInfo.arquivoJson,
+        tamanhoBytes: fileInfo.tamanhoBytes,
+        artigosProcessados: Array.isArray(lattesData.artigos) ? lattesData.artigos.length : 0,
+        livrosCapitulosProcessados: Array.isArray(lattesData.livrosCapitulos) ? lattesData.livrosCapitulos.length : 0,
+        producoesProcessadas: saved.producoesProcessadas,
+        lotesProducoes: saved.lotesProducoes,
+        arquivoMovido,
+    };
+    await reportProgress({ etapa: 'CONCLUIDO', percentual: 100, itensProcessados: result.producoesProcessadas, itensTotal: result.producoesProcessadas, loteAtual: result.lotesProducoes, lotesTotal: result.lotesProducoes });
+    return result;
+}
+
+export async function runPesquisadorEtl(jsonPath: string) {
+    const resolvedPath = path.resolve(jsonPath);
+    const fileInfo = fs.existsSync(resolvedPath) ? inspectEtlFile(resolvedPath) : null;
+    const lattesId = path.basename(jsonPath, '.json');
+    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+        ModuloSistema.ETL, null, ModoExecucao.APENAS_LATTES,
+        { comando: 'etl-pesquisador', arquivoJson: path.basename(jsonPath), tamanhoTotalBytes: fileInfo?.tamanhoBytes },
     );
-
-    const t0 = performance.now();
+    const startedAt = performance.now();
     try {
-        await saveLattesToDb(lattesData);
-        const tempoMs = Math.round(performance.now() - t0);
-
-        const lattesFileName = path.basename(jsonPath);
-        const processedLattesDir = path.join(PROCESSED_DATA_DIR, 'lattes');
-        if (!fs.existsSync(processedLattesDir)) fs.mkdirSync(processedLattesDir, { recursive: true });
-        const destPath = path.join(processedLattesDir, lattesFileName);
-        if (jsonPath !== destPath) {
-            try {
-                if (fs.existsSync(jsonPath)) {
-                    fs.renameSync(jsonPath, destPath);
-                    console.log(`[ETL] 📁 JSON Lattes ${lattesFileName} movido para ${destPath}`);
-                }
-            } catch (renameError: any) {
-                console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Lattes ${lattesFileName}: ${renameError.message}`);
-            }
-        }
-
+        const result = await processResearcherEtlFile(resolvedPath);
         await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.SUCESSO, {
-            entidadeId: lattesId,
-            tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-            tempoMs,
+            entidadeId: result.lattesId, tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+            tempoMs: Math.round(performance.now() - startedAt),
         });
-
         await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
-            gruposGravados: 0,
-            pesquisadoresAtualizados: 1,
-            arquivoJson: path.basename(jsonPath),
-            tamanhoTotalBytes: lattesFileStats.size,
-            artigosEncontrados: Array.isArray(lattesData.artigos) ? lattesData.artigos.length : 0,
-            livrosCapitulosEncontrados: Array.isArray(lattesData.livrosCapitulos) ? lattesData.livrosCapitulos.length : 0,
+            pesquisadoresAtualizados: 1, producoesVinculadas: result.producoesProcessadas,
+            arquivoJson: result.arquivoJson, tamanhoTotalBytes: result.tamanhoBytes,
+            artigosEncontrados: result.artigosProcessados,
+            livrosCapitulosEncontrados: result.livrosCapitulosProcessados,
         });
-    } catch (err: any) {
-        console.error(`[ETL] ❌ Erro na carga Lattes do pesquisador ${lattesId}: ${err.message}`);
-        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
-            entidadeId: lattesId,
-            tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-            tipoErro: TipoErroColeta.FALHA_ETL,
-            mensagemErro: err.message,
-            detalhesErro: err.stack,
+        return result;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_PESQUISADOR_CARGA, StatusItemLog.ERRO, {
+            entidadeId: /^\d{16}$/.test(lattesId) ? lattesId : path.basename(jsonPath),
+            tipoEntidade: TipoEntidadeLog.PESQUISADOR, tipoErro: TipoErroColeta.FALHA_ETL,
+            mensagemErro: message, detalhesErro: error instanceof Error ? error.stack : undefined,
+            tempoMs: Math.round(performance.now() - startedAt),
         });
-        await prisma.filaExtracaoPesquisador.update({
-            where: { lattesId },
-            data: {
-                status: FilaExtracaoStatus.ERRO,
-                processamentoIniciadoEm: null,
-                ultimoErroId: errorItem?.id ?? null,
-                ultimoErroEm: new Date(),
-            }
-        }).catch(() => undefined);
-
-        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO);
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO, { pesquisadoresAtualizados: 0, arquivoJson: path.basename(jsonPath) });
+        throw error;
     }
 }

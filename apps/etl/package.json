@@ -9,6 +9,9 @@
     "etl:grupo": "ts-node src/main.ts grupo",
     "etl:pesquisador": "ts-node src/main.ts pesquisador",
     "etl:all": "ts-node src/run-all.ts",
+    "queue:prepare": "pnpm --filter @oda/etl... run build --incremental false",
+    "queue:etl": "node dist/queue/etlCli.js",
+    "test:queue": "pnpm run build && node --test tests/*.test.cjs",
     "export:openalex-areas": "ts-node src/exportOpenAlexAreas.ts",
     "import:openalex-areas": "ts-node src/exportOpenAlexAreas.ts --import",
     "relate:openalex-areas": "ts-node src/relateOpenAlexAreas.ts",
@@ -18,6 +21,7 @@
     "chokidar": "^4.0.3",
     "dotenv": "^16.4.7",
     "@oda/database": "workspace:*",
+    "@oda/queue": "workspace:*",
     "@oda/shared-types": "workspace:*"
   },
   "devDependencies": {

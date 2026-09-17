@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, FilaExtracaoStatus, PipelineEtapa } from '@oda/database';
-import { PROCESSED_DATA_DIR } from './commom/config';
+import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, PipelineEtapa } from '@oda/database';
+import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
+import type { DataScope } from '@oda/queue';
 import {
     createLinhaPesquisa,
     getLeafAreaName,
@@ -10,6 +11,14 @@ import {
 } from './commom/database';
 
 const prisma = new PrismaClient(prismaConfig);
+
+export type GroupEtlProgressUpdate = {
+    etapa: 'LENDO_JSON' | 'VALIDANDO' | 'SALVANDO_GRUPO' | 'SALVANDO_LINHAS' | 'SALVANDO_PESQUISADORES' | 'MOVENDO_ARQUIVO' | 'CONCLUIDO';
+    percentual: number;
+    itensProcessados: number | null;
+    itensTotal: number | null;
+};
+export type GroupEtlProgressReporter = (progress: GroupEtlProgressUpdate) => Promise<void>;
 
 type GrupoInstituicaoInput = {
     nome: string;
@@ -168,11 +177,12 @@ async function getEstadoIdByUf(tx: any, uf?: string | null, fallbackEstadoId?: s
     return estado?.id ?? fallbackEstadoId ?? null;
 }
 
-export async function saveGroupToDb(data: any) {
+export async function saveGroupToDb(data: any, reportProgress: GroupEtlProgressReporter = async () => {}) {
     const dgpId = data.idDgp;
     let grupoId = "";
 
     try {
+        await reportProgress({ etapa: 'SALVANDO_GRUPO', percentual: 20, itensProcessados: null, itensTotal: null });
         const grupo = await prisma.$transaction(async (tx) => {
             const filaGrupo = await tx.filaExtracaoGrupo.findFirst({ where: { dgpId } });
             const estado = await tx.estado.findUnique({
@@ -189,7 +199,7 @@ export async function saveGroupToDb(data: any) {
                     unidadeUf: null,
                 };
             const instituicao = await getOrCreateInstituicao(tx, sedeInput, estado?.id);
-            const anoStr = data.anoFormacao?.replace(/\D/g, '');
+            const anoStr = String(data.anoFormacao ?? '').replace(/\D/g, '');
             const ano = anoStr ? parseInt(anoStr, 10) : null;
             const areaHierarchy = data.area?.trim() || data.areaPredominante?.trim() || '';
             const areaSourceField = data.area?.trim() ? 'area' : 'areaPredominante';
@@ -275,6 +285,7 @@ export async function saveGroupToDb(data: any) {
         console.log(`[ETL] 🏢 Grupo "${grupo.nome}" (ID: ${grupoId}) inserido e confirmado.`);
 
         if (data.linhas && Array.isArray(data.linhas)) {
+            await reportProgress({ etapa: 'SALVANDO_LINHAS', percentual: 45, itensProcessados: 0, itensTotal: data.linhas.length });
             await prisma.$transaction(async (tx) => {
                 await tx.membroLinhaPesquisa.deleteMany({ where: { linhaPesquisa: { grupoId } } });
                 await tx.linhaPesquisaPalavraChave.deleteMany({ where: { linhaPesquisa: { grupoId } } });
@@ -300,10 +311,12 @@ export async function saveGroupToDb(data: any) {
                     console.log(`[ETL] 🔬 Linha de Pesquisa criada -> ID: ${novaLinha.id} | Nome: "${novaLinha.titulo}"`);
                 }
             }, { timeout: 60000 });
+            await reportProgress({ etapa: 'SALVANDO_LINHAS', percentual: 55, itensProcessados: data.linhas.length, itensTotal: data.linhas.length });
             console.log(`[ETL] ✅ Linhas de pesquisa inseridas e confirmadas.`);
         }
 
         if (data.membros && Array.isArray(data.membros)) {
+            await reportProgress({ etapa: 'SALVANDO_PESQUISADORES', percentual: 65, itensProcessados: 0, itensTotal: data.membros.length });
             await prisma.$transaction(async (tx) => {
                 for (const membro of data.membros) {
                     if (!membro.nome) continue;
@@ -433,19 +446,11 @@ export async function saveGroupToDb(data: any) {
                     }
                 }
             }, { timeout: 60000 });
+            await reportProgress({ etapa: 'SALVANDO_PESQUISADORES', percentual: 85, itensProcessados: data.membros.length, itensTotal: data.membros.length });
             console.log(`[ETL] 👥 Pesquisadores vinculados ao grupo.`);
         }
 
         console.log(`[ETL] ✅ Processamento do Grupo ${dgpId} concluído.`);
-        await prisma.filaExtracaoGrupo.update({
-            where: { dgpId },
-            data: {
-                status: FilaExtracaoStatus.CONCLUIDO,
-                processamentoIniciadoEm: null,
-                ultimoErroId: null,
-                ultimoErroEm: null,
-            }
-        });
     } catch (e: any) {
         console.error(`[ETL] ❌ Erro ao processar grupo ${dgpId}: ${e.message}`);
         throw e;
@@ -453,138 +458,94 @@ export async function saveGroupToDb(data: any) {
 }
 
 
-export async function runGroupEtl(jsonPath: string) {
-    console.log(`[ETL] 🔍 Iniciando processamento do arquivo de grupo: ${jsonPath}`);
-    let resolvedPath = path.resolve(jsonPath);
-    if (!fs.existsSync(resolvedPath)) {
-        const monorepoRootPath = path.resolve(__dirname, '../../..', jsonPath);
-        if (fs.existsSync(monorepoRootPath)) {
-            resolvedPath = monorepoRootPath;
-        } else {
-            console.log(`[ETL] ⚠️ Arquivo de grupo não encontrado (pode ter sido processado concorrentemente): ${jsonPath}`);
-            return;
-        }
+export type GroupEtlResult = {
+    dgpId: string;
+    arquivoJson: string;
+    tamanhoBytes: number;
+    membrosProcessados: number;
+    linhasProcessadas: number;
+    arquivoMovido: boolean;
+};
+
+export async function processGroupEtlFile(
+    jsonPath: string,
+    expectedDgpId?: string,
+    reportProgress: GroupEtlProgressReporter = async () => {},
+    scope: DataScope = 'default',
+): Promise<GroupEtlResult> {
+    await reportProgress({ etapa: 'LENDO_JSON', percentual: 5, itensProcessados: null, itensTotal: null });
+    if (!fs.existsSync(jsonPath)) throw new Error(`Arquivo de grupo nao encontrado: ${jsonPath}`);
+
+    const fileInfo = inspectEtlFile(jsonPath);
+    let groupData: any;
+    try {
+        groupData = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+    } catch (error) {
+        throw new EtlInputError(`JSON de grupo invalido: ${error instanceof Error ? error.message : String(error)}`);
     }
 
-    const content = fs.readFileSync(resolvedPath, 'utf-8');
-    const groupData = JSON.parse(content);
+    await reportProgress({ etapa: 'VALIDANDO', percentual: 10, itensProcessados: null, itensTotal: null });
     const dgpId = resolveQueueDgpId(groupData, jsonPath);
-    const groupFileStats = fs.statSync(resolvedPath);
+    if (isZeroDgpId(groupData.idDgp)) {
+        throw new EtlInputError(`JSON ignorado porque idDgp veio zerado; id_dgp informado: ${groupData.id_dgp || 'nenhum'}.`);
+    }
+    if (!/^\d{16}$/.test(dgpId)) throw new EtlInputError(`ID DGP invalido no JSON: ${dgpId || 'ausente'}.`);
+    if (expectedDgpId && dgpId !== expectedDgpId) {
+        throw new EtlInputError(`O JSON pertence ao grupo ${dgpId}, mas o job esperava ${expectedDgpId}.`);
+    }
+    groupData.idDgp = dgpId;
 
+    await saveGroupToDb(groupData, reportProgress);
+    await reportProgress({ etapa: 'MOVENDO_ARQUIVO', percentual: 95, itensProcessados: null, itensTotal: null });
+    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'dgp', scope);
+    const result = {
+        dgpId,
+        arquivoJson: fileInfo.arquivoJson,
+        tamanhoBytes: fileInfo.tamanhoBytes,
+        membrosProcessados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
+        linhasProcessadas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
+        arquivoMovido,
+    };
+    await reportProgress({ etapa: 'CONCLUIDO', percentual: 100, itensProcessados: null, itensTotal: null });
+    return result;
+}
+
+export async function runGroupEtl(jsonPath: string, scope: DataScope = 'default') {
+    const resolvedPath = path.resolve(jsonPath);
+    const fileInfo = fs.existsSync(resolvedPath) ? inspectEtlFile(resolvedPath) : null;
+    const dgpId = path.basename(jsonPath, '.json');
     const pipelineLogger = new SharedPipelineLogger(prisma);
     const pipelineLogId = await pipelineLogger.startPipelineLogger(
-        ModuloSistema.ETL,
-        dgpId,
-        ModoExecucao.COMPLETA,
-        {
-            comando: 'etl-grupo',
-            arquivoJson: path.basename(resolvedPath),
-            tamanhoTotalBytes: groupFileStats.size,
-            membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
-            linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
-        }
+        ModuloSistema.ETL, /^\d{16}$/.test(dgpId) ? dgpId : null, ModoExecucao.APENAS_DGP,
+        { comando: 'etl-grupo', scope, arquivoJson: path.basename(jsonPath), tamanhoTotalBytes: fileInfo?.tamanhoBytes },
     );
-
-    if (isZeroDgpId(groupData.idDgp)) {
-        const message = `JSON de grupo ignorado porque idDgp veio zerado (${groupData.idDgp}). ID real identificado em id_dgp: ${groupData.id_dgp || 'não informado'}.`;
-        console.warn(`[ETL] ⚠️ ${message}`);
-
-        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
-            entidadeId: dgpId,
+    const startedAt = performance.now();
+    try {
+        const result = await processGroupEtlFile(resolvedPath, undefined, async () => {}, scope);
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.SUCESSO, {
+            entidadeId: result.dgpId, tipoEntidade: TipoEntidadeLog.GRUPO,
+            tempoMs: Math.round(performance.now() - startedAt),
+        });
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.CONCLUIDO, {
+            scope,
+            gruposGravados: 1,
+            pesquisadoresAtualizados: result.membrosProcessados,
+            linhasPesquisaGravadas: result.linhasProcessadas,
+            arquivoJson: result.arquivoJson,
+            tamanhoTotalBytes: result.tamanhoBytes,
+        });
+        return result;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
+            entidadeId: /^\d{16}$/.test(dgpId) ? dgpId : path.basename(jsonPath),
             tipoEntidade: TipoEntidadeLog.GRUPO,
             tipoErro: TipoErroColeta.FALHA_ETL,
             mensagemErro: message,
-            detalhesErro: JSON.stringify({
-                arquivoJson: path.basename(resolvedPath),
-                idDgp: groupData.idDgp,
-                id_dgp: groupData.id_dgp,
-            }),
+            detalhesErro: error instanceof Error ? error.stack : undefined,
+            tempoMs: Math.round(performance.now() - startedAt),
         });
-
-        await prisma.filaExtracaoGrupo.update({
-            where: { dgpId },
-            data: {
-                status: FilaExtracaoStatus.ERRO,
-                processamentoIniciadoEm: null,
-                ultimoErroId: errorItem?.id ?? null,
-                ultimoErroEm: new Date(),
-            }
-        }).catch(() => undefined);
-
-        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO, {
-            gruposGravados: 0,
-            pesquisadoresAtualizados: 0,
-            linhasPesquisaGravadas: 0,
-            membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
-            linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
-            motivo: 'idDgp_zerado',
-        });
-
-        return;
+        await pipelineLogger.finishPipelineLogger(pipelineLogId, StatusSessao.ERRO, { scope, gruposGravados: 0, arquivoJson: path.basename(jsonPath) });
+        throw error;
     }
-
-    let pesquisadoresAtualizados = 0;
-    let linhasPesquisaGravadas = groupData.linhas && Array.isArray(groupData.linhas) ? groupData.linhas.length : 0;
-
-    const t0 = performance.now();
-    try {
-        await saveGroupToDb(groupData);
-        const tempoGroupMs = Math.round(performance.now() - t0);
-
-        const groupFileName = path.basename(resolvedPath);
-        const processedDgpDir = path.join(PROCESSED_DATA_DIR, 'dgp');
-        if (!fs.existsSync(processedDgpDir)) fs.mkdirSync(processedDgpDir, { recursive: true });
-        const destGroupPath = path.join(processedDgpDir, groupFileName);
-        if (resolvedPath !== destGroupPath) {
-            try {
-                if (fs.existsSync(resolvedPath)) {
-                    fs.renameSync(resolvedPath, destGroupPath);
-                    console.log(`[ETL] 📁 JSON Grupo ${groupFileName} movido para ${destGroupPath}`);
-                }
-            } catch (renameError: any) {
-                console.warn(`[ETL] ⚠️ Não foi possível mover o arquivo Grupo ${groupFileName}: ${renameError.message}`);
-            }
-        }
-
-        await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.SUCESSO, {
-            entidadeId: dgpId,
-            tipoEntidade: TipoEntidadeLog.GRUPO,
-            tempoMs: tempoGroupMs,
-        });
-    } catch (err: any) {
-        console.error(`[ETL] ❌ Erro na carga do grupo ${dgpId}: ${err.message}`);
-        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.ETL_GRUPO_CARGA, StatusItemLog.ERRO, {
-            entidadeId: dgpId,
-            tipoEntidade: TipoEntidadeLog.GRUPO,
-            tipoErro: TipoErroColeta.FALHA_ETL,
-            mensagemErro: err.message,
-            detalhesErro: err.stack,
-        });
-        await prisma.filaExtracaoGrupo.update({
-            where: { dgpId },
-            data: {
-                status: FilaExtracaoStatus.ERRO,
-                processamentoIniciadoEm: null,
-                ultimoErroId: errorItem?.id ?? null,
-                ultimoErroEm: new Date(),
-            }
-        }).catch(() => undefined);
-    }
-
-    const finalStatus = await prisma.pipelineLog.findUnique({
-        where: { id: pipelineLogId ?? '' },
-        select: { quantidadeErros: true },
-    }).catch(() => null);
-
-    await pipelineLogger.finishPipelineLogger(
-        pipelineLogId,
-        finalStatus && finalStatus.quantidadeErros > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
-        {
-        gruposGravados: 1,
-        pesquisadoresAtualizados,
-        linhasPesquisaGravadas,
-        membrosEncontrados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
-        linhasPesquisaEncontradas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
-        }
-    );
 }
