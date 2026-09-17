@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
 import { submitLattesSearch } from '../common/lattesSearchNavigation';
+import { randomUUID } from 'node:crypto';
 
 const parser = new LattesParser();
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -46,7 +47,7 @@ function chunkArray<T>(items: T[], size: number): T[][] {
     return chunks;
 }
 
-async function downloadProfileImage(page: Page, lattesId: string) {
+async function downloadProfileImage(page: Page, lattesId: string): Promise<boolean> {
     try {
         const imgElement = page.locator('img.foto').first();
         if (await imgElement.count()) {
@@ -60,6 +61,7 @@ async function downloadProfileImage(page: Page, lattesId: string) {
                         const imgPath = path.join(IMAGE_DIR, `${lattesId}.jpg`);
                         await fs.promises.writeFile(imgPath, buffer);
                         log.info(`[Lattes] Imagem salva para ID ${lattesId}`);
+                        return true;
                     }
                 } finally {
                     await response.dispose();
@@ -69,6 +71,7 @@ async function downloadProfileImage(page: Page, lattesId: string) {
     } catch (e: any) {
         log.warning(`[Lattes] Não foi possível baixar imagem para ID ${lattesId}: ${e.message}`);
     }
+    return false;
 }
 
 async function closeModal(page: Page) {
@@ -86,8 +89,35 @@ async function closeModal(page: Page) {
     } catch (e) {}
 }
 
-type LattesTarget = { nome: string; lattesId: string };
+export type LattesTarget = { nome: string; lattesId: string };
 type BatchMetrics = { pesquisadoresExtraidos: number; pesquisadoresComErro: number; tamanhoTotalBytes: number; producoesExtraidas: number; retries: number };
+export type LattesProgressUpdate = {
+    etapa: 'INICIANDO' | 'BUSCANDO' | 'ANALISANDO_RESULTADOS' | 'ABRINDO_CURRICULO' | 'EXTRAINDO_CURRICULO' | 'SALVANDO_JSON' | 'BAIXANDO_IMAGEM' | 'CONCLUIDO';
+    percentual: number;
+    paginaAtual: number | null;
+    paginasTotal: number | null;
+};
+export type LattesProgressReporter = (progress: LattesProgressUpdate) => Promise<void>;
+export type LattesCollectionResult = {
+    lattesId: string;
+    arquivoJson: string;
+    tamanhoTotalBytes: number;
+    producoesExtraidas: number;
+    imagemBaixada: boolean;
+};
+
+export class LattesCollectionError extends Error {
+    constructor(message: string, readonly tipoErro: TipoErroColeta = TipoErroColeta.DESCONHECIDO) {
+        super(message);
+        this.name = 'LattesCollectionError';
+    }
+}
+
+type LattesBatchOptions = {
+    persistLifecycle?: boolean;
+    reportProgress?: LattesProgressReporter;
+    executionId?: string;
+};
 
 // HTML e DOM do Cheerio ficam restritos ao parsing sincrono, sem atravessar awaits.
 function parseCurriculum(html: string, target: LattesTarget) {
@@ -176,11 +206,14 @@ function getSearchResultLink(page: Page, result: LattesSearchResult) {
 
 async function runLattesScraperBatch(
     targets: LattesTarget[],
-    pipelineLogger: SharedPipelineLogger,
+    pipelineLogger: SharedPipelineLogger | null,
     pipelineLogId: string | null,
     batchInfo: { index: number; total: number },
     onFinished: (metrics: BatchMetrics) => void,
-) {
+    batchOptions: LattesBatchOptions = {},
+): Promise<LattesCollectionResult[]> {
+    const persistLifecycle = batchOptions.persistLifecycle !== false;
+    const reportProgress = batchOptions.reportProgress ?? (async () => {});
     let pesquisadoresExtraidos = 0;
     let pesquisadoresComErro = 0;
     const batchStartedAt = performance.now();
@@ -189,21 +222,26 @@ async function runLattesScraperBatch(
     let tamanhoTotalBytes = 0;
     let producoesExtraidas = 0;
     let totalRetries = 0;
+    const collectedResults = new Map<string, LattesCollectionResult>();
+    const failures = new Map<string, LattesCollectionError>();
 
     async function recordFailure(key: string, target: LattesTarget, error: Error, retries: number, tipoErro: TipoErroColeta = TipoErroColeta.DESCONHECIDO) {
         if (settledTargets.has(key)) return;
         const tempoMs = Math.round(performance.now() - (activeTargets.get(key)?.startedAt ?? batchStartedAt));
-        const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.PESQUISADOR_LATTES, StatusItemLog.ERRO, {
-            entidadeId: target.lattesId || target.nome,
-            tipoEntidade: TipoEntidadeLog.PESQUISADOR,
-            tipoErro,
-            mensagemErro: error.message,
-            detalhesErro: error.stack,
-            tempoMs,
-        });
-        if (target.lattesId) {
-            await db.updatePesquisadorQueueStatus(target.lattesId, FilaExtracaoStatus.ERRO, { ultimoErroId: errorItem?.id });
+        if (persistLifecycle && pipelineLogger) {
+            const errorItem = await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.PESQUISADOR_LATTES, StatusItemLog.ERRO, {
+                entidadeId: target.lattesId || target.nome,
+                tipoEntidade: TipoEntidadeLog.PESQUISADOR,
+                tipoErro,
+                mensagemErro: error.message,
+                detalhesErro: error.stack,
+                tempoMs,
+            });
+            if (target.lattesId) {
+                await db.updatePesquisadorQueueStatus(target.lattesId, FilaExtracaoStatus.ERRO, { ultimoErroId: errorItem?.id });
+            }
         }
+        failures.set(key, new LattesCollectionError(error.message, tipoErro));
         settledTargets.add(key);
         activeTargets.delete(key);
         pesquisadoresComErro++;
@@ -211,19 +249,23 @@ async function runLattesScraperBatch(
     }
 
     log.info(`[Lattes] Iniciando lote ${batchInfo.index}/${batchInfo.total}`, { pesquisadores: targets.length, workers: SCRAPER_SETTINGS.lattes.maxConcurrency, ...memorySnapshot() });
-    const crawlerConfig = createCrawlerConfig('lattes');
+    const crawlerConfig = createCrawlerConfig('lattes', batchOptions.executionId);
+    if (!persistLifecycle) crawlerConfig.set('persistStorage', false);
     log.info(`[Lattes] Storage Crawlee: ${CRAWLER_STORAGE_DIRS.lattes}`);
     await purgeCrawlerStorage(crawlerConfig);
 
     const options = createCrawlerOptions('lattes');
     const crawler = new PlaywrightCrawler({
         ...options,
+        maxRequestRetries: persistLifecycle ? options.maxRequestRetries : 0,
+        maxSessionRotations: persistLifecycle ? options.maxSessionRotations : 0,
         preNavigationHooks: [
             async ({ request }) => {
                 if (activeTargets.has(request.uniqueKey)) return;
                 const target = { nome: request.userData.name, lattesId: request.userData.targetLattesId };
-                if (target.lattesId) await db.updatePesquisadorQueueStatus(target.lattesId, FilaExtracaoStatus.PROCESSANDO);
+                if (persistLifecycle && target.lattesId) await db.updatePesquisadorQueueStatus(target.lattesId, FilaExtracaoStatus.PROCESSANDO);
                 activeTargets.set(request.uniqueKey, { target, startedAt: performance.now() });
+                await reportProgress({ etapa: 'BUSCANDO', percentual: 10, paginaAtual: null, paginasTotal: null });
             },
             ...(options.preNavigationHooks ?? []),
         ],
@@ -256,6 +298,7 @@ async function runLattesScraperBatch(
                 const pagStatus = await getPaginationStatus(page);
                 const totalPages = pagStatus ? Math.ceil(pagStatus.totalRecords / pagStatus.recordsPerPage) : 1;
                 const results = await readSearchResults(page);
+                await reportProgress({ etapa: 'ANALISANDO_RESULTADOS', percentual: 25, paginaAtual: pageNumber, paginasTotal: totalPages });
                 const resultKey = (result: LattesSearchResult) => `${pageNumber}:${result.source}:${result.index}`;
                 const match = findMatchingResult(results.filter(result => !checkedResults.has(resultKey(result))), { nome: name, lattesId: targetLattesId });
                 log.info('[Lattes] Página de resultados analisada', {
@@ -287,6 +330,7 @@ async function runLattesScraperBatch(
                 const resultLink = getSearchResultLink(page, match);
 
                 log.info('[Lattes] Candidato encontrado; validando no curriculo.', { nome: match.nome, idNaBusca: match.lattesId || null, idEsperado: targetLattesId || null });
+                await reportProgress({ etapa: 'ABRINDO_CURRICULO', percentual: 45, paginaAtual: pageNumber, paginasTotal: totalPages });
                 await resultLink.click();
 
                 try {
@@ -318,6 +362,7 @@ async function runLattesScraperBatch(
 
                     await openedPopup.waitForLoadState("domcontentloaded");
                     await openedPopup.waitForSelector('.informacoes-autor', { state: 'attached', timeout: 30000 });
+                    await reportProgress({ etapa: 'EXTRAINDO_CURRICULO', percentual: 65, paginaAtual: pageNumber, paginasTotal: totalPages });
                     const parsed = parseCurriculum(await openedPopup.content(), { nome: name, lattesId: targetLattesId });
                     if (!parsed.matched) {
                         checkedResults.add(resultKey(match));
@@ -328,19 +373,28 @@ async function runLattesScraperBatch(
                     }
                     const finalId = parsed.data.lattesId;
                     if (finalId) {
+                        await reportProgress({ etapa: 'SALVANDO_JSON', percentual: 85, paginaAtual: pageNumber, paginasTotal: totalPages });
                         const jsonBytes = saveJson(parsed.data, LATTES_DATA_DIR, finalId);
-                        await downloadProfileImage(openedPopup, finalId);
+                        await reportProgress({ etapa: 'BAIXANDO_IMAGEM', percentual: 92, paginaAtual: pageNumber, paginasTotal: totalPages });
+                        const imagemBaixada = await downloadProfileImage(openedPopup, finalId);
                         const tempoMs = Math.round(performance.now() - startTimer);
                         log.info(`✅ [Lattes] Sucesso: ${name} (ID: ${finalId})`);
-                        if (targetLattesId) await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.CONCLUIDO);
+                        if (persistLifecycle && targetLattesId) await db.updatePesquisadorQueueStatus(targetLattesId, FilaExtracaoStatus.CONCLUIDO);
                         settledTargets.add(request.uniqueKey);
                         activeTargets.delete(request.uniqueKey);
                         pesquisadoresExtraidos++;
                         tamanhoTotalBytes += jsonBytes;
                         producoesExtraidas += parsed.producoesExtraidas;
+                        collectedResults.set(request.uniqueKey, {
+                            lattesId: finalId,
+                            arquivoJson: `${finalId}.json`,
+                            tamanhoTotalBytes: jsonBytes,
+                            producoesExtraidas: parsed.producoesExtraidas,
+                            imagemBaixada,
+                        });
                         log.info('[Lattes] Metricas do pesquisador', { lattesId: finalId, tempoMs, producoesExtraidas: parsed.producoesExtraidas, jsonBytes, retries: request.retryCount, lote: batchInfo.index, ...memorySnapshot() });
 
-                        await pipelineLogger.pipelineLogItem(
+                        if (persistLifecycle && pipelineLogger) await pipelineLogger.pipelineLogItem(
                             pipelineLogId,
                             PipelineEtapa.PESQUISADOR_LATTES,
                             StatusItemLog.SUCESSO,
@@ -389,6 +443,11 @@ async function runLattesScraperBatch(
         })));
 
         await crawler.run();
+        if (!persistLifecycle) {
+            const failure = failures.values().next().value;
+            if (failure) throw failure;
+            if (collectedResults.size !== targets.length) throw new LattesCollectionError('Crawler Lattes terminou sem produzir o resultado esperado.');
+        }
     } catch (error) {
         // Somente itens que chegaram a iniciar sao encerrados; os demais continuam pendentes.
         for (const [key, { target }] of activeTargets) {
@@ -400,7 +459,16 @@ async function runLattesScraperBatch(
         await crawler.browserPool.destroy();
         log.info(`[Lattes] Lote ${batchInfo.index}/${batchInfo.total} encerrado`, { tempoMs: Math.round(performance.now() - batchStartedAt), pesquisadoresExtraidos, pesquisadoresComErro, tamanhoTotalBytes, producoesExtraidas, retries: totalRetries, ...memorySnapshot() });
     }
+    return [...collectedResults.values()];
+}
 
+export async function collectLattesResearcher(target: LattesTarget, reportProgress: LattesProgressReporter = async () => {}) {
+    await reportProgress({ etapa: 'INICIANDO', percentual: 0, paginaAtual: null, paginasTotal: null });
+    const results = await runLattesScraperBatch(
+        [target], null, null, { index: 1, total: 1 }, () => {},
+        { persistLifecycle: false, reportProgress, executionId: `bull-${randomUUID()}` },
+    );
+    return results[0];
 }
 
 export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?: SharedPipelineLogger, dgpGrupo: string | null = null) {

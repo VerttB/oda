@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { Configuration, purgeDefaultStorages } from 'crawlee';
 import type { PlaywrightCrawlerOptions } from 'crawlee';
 import type { BrowserContext } from 'playwright';
+import type { DataScope } from '@oda/queue';
 
 // Limites operacionais ficam em codigo ate termos medidas de uma coleta prolongada.
 export const SCRAPER_SETTINGS = {
@@ -73,6 +74,9 @@ export const DATA_DIR = path.resolve(ROOT_DIR, 'data');
 export const RAW_DATA_DIR = path.join(DATA_DIR, 'raw-data');
 export const DGP_DATA_DIR = path.join(RAW_DATA_DIR, 'dgp');
 export const LATTES_DATA_DIR = path.join(RAW_DATA_DIR, 'lattes');
+export const SIMCC_DATA_DIR = path.join(DATA_DIR, 'simcc');
+export const SIMCC_RAW_DATA_DIR = path.join(SIMCC_DATA_DIR, 'raw-data');
+export const SIMCC_DGP_DATA_DIR = path.join(SIMCC_RAW_DATA_DIR, 'dgp');
 export const IMAGE_DIR = path.resolve(ROOT_DIR, '../api/static');
 export const CRAWLER_STORAGE_ROOT_DIR = path.join(ROOT_DIR, 'storage');
 
@@ -84,7 +88,11 @@ export const CRAWLER_STORAGE_DIRS: Record<CrawlerStorageName, string> = {
     discovery: path.join(CRAWLER_STORAGE_ROOT_DIR, 'discovery'),
 };
 
-[DATA_DIR, RAW_DATA_DIR, DGP_DATA_DIR, LATTES_DATA_DIR, IMAGE_DIR, CRAWLER_STORAGE_ROOT_DIR, ...Object.values(CRAWLER_STORAGE_DIRS)].forEach(dir => {
+export function getDgpDataDir(scope: DataScope = 'default') {
+    return scope === 'simcc' ? SIMCC_DGP_DATA_DIR : DGP_DATA_DIR;
+}
+
+[DATA_DIR, RAW_DATA_DIR, DGP_DATA_DIR, LATTES_DATA_DIR, SIMCC_DGP_DATA_DIR, IMAGE_DIR, CRAWLER_STORAGE_ROOT_DIR, ...Object.values(CRAWLER_STORAGE_DIRS)].forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
@@ -97,11 +105,14 @@ export function saveJson(data: any, dir: string, fileName: string) {
     return Buffer.byteLength(json, 'utf-8');
 }
 
-export function createCrawlerConfig(storageName: CrawlerStorageName) {
+export function createCrawlerConfig(storageName: CrawlerStorageName, executionId?: string) {
+    if (executionId && !/^[a-zA-Z0-9-]+$/.test(executionId)) throw new Error('Identificador de storage invalido.');
     return new Configuration({
         purgeOnStart: false,
         storageClientOptions: {
-            localDataDirectory: CRAWLER_STORAGE_DIRS[storageName],
+            localDataDirectory: executionId
+                ? path.join(CRAWLER_STORAGE_DIRS[storageName], executionId)
+                : CRAWLER_STORAGE_DIRS[storageName],
         },
     });
 }

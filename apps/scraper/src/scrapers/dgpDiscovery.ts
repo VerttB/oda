@@ -8,6 +8,30 @@ import { ModuloSistema, ModoExecucao, PipelineEtapa, SharedPipelineLogger, Statu
 const SEARCH_URL = 'http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf';
 const pipelineLogger = new SharedPipelineLogger(prisma);
 
+export type DiscoveryProgressUpdate = {
+    etapa: 'INICIANDO' | 'PREPARANDO_BUSCA' | 'PROCESSANDO_PAGINAS' | 'NORMALIZANDO' | 'CONCLUIDO';
+    percentual: number | null;
+    paginasProcessadas: number;
+    itensDescobertos: number;
+    itensPulados: number;
+    itensComErro: number;
+};
+export type DiscoveryProgressReporter = (progress: DiscoveryProgressUpdate) => Promise<void>;
+export type DiscoveryCollectionResult = {
+    chave: string;
+    paginasProcessadas: number;
+    itensDescobertos: number;
+    itensPulados: number;
+    itensComErro: number;
+    tamanhoCacheInicial: number;
+    tamanhoCacheFinal: number;
+};
+type DiscoveryRunOptions = {
+    pipelineLogId?: string;
+    executionId?: string;
+    reportProgress?: DiscoveryProgressReporter;
+};
+
 
 /** 
 * 
@@ -169,7 +193,13 @@ async function prepareSearchPage(page: Page, chave: string, pageNum: number, dir
     return finalPageNum;
 }
 
-export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]) {
+export async function runDgpDiscovery(
+    keys: string[] = ["a", "e", "i", "o", "u"],
+    runOptions: DiscoveryRunOptions = {},
+): Promise<DiscoveryCollectionResult> {
+    if (!keys.length) throw new Error('Informe ao menos uma chave para a descoberta DGP.');
+    const reportProgress = runOptions.reportProgress ?? (async () => {});
+    await reportProgress({ etapa: 'INICIANDO', percentual: 0, paginasProcessadas: 0, itensDescobertos: 0, itensPulados: 0, itensComErro: 0 });
     log.info(`Iniciando Discovery DGP para as chaves: ${keys.join(', ')}`);
 
     // Caches pertencem apenas a esta execucao; as direcoes compartilham a deduplicacao.
@@ -187,20 +217,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
     const options = createCrawlerOptions('discovery', keys.length);
     const concurrency = options.maxConcurrency;
     log.info(`Configurando crawler com ${concurrency} workers concorrentes.`);
-    const crawlerConfig = createCrawlerConfig('discovery');
+    const crawlerConfig = createCrawlerConfig('discovery', runOptions.executionId);
+    if (runOptions.pipelineLogId) crawlerConfig.set('persistStorage', false);
     log.info(`[Discovery DGP] Storage Crawlee: ${CRAWLER_STORAGE_DIRS.discovery}`);
     await purgeCrawlerStorage(crawlerConfig);
 
-    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+    const ownsPipeline = !runOptions.pipelineLogId;
+    const pipelineLogId = runOptions.pipelineLogId || await pipelineLogger.startPipelineLogger(
         ModuloSistema.SCRAPER,
         'DGP_DISCOVERY',
         ModoExecucao.APENAS_DGP,
-        {
-            comando: 'dgp-discovery',
-            chaves: keys,
-            tamanhoCacheInicial: initialCacheSize,
-        }
+        { comando: 'dgp-discovery', chaves: keys, tamanhoCacheInicial: initialCacheSize },
     );
+    await reportProgress({ etapa: 'PREPARANDO_BUSCA', percentual: 5, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
 
     const crawler = new PlaywrightCrawler({
         ...options,
@@ -416,6 +445,15 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                     paginasProcessadas++;
                     itensPulados += skippedCount;
 
+                    await reportProgress({
+                        etapa: 'PROCESSANDO_PAGINAS',
+                        percentual: null,
+                        paginasProcessadas,
+                        itensDescobertos,
+                        itensPulados,
+                        itensComErro,
+                    });
+
                     await pipelineLogger.pipelineLogItem(
                         pipelineLogId,
                         PipelineEtapa.DGP_DISCOVERY_PAGINA,
@@ -502,6 +540,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
         await crawler.run();
 
         log.info("Recalculating column 'similares' in database...");
+        await reportProgress({ etapa: 'NORMALIZANDO', percentual: 95, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
         await db.normalizeQueueData();
 
         const finalCacheSize = processedKeys.size;
@@ -515,7 +554,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 tipoEntidade: TipoEntidadeLog.GERAL,
             }
         );
-        await pipelineLogger.finishPipelineLogger(
+        if (ownsPipeline) await pipelineLogger.finishPipelineLogger(
             pipelineLogId,
             itensComErro > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
             {
@@ -530,9 +569,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 gruposPendentes: newlyDiscovered,
             }
         );
+        await reportProgress({ etapa: 'CONCLUIDO', percentual: 100, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
         log.info(`🏁 Discovery DGP finalizado. Total de itens cacheados: ${finalCacheSize} (Novos itens descobertos e cacheados nesta rodada: ${newlyDiscovered}).`);
+        return {
+            chave: keys.join(','),
+            paginasProcessadas,
+            itensDescobertos,
+            itensPulados,
+            itensComErro,
+            tamanhoCacheInicial: initialCacheSize,
+            tamanhoCacheFinal: finalCacheSize,
+        };
     } catch (error: any) {
-        await pipelineLogger.finishPipelineLogger(
+        if (ownsPipeline) await pipelineLogger.finishPipelineLogger(
             pipelineLogId,
             StatusSessao.ERRO,
             {
@@ -548,6 +597,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
         );
         throw error;
     } finally {
+        await crawler.browserPool.destroy();
         processedKeys.clear();
         processedPages.clear();
         processingPages.clear();

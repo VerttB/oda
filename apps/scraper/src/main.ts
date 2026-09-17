@@ -11,6 +11,23 @@ import { runLattesScraper } from "./scrapers/lattesScraper";
 import { repopulateQueue } from "./scrapers/repopulateQueue";
 import { prisma } from "./common/database";
 import { FilaExtracaoStatus } from "@oda/database";
+import { DataScope, parseDataScope } from '@oda/queue';
+
+function parseScopeArgs(args: string[]) {
+  let scope: DataScope = 'default';
+  const positional: string[] = [];
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index];
+    if (arg === '--scope') {
+      scope = parseDataScope(args[++index]);
+    } else if (arg.startsWith('--scope=')) {
+      scope = parseDataScope(arg.slice('--scope='.length));
+    } else {
+      positional.push(arg);
+    }
+  }
+  return { scope, positional };
+}
 
 
 async function main() {
@@ -18,7 +35,7 @@ async function main() {
   const command = args[0] || "dgp-extract";
 
   if (command === "--help" || command === "-h" || args.slice(1).some(arg => arg === "--help" || arg === "-h")) {
-    console.log("Uso: pnpm scraper:dgp [idDgp ...]");
+    console.log("Uso: pnpm scraper:dgp [--scope simcc] [idDgp ...]");
     console.log("     pnpm scraper:lattes [nome ...]");
     console.log("     pnpm scraper:discovery [chave ...]");
     console.log("IDs DGP devem conter exatamente 16 dígitos.");
@@ -37,8 +54,8 @@ async function main() {
 
       case "dgp":
       case "dgp-extract":
-        const dgpIds = args.slice(1);
-        await runDgpScraper(dgpIds);
+        const { scope, positional: dgpIds } = parseScopeArgs(args.slice(1));
+        await runDgpScraper(dgpIds, scope);
         break;
       
       case "lattes":

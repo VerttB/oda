@@ -24,19 +24,29 @@ replace('@oda/database', {
     },
 });
 replace('../src/common/database', {
-    prisma: { filaExtracaoGrupo: { findMany: async () => [{ dgpId: '0000000000000001' }, { dgpId: '0000000000000002' }] } },
+    prisma: {
+        filaExtracaoGrupo: { findMany: async () => state.pending || [
+            { dgpId: '0000000000000001', instituicao: 'Outra' },
+            { dgpId: '0000000000000002', instituicao: 'Outra' },
+        ] },
+        filaExtracaoPesquisador: {
+            findUnique: async () => null,
+            create: async () => { state.researchersQueued++; },
+        },
+    },
     db: { updateGroupQueueStatus: async (id, status, error) => state.transitions.push({ id, status, error }) },
 });
 replace('../src/common/config', {
     DGP_TIMEOUTS: { popupMs: 30000, detailMs: 45000, mirrorMs: 60000 },
     SCRAPER_SETTINGS: { dgp: { take: 2, maxRequestRetries: 1, loginRetryDelayMs: 1 } }, CRAWLER_STORAGE_DIRS: { dgp: 'mock' },
     createCrawlerConfig: () => ({}), createCrawlerOptions: () => ({}),
-    purgeCrawlerStorage: async () => {}, saveJson: () => 100,
+    getDgpDataDir: scope => scope === 'simcc' ? 'mock/simcc/raw-data/dgp' : 'mock/raw-data/dgp',
+    purgeCrawlerStorage: async () => {}, saveJson: (_data, dir) => { state.savedDirs.push(dir); return 100; },
 });
 replace('../src/common/utils', { randomSleep: async () => {} });
 replace('../src/common/dgpDetailButtons', { DGP_DETAIL_SELECTORS: {}, readDgpDetailButtons: async () => [] });
 replace('../src/parsers/dgpParser', { DGPExtractor: class {
-    extractGroupMirror() { return { nome: 'Grupo', membros: [], linhas: [], instituicoes: [] }; }
+    extractGroupMirror() { return { nome: 'Grupo', membros: state.members || [], linhas: [], instituicoes: [] }; }
 } });
 class Page extends EventEmitter {
     url() { return 'http://dgp.cnpq.br/dgp/espelhogrupo/1'; }
@@ -78,7 +88,7 @@ replace('crawlee', {
 });
 const { runDgpScraper } = require('../src/scrapers/dgpScraper');
 const { readDgpPageContent } = require('../src/common/dgpPageContent');
-beforeEach(() => { state = { sessions: [], items: [], finished: [], transitions: [], readFailures: 0 }; });
+beforeEach(() => { state = { sessions: [], items: [], finished: [], transitions: [], readFailures: 0, savedDirs: [], researchersQueued: 0 }; });
 test('dois grupos compartilham uma sessao e geram dois resultados', async () => {
     await runDgpScraper();
     assert.deepEqual(state.sessions, [null]);
@@ -107,6 +117,18 @@ test('interrupcao fatal finaliza sessao e item iniciado', async () => {
     await assert.rejects(runDgpScraper(), /Storage failed/);
     assert.equal(state.items.length, 2);
     assert.equal(state.finished[0].status, 'ERRO');
+});
+test('escopo SIMCC filtra instituicoes, usa pasta propria e nao enfileira Lattes', async () => {
+    state.pending = [
+        { dgpId: '0000000000000001', nome: 'SIMCC', instituicao: 'Universidade Federal da Bahia - UFBA' },
+        { dgpId: '0000000000000002', nome: 'Fora', instituicao: 'Universidade Catolica do Salvador - UCSAL' },
+    ];
+    state.members = [{ nome: 'Pesquisador', lattes: '1234567890123456' }];
+    await runDgpScraper([], 'simcc');
+    assert.equal(state.items.length, 1);
+    assert.deepEqual(state.savedDirs, ['mock/simcc/raw-data/dgp']);
+    assert.equal(state.researchersQueued, 0);
+    assert.equal(state.finished[0].metadata.scope, 'simcc');
 });
 test('leitura repete navegacao transitoria e rejeita login', async () => {
     state.readFailures = 1;

@@ -9,16 +9,20 @@
     "reset-researchers-queue": "ts-node src/resetResearchersQueue.ts",
     "check-pending-lattes-raw": "ts-node src/checkPendingLattesRawFiles.ts",
     "build": "tsc",
+    "queue:prepare": "pnpm --filter @oda/scraper... run build --incremental false",
+    "queue:dgp": "node dist/queue/dgp/dgpCli.js",
+    "queue:lattes": "node dist/queue/lattes/lattesCli.js",
+    "queue:discovery": "node dist/queue/discovery/discoveryCli.js",
     "test": "node --test tests/*.test.cjs"
   },
   "dependencies": {
     "@crawlee/playwright": "^3.17.0",
     "@oda/database": "workspace:*",
+    "@oda/queue": "workspace:*",
     "@oda/shared-types": "workspace:*",
     "cheerio": "^1.0.0",
     "crawlee": "^3.17.0",
     "dotenv": "^16.4.7",
-    "p-limit": "^7.3.0",
     "playwright": "^1.50.1"
   },
   "devDependencies": {

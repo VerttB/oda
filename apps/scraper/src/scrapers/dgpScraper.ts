@@ -2,18 +2,31 @@ import { PlaywrightCrawler, log } from 'crawlee';
 import { Page } from 'playwright';
 import { isDgpLoginRedirectError, readDgpPageContent } from '../common/dgpPageContent';
 import { assertValidDgpIds, isValidDgpId } from '../common/dgpId';
+import { selectDgpRowsForScope } from '../common/dgpScope';
 import { DGP_TIMEOUTS } from '../common/config';
 import { DGPExtractor } from '../parsers/dgpParser';
 import { db, prisma } from '../common/database';
-import { createCrawlerConfig, createCrawlerOptions, SCRAPER_SETTINGS, CRAWLER_STORAGE_DIRS, DGP_DATA_DIR, purgeCrawlerStorage, saveJson } from '../common/config';
+import { createCrawlerConfig, createCrawlerOptions, SCRAPER_SETTINGS, CRAWLER_STORAGE_DIRS, getDgpDataDir, purgeCrawlerStorage, saveJson } from '../common/config';
 import { memorySnapshot } from '../common/scraperMetrics';
 import { DGP_DETAIL_SELECTORS, readDgpDetailButtons, resolveDgpDetailButton } from '../common/dgpDetailButtons';
 import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, PipelineEtapa } from '@oda/database';
 import { randomSleep, sleep } from '../common/utils';
 import { SharedPipelineLogger } from '@oda/database';
+import { isSimccInstitution, type DgpJobProgress } from '@oda/shared-types';
+import type { DataScope } from '@oda/queue';
 
 const extractor = new DGPExtractor();
 const pipelineLogger = new SharedPipelineLogger(prisma);
+
+export type DgpProgressUpdate = Omit<DgpJobProgress, 'progressoEm'>;
+export type DgpProgressReporter = (progress: DgpProgressUpdate) => Promise<void>;
+
+const noopProgress: DgpProgressReporter = async () => {};
+
+function stagePercent(start: number, end: number, processed: number, total: number) {
+    if (total === 0) return end;
+    return Math.round(start + ((end - start) * processed) / total);
+}
 
 async function closePopup(popups: Set<Page>, page: Page) {
     for (const p of popups) {
@@ -116,7 +129,13 @@ async function ensureGroupMirrorReady(
     });
 }
 
-async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: DgpRecoveryStats) {
+export async function scrapeGroupPage(
+    groupPage: Page,
+    dgpId: string,
+    recoveryStats = createDgpRecoveryStats(),
+    reportProgress: DgpProgressReporter = noopProgress,
+    scope: DataScope = 'default',
+) {
 
     log.info(`[Scraper] Extraindo dados detalhados do Grupo ID: ${dgpId}`);
 
@@ -134,11 +153,19 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
         const rhButtons = await readDgpDetailButtons(groupPage, DGP_DETAIL_SELECTORS.rh);
         const instButtons = await readDgpDetailButtons(groupPage, DGP_DETAIL_SELECTORS.institutions);
         const linesButtons = await readDgpDetailButtons(groupPage, DGP_DETAIL_SELECTORS.lines);
+        await reportProgress({
+            etapa: 'DADOS_GERAIS', percentual: 20,
+            itensProcessados: null, itensTotal: null,
+        });
 
         // Cria map de detalhes do RH para cada pesquisador/líder do grupo
         const rhDetailsMap = new Map<string, ReturnType<typeof extractor.extractRHDetails>>();
-        
-        for (const item of rhButtons) {
+
+        await reportProgress({
+            etapa: 'RECURSOS_HUMANOS', percentual: 20,
+            itensProcessados: 0, itensTotal: rhButtons.length,
+        });
+        for (const [index, item] of rhButtons.entries()) {
             const nome = item.nome;
 
             await randomSleep(500, 1500);
@@ -153,6 +180,12 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
                 // Extração dos pesquisadores do grupo de pesquisa
                 rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
                 await openedPopup.close();
+                await reportProgress({
+                    etapa: 'RECURSOS_HUMANOS',
+                    percentual: stagePercent(20, 50, index + 1, rhButtons.length),
+                    itensProcessados: index + 1,
+                    itensTotal: rhButtons.length,
+                });
             } catch (err: any) {
                 log.error(`[Scraper] Erro ao extrair detalhes do RH para ${nome}: ${err.message}`);
                 err.message = `RH ${nome}: ${err.message}`;
@@ -163,8 +196,12 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
         }
 
         const instMap = new Map<string, ReturnType<typeof extractor.extractPartnerInstitutions>>();
-        
-        for (const item of instButtons) {
+
+        await reportProgress({
+            etapa: 'INSTITUICOES', percentual: 50,
+            itensProcessados: 0, itensTotal: instButtons.length,
+        });
+        for (const [index, item] of instButtons.entries()) {
             await randomSleep(500, 1500);
             const instNome = item.nome;
             try {
@@ -177,6 +214,12 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
                 const html = await readDgpPageContent(openedPopup, "[id='idFormVisualizarParceira']");
                 instMap.set(instNome || "Desconhecido", extractor.extractPartnerInstitutions(html));
                 await openedPopup.close();
+                await reportProgress({
+                    etapa: 'INSTITUICOES',
+                    percentual: stagePercent(50, 65, index + 1, instButtons.length),
+                    itensProcessados: index + 1,
+                    itensTotal: instButtons.length,
+                });
             } catch(err: any){
                 console.error(`[Scraper] Erro ao extrair detalhes da instituição: ${err.message}`);
                 err.message = `Instituicao ${instNome}: ${err.message}`;
@@ -186,9 +229,13 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
             }
         }
 
-          const linesMap = new Map<string, ReturnType<typeof extractor.extractLineDetails>>();
-        
-        for (const item of linesButtons) {
+        const linesMap = new Map<string, ReturnType<typeof extractor.extractLineDetails>>();
+
+        await reportProgress({
+            etapa: 'LINHAS_PESQUISA', percentual: 65,
+            itensProcessados: 0, itensTotal: linesButtons.length,
+        });
+        for (const [index, item] of linesButtons.entries()) {
             await randomSleep(500, 1500);
             const linhaNome = item.nome;
             try {
@@ -201,6 +248,12 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
                 const html = await readDgpPageContent(openedPopup, '#linhaPesquisa');
                 linesMap.set(linhaNome || "Desconhecido", extractor.extractLineDetails(html, linhaNome));
                 await openedPopup.close();
+                await reportProgress({
+                    etapa: 'LINHAS_PESQUISA',
+                    percentual: stagePercent(65, 85, index + 1, linesButtons.length),
+                    itensProcessados: index + 1,
+                    itensTotal: linesButtons.length,
+                });
             } catch(err: any){
                 console.error(`[Scraper] Erro ao extrair detalhes da linha de pesquisa: ${err.message}`);
                 err.message = `Linha ${linhaNome}: ${err.message}`;
@@ -212,29 +265,45 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
 
         const data = extractor.extractGroupMirror(mainHtml, linesMap, rhDetailsMap, instMap);
         if (!data.nome || data.nome === 'N/A') throw new Error('Espelho do grupo sem nome valido.');
-        
+
+        await reportProgress({
+            etapa: 'SALVANDO_JSON', percentual: 90,
+            itensProcessados: null, itensTotal: null,
+        });
         data.idDgp = dgpId;
-        const tamanhoTotalBytes = saveJson(data, DGP_DATA_DIR, dgpId);
+        const tamanhoTotalBytes = saveJson(data, getDgpDataDir(scope), dgpId);
         log.info(`Grupo ${dgpId} extraído e salvo com sucesso.`);
 
         // Filtra pesquisadores e líderes do grupo
         const pesquisadoresParaScrapear: string[] = [];
 
-        // Insere na fila ou verifica se já está pendente
-        for (const p of data.membros) {
-            const row = await prisma.filaExtracaoPesquisador.findUnique({
-                where: { lattesId: p.lattes }
+        if (scope === 'default') {
+            // A coleta SIMCC termina no grupo; somente o fluxo geral alimenta o Lattes.
+            await reportProgress({
+                etapa: 'ENFILEIRANDO_PESQUISADORES', percentual: 92,
+                itensProcessados: 0, itensTotal: data.membros.length,
             });
-
-            if (!row) {
-                await prisma.filaExtracaoPesquisador.create({
-                    data: { lattesId: p.lattes, nome: p.nome, status: FilaExtracaoStatus.PENDENTE }
+            for (const [index, p] of data.membros.entries()) {
+                const row = await prisma.filaExtracaoPesquisador.findUnique({
+                    where: { lattesId: p.lattes }
                 });
-                pesquisadoresParaScrapear.push(p.nome);
-            } else if (row.status === FilaExtracaoStatus.PENDENTE) {
-                pesquisadoresParaScrapear.push(p.nome);
-            } else {
-                log.info(`[Scraper] Pesquisador ${p.nome} (ID: ${p.lattes}) já foi processado ou está em andamento. Pulando...`);
+
+                if (!row) {
+                    await prisma.filaExtracaoPesquisador.create({
+                        data: { lattesId: p.lattes, nome: p.nome, status: FilaExtracaoStatus.PENDENTE }
+                    });
+                    pesquisadoresParaScrapear.push(p.nome);
+                } else if (row.status === FilaExtracaoStatus.PENDENTE) {
+                    pesquisadoresParaScrapear.push(p.nome);
+                } else {
+                    log.info(`[Scraper] Pesquisador ${p.nome} (ID: ${p.lattes}) já foi processado ou está em andamento. Pulando...`);
+                }
+                await reportProgress({
+                    etapa: 'ENFILEIRANDO_PESQUISADORES',
+                    percentual: stagePercent(92, 98, index + 1, data.membros.length),
+                    itensProcessados: index + 1,
+                    itensTotal: data.membros.length,
+                });
             }
         }
         
@@ -266,56 +335,52 @@ async function scrapeGroupPage(groupPage: Page, dgpId: string, recoveryStats: Dg
     }
 }
 
-export async function runDgpScraper(dgpIds: string[] = []) {
-    log.info('[Scraper] Iniciando Extração DGP a partir da fila (FilaExtracao)');
+export async function runDgpScraper(dgpIds: string[] = [], scope: DataScope = 'default') {
+    log.info('[Scraper] Iniciando Extração DGP a partir da fila (FilaExtracao)', { scope });
 
     let pendingGroups: { dgpId: string; nome: string }[] = [];
 
     if (dgpIds && dgpIds.length > 0) {
         assertValidDgpIds(dgpIds);
         for (const id of dgpIds) {
-            const row = await prisma.filaExtracaoGrupo.upsert({
-                where: { dgpId: id },
-                update: {},
-                create: {
-                    dgpId: id,
-                    nome: `Grupo_${id}`,
-                    area: 'N/A',
-                    instituicao: 'N/A',
-                    status: FilaExtracaoStatus.PENDENTE
-                }
-            });
+            const existing = await prisma.filaExtracaoGrupo.findUnique({ where: { dgpId: id } });
+            if (scope === 'simcc' && (!existing || !isSimccInstitution(existing.instituicao))) {
+                throw new Error(`O grupo ${id} nao possui uma instituicao SIMCC reconhecida na fila de descoberta.`);
+            }
+            const row = existing ?? await prisma.filaExtracaoGrupo.create({ data: {
+                dgpId: id, nome: `Grupo_${id}`, area: 'N/A', instituicao: 'N/A', status: FilaExtracaoStatus.PENDENTE,
+            } });
             pendingGroups.push({ dgpId: row.dgpId, nome: row.nome });
         }
     } else {
-        const pending = await prisma.filaExtracaoGrupo.findMany({
-            where: { status: FilaExtracaoStatus.PENDENTE },
-            take: SCRAPER_SETTINGS.dgp.take,
-            select: { dgpId: true, nome: true },
+        const sourceRows = await prisma.filaExtracaoGrupo.findMany({
+            where: scope === 'simcc' ? {} : { status: FilaExtracaoStatus.PENDENTE },
+            select: { dgpId: true, nome: true, instituicao: true },
         });
-        const invalid = pending.filter(group => !isValidDgpId(group.dgpId));
+        const invalid = sourceRows.filter(group => !isValidDgpId(group.dgpId));
         if (invalid.length > 0) {
             log.warning('[DGP] Registros invalidos encontrados na fila e ignorados.', {
                 ids: invalid.map(group => group.dgpId),
             });
         }
-        pendingGroups = pending
-            .filter(group => isValidDgpId(group.dgpId))
+        pendingGroups = selectDgpRowsForScope(sourceRows, scope, SCRAPER_SETTINGS.dgp.take)
             .map(p => ({ dgpId: p.dgpId, nome: p.nome }));
     }
 
     if (pendingGroups.length === 0) {
-        log.info('[Scraper] Nenhum grupo pendente na fila.');
+        log.info(scope === 'simcc'
+            ? '[Scraper] Nenhum grupo SIMCC encontrado na fila.'
+            : '[Scraper] Nenhum grupo pendente na fila.');
         return;
     }
 
-    log.info(`[Scraper] Encontrados ${pendingGroups.length} grupos pendentes. Iniciando extração...`);
+    log.info(`[Scraper] Encontrados ${pendingGroups.length} grupos para coleta. Iniciando extração...`);
     const crawlerConfig = createCrawlerConfig('dgp');
     log.info(`[Scraper] Storage Crawlee DGP: ${CRAWLER_STORAGE_DIRS.dgp}`);
     await purgeCrawlerStorage(crawlerConfig);
 
     const pipelineLogId = await pipelineLogger.startPipelineLogger(ModuloSistema.SCRAPER, null, ModoExecucao.APENAS_DGP, {
-        comando: 'dgp-extract', itensFila: pendingGroups.length, gruposPendentes: pendingGroups.length,
+        comando: 'dgp-extract', scope, itensFila: pendingGroups.length, gruposPendentes: pendingGroups.length,
     });
     const completed = new Set<string>();
     const started = new Map<string, number>();
@@ -367,7 +432,7 @@ export async function runDgpScraper(dgpIds: string[] = []) {
             const startedAt = performance.now();
             
             try {
-                const metadata = await scrapeGroupPage(page, dgpId, recoveries.get(dgpId)!);
+                const metadata = await scrapeGroupPage(page, dgpId, recoveries.get(dgpId)!, noopProgress, scope);
                 await db.updateGroupQueueStatus(dgpId, FilaExtracaoStatus.CONCLUIDO);
                 await pipelineLogger.pipelineLogItem(pipelineLogId, PipelineEtapa.SCRAPE_GROUP_PAGE, StatusItemLog.SUCESSO, {
                     tipoEntidade: TipoEntidadeLog.GRUPO, entidadeId: dgpId,
@@ -421,6 +486,7 @@ export async function runDgpScraper(dgpIds: string[] = []) {
         }
         await pipelineLogger.finishPipelineLogger(pipelineLogId, fatalError || totals.itensComErro ? StatusSessao.ERRO : StatusSessao.CONCLUIDO, {
             ...totals,
+            scope,
             gruposPendentes: pendingGroups.length - completed.size,
             dgpRecuperacoesEspelho: recoveryTotals.tentativasRecuperacao,
             dgpRedirecionamentosLogin: recoveryTotals.redirecionamentosLogin,
@@ -431,5 +497,9 @@ export async function runDgpScraper(dgpIds: string[] = []) {
     
     log.info('[Scraper] Extração DGP finalizada.', totals);
 
-    log.info('[Scraper] Pesquisadores permanecem na fila para uma execucao separada do Lattes.');
+    if (scope === 'default') {
+        log.info('[Scraper] Pesquisadores permanecem na fila para uma execucao separada do Lattes.');
+    } else {
+        log.info('[Scraper] Coleta SIMCC encerrada sem publicar pesquisadores na fila Lattes.');
+    }
 }
