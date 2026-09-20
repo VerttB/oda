@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { Tag } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -18,15 +19,17 @@ export const AcademicProductionKeywords: FC<
 
       <div className="flex flex-wrap gap-2.5">
         {keywords.map((keyword) => (
-          <button
+          <Button
             key={keyword}
             type="button"
+            variant="outline"
+            size="xs"
             onClick={() => onSelectKeyword?.(keyword)}
-            className="cursor-pointer rounded-md border border-emerald-600/40 bg-emerald-500/15 px-3 py-1.5 font-mono text-xs font-medium text-emerald-900 transition-colors hover:bg-emerald-500/25"
+            className="border-emerald-600/40 bg-emerald-500/15 font-mono font-medium text-emerald-900 hover:bg-emerald-500/25"
             title={`Filtrar por ${keyword}`}
           >
             {keyword}
-          </button>
+          </Button>
         ))}
       </div>
     </section>

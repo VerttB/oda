@@ -1,4 +1,5 @@
 import type { ProductionItem } from '#/core/interfaces'
+import { Button } from '#/components/ui/button'
 import {
   Book,
   BookOpen,
@@ -74,13 +75,15 @@ export const ProductionsListItem: FC<ProductionsListItemProps> = ({
             )}
         </div>
 
-        <button
+        <Button
           type="button"
+          variant="link"
+          size="sm"
           onClick={() => onSelect(production)}
-          className="mb-1 cursor-pointer text-left text-base font-semibold leading-snug text-primary transition-colors hover:text-primary-hover md:text-lg"
+          className="mb-1 h-auto justify-start p-0 text-left text-base font-semibold leading-snug text-primary hover:text-primary-hover md:text-lg"
         >
           {production.title}
-        </button>
+        </Button>
 
         <p className="mb-1 text-xs text-muted-foreground md:text-sm">
           {authorsDisplay}
@@ -107,19 +110,23 @@ export const ProductionsListItem: FC<ProductionsListItemProps> = ({
       </div>
 
       <div className="flex flex-shrink-0 flex-col space-y-2 opacity-80 transition-opacity sm:opacity-100">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={() => onSelect(production)}
-          className="cursor-pointer rounded border border-border-subtle bg-surface p-2 text-secondary transition-colors hover:text-primary"
+          className="size-9 border-border-subtle bg-surface text-secondary hover:text-primary"
           title="Ver detalhes"
           aria-label="Ver detalhes"
         >
           <Eye className="h-4 w-4" />
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={(event) => onCopyCitation(production, event)}
-          className="cursor-pointer rounded border border-border-subtle bg-surface p-2 text-secondary transition-colors hover:text-primary"
+          className="size-9 border-border-subtle bg-surface text-secondary hover:text-primary"
           title={isCopied ? 'Citação copiada' : 'Copiar citação'}
           aria-label="Copiar citação"
         >
@@ -128,7 +135,7 @@ export const ProductionsListItem: FC<ProductionsListItemProps> = ({
           ) : (
             <Copy className="h-4 w-4" />
           )}
-        </button>
+        </Button>
       </div>
     </article>
   )

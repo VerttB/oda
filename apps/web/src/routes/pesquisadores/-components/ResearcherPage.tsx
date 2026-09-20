@@ -4,6 +4,7 @@ import type {
   ResearchersPage as ResearchersPageData,
   ResearcherTypeFilter,
 } from '#/api/pesquisadores'
+import { Button } from '#/components/ui/button'
 import type { ResearcherItem } from '#/core/interfaces'
 import { RotateCcw, UserCheck } from 'lucide-react'
 import { useMemo, useState, type FC } from 'react'
@@ -147,14 +148,15 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
                 <p className="mt-1 text-xs text-secondary">
                   Tente ajustar o nome, a formação ou o tipo selecionado.
                 </p>
-                <button
+                <Button
                   type="button"
+                  size="sm"
                   onClick={handleClearFilters}
-                  className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
+                  className="mt-4"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Restaurar filtros</span>
-                </button>
+                </Button>
               </div>
             ) : (
               filteredResearchers.map((researcher) => (

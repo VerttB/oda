@@ -3,6 +3,8 @@ import type {
   ResearchersMetrics,
   ResearcherTypeFilter,
 } from '#/api/pesquisadores'
+import { Button } from '#/components/ui/button'
+import { DebouncedInput } from '#/components/ui/debounced-input'
 import { RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -68,14 +70,16 @@ export const ResearchersFilterSidebar: FC<ResearchersFilterSidebarProps> = ({
             <span>Filtros</span>
           </h2>
           {hasActiveFilters && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={onClearFilters}
-              className="flex cursor-pointer items-center gap-1 text-[11px] font-semibold text-secondary transition-colors hover:text-primary"
+              className="h-auto px-0 text-[11px] text-secondary hover:bg-transparent hover:text-primary"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Limpar</span>
-            </button>
+            </Button>
           )}
         </div>
 
@@ -85,22 +89,26 @@ export const ResearchersFilterSidebar: FC<ResearchersFilterSidebarProps> = ({
               Nome do pesquisador
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
+              <DebouncedInput
                 type="text"
+                variant="filled"
+                size="sm"
+                leftIcon={<Search />}
                 placeholder="Buscar por nome"
                 value={searchQuery}
-                onChange={(event) => onSearchChange(event.target.value)}
-                className="w-full rounded border border-border-subtle bg-surface py-2 pl-9 pr-8 text-xs text-foreground transition-colors placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                onValueChange={onSearchChange}
+                className="pr-8 placeholder:text-secondary"
               />
               {searchQuery && (
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer text-secondary hover:text-primary"
+                  className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-secondary hover:bg-transparent hover:text-primary"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
             </div>
           </div>

@@ -153,19 +153,19 @@ export interface ResearchGroupDetail {
     hostInstitution: {
       name: string
       code: string
-      unidade: {
-        nome: string | null,
+      imageUrl?: string
+      unidade?: {
+        nome: string | null
         uf: string | null
-        
       } | null
     }
     partnerInstitutions: {
       name: string
       code: string
-      unidade: {
-        nome: string | null,
+      imageUrl?: string
+      unidade?: {
+        nome: string | null
         uf: string | null
-        
       } | null
     }[]
   }

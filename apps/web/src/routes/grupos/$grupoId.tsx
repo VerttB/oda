@@ -2,6 +2,7 @@ import {
   getResearchGroupDetail,
   researchGroupDetailQueryKey,
 } from '#/api/grupos-pesquisa'
+import { Button } from '#/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { ContactInfo } from './-components/ContactInfo'
 import { GroupHero } from './-components/GroupHero'
@@ -44,13 +45,9 @@ function GroupErrorState({
             ? error.message
             : 'A API retornou uma resposta inesperada.'}
         </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-        >
+        <Button type="button" onClick={onRetry} size="lg">
           Tentar novamente
-        </button>
+        </Button>
       </section>
     </main>
   )

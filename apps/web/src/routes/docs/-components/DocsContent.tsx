@@ -1,3 +1,5 @@
+import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 import {
   CheckCircle,
   Gauge,
@@ -505,17 +507,21 @@ export const GeneralDocsContent: FC = () => {
           <div className="flex items-center rounded-lg border border-border bg-surface-alt px-3 font-mono text-xs text-muted-foreground">
             GET
           </div>
-          <input
+          <Input
             type="text"
+            variant="filled"
+            size="md"
             value={testEndpoint}
             onChange={(e) => setTestEndpoint(e.target.value)}
-            className="flex-1 rounded-lg border border-border bg-surface-alt px-3 py-2 font-mono text-sm text-foreground focus:border-accent focus:outline-hidden"
+            className="flex-1 border-border bg-surface-alt font-mono focus:border-accent focus:ring-accent"
           />
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="md"
             onClick={runTestQuery}
             disabled={loading}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-secondary px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-slate-800 disabled:opacity-50"
+            className="text-xs uppercase tracking-wider hover:bg-slate-800"
           >
             {loading ? (
               <span className="animate-spin">⌛</span>
@@ -523,7 +529,7 @@ export const GeneralDocsContent: FC = () => {
               <Send className="h-3.5 w-3.5 text-accent" />
             )}
             <span>Executar</span>
-          </button>
+          </Button>
         </div>
         {testResult && (
           <div className="animate-in fade-in overflow-x-auto rounded-lg border border-slate-700 bg-surface-dark p-3 font-mono text-xs text-slate-200">

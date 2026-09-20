@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { Check, Copy, Play, Terminal } from 'lucide-react'
 import { useState, type FC } from 'react'
 
@@ -34,19 +35,23 @@ export const CodeSnippetBox: FC<CodeSnippetBoxProps> = ({
         </div>
         <div className="flex items-center gap-2">
           {onTryItOut && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={onTryItOut}
-              className="flex cursor-pointer items-center gap-1 rounded bg-accent/20 px-2 py-0.5 text-[11px] text-accent transition-colors hover:bg-accent/30"
+              className="h-auto bg-accent/20 px-2 py-0.5 text-[11px] text-accent hover:bg-accent/30"
             >
               <Play className="h-3 w-3 fill-current" />
               <span>Executar</span>
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="xs"
             onClick={handleCopy}
-            className="flex cursor-pointer items-center gap-1 rounded px-2 py-0.5 text-[11px] text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
+            className="h-auto px-2 py-0.5 text-[11px] text-slate-400 hover:bg-slate-700 hover:text-white"
             title="Copiar trecho de código"
           >
             {copied ? (
@@ -60,7 +65,7 @@ export const CodeSnippetBox: FC<CodeSnippetBoxProps> = ({
                 <span>Copiar</span>
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import type { FilterState } from '../core/interfaces'
+import { Button } from './ui/button'
 
 interface SidebarFiltersProps {
   filters: FilterState
@@ -50,7 +51,10 @@ export const SidebarFilters: React.FC<SidebarFiltersProps> = ({
           <h3 className="text-xl font-semibold text-secondary">Filtros</h3>
           {(filters.fieldsOfStudy.length > 0 ||
             filters.publicationDate !== 'Qualquer momento') && (
-            <button
+            <Button
+              type="button"
+              variant="link"
+              size="sm"
               onClick={() =>
                 onFilterChange({
                   ...filters,
@@ -58,10 +62,10 @@ export const SidebarFilters: React.FC<SidebarFiltersProps> = ({
                   publicationDate: 'Qualquer momento',
                 })
               }
-              className="text-xs text-primary hover:underline font-medium cursor-pointer"
+              className="h-auto p-0 text-xs text-primary"
             >
               Resetar
-            </button>
+            </Button>
           )}
         </div>
 

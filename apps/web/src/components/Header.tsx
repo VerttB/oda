@@ -1,3 +1,6 @@
+import { Button } from '#/components/ui/button'
+import { DebouncedInput } from '#/components/ui/debounced-input'
+import { useRouterState } from '@tanstack/react-router'
 import React, { useState } from 'react'
 import { Search, X, ArrowRight } from 'lucide-react'
 
@@ -17,16 +20,33 @@ export const Header: React.FC<NavbarProps> = ({
   isDarkTheme = false,
 }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
 
   const navItems: { id: string; label: string; href: string }[] = [
     { id: 'discover', label: 'Descobrir', href: '/' },
+    { id: 'researchers', label: 'Pesquisadores', href: '/pesquisadores' },
     { id: 'groups', label: 'Grupos', href: '/grupos' },
     { id: 'publications', label: 'Publicações', href: '/producoes' },
-    { id: 'institutions', label: 'Instituições', href: '/' },
     { id: 'docs', label: 'Docs da API', href: '/docs/geral' },
   ]
 
-  const isNavyNav = activeTab === 'discover' || isDarkTheme
+  const pathnameTab =
+    pathname === '/'
+      ? 'discover'
+      : pathname.startsWith('/pesquisadores')
+        ? 'researchers'
+        : pathname.startsWith('/grupos')
+          ? 'groups'
+          : pathname.startsWith('/producoes')
+            ? 'publications'
+            : pathname.startsWith('/docs')
+              ? 'docs'
+              : activeTab
+
+  const currentTab = activeTab === 'discover' ? pathnameTab : activeTab
+  const isNavyNav = currentTab === 'discover' || isDarkTheme
 
   return (
     <header
@@ -62,22 +82,27 @@ export const Header: React.FC<NavbarProps> = ({
             <Search
               className={`w-4 h-4 mr-2.5 shrink-0 ${isNavyNav ? 'text-white/70' : 'text-muted-foreground'}`}
             />
-            <input
+            <DebouncedInput
               id="global-search-input"
               type="text"
+              variant="ghost"
+              size="sm"
               placeholder="Procurar Pesquisadores, Grupos, Publicações..."
               value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="bg-transparent border-none focus:outline-hidden text-sm w-full p-0 font-normal"
+              onValueChange={onSearchChange}
+              className="h-auto border-none bg-transparent p-0 text-sm font-normal focus:border-transparent focus:ring-0"
             />
             {searchQuery && (
-              <button
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => onSearchChange('')}
-                className="text-xs p-1 hover:opacity-80 rounded-full"
+                className="size-6 rounded-full p-1 hover:bg-transparent hover:opacity-80"
                 title="Limpar busca"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -85,24 +110,32 @@ export const Header: React.FC<NavbarProps> = ({
         {/* Links centrais de navegação */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8">
           {navItems.map((item) => {
-            const isActive = activeTab === item.id
+            const isActive = currentTab === item.id
             return (
               <a
                 key={item.id}
                 id={`nav-link-${item.id}`}
                 href={item.href}
                 onClick={() => onTabChange(item.id)}
-                className={`text-sm md:text-base font-medium transition-all relative py-1 cursor-pointer ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`relative cursor-pointer py-1 text-sm font-medium transition-colors md:text-base ${
                   isActive
                     ? isNavyNav
-                      ? 'text-white font-semibold border-b-2 border-white'
-                      : 'text-secondary font-semibold border-b-2 border-secondary'
+                      ? 'font-semibold text-white'
+                      : 'font-semibold text-secondary'
                     : isNavyNav
                       ? 'text-white/70 hover:text-white'
                       : 'text-muted-foreground hover:text-secondary'
                 }`}
               >
                 {item.label}
+                {isActive && (
+                  <span
+                    className={`absolute -bottom-2 left-0 h-0.5 w-full rounded-full ${
+                      isNavyNav ? 'bg-white' : 'bg-secondary'
+                    }`}
+                  />
+                )}
               </a>
             )
           })}
@@ -114,12 +147,15 @@ export const Header: React.FC<NavbarProps> = ({
 
           {/* Botão de perfil */}
           <div className="relative">
-            <button
+            <Button
               id="profile-btn"
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => {
                 setUserMenuOpen(!userMenuOpen)
               }}
-              className={`p-1.5 rounded-full transition-colors flex items-center gap-2 cursor-pointer ${
+              className={`size-auto rounded-full p-1.5 ${
                 isNavyNav
                   ? 'text-white/80 hover:text-white hover:bg-white/10'
                   : 'text-muted-foreground hover:text-foreground hover:bg-slate-100'
@@ -131,7 +167,7 @@ export const Header: React.FC<NavbarProps> = ({
                 alt="Avatar da conta"
                 className="w-8 h-8 rounded-full object-cover border border-accent"
               />
-            </button>
+            </Button>
 
             {userMenuOpen && (
               <div className="absolute right-0 mt-2 w-60 bg-white text-foreground rounded-xl shadow-xl border border-border-subtle p-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-150">
@@ -146,7 +182,7 @@ export const Header: React.FC<NavbarProps> = ({
                 <a
                   href="/pesquisadores"
                   onClick={() => {
-                    onTabChange('publications')
+                    onTabChange('researchers')
                     setUserMenuOpen(false)
                   }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
@@ -190,7 +226,7 @@ export const Header: React.FC<NavbarProps> = ({
             href={item.href}
             onClick={() => onTabChange(item.id)}
             className={`whitespace-nowrap px-3 py-1 rounded-full font-medium transition-colors ${
-              activeTab === item.id
+              currentTab === item.id
                 ? isNavyNav
                   ? 'bg-white text-secondary font-semibold'
                   : 'bg-secondary text-white font-semibold'

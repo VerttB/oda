@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import {
   FileText,
   GraduationCap,
@@ -106,10 +107,12 @@ export const DocsSidebar: FC<DocsSidebarProps> = ({
             Documentação
           </div>
         )}
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={onToggleCollapse}
-          className="ml-auto cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-slate-100 hover:text-secondary"
+          className="ml-auto size-8 rounded-md text-muted-foreground hover:bg-slate-100 hover:text-secondary"
           title={isCollapsed ? 'Expandir navegação' : 'Recolher navegação'}
         >
           {isCollapsed ? (
@@ -117,7 +120,7 @@ export const DocsSidebar: FC<DocsSidebarProps> = ({
           ) : (
             <PanelLeftClose className="h-5 w-5" />
           )}
-        </button>
+        </Button>
       </div>
 
       <nav className="flex flex-col gap-1.5 text-sm">

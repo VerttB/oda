@@ -4,6 +4,7 @@ import {
   type ProductionTypeFilter,
   type ProductionsFilters,
 } from '#/api/producoes'
+import { Button } from '#/components/ui/button'
 import type { ProductionItem } from '#/core/interfaces'
 import { createFileRoute } from '@tanstack/react-router'
 import { ProductionMainPage } from './-components/ProductionMainPage'
@@ -102,13 +103,9 @@ function ProductionsErrorState({
             ? error.message
             : 'A API retornou uma resposta inesperada.'}
         </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-        >
+        <Button type="button" onClick={onRetry} size="lg">
           Tentar novamente
-        </button>
+        </Button>
       </section>
     </main>
   )

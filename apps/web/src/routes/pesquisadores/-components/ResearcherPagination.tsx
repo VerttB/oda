@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -27,29 +28,29 @@ export const ResearchersPagination: FC<ResearchersPaginationProps> = ({
 
   return (
     <div className="mt-6 flex items-center justify-center gap-2">
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="icon"
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border-subtle text-secondary transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+        className="size-8 text-secondary"
         aria-label="Página anterior"
       >
         <ChevronLeft className="h-4 w-4" />
-      </button>
+      </Button>
 
       {pages.map((page) => (
-        <button
+        <Button
           key={page}
           type="button"
+          variant={currentPage === page ? 'primary' : 'outline'}
+          size="icon"
           onClick={() => onPageChange(page)}
-          className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded text-xs font-semibold ${
-            currentPage === page
-              ? 'bg-primary text-white'
-              : 'border border-border-subtle text-secondary hover:bg-surface'
-          }`}
+          className="size-8 text-xs"
         >
           {page}
-        </button>
+        </Button>
       ))}
 
       {safeTotalPages > 5 && pages.at(-1) !== safeTotalPages && (
@@ -58,15 +59,17 @@ export const ResearchersPagination: FC<ResearchersPaginationProps> = ({
         </span>
       )}
 
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="icon"
         onClick={() => onPageChange(Math.min(safeTotalPages, currentPage + 1))}
         disabled={currentPage === safeTotalPages}
-        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded border border-border-subtle text-secondary transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+        className="size-8 text-secondary"
         aria-label="Próxima página"
       >
         <ChevronRight className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   )
 }

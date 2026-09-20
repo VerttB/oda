@@ -2,6 +2,7 @@ import { Building2, MapPinned } from 'lucide-react'
 import type { FC } from 'react'
 
 import type { ResearchGroupsDirectoryMetrics } from '#/api/grupos-pesquisa'
+import { Button } from '#/components/ui/button'
 
 interface DirectoryTopUniversitiesBandProps {
   onSelectUniversity: (uf: string) => void
@@ -26,11 +27,12 @@ export const DirectoryTopUniversitiesBand: FC<
           </h2>
           <div className="flex flex-wrap gap-x-8 gap-y-4">
             {ufs.map((item) => (
-              <button
+              <Button
                 key={item.uf}
                 type="button"
+                variant="ghost"
                 onClick={() => onSelectUniversity(item.uf)}
-                className="group flex cursor-pointer items-baseline gap-3 text-left"
+                className="group h-auto items-baseline justify-start gap-3 p-0 text-left hover:bg-transparent"
                 title={`Filtrar grupos da UF ${item.uf}`}
               >
                 <span className="text-xl font-bold text-primary transition-colors group-hover:text-primary-hover">
@@ -39,7 +41,7 @@ export const DirectoryTopUniversitiesBand: FC<
                 <span className="text-sm text-secondary">
                   {item.count.toLocaleString('pt-BR')} grupos
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -53,11 +55,12 @@ export const DirectoryTopUniversitiesBand: FC<
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {institutions.map((institution) => (
-              <button
+              <Button
                 key={institution.id}
                 type="button"
+                variant="outline"
                 onClick={() => onSelectUniversity(institution.uf ?? '')}
-                className="cursor-pointer rounded-lg border border-border-subtle bg-background p-3 text-left transition-colors hover:border-primary/40 hover:bg-surface"
+                className="h-auto flex-col items-stretch justify-start rounded-lg border-border-subtle bg-background p-3 text-left hover:border-primary/40 hover:bg-surface"
                 title={
                   institution.uf
                     ? `Filtrar grupos da UF ${institution.uf}`
@@ -81,7 +84,7 @@ export const DirectoryTopUniversitiesBand: FC<
                   {institution.hostCount.toLocaleString('pt-BR')} sede ·{' '}
                   {institution.partnerCount.toLocaleString('pt-BR')} parceira
                 </p>
-              </button>
+              </Button>
             ))}
           </div>
         </div>

@@ -3,6 +3,11 @@ import type {
   AcademicProductionDetailData,
   ProductionItem,
 } from '#/core/interfaces'
+import type {
+  FindAllProducoesQuery,
+  PaginatedProducaoResponse,
+  ProducaoResponse,
+} from '@oda/shared-types'
 
 const REMOTE_API_BASE_URL = 'https://oda.vertb.com.br'
 
@@ -16,15 +21,9 @@ const API_BASE_URL = (
   import.meta.env.VITE_API_URL ?? DEFAULT_API_BASE_URL
 ).replace(/\/$/, '')
 
-export type ProductionTypeFilter = 'ARTIGO' | 'LIVROCAPITULO' | 'OUTRA'
+export type ProductionTypeFilter = NonNullable<FindAllProducoesQuery['tipo']>
 
-export type ProductionsFilters = {
-  page?: number
-  size?: number
-  titulo?: string
-  ano?: number
-  tipo?: ProductionTypeFilter
-}
+export type ProductionsFilters = Partial<FindAllProducoesQuery>
 
 export const productionsQueryKey = (filters: ProductionsFilters = {}) => [
   'productions',
@@ -36,69 +35,6 @@ export const productionDetailQueryKey = (producaoId: string) => [
   producaoId,
 ]
 
-type ApiProducao = {
-  id: string
-  titulo?: string | null
-  ano?: number | null
-  tipo?: ProductionTypeFilter | string | null
-  doi?: string | null
-  url?: string | null
-  veiculo?: string | null
-  qualis?: string | null
-  resumo?: string | null
-  issn?: string | null
-  paginas?: string | null
-  pages?: string | null
-  qualisArea?: string | null
-  citacoes?: number | null
-  citations?: number | null
-  grupo?: {
-    nome?: string | null
-  } | null
-  grupoPesquisa?: {
-    nome?: string | null
-  } | null
-  instituicao?: {
-    nome?: string | null
-    sigla?: string | null
-  } | null
-  autores?: ApiProducaoAutor[] | null
-  palavrasChave?: ApiPalavraChave[] | null
-}
-
-type ApiProducaoAutor = {
-  pesquisadorId?: string | null
-  nome?: string | null
-  ordemAutoria?: number | null
-  pesquisador?: {
-    id?: string | null
-    nome?: string | null
-    tipo?: string | null
-    instituicao?: {
-      nome?: string | null
-      sigla?: string | null
-    } | null
-  } | null
-}
-
-type ApiPalavraChave = {
-  nome?: string | null
-  palavra?: string | null
-  termo?: string | null
-}
-
-type ApiPaginatedProducoes = {
-  data?: ApiProducao[]
-  items?: ApiProducao[]
-  results?: ApiProducao[]
-  meta?: {
-    page?: number
-    size?: number
-    totalItems?: number
-    totalPages?: number
-  }
-}
-
 export type ProductionsPage = {
   data: ProductionItem[]
   meta: {
@@ -109,8 +45,14 @@ export type ProductionsPage = {
   }
 }
 
+type ProducaoAutorResponse = NonNullable<ProducaoResponse['autores']>[number]
+
+type ProducaoPalavraChaveResponse = NonNullable<
+  ProducaoResponse['palavrasChave']
+>[number]
+
 function getProductionsFromResponse(
-  response: ApiProducao[] | ApiPaginatedProducoes,
+  response: ProducaoResponse[] | PaginatedProducaoResponse,
 ) {
   if (Array.isArray(response)) {
     return {
@@ -124,7 +66,7 @@ function getProductionsFromResponse(
     }
   }
 
-  const data = response.data ?? response.items ?? response.results ?? []
+  const data = response.data
 
   return {
     data,
@@ -150,7 +92,47 @@ function getProductionTypeLabel(type?: string | null) {
   }
 }
 
-function mapProduction(production: ApiProducao): ProductionItem {
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : null
+}
+
+function getStringField(
+  record: Record<string, unknown> | null,
+  ...keys: string[]
+) {
+  for (const key of keys) {
+    const value = record?.[key]
+
+    if (typeof value === 'string' && value.trim()) {
+      return value
+    }
+  }
+
+  return undefined
+}
+
+function getNumberField(
+  record: Record<string, unknown> | null,
+  ...keys: string[]
+) {
+  for (const key of keys) {
+    const value = record?.[key]
+
+    if (typeof value === 'number') {
+      return value
+    }
+  }
+
+  return undefined
+}
+
+function mapProduction(production: ProducaoResponse): ProductionItem {
+  const productionRecord = asRecord(production)
+  const group = asRecord(productionRecord?.grupo)
+  const researchGroup = asRecord(productionRecord?.grupoPesquisa)
+  const institution = asRecord(productionRecord?.instituicao)
   const authors = production.autores
     ?.map(mapProductionAuthor)
     .map((author) => author.name)
@@ -167,38 +149,48 @@ function mapProduction(production: ApiProducao): ProductionItem {
     type: getProductionTypeLabel(production.tipo),
     openAccess: Boolean(production.url),
     isOpenAccess: Boolean(production.url),
-    citations: production.citations ?? production.citacoes ?? 0,
+    citations: getNumberField(productionRecord, 'citations', 'citacoes') ?? 0,
     doi: production.doi ?? undefined,
     url: production.url ?? undefined,
     abstract: production.resumo ?? undefined,
     groupName:
-      production.grupoPesquisa?.nome ?? production.grupo?.nome ?? undefined,
-    institution:
-      production.instituicao?.sigla ??
-      production.instituicao?.nome ??
-      undefined,
+      getStringField(researchGroup, 'nome') ?? getStringField(group, 'nome'),
+    institution: getStringField(institution, 'sigla', 'nome'),
     keywords: production.palavrasChave?.map(getKeywordLabel).filter(Boolean),
     issn: production.issn ?? undefined,
-    pages: production.pages ?? production.paginas ?? undefined,
-    qualisArea: production.qualisArea ?? undefined,
+    pages: getStringField(productionRecord, 'pages', 'paginas'),
+    qualisArea: getStringField(productionRecord, 'qualisArea'),
   }
 }
 
-function getKeywordLabel(keyword: ApiPalavraChave) {
-  return keyword.nome ?? keyword.palavra ?? keyword.termo ?? ''
+function getKeywordLabel(keyword: ProducaoPalavraChaveResponse) {
+  const keywordRecord = asRecord(keyword)
+  const nestedKeyword = asRecord(keywordRecord?.palavraChave)
+
+  return (
+    getStringField(keywordRecord, 'nome', 'palavra', 'termo') ??
+    getStringField(nestedKeyword, 'nome', 'palavra', 'termo') ??
+    ''
+  )
 }
 
-function mapProductionAuthor(author: ApiProducaoAutor): AcademicAuthor {
-  const researcher = author.pesquisador
-  const name = researcher?.nome ?? author.nome ?? 'Autor não informado'
-  const institution =
-    researcher?.instituicao?.sigla ?? researcher?.instituicao?.nome ?? undefined
+function mapProductionAuthor(author: ProducaoAutorResponse): AcademicAuthor {
+  const authorRecord = asRecord(author)
+  const researcher = asRecord(authorRecord?.pesquisador)
+  const institution = asRecord(researcher?.instituicao)
+  const name =
+    getStringField(researcher, 'nome') ??
+    getStringField(authorRecord, 'nome') ??
+    'Autor não informado'
 
   return {
-    id: researcher?.id ?? author.pesquisadorId ?? undefined,
+    id:
+      getStringField(researcher, 'id') ??
+      getStringField(authorRecord, 'pesquisadorId'),
     name,
-    institution,
-    isExternal: researcher?.tipo === 'COLABORADOR_ESTRANGEIRO',
+    institution: getStringField(institution, 'sigla', 'nome'),
+    isExternal:
+      getStringField(researcher, 'tipo') === 'COLABORADOR_ESTRANGEIRO',
   }
 }
 
@@ -222,7 +214,7 @@ function parseProductionAuthors(production: ProductionItem): AcademicAuthor[] {
 }
 
 function mapProductionDetail(
-  production: ApiProducao,
+  production: ProducaoResponse,
 ): AcademicProductionDetailData {
   const listItem = mapProduction(production)
   const authors =
@@ -290,9 +282,9 @@ export async function getProductions(
 ): Promise<ProductionsPage> {
   const params = buildProductionsSearchParams(filters)
   const query = params.toString()
-  const response = await fetchJson<ApiProducao[] | ApiPaginatedProducoes>(
-    `/producoes${query ? `?${query}` : ''}`,
-  )
+  const response = await fetchJson<
+    ProducaoResponse[] | PaginatedProducaoResponse
+  >(`/producoes${query ? `?${query}` : ''}`)
   const page = getProductionsFromResponse(response)
 
   return {
@@ -304,7 +296,7 @@ export async function getProductions(
 export async function getProductionDetail(
   producaoId: string,
 ): Promise<AcademicProductionDetailData> {
-  const response = await fetchJson<ApiProducao>(`/producoes/${producaoId}`)
+  const response = await fetchJson<ProducaoResponse>(`/producoes/${producaoId}`)
 
   return mapProductionDetail(response)
 }

@@ -1,18 +1,21 @@
 import React from 'react'
-import { Building2, Landmark, ShieldCheck } from 'lucide-react'
+import { Landmark, University } from 'lucide-react'
 
 interface InstitutionalAffiliationProps {
   hostInstitution: {
     name: string
     code: string
-    unidade: {nome: string | null, uf: string | null} | null
+    imageUrl?: string
+    unidade?: { nome: string | null; uf: string | null } | null
   }
   partnerInstitutions: {
     name: string
     code: string
-    unidade: {
+    imageUrl?: string
+    unidade?: {
       nome: string | null
-      uf: string | null} | null
+      uf: string | null
+    } | null
   }[]
 }
 
@@ -30,8 +33,16 @@ export const InstitutionalAffiliation: React.FC<
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="col-span-1 flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dotted border-primary-400/50 bg-surface-card p-6 text-center shadow-[0_4px_12px_rgba(15,23,42,0.03)] transition-colors hover:border-primary-400">
-          <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-border bg-surface-alt text-secondary">
-            <Building2 className="w-8 h-8" />
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border border-border bg-surface-alt text-secondary">
+            {hostInstitution.imageUrl ? (
+              <img
+                src={hostInstitution.imageUrl}
+                alt={`Marca da instituição ${hostInstitution.name}`}
+                className="h-full w-full object-contain p-2"
+              />
+            ) : (
+              <University className="h-8 w-8" />
+            )}
           </div>
           <div>
             <div className="mb-1 text-xs font-semibold tracking-wider text-primary uppercase">
@@ -47,7 +58,6 @@ export const InstitutionalAffiliation: React.FC<
               Localização: {hostInstitution.unidade?.nome ?? 'Não informado'} -{' '}
               {hostInstitution.unidade?.uf ?? 'Não informado'}
             </span>
-        
           </div>
         </div>
 
@@ -63,8 +73,16 @@ export const InstitutionalAffiliation: React.FC<
                   key={`${partner.code}-${partner.name}`}
                   className="flex flex-col items-center gap-2 rounded-lg border border-border bg-surface-alt p-3 transition-colors hover:bg-slate-100"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border-subtle bg-white text-secondary">
-                    <ShieldCheck className="w-6 h-6 text-primary" />
+                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-border-subtle bg-white text-secondary">
+                    {partner.imageUrl ? (
+                      <img
+                        src={partner.imageUrl}
+                        alt={`Marca da instituição ${partner.name}`}
+                        className="h-full w-full object-contain p-1.5"
+                      />
+                    ) : (
+                      <University className="h-6 w-6 text-primary" />
+                    )}
                   </div>
                   <span className="text-center text-sm font-semibold text-foreground">
                     {partner.name}

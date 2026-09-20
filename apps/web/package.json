@@ -15,6 +15,7 @@
     "check": "prettier --check ."
   },
   "dependencies": {
+    "@oda/shared-types": "workspace:*",
     "@radix-ui/react-checkbox": "^1.2.2",
     "@radix-ui/react-hover-card": "^1.1.10",
     "@radix-ui/react-separator": "^1.1.4",

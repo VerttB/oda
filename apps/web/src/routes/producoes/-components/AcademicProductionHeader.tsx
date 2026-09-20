@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { ArrowLeft, CheckCircle2, FileText, LockOpen } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -19,14 +20,16 @@ export const AcademicProductionHeader: FC<AcademicProductionHeaderProps> = ({
   return (
     <header className="md:col-span-12 mb-6">
       {onBack && (
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="xs"
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-secondary hover:text-accent-teal transition-colors mb-4 cursor-pointer group"
+          className="group mb-4 h-auto px-0 text-secondary hover:bg-transparent hover:text-accent-teal"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Voltar para produções acadêmicas</span>
-        </button>
+        </Button>
       )}
 
       <div className="flex flex-wrap items-center gap-3 mb-3">

@@ -1,4 +1,10 @@
 import type { ResearcherItem } from '#/core/interfaces'
+import type {
+  FindAllPesquisadoresQuery,
+  MetricasPesquisadoresResponse,
+  PaginatedPesquisadorResumoResponse,
+  PesquisadorResumoResponse,
+} from '@oda/shared-types'
 
 const REMOTE_API_BASE_URL = 'https://oda.vertb.com.br'
 
@@ -12,26 +18,15 @@ const API_BASE_URL = (
   import.meta.env.VITE_API_URL ?? DEFAULT_API_BASE_URL
 ).replace(/\/$/, '')
 
-export type ResearcherDegreeFilter =
-  | 'GRADUACAO'
-  | 'ESPECIALIZACAO'
-  | 'MESTRADO'
-  | 'DOUTORADO'
-  | 'OUTRO'
+export type ResearchersFilters = Partial<FindAllPesquisadoresQuery>
 
-export type ResearcherTypeFilter =
-  | 'TECNICO'
-  | 'ESTUDANTE'
-  | 'PESQUISADOR'
-  | 'COLABORADOR_ESTRANGEIRO'
+export type ResearcherDegreeFilter = NonNullable<
+  FindAllPesquisadoresQuery['formacaoAcademica']
+>
 
-export type ResearchersFilters = {
-  page?: number
-  size?: number
-  nome?: string
-  formacaoAcademica?: ResearcherDegreeFilter
-  tipo?: ResearcherTypeFilter
-}
+export type ResearcherTypeFilter = NonNullable<
+  FindAllPesquisadoresQuery['tipo']
+>
 
 export const researchersQueryKey = (filters: ResearchersFilters = {}) => [
   'researchers',
@@ -39,44 +34,6 @@ export const researchersQueryKey = (filters: ResearchersFilters = {}) => [
 ]
 
 export const researchersMetricsQueryKey = ['researchers-metrics']
-
-type ApiPesquisador = {
-  id: string
-  lattesId?: string | null
-  nome?: string | null
-  tipo?: ResearcherTypeFilter | string | null
-  formacaoAcademica?: ResearcherDegreeFilter | string | null
-  openAlexId?: string | null
-  orcidId?: string | null
-  imageUrl?: string | null
-  indexH?: number | null
-  indexI10?: number | null
-}
-
-type ApiPaginatedPesquisadores = {
-  data?: ApiPesquisador[]
-  items?: ApiPesquisador[]
-  results?: ApiPesquisador[]
-  meta?: {
-    page?: number
-    size?: number
-    totalItems?: number
-    totalPages?: number
-  }
-}
-
-type ApiPesquisadoresMetricas = {
-  totalPesquisadores: number
-  totalComOrcid: number
-  porFormacao: {
-    formacao: string
-    total: number
-  }[]
-  porTipo: {
-    tipo: string
-    total: number
-  }[]
-}
 
 export type ResearchersPage = {
   data: ResearcherItem[]
@@ -157,7 +114,7 @@ function getResearcherTypeLabel(value?: string | null) {
 }
 
 function getResearchersFromResponse(
-  response: ApiPesquisador[] | ApiPaginatedPesquisadores,
+  response: PesquisadorResumoResponse[] | PaginatedPesquisadorResumoResponse,
 ) {
   if (Array.isArray(response)) {
     return {
@@ -171,7 +128,7 @@ function getResearchersFromResponse(
     }
   }
 
-  const data = response.data ?? response.items ?? response.results ?? []
+  const data = response.data
 
   return {
     data,
@@ -184,7 +141,7 @@ function getResearchersFromResponse(
   }
 }
 
-function mapResearcher(researcher: ApiPesquisador): ResearcherItem {
+function mapResearcher(researcher: PesquisadorResumoResponse): ResearcherItem {
   const name = researcher.nome ?? 'Pesquisador sem nome'
   const avatar = normalizeApiAssetUrl(researcher.imageUrl)
 
@@ -249,7 +206,7 @@ export async function getResearchers(
   const params = buildResearchersSearchParams(filters)
   const query = params.toString()
   const response = await fetchJson<
-    ApiPesquisador[] | ApiPaginatedPesquisadores
+    PesquisadorResumoResponse[] | PaginatedPesquisadorResumoResponse
   >(`/pesquisadores${query ? `?${query}` : ''}`)
   const page = getResearchersFromResponse(response)
 
@@ -260,7 +217,7 @@ export async function getResearchers(
 }
 
 export async function getResearchersMetrics(): Promise<ResearchersMetrics> {
-  const metrics = await fetchJson<ApiPesquisadoresMetricas>(
+  const metrics = await fetchJson<MetricasPesquisadoresResponse>(
     '/metricas/pesquisadores',
   )
 

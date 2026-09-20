@@ -1,6 +1,7 @@
 import React from 'react'
 import { Users } from 'lucide-react'
 import type { Author } from '#/core/interfaces'
+import { Button } from '#/components/ui/button'
 
 interface GroupMembersProps {
   members: Author[]
@@ -17,12 +18,14 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ members }) => {
           </h2>
         </div>
         {members.length > 0 && (
-          <button
+          <Button
             type="button"
-            className="cursor-pointer text-xs font-semibold tracking-wider text-primary uppercase hover:underline"
+            variant="link"
+            size="sm"
+            className="h-auto p-0 text-xs uppercase tracking-wider text-primary"
           >
             Ver todos
-          </button>
+          </Button>
         )}
       </div>
 

@@ -1,3 +1,5 @@
+import { Button } from '#/components/ui/button'
+import { DebouncedInput } from '#/components/ui/debounced-input'
 import { RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -61,14 +63,16 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
             <span>Filtros</span>
           </h3>
           {hasActiveFilters && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={onClearFilters}
-              className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-secondary transition-colors hover:text-primary"
+              className="h-auto px-0 text-secondary hover:bg-transparent hover:text-primary"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Limpar</span>
-            </button>
+            </Button>
           )}
         </div>
 
@@ -79,22 +83,26 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
               Nome do grupo
             </label>
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary" />
-              <input
+              <DebouncedInput
                 type="text"
+                variant="default"
+                size="sm"
+                leftIcon={<Search />}
                 placeholder="Ex.: ciência de dados"
                 value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full rounded-lg border border-border-subtle bg-background py-2 pl-8 pr-7 text-xs text-foreground placeholder:text-secondary focus:border-primary focus:ring-1 focus:ring-primary"
+                onValueChange={onSearchChange}
+                className="pr-8 placeholder:text-secondary"
               />
               {searchQuery && (
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-secondary hover:text-primary"
+                  className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-secondary hover:bg-transparent hover:text-primary"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -142,29 +150,23 @@ export const DirectoryFilterSidebar: FC<GroupFilterSidebar> = ({
             </label>
             <div className="flex gap-2">
               {['Todos', 'Ativo', 'Arquivado'].map((st) => (
-                <button
+                <Button
                   key={st}
                   type="button"
+                  variant={selectedStatus === st ? 'secondary' : 'outline'}
+                  size="xs"
                   onClick={() => onStatusChange(st)}
-                  className={`flex-1 py-1.5 text-[11px] rounded font-medium border transition-colors cursor-pointer ${
-                    selectedStatus === st
-                      ? 'bg-secondary text-white border-secondary font-semibold'
-                      : 'border-border-subtle bg-background text-secondary hover:bg-surface'
-                  }`}
+                  className="flex-1 rounded text-[11px]"
                 >
                   {st}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onApplyFilters}
-            className="w-full cursor-pointer rounded-lg bg-primary px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-primary-hover"
-          >
+          <Button type="button" size="sm" fullWidth onClick={onApplyFilters}>
             Aplicar filtros
-          </button>
+          </Button>
         </div>
       </div>
     </aside>

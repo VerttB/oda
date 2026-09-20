@@ -7,6 +7,7 @@ import {
   researchGroupsMetricsQueryKey,
   researchGroupsQueryKey,
 } from '#/api/grupos-pesquisa'
+import { Button } from '#/components/ui/button'
 import { GroupMainPage } from './-components/GroupMainPage'
 
 export const Route = createFileRoute('/grupos/')({
@@ -72,13 +73,9 @@ function GroupsErrorState({
             ? error.message
             : 'A API retornou uma resposta inesperada.'}
         </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-        >
+        <Button type="button" onClick={onRetry} size="lg">
           Tentar novamente
-        </button>
+        </Button>
       </section>
     </main>
   )

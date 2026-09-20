@@ -7,6 +7,7 @@ import {
   type ResearchersFilters,
   type ResearcherTypeFilter,
 } from '#/api/pesquisadores'
+import { Button } from '#/components/ui/button'
 import type { ResearcherItem } from '#/core/interfaces'
 import { createFileRoute } from '@tanstack/react-router'
 import { ResearchersPage } from './-components/ResearcherPage'
@@ -134,13 +135,9 @@ function ResearchersErrorState({
             ? error.message
             : 'A API retornou uma resposta inesperada.'}
         </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-        >
+        <Button type="button" onClick={onRetry} size="lg">
           Tentar novamente
-        </button>
+        </Button>
       </section>
     </main>
   )

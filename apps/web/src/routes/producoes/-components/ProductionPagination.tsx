@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -27,44 +28,46 @@ export const ProductionsPagination: FC<ProductionsPaginationProps> = ({
 
   return (
     <div className="mt-8 flex items-center justify-center space-x-2 border-t border-border-subtle pt-4">
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="flex cursor-pointer items-center justify-center rounded border border-border-subtle px-3 py-1 text-muted-foreground hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-8 px-3 text-muted-foreground"
         aria-label="Página anterior"
       >
         <ChevronLeft className="h-4 w-4" />
-      </button>
+      </Button>
 
       {pages.map((page) => (
-        <button
+        <Button
           key={page}
           type="button"
+          variant={currentPage === page ? 'primary' : 'outline'}
+          size="sm"
           onClick={() => onPageChange(page)}
-          className={`cursor-pointer rounded px-3 py-1 text-xs font-semibold ${
-            currentPage === page
-              ? 'bg-primary text-white'
-              : 'border border-border-subtle text-secondary hover:bg-surface'
-          }`}
+          className="h-8 px-3 text-xs"
         >
           {page}
-        </button>
+        </Button>
       ))}
 
       {safeTotalPages > 5 && pages.at(-1) !== safeTotalPages && (
         <span className="px-2 text-xs text-muted-foreground">...</span>
       )}
 
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={() => onPageChange(Math.min(safeTotalPages, currentPage + 1))}
         disabled={currentPage === safeTotalPages}
-        className="flex cursor-pointer items-center justify-center rounded border border-border-subtle px-3 py-1 text-muted-foreground hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-8 px-3 text-muted-foreground"
         aria-label="Próxima página"
       >
         <ChevronRight className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   )
 }

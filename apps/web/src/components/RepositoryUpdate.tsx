@@ -1,6 +1,7 @@
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ArticleCard } from './ArticleCard'
+import { Button } from './ui/button'
 import type { ResearchArticle } from '../core/interfaces'
 
 interface RepositoryUpdatesProps {
@@ -22,13 +23,16 @@ export const RepositoryUpdates: React.FC<RepositoryUpdatesProps> = ({
         <h2 className="text-2xl md:text-3xl font-semibold text-secondary tracking-tight">
           Atualizações Recentes do Repositório
         </h2>
-        <button
+        <Button
+          type="button"
+          variant="link"
+          size="sm"
           onClick={onViewAllClick}
-          className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-secondary transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5"
+          className="h-auto gap-1.5 p-0 pb-0.5 text-xs uppercase tracking-wider text-primary hover:text-secondary"
         >
           <span>Ver todos</span>
           <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
 
       {articles.length === 0 ? (

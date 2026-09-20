@@ -1,4 +1,5 @@
 import type { ResearchGroupsDirectoryMetrics } from '#/api/grupos-pesquisa'
+import { Button } from '#/components/ui/button'
 import type { DirectoryGroupItem } from '#/core/interfaces'
 import { useEffect, useMemo, useState, type FC } from 'react'
 import { DirectoryFilterSidebar } from './GroupFilterSidebar'
@@ -167,13 +168,15 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
                   <p className="text-sm font-medium">
                     Nenhum grupo encontrado com os filtros selecionados.
                   </p>
-                  <button
+                  <Button
                     type="button"
+                    variant="link"
+                    size="xs"
                     onClick={handleClearFilters}
-                    className="mt-3 cursor-pointer text-xs font-semibold text-primary hover:underline"
+                    className="mt-3"
                   >
                     Limpar filtros
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 paginatedGroups.map((item) => (

@@ -1,4 +1,7 @@
 import type { ProductionTypeFilter } from '#/api/producoes'
+import { Button } from '#/components/ui/button'
+import { DebouncedInput } from '#/components/ui/debounced-input'
+import { Input } from '#/components/ui/input'
 import { RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import type { FC } from 'react'
 
@@ -66,14 +69,16 @@ export const ProductionsFilterSidebar: FC<ProductionsFilterSidebarProps> = ({
             <span>Filtros</span>
           </h2>
           {hasActiveFilters && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={onResetFilters}
-              className="flex cursor-pointer items-center gap-1 text-[11px] font-semibold text-secondary transition-colors hover:text-primary"
+              className="h-auto px-0 text-[11px] text-secondary hover:bg-transparent hover:text-primary"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Limpar</span>
-            </button>
+            </Button>
           )}
         </div>
 
@@ -83,22 +88,26 @@ export const ProductionsFilterSidebar: FC<ProductionsFilterSidebarProps> = ({
               Título da produção
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
+              <DebouncedInput
                 type="text"
+                variant="filled"
+                size="sm"
+                leftIcon={<Search />}
                 placeholder="Buscar por título"
                 value={searchQuery}
-                onChange={(event) => onSearchChange(event.target.value)}
-                className="w-full rounded border border-border-subtle bg-surface py-2 pl-9 pr-8 text-xs text-foreground transition-colors placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                onValueChange={onSearchChange}
+                className="pr-8 placeholder:text-secondary"
               />
               {searchQuery && (
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer text-secondary hover:text-primary"
+                  className="absolute right-1 top-1/2 size-7 -translate-y-1/2 text-secondary hover:bg-transparent hover:text-primary"
                 >
                   <X className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -108,26 +117,30 @@ export const ProductionsFilterSidebar: FC<ProductionsFilterSidebarProps> = ({
               Ano de publicação
             </label>
             <div className="flex items-center space-x-2">
-              <input
+              <Input
                 type="number"
+                variant="filled"
+                size="sm"
                 placeholder="De"
                 value={yearFrom}
                 onChange={(event) => onYearFromChange(event.target.value)}
                 min="1900"
                 max="2026"
-                className="w-full rounded border border-border-subtle bg-surface px-2.5 py-2 text-xs text-foreground placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="placeholder:text-secondary"
               />
               <span className="text-xs font-semibold text-muted-foreground">
                 -
               </span>
-              <input
+              <Input
                 type="number"
+                variant="filled"
+                size="sm"
                 placeholder="Até"
                 value={yearTo}
                 onChange={(event) => onYearToChange(event.target.value)}
                 min="1900"
                 max="2026"
-                className="w-full rounded border border-border-subtle bg-surface px-2.5 py-2 text-xs text-foreground placeholder:text-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="placeholder:text-secondary"
               />
             </div>
           </div>
@@ -162,18 +175,16 @@ export const ProductionsFilterSidebar: FC<ProductionsFilterSidebarProps> = ({
                 const isActive = selectedQualis.includes(qualis)
 
                 return (
-                  <button
+                  <Button
                     key={qualis}
                     type="button"
+                    variant={isActive ? 'primary' : 'outline'}
+                    size="xs"
                     onClick={() => onToggleQualis(qualis)}
-                    className={`cursor-pointer rounded border px-3 py-1 text-xs font-semibold transition-colors ${
-                      isActive
-                        ? 'border-primary bg-primary text-white'
-                        : 'border-border-subtle bg-surface text-secondary hover:bg-surface-hover'
-                    }`}
+                    className={isActive ? '' : 'bg-surface'}
                   >
                     {qualis}
-                  </button>
+                  </Button>
                 )
               })}
             </div>
@@ -196,13 +207,15 @@ export const ProductionsFilterSidebar: FC<ProductionsFilterSidebarProps> = ({
             </select>
           </div>
 
-          <button
+          <Button
             type="button"
+            size="sm"
+            fullWidth
             onClick={onApplyFilters}
-            className="mt-2 w-full cursor-pointer rounded bg-primary py-2.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-primary-hover"
+            className="mt-2"
           >
             Aplicar filtros
-          </button>
+          </Button>
         </div>
       </div>
     </aside>

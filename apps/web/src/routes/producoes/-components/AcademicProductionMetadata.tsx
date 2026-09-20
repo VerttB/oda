@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import {
   BookOpen,
   Check,
@@ -77,11 +78,13 @@ export const AcademicProductionMetadata: FC<
         <div className="flex flex-col rounded-xl bg-surface-container-low p-3">
           <dt className="mb-1 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-secondary">
             <span>DOI</span>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="xs"
               onClick={handleCopyDoi}
               disabled={!hasDoi}
-              className="flex cursor-pointer items-center gap-1 text-[11px] font-normal text-secondary hover:text-accent-teal disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-auto px-0 text-[11px] font-normal text-secondary hover:bg-transparent hover:text-accent-teal"
             >
               {copiedDoi ? (
                 <>
@@ -94,7 +97,7 @@ export const AcademicProductionMetadata: FC<
                   <span>Copiar link</span>
                 </>
               )}
-            </button>
+            </Button>
           </dt>
           <dd className="break-all font-mono text-xs text-accent-teal">
             {hasDoi ? (

@@ -1,4 +1,5 @@
 import { getProductionDetail, productionDetailQueryKey } from '#/api/producoes'
+import { Button } from '#/components/ui/button'
 import type {
   AcademicAuthor,
   AcademicProductionDetailData,
@@ -46,13 +47,9 @@ function ProductionErrorState({
             ? error.message
             : 'A API retornou uma resposta inesperada.'}
         </p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-        >
+        <Button type="button" onClick={onRetry} size="lg">
           Tentar novamente
-        </button>
+        </Button>
       </section>
     </main>
   )

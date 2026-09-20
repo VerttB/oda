@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import type { AcademicAuthor } from '#/core/interfaces'
 import { User, UserCheck, Users } from 'lucide-react'
 import type { FC } from 'react'
@@ -37,15 +38,17 @@ export const AcademicProductionAuthors: FC<AcademicProductionAuthorsProps> = ({
 
           return (
             <li key={index}>
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => onSelectAuthor && onSelectAuthor(author)}
-                className="flex items-center gap-2 text-secondary hover:text-accent-teal hover:border-accent-teal hover:bg-accent-teal/5 bg-surface-container-low px-4 py-2 rounded-full border border-border-subtle transition-all cursor-pointer text-sm font-medium group"
+                className="group rounded-full bg-surface-container-low font-medium text-secondary hover:border-accent-teal hover:bg-accent-teal/5 hover:text-accent-teal"
                 title={`Ver perfil ou produções de ${author.name}`}
               >
                 <User className="w-4 h-4 text-secondary group-hover:text-accent-teal transition-colors flex-shrink-0" />
                 <span className="group-hover:underline">{author.name}</span>
-              </button>
+              </Button>
             </li>
           )
         })}

@@ -4,6 +4,13 @@ import type {
   ResearchGroupDetail,
   ResearchLine,
 } from '#/core/interfaces'
+import type {
+  GruposPesquisaResponse,
+  GrupoPesquisaInstituicaoResponse,
+  GrupoPesquisaMetricasResponse,
+  MetricasGruposPesquisaResponse,
+  PaginatedGruposPesquisaResponse,
+} from '@oda/shared-types'
 
 export const researchGroupsQueryKey = ['research-groups']
 
@@ -27,100 +34,6 @@ const API_BASE_URL = (
 ).replace(/\/$/, '')
 
 const DEFAULT_AVATAR = '/headshot-on-white.jpg'
-
-type ApiInstituicao = {
-  nome?: string | null
-  sigla?: string | null
-  estado?: {
-    sigla?: string | null
-    nome?: string | null
-  } | null
-}
-
-type ApiGrupoInstituicao = ApiInstituicao & {
-  tipoRelacao?: string | null
-  unidade: {
-    nome?: string | null
-    uf?: string | null
-  }  
-}
-
-type ApiAreaConhecimento = {
-  area?: {
-    nome?: string | null
-  } | null
-}
-
-type ApiLinhaPesquisa = {
-  id?: string | null
-  titulo?: string | null
-  objetivo?: string | null
-}
-
-type ApiPesquisador = {
-  id?: string | null
-  nome?: string | null
-  tipo?: string | null
-  eLider?: string | null
-  formacaoAcademica?: string | null
-  imageUrl?: string | null
-}
-
-type ApiGrupoPesquisa = {
-  id: string
-  dgpId?: string | null
-  nome?: string | null
-  anoFormacao?: number | null
-  areaPredominante?: string | null
-  repercussao?: string | null
-  email?: string | null
-  website?: string | null
-  cidade?: string | null
-  uf?: string | null
-  instituicoes?: ApiGrupoInstituicao[] | null
-  areasConhecimento?: ApiAreaConhecimento[] | null
-  linhasPesquisa?: ApiLinhaPesquisa[] | null
-  membros?: ApiPesquisador[] | null
-}
-
-type ApiPaginatedResponse<T> = {
-  data?: T[]
-  items?: T[]
-  results?: T[]
-  total?: number
-  meta?: {
-    page?: number
-    size?: number
-    total?: number
-    totalItems?: number
-    totalPages?: number
-  }
-}
-
-type ApiGrupoMetricas = {
-  totais?: {
-    pesquisadores?: number
-    linhasPesquisa?: number
-    producoes?: number
-  }
-}
-
-type ApiGruposPesquisaMetricas = {
-  total: number
-  porUf: {
-    uf: string
-    total: number
-  }[]
-  porInstituicao: {
-    instituicaoId: string
-    nome?: string | null
-    sigla?: string | null
-    uf?: string | null
-    total: number
-    sede: number
-    parceira: number
-  }[]
-}
 
 export type ResearchGroupsDirectoryMetrics = {
   total: number
@@ -193,22 +106,27 @@ async function fetchOptionalJson<T>(
   }
 }
 
-function getInstitutionName(vinculo?: ApiGrupoInstituicao) {
-  return (
-    vinculo?.nome ??
-    'Instituição não informada'
-  )
+function getInstitutionName(vinculo?: GrupoPesquisaInstituicaoResponse) {
+  return vinculo?.nome ?? 'Instituição não informada'
 }
 
-function getInstitutionCode(vinculo?: ApiGrupoInstituicao) {
+type GrupoPesquisaMembro = NonNullable<
+  GruposPesquisaResponse['membros']
+>[number]
+
+type GrupoPesquisaLinhaPesquisa = NonNullable<
+  GruposPesquisaResponse['linhasPesquisa']
+>[number]
+
+function getInstitutionCode(vinculo?: GrupoPesquisaInstituicaoResponse) {
   return vinculo?.sigla ?? '--'
 }
 
-function getInstitutionLocation(vinculo?: ApiGrupoInstituicao) {
+function getInstitutionLocation(vinculo?: GrupoPesquisaInstituicaoResponse) {
   return vinculo?.estado?.sigla ?? null
 }
 
-function getInstitutionExtra(vinculo?: ApiGrupoInstituicao) {
+function getInstitutionExtra(vinculo?: GrupoPesquisaInstituicaoResponse) {
   const nome = vinculo?.unidade?.nome ?? null
   const uf = vinculo?.unidade?.uf ?? null
 
@@ -221,11 +139,16 @@ function getInstitutionExtra(vinculo?: ApiGrupoInstituicao) {
     uf,
   }
 }
-function isHostInstitution(vinculo: ApiGrupoInstituicao) {
+
+function getInstitutionImageUrl(vinculo?: GrupoPesquisaInstituicaoResponse) {
+  return normalizeApiAssetUrl(vinculo?.imageUrl)
+}
+
+function isHostInstitution(vinculo: GrupoPesquisaInstituicaoResponse) {
   return vinculo.tipoRelacao?.toUpperCase() === 'SEDE'
 }
 
-function formatResearcherRole(member: ApiPesquisador): string {
+function formatResearcherRole(member: GrupoPesquisaMembro): string {
   if (member.eLider) {
     return 'Líder'
   }
@@ -242,8 +165,7 @@ function formatResearcherRole(member: ApiPesquisador): string {
     .replace(/^\w/, (letter) => letter.toUpperCase())
 }
 
-function mapMemberToAuthor(member: ApiPesquisador): Author | null {
-
+function mapMemberToAuthor(member: GrupoPesquisaMembro): Author | null {
   if (!member?.id || !member.nome) {
     return null
   }
@@ -257,7 +179,9 @@ function mapMemberToAuthor(member: ApiPesquisador): Author | null {
   }
 }
 
-function mapResearchLine(line: ApiLinhaPesquisa): ResearchLine | null {
+function mapResearchLine(
+  line: GrupoPesquisaLinhaPesquisa,
+): ResearchLine | null {
   if (!line.titulo) {
     return null
   }
@@ -272,13 +196,13 @@ function mapResearchLine(line: ApiLinhaPesquisa): ResearchLine | null {
   }
 }
 
-function getGroupHostInstitution(group: ApiGrupoPesquisa) {
+function getGroupHostInstitution(group: GruposPesquisaResponse) {
   const institutions = group.instituicoes ?? []
 
   return institutions.find(isHostInstitution) ?? institutions[0]
 }
 
-function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
+function mapGroupListItem(group: GruposPesquisaResponse): DirectoryGroupItem {
   const hostInstitution = getGroupHostInstitution(group)
   const members = (group.membros ?? []).map(mapMemberToAuthor).filter(isPresent)
   const leaders = (group.membros ?? [])
@@ -292,7 +216,8 @@ function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
     institution: getInstitutionCode(hostInstitution),
     knowledgeArea:
       group.areaPredominante ??
-      group.areasConhecimento?.[0]?.area?.nome ??
+      group.areaConhecimento?.nome ??
+      group.areasConhecimento?.[0]?.nome ??
       'Área não informada',
     status: 'Ativo',
     uf: group.uf ?? getInstitutionLocation(hostInstitution) ?? '--',
@@ -307,17 +232,17 @@ function mapGroupListItem(group: ApiGrupoPesquisa): DirectoryGroupItem {
 }
 
 function getGroupsFromResponse(
-  response: ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>,
+  response: GruposPesquisaResponse[] | PaginatedGruposPesquisaResponse,
 ) {
   if (Array.isArray(response)) {
     return response
   }
 
-  return response.data ?? response.items ?? response.results ?? []
+  return response.data
 }
 
 function getGroupsPageFromResponse(
-  response: ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>,
+  response: GruposPesquisaResponse[] | PaginatedGruposPesquisaResponse,
 ) {
   if (Array.isArray(response)) {
     return {
@@ -332,12 +257,8 @@ function getGroupsPageFromResponse(
   }
 
   const data = getGroupsFromResponse(response)
-  const totalItems =
-    response.meta?.totalItems ??
-    response.meta?.total ??
-    response.total ??
-    data.length
-  const size = response.meta?.size ?? data.length
+  const totalItems = response.meta.totalItems
+  const size = response.meta.size
 
   return {
     data,
@@ -352,17 +273,15 @@ function getGroupsPageFromResponse(
   }
 }
 
-function 
-mapGroupDetail(
-  group: ApiGrupoPesquisa,
-  metrics: ApiGrupoMetricas | null,
+function mapGroupDetail(
+  group: GruposPesquisaResponse,
+  metrics: GrupoPesquisaMetricasResponse | null,
 ): ResearchGroupDetail {
   const institutions = group.instituicoes ?? []
   const hostInstitution = getGroupHostInstitution(group)
   const partnerInstitutions = institutions.filter(
     (institution) => institution !== hostInstitution,
   )
-  console.log(group)
   const members = (group.membros ?? []).map(mapMemberToAuthor).filter(isPresent)
   const leaders = (group.membros ?? [])
     .filter((member) => member.eLider)
@@ -371,7 +290,8 @@ mapGroupDetail(
 
   const primaryArea =
     group.areaPredominante ??
-    group.areasConhecimento?.[0]?.area?.nome ??
+    group.areaConhecimento?.nome ??
+    group.areasConhecimento?.[0]?.nome ??
     'Área não informada'
 
   return {
@@ -395,11 +315,13 @@ mapGroupDetail(
       hostInstitution: {
         name: getInstitutionName(hostInstitution),
         code: getInstitutionCode(hostInstitution),
+        imageUrl: getInstitutionImageUrl(hostInstitution),
         unidade: getInstitutionExtra(hostInstitution),
       },
       partnerInstitutions: partnerInstitutions.map((institution) => ({
         name: getInstitutionName(institution),
         code: getInstitutionCode(institution),
+        imageUrl: getInstitutionImageUrl(institution),
         unidade: getInstitutionExtra(institution),
       })),
     },
@@ -420,7 +342,7 @@ const RESEARCH_GROUPS_PAGE_SIZE = 100
 
 async function fetchResearchGroupsPage(page: number) {
   const response = await fetchJson<
-    ApiGrupoPesquisa[] | ApiPaginatedResponse<ApiGrupoPesquisa>
+    GruposPesquisaResponse[] | PaginatedGruposPesquisaResponse
   >(`/grupos-pesquisa?page=${page}&size=${RESEARCH_GROUPS_PAGE_SIZE}`)
 
   return getGroupsPageFromResponse(response)
@@ -443,7 +365,7 @@ export async function getResearchGroups() {
 }
 
 export async function getResearchGroupsMetrics(): Promise<ResearchGroupsDirectoryMetrics> {
-  const metrics = await fetchJson<ApiGruposPesquisaMetricas>(
+  const metrics = await fetchJson<MetricasGruposPesquisaResponse>(
     '/metricas/grupos-pesquisa',
   )
 
@@ -469,8 +391,10 @@ export async function getResearchGroupsMetrics(): Promise<ResearchGroupsDirector
 
 export async function getResearchGroupDetail(grupoId: string) {
   const [group, metrics] = await Promise.all([
-    fetchJson<ApiGrupoPesquisa>(`/grupos-pesquisa/${grupoId}`),
-    fetchOptionalJson<ApiGrupoMetricas>(`/metricas/grupos-pesquisa/${grupoId}`),
+    fetchJson<GruposPesquisaResponse>(`/grupos-pesquisa/${grupoId}`),
+    fetchOptionalJson<GrupoPesquisaMetricasResponse>(
+      `/metricas/grupos-pesquisa/${grupoId}`,
+    ),
   ])
   return mapGroupDetail(group, metrics)
-} 
+}

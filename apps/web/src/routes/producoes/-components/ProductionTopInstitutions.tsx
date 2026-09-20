@@ -1,5 +1,7 @@
 import type { FC } from 'react'
 
+import { Button } from '#/components/ui/button'
+
 export interface InstitutionItem {
   name: string
   count: string
@@ -37,23 +39,25 @@ export const ProductionsTopInstitutionsBand: FC<
             const isSelected = selectedInstitution.includes(institution.name)
 
             return (
-              <button
+              <Button
                 key={institution.name}
                 type="button"
+                variant={isSelected ? 'outline' : 'ghost'}
+                size="sm"
                 onClick={() =>
                   onSelectInstitution(
                     isSelected ? 'Todas as instituições' : institution.fullName,
                   )
                 }
-                className={`cursor-pointer rounded px-1.5 py-0.5 text-xs transition-colors md:text-sm ${
+                className={`h-auto rounded px-1.5 py-0.5 text-xs md:text-sm ${
                   isSelected
                     ? 'border border-primary/20 bg-primary-light font-bold text-primary'
-                    : 'text-secondary hover:text-primary'
+                    : 'text-secondary hover:bg-transparent hover:text-primary'
                 }`}
               >
                 <strong className="font-semibold">{institution.name}:</strong>{' '}
                 {institution.count}
-              </button>
+              </Button>
             )
           })}
         </div>

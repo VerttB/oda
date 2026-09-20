@@ -1,6 +1,7 @@
 import { ArrowRight, Building2 } from 'lucide-react'
 import type { FC } from 'react'
 
+import { Button } from '#/components/ui/button'
 import type { DirectoryGroupItem } from '#/core/interfaces'
 
 interface GroupMainPageListItemProps {
@@ -15,13 +16,15 @@ export const GroupMainPageListItem: FC<GroupMainPageListItemProps> = ({
   return (
     <article className="-mx-2 flex flex-col gap-4 rounded-lg px-2 py-5 transition-colors hover:bg-surface/60 md:flex-row md:gap-8">
       <div className="flex flex-1 flex-col">
-        <button
+        <Button
           type="button"
+          variant="link"
+          size="sm"
           onClick={() => onSelect(group)}
-          className="mb-1 cursor-pointer text-left text-base font-semibold text-primary transition-colors hover:text-primary-hover"
+          className="mb-1 h-auto justify-start p-0 text-left text-base font-semibold text-primary hover:text-primary-hover"
         >
           {group.name}
-        </button>
+        </Button>
         <div className="mb-2.5 flex items-center gap-1.5 text-xs text-secondary">
           <Building2 className="h-3.5 w-3.5" />
           <span>{group.institution}</span>
@@ -66,14 +69,16 @@ export const GroupMainPageListItem: FC<GroupMainPageListItemProps> = ({
           <span className="whitespace-nowrap">Desde {group.since}</span>
         </div>
 
-        <button
+        <Button
           type="button"
+          variant="link"
+          size="sm"
           onClick={() => onSelect(group)}
-          className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary-hover hover:underline"
+          className="h-auto gap-1 p-0 text-xs text-primary hover:text-primary-hover"
         >
           <span>Ver detalhes</span>
           <ArrowRight className="h-3.5 w-3.5" />
-        </button>
+        </Button>
       </div>
     </article>
   )

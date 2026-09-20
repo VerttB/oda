@@ -1,4 +1,5 @@
 import type { ProductionsPage, ProductionTypeFilter } from '#/api/producoes'
+import { Button } from '#/components/ui/button'
 import type { ProductionItem } from '#/core/interfaces'
 import { FileText, RotateCcw } from 'lucide-react'
 import { useMemo, useState, type MouseEvent, type FC } from 'react'
@@ -204,14 +205,15 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
                 <p className="mt-1 text-xs text-secondary">
                   Tente ajustar os termos de busca, anos ou filtros de Qualis.
                 </p>
-                <button
+                <Button
                   type="button"
+                  size="sm"
                   onClick={handleResetFilters}
-                  className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded bg-primary px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
+                  className="mt-4"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Restaurar filtros</span>
-                </button>
+                </Button>
               </div>
             ) : (
               filteredProductions.map((production) => (

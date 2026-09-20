@@ -1,93 +1,75 @@
 import { z } from 'zod';
-import { SituacaoGrupoPesquisaSchema, TipoRelacaoGrupoInstituicaoSchema } from './grupos-pesquisa';
-import { FormacaoAcademicaSchema, TipoPesquisadorSchema } from './pesquisadores';
+import {
+  SituacaoGrupoPesquisaSchema,
+  TipoRelacaoGrupoInstituicaoSchema,
+} from './grupos-pesquisa';
+import {
+  FormacaoAcademicaSchema,
+  TipoPesquisadorSchema,
+} from './pesquisadores';
 import { createPaginatedResponseSchema } from './pagination';
 import { QualisSchema, TipoProducaoSchema } from './producoes';
 import { TipoAreaConhecimentoSchema } from './area-conhecimento';
 
 export const AreaConhecimentoResponseSchema = z.object({
-  id: z.string(), nome: z.string(), nomeNormalizado: z.string(),
+  id: z.string(),
+  nome: z.string(),
+  nomeNormalizado: z.string(),
   tipo: TipoAreaConhecimentoSchema.nullable().optional(),
   areaPaiId: z.string().nullable(),
 });
 
-export const AreaConhecimentoDetalheResponseSchema = AreaConhecimentoResponseSchema.extend({
-  areaPai: AreaConhecimentoResponseSchema.nullable().optional(),
-  subareas: z.array(AreaConhecimentoResponseSchema).optional(),
-});
+export const AreaConhecimentoDetalheResponseSchema =
+  AreaConhecimentoResponseSchema.extend({
+    areaPai: AreaConhecimentoResponseSchema.nullable().optional(),
+    subareas: z.array(AreaConhecimentoResponseSchema).optional(),
+  });
 
-export const GrupoPesquisaAreaConhecimentoResponseSchema = AreaConhecimentoResponseSchema.extend({
-  relacao: z.enum(['PRINCIPAL', 'ADICIONAL']),
-  metodoInferencia: z.enum(['DGP', 'IA', 'MANUAL']),
-  confianca: z.number().nullable(),
-  justificativa: z.string().nullable(),
-  metadata: z.unknown().nullable().optional(),
-});
+export const GrupoPesquisaAreaConhecimentoResponseSchema =
+  AreaConhecimentoResponseSchema.extend({
+    relacao: z.enum(['PRINCIPAL', 'ADICIONAL']),
+    metodoInferencia: z.enum(['DGP', 'IA', 'MANUAL']),
+    confianca: z.number().nullable(),
+    justificativa: z.string().nullable(),
+    metadata: z.unknown().nullable().optional(),
+  });
 
 export const GrupoPesquisaResumoResponseSchema = z.object({
-  id: z.string(), dgpId: z.string().nullable(), nome: z.string(),
-  anoFormacao: z.number().nullable(), areaPredominante: z.string(),
-  repercussao: z.string().nullable(), situacao: SituacaoGrupoPesquisaSchema,
-  email: z.string().nullable(), telefone: z.string().nullable(), website: z.string().nullable(),
-  logradouro: z.string().nullable(), numero: z.string().nullable(), complemento: z.string().nullable(),
-  bairro: z.string().nullable(), cidade: z.string().nullable(), uf: z.string().nullable(), cep: z.string().nullable(),
-  latitude: z.number().nullable(), longitude: z.number().nullable(),
+  id: z.string(),
+  dgpId: z.string().nullable(),
+  nome: z.string(),
+  anoFormacao: z.number().nullable(),
+  areaPredominante: z.string(),
+  repercussao: z.string().nullable(),
+  situacao: SituacaoGrupoPesquisaSchema,
+  email: z.string().nullable(),
+  telefone: z.string().nullable(),
+  website: z.string().nullable(),
+  logradouro: z.string().nullable(),
+  numero: z.string().nullable(),
+  complemento: z.string().nullable(),
+  bairro: z.string().nullable(),
+  cidade: z.string().nullable(),
+  uf: z.string().nullable(),
+  cep: z.string().nullable(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
 });
 
 export const PesquisadorResumoResponseSchema = z.object({
-  id: z.string(), lattesId: z.string().nullable(), nome: z.string(),
-  tipo: TipoPesquisadorSchema.nullable(), formacaoAcademica: FormacaoAcademicaSchema.nullable(),
-  openAlexId: z.string().nullable(), orcidId: z.string().nullable(), imageUrl: z.string().nullable(),
-  indexH: z.number().nullable(), indexI10: z.number().nullable(),
+  id: z.string(),
+  lattesId: z.string().nullable(),
+  nome: z.string(),
+  tipo: TipoPesquisadorSchema.nullable(),
+  formacaoAcademica: FormacaoAcademicaSchema.nullable(),
+  openAlexId: z.string().nullable(),
+  orcidId: z.string().nullable(),
+  imageUrl: z.string().nullable(),
+  indexH: z.number().nullable(),
+  indexI10: z.number().nullable(),
 });
 
 export const ProducaoPesquisadorResponseSchema = z.object({
-  id: z.string(), titulo: z.string(), ano: z.number().nullable(),
-  tipo: TipoProducaoSchema,
-  doi: z.string().nullable(), url: z.string().nullable(), veiculo: z.string().nullable(),
-  issn: z.string().nullable(), qualis: QualisSchema.nullable(),
-  resumo: z.string().nullable(), ordemAutoria: z.number().nullable(),
-});
-
-export const GrupoPesquisaInstituicaoResponseSchema = z.object({
-  id: z.string(), nome: z.string(), sigla: z.string(),
-  tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
-  unidade: z.object({ nome: z.string().nullable(), uf: z.string().nullable() }).nullable(),
-  estado: z.object({ id: z.string(), sigla: z.string(), nome: z.string(), regiao: z.string() }).nullable(),
-});
-
-const vinculoGrupo = { eLider: z.boolean(), dataEntrada: z.string().datetime().nullable() };
-
-export const GruposPesquisaResponseSchema = GrupoPesquisaResumoResponseSchema.extend({
-  instituicoes: z.array(GrupoPesquisaInstituicaoResponseSchema).optional(),
-  areaConhecimento: AreaConhecimentoResponseSchema.nullable().optional(),
-  areasConhecimento: z.array(GrupoPesquisaAreaConhecimentoResponseSchema).optional(),
-  linhasPesquisa: z.array(z.object({
-    id: z.string(), dgpId: z.string().nullable(), titulo: z.string(), objetivo: z.string().nullable(),
-  })).optional(),
-  membros: z.array(PesquisadorResumoResponseSchema.extend(vinculoGrupo)).optional(),
-});
-
-export const PesquisadorResponseSchema = PesquisadorResumoResponseSchema.extend({
-  producoes: z.array(ProducaoPesquisadorResponseSchema).optional(),
-  membrosGrupo: z.array(GrupoPesquisaResumoResponseSchema.extend(vinculoGrupo)).optional(),
-  areasConhecimento: z.array(AreaConhecimentoResponseSchema).optional(),
-});
-
-const RawVinculoResponseSchema = z.record(z.string(), z.unknown());
-
-export const LinhaPesquisaResponseSchema = z.object({
-  id: z.string(),
-  dgpId: z.string().nullable(),
-  titulo: z.string(),
-  objetivo: z.string().nullable(),
-  grupoId: z.string(),
-  membros: z.array(RawVinculoResponseSchema).optional(),
-  palavrasChave: z.array(RawVinculoResponseSchema).optional(),
-  setoresAplicacao: z.array(RawVinculoResponseSchema).optional(),
-}).passthrough();
-
-export const ProducaoResponseSchema = z.object({
   id: z.string(),
   titulo: z.string(),
   ano: z.number().nullable(),
@@ -98,9 +80,96 @@ export const ProducaoResponseSchema = z.object({
   issn: z.string().nullable(),
   qualis: QualisSchema.nullable(),
   resumo: z.string().nullable(),
-  autores: z.array(RawVinculoResponseSchema).optional(),
-  palavrasChave: z.array(RawVinculoResponseSchema).optional(),
-}).passthrough();
+  ordemAutoria: z.number().nullable(),
+});
+
+export const GrupoPesquisaInstituicaoResponseSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  sigla: z.string(),
+  imageUrl: z.string().nullable().optional(),
+  tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
+  unidade: z
+    .object({ nome: z.string().nullable(), uf: z.string().nullable() })
+    .nullable(),
+  estado: z
+    .object({
+      id: z.string(),
+      sigla: z.string(),
+      nome: z.string(),
+      regiao: z.string(),
+    })
+    .nullable(),
+});
+
+const vinculoGrupo = {
+  eLider: z.boolean(),
+  dataEntrada: z.string().datetime().nullable(),
+};
+
+export const GruposPesquisaResponseSchema =
+  GrupoPesquisaResumoResponseSchema.extend({
+    instituicoes: z.array(GrupoPesquisaInstituicaoResponseSchema).optional(),
+    areaConhecimento: AreaConhecimentoResponseSchema.nullable().optional(),
+    areasConhecimento: z
+      .array(GrupoPesquisaAreaConhecimentoResponseSchema)
+      .optional(),
+    linhasPesquisa: z
+      .array(
+        z.object({
+          id: z.string(),
+          dgpId: z.string().nullable(),
+          titulo: z.string(),
+          objetivo: z.string().nullable(),
+        }),
+      )
+      .optional(),
+    membros: z
+      .array(PesquisadorResumoResponseSchema.extend(vinculoGrupo))
+      .optional(),
+  });
+
+export const PesquisadorResponseSchema = PesquisadorResumoResponseSchema.extend(
+  {
+    producoes: z.array(ProducaoPesquisadorResponseSchema).optional(),
+    membrosGrupo: z
+      .array(GrupoPesquisaResumoResponseSchema.extend(vinculoGrupo))
+      .optional(),
+    areasConhecimento: z.array(AreaConhecimentoResponseSchema).optional(),
+  },
+);
+
+const RawVinculoResponseSchema = z.record(z.string(), z.unknown());
+
+export const LinhaPesquisaResponseSchema = z
+  .object({
+    id: z.string(),
+    dgpId: z.string().nullable(),
+    titulo: z.string(),
+    objetivo: z.string().nullable(),
+    grupoId: z.string(),
+    membros: z.array(RawVinculoResponseSchema).optional(),
+    palavrasChave: z.array(RawVinculoResponseSchema).optional(),
+    setoresAplicacao: z.array(RawVinculoResponseSchema).optional(),
+  })
+  .passthrough();
+
+export const ProducaoResponseSchema = z
+  .object({
+    id: z.string(),
+    titulo: z.string(),
+    ano: z.number().nullable(),
+    tipo: TipoProducaoSchema,
+    doi: z.string().nullable(),
+    url: z.string().nullable(),
+    veiculo: z.string().nullable(),
+    issn: z.string().nullable(),
+    qualis: QualisSchema.nullable(),
+    resumo: z.string().nullable(),
+    autores: z.array(RawVinculoResponseSchema).optional(),
+    palavrasChave: z.array(RawVinculoResponseSchema).optional(),
+  })
+  .passthrough();
 
 export const EstadoResponseSchema = z.object({
   id: z.string(),
@@ -115,14 +184,16 @@ export const PaginatedGruposPesquisaResponseSchema =
 export const PaginatedPesquisadorResumoResponseSchema =
   createPaginatedResponseSchema(PesquisadorResumoResponseSchema);
 
-export const PaginatedPesquisadorResponseSchema =
-  createPaginatedResponseSchema(PesquisadorResponseSchema);
+export const PaginatedPesquisadorResponseSchema = createPaginatedResponseSchema(
+  PesquisadorResponseSchema,
+);
 
 export const PaginatedLinhaPesquisaResponseSchema =
   createPaginatedResponseSchema(LinhaPesquisaResponseSchema);
 
-export const PaginatedProducaoResponseSchema =
-  createPaginatedResponseSchema(ProducaoResponseSchema);
+export const PaginatedProducaoResponseSchema = createPaginatedResponseSchema(
+  ProducaoResponseSchema,
+);
 
 export const PaginatedAreaConhecimentoResponseSchema =
   createPaginatedResponseSchema(AreaConhecimentoResponseSchema);
@@ -161,14 +232,18 @@ export const GrupoPesquisaMetricasResponseSchema = z.object({
     producoesComQualis: z.number().int().min(0),
     producoesComQualisPercentual: z.number(),
   }),
-  pesquisadoresPorTipo: z.array(z.object({
-    tipo: z.string(),
-    total: z.number().int().min(0),
-  })),
-  pesquisadoresPorFormacao: z.array(z.object({
-    formacao: z.string(),
-    total: z.number().int().min(0),
-  })),
+  pesquisadoresPorTipo: z.array(
+    z.object({
+      tipo: z.string(),
+      total: z.number().int().min(0),
+    }),
+  ),
+  pesquisadoresPorFormacao: z.array(
+    z.object({
+      formacao: z.string(),
+      total: z.number().int().min(0),
+    }),
+  ),
   producoesPorAno: z.array(TotalPorAnoResponseSchema),
   producoesPorTipo: z.array(TotalPorTipoProducaoResponseSchema),
   producoesPorQualis: z.array(TotalPorQualisResponseSchema),
@@ -196,26 +271,34 @@ export const PesquisadorMetricasResponseSchema = z.object({
 
 export const MetricasGruposPesquisaResponseSchema = z.object({
   total: z.number().int().min(0),
-  porUf: z.array(z.object({
-    uf: z.string(),
-    total: z.number().int().min(0),
-  })),
-  porInstituicao: z.array(z.object({
-    instituicaoId: z.string(),
-    nome: z.string().nullable(),
-    sigla: z.string().nullable(),
-    uf: z.string().nullable(),
-    total: z.number().int().min(0),
-    sede: z.number().int().min(0),
-    parceira: z.number().int().min(0),
-  })),
+  porUf: z.array(
+    z.object({
+      uf: z.string(),
+      total: z.number().int().min(0),
+    }),
+  ),
+  porInstituicao: z.array(
+    z.object({
+      instituicaoId: z.string(),
+      nome: z.string().nullable(),
+      sigla: z.string().nullable(),
+      uf: z.string().nullable(),
+      total: z.number().int().min(0),
+      sede: z.number().int().min(0),
+      parceira: z.number().int().min(0),
+    }),
+  ),
 });
 
 export const MetricasPesquisadoresResponseSchema = z.object({
   totalPesquisadores: z.number().int().min(0),
   totalComOrcid: z.number().int().min(0),
-  porFormacao: z.array(z.object({ formacao: z.string(), total: z.number().int().min(0) })),
-  porTipo: z.array(z.object({ tipo: z.string(), total: z.number().int().min(0) })),
+  porFormacao: z.array(
+    z.object({ formacao: z.string(), total: z.number().int().min(0) }),
+  ),
+  porTipo: z.array(
+    z.object({ tipo: z.string(), total: z.number().int().min(0) }),
+  ),
 });
 
 export const MetricasAreasConhecimentoResponseSchema = z.object({
@@ -225,11 +308,21 @@ export const MetricasAreasConhecimentoResponseSchema = z.object({
   gruposComAreaPrincipal: z.number().int().min(0),
   mapeadasOpenAlex: z.number().int().min(0),
   mapeadasOpenAlexPercentual: z.number(),
-  cnpqPorTipo: z.array(z.object({ tipo: z.string(), total: z.number().int().min(0) })),
-  openAlexPorTipo: z.array(z.object({ tipo: z.string(), total: z.number().int().min(0) })),
-  gruposAreasPorRelacao: z.array(z.object({ relacao: z.string(), total: z.number().int().min(0) })),
-  gruposAreasPorMetodo: z.array(z.object({ metodoInferencia: z.string(), total: z.number().int().min(0) })),
-  mapeamentosPorStatus: z.array(z.object({ status: z.string(), total: z.number().int().min(0) })),
+  cnpqPorTipo: z.array(
+    z.object({ tipo: z.string(), total: z.number().int().min(0) }),
+  ),
+  openAlexPorTipo: z.array(
+    z.object({ tipo: z.string(), total: z.number().int().min(0) }),
+  ),
+  gruposAreasPorRelacao: z.array(
+    z.object({ relacao: z.string(), total: z.number().int().min(0) }),
+  ),
+  gruposAreasPorMetodo: z.array(
+    z.object({ metodoInferencia: z.string(), total: z.number().int().min(0) }),
+  ),
+  mapeamentosPorStatus: z.array(
+    z.object({ status: z.string(), total: z.number().int().min(0) }),
+  ),
 });
 
 export const MetricasProducoesResponseSchema = z.object({
@@ -256,12 +349,14 @@ export const MetricasProducoesResponseSchema = z.object({
 export const MetricasInstituicoesResponseSchema = z.object({
   total: z.number().int().min(0),
   semUf: z.number().int().min(0),
-  porUf: z.array(z.object({
-    uf: z.string(),
-    estado: z.string().nullable(),
-    regiao: z.string().nullable(),
-    total: z.number().int().min(0),
-  })),
+  porUf: z.array(
+    z.object({
+      uf: z.string(),
+      estado: z.string().nullable(),
+      regiao: z.string().nullable(),
+      total: z.number().int().min(0),
+    }),
+  ),
   vinculosComGrupos: z.object({
     sede: z.number().int().min(0),
     parceira: z.number().int().min(0),
@@ -275,11 +370,15 @@ export const MetricasInstituicoesResponseSchema = z.object({
 export const MetricasFilasExtracaoResponseSchema = z.object({
   gruposPesquisa: z.object({
     comErro: z.number().int().min(0),
-    porStatus: z.array(z.object({ status: z.string(), total: z.number().int().min(0) })),
+    porStatus: z.array(
+      z.object({ status: z.string(), total: z.number().int().min(0) }),
+    ),
   }),
   pesquisadores: z.object({
     comErro: z.number().int().min(0),
-    porStatus: z.array(z.object({ status: z.string(), total: z.number().int().min(0) })),
+    porStatus: z.array(
+      z.object({ status: z.string(), total: z.number().int().min(0) }),
+    ),
   }),
 });
 
@@ -292,41 +391,106 @@ export const MetricasGeraisResponseSchema = z.object({
   filasExtracao: MetricasFilasExtracaoResponseSchema,
 });
 
-export type GruposPesquisaResponse = z.infer<typeof GruposPesquisaResponseSchema>;
+export type GruposPesquisaResponse = z.infer<
+  typeof GruposPesquisaResponseSchema
+>;
+export type GrupoPesquisaResumoResponse = z.infer<
+  typeof GrupoPesquisaResumoResponseSchema
+>;
 export type PesquisadorResponse = z.infer<typeof PesquisadorResponseSchema>;
-export type GrupoPesquisaInstituicaoResponse = z.infer<typeof GrupoPesquisaInstituicaoResponseSchema>;
-export type ProducaoPesquisadorResponse = z.infer<typeof ProducaoPesquisadorResponseSchema>;
+export type PesquisadorResumoResponse = z.infer<
+  typeof PesquisadorResumoResponseSchema
+>;
+export type GrupoPesquisaInstituicaoResponse = z.infer<
+  typeof GrupoPesquisaInstituicaoResponseSchema
+>;
+export type ProducaoPesquisadorResponse = z.infer<
+  typeof ProducaoPesquisadorResponseSchema
+>;
 export type LinhaPesquisaResponse = z.infer<typeof LinhaPesquisaResponseSchema>;
 export type ProducaoResponse = z.infer<typeof ProducaoResponseSchema>;
 export type EstadoResponse = z.infer<typeof EstadoResponseSchema>;
-export type PaginatedGruposPesquisaResponse = z.infer<typeof PaginatedGruposPesquisaResponseSchema>;
-export type PaginatedPesquisadorResumoResponse = z.infer<typeof PaginatedPesquisadorResumoResponseSchema>;
-export type PaginatedPesquisadorResponse = z.infer<typeof PaginatedPesquisadorResponseSchema>;
-export type PaginatedLinhaPesquisaResponse = z.infer<typeof PaginatedLinhaPesquisaResponseSchema>;
-export type PaginatedProducaoResponse = z.infer<typeof PaginatedProducaoResponseSchema>;
-export type PaginatedAreaConhecimentoResponse = z.infer<typeof PaginatedAreaConhecimentoResponseSchema>;
-export type GrupoPesquisaMetricasResponse = z.infer<typeof GrupoPesquisaMetricasResponseSchema>;
-export type PesquisadorMetricasResponse = z.infer<typeof PesquisadorMetricasResponseSchema>;
+export type PaginatedGruposPesquisaResponse = z.infer<
+  typeof PaginatedGruposPesquisaResponseSchema
+>;
+export type PaginatedPesquisadorResumoResponse = z.infer<
+  typeof PaginatedPesquisadorResumoResponseSchema
+>;
+export type PaginatedPesquisadorResponse = z.infer<
+  typeof PaginatedPesquisadorResponseSchema
+>;
+export type PaginatedLinhaPesquisaResponse = z.infer<
+  typeof PaginatedLinhaPesquisaResponseSchema
+>;
+export type PaginatedProducaoResponse = z.infer<
+  typeof PaginatedProducaoResponseSchema
+>;
+export type PaginatedAreaConhecimentoResponse = z.infer<
+  typeof PaginatedAreaConhecimentoResponseSchema
+>;
+export type GrupoPesquisaMetricasResponse = z.infer<
+  typeof GrupoPesquisaMetricasResponseSchema
+>;
+export type PesquisadorMetricasResponse = z.infer<
+  typeof PesquisadorMetricasResponseSchema
+>;
+export type MetricasGruposPesquisaResponse = z.infer<
+  typeof MetricasGruposPesquisaResponseSchema
+>;
+export type MetricasPesquisadoresResponse = z.infer<
+  typeof MetricasPesquisadoresResponseSchema
+>;
+export type MetricasAreasConhecimentoResponse = z.infer<
+  typeof MetricasAreasConhecimentoResponseSchema
+>;
+export type MetricasProducoesResponse = z.infer<
+  typeof MetricasProducoesResponseSchema
+>;
+export type MetricasInstituicoesResponse = z.infer<
+  typeof MetricasInstituicoesResponseSchema
+>;
+export type MetricasFilasExtracaoResponse = z.infer<
+  typeof MetricasFilasExtracaoResponseSchema
+>;
+export type MetricasGeraisResponse = z.infer<
+  typeof MetricasGeraisResponseSchema
+>;
 
 export const InstituicaoResponseSchema = z.object({
-  id: z.string(), nome: z.string(), sigla: z.string(),
+  id: z.string(),
+  nome: z.string(),
+  sigla: z.string(),
+  imageUrl: z.string().nullable().optional(),
   estado: GrupoPesquisaInstituicaoResponseSchema.shape.estado,
-  gruposPesquisa: z.array(GrupoPesquisaResumoResponseSchema.pick({
-    id: true, dgpId: true, nome: true, situacao: true, uf: true, cidade: true,
-  }).extend({
-    tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
-    unidade: GrupoPesquisaInstituicaoResponseSchema.shape.unidade,
-  })),
+  gruposPesquisa: z.array(
+    GrupoPesquisaResumoResponseSchema.pick({
+      id: true,
+      dgpId: true,
+      nome: true,
+      situacao: true,
+      uf: true,
+      cidade: true,
+    }).extend({
+      tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
+      unidade: GrupoPesquisaInstituicaoResponseSchema.shape.unidade,
+    }),
+  ),
   totalGruposPesquisa: z.number().int().nonnegative(),
 });
 export const InstituicaoResumoResponseSchema = z.object({
   id: z.string(),
   nome: z.string(),
   sigla: z.string(),
+  imageUrl: z.string().nullable().optional(),
   estadoId: z.string().nullable(),
 });
-export const PaginatedInstituicaoResponseSchema =
-  createPaginatedResponseSchema(InstituicaoResponseSchema);
+export const PaginatedInstituicaoResponseSchema = createPaginatedResponseSchema(
+  InstituicaoResponseSchema,
+);
 export type InstituicaoResponse = z.infer<typeof InstituicaoResponseSchema>;
-export type InstituicaoResumoResponse = z.infer<typeof InstituicaoResumoResponseSchema>;
-export type PaginatedInstituicaoResponse = z.infer<typeof PaginatedInstituicaoResponseSchema>;
+export type InstituicaoResumoResponse = z.infer<
+  typeof InstituicaoResumoResponseSchema
+>;
+export type PaginatedInstituicaoResponse = z.infer<
+  typeof PaginatedInstituicaoResponseSchema
+>;

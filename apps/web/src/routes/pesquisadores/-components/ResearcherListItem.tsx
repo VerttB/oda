@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import type { ResearcherItem } from '#/core/interfaces'
 import { ChevronRight, Landmark } from 'lucide-react'
 import type { FC } from 'react'
@@ -12,10 +13,11 @@ export const ResearcherListItem: FC<ResearcherListItemProps> = ({
   onSelect,
 }) => {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={() => onSelect(researcher)}
-      className="group flex cursor-pointer flex-col items-start justify-between gap-4 p-4 text-left transition-colors hover:bg-surface-hover sm:flex-row sm:items-center sm:p-5"
+      className="group h-auto w-full flex-col items-start justify-between gap-4 rounded-none p-4 text-left hover:bg-surface-hover sm:flex-row sm:items-center sm:p-5"
     >
       <div className="flex min-w-0 flex-grow items-start gap-4">
         {researcher.avatar ? (
@@ -73,6 +75,6 @@ export const ResearcherListItem: FC<ResearcherListItemProps> = ({
           <ChevronRight className="h-5 w-5" />
         </span>
       </div>
-    </button>
+    </Button>
   )
 }

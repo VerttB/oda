@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from './ui/button'
 
 interface FooterProps {
   onTabChange?: (tab: string) => void
@@ -21,52 +22,67 @@ export const Footer: React.FC<FooterProps> = ({ onTabChange }) => {
         </div>
 
         <div className="flex flex-wrap gap-4 md:gap-6 text-sm text-[#00687a]">
-          <button
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
             onClick={() =>
               alert(
                 'Política de citação: todos os metadados oriundos dos repositórios CNPq Lattes e DGP são indexados sob protocolos acadêmicos FAIR de dados abertos.',
               )
             }
-            className="hover:text-[#0f172a] transition-colors cursor-pointer text-left"
+            className="h-auto p-0 text-left text-[#00687a] hover:text-[#0f172a]"
           >
             Política de citação
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
             onClick={() =>
               alert(
                 'Protocolo de privacidade: identificadores pessoais seguem diretrizes nacionais de transparência científica com anonimização automatizada de metadados sensíveis.',
               )
             }
-            className="hover:text-[#0f172a] transition-colors cursor-pointer text-left"
+            className="h-auto p-0 text-left text-[#00687a] hover:text-[#0f172a]"
           >
             Protocolo de privacidade
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
             onClick={() =>
               alert(
                 'Acesso institucional: federações universitárias podem solicitar tokens de extração em lote mediante credenciais acadêmicas verificadas via SAML/Eduroam.',
               )
             }
-            className="hover:text-[#0f172a] transition-colors cursor-pointer text-left"
+            className="h-auto p-0 text-left text-[#00687a] hover:text-[#0f172a]"
           >
             Acesso institucional
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
             onClick={() => onTabChange?.('docs')}
-            className="hover:text-[#0f172a] font-medium transition-colors cursor-pointer text-left"
+            className="h-auto p-0 text-left font-medium text-[#00687a] hover:text-[#0f172a]"
           >
             Documentação da API
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
             onClick={() =>
               alert(
                 'Suporte: para dúvidas ou correções de dados, entre em contato pelo e-mail contact@oda-platform.org',
               )
             }
-            className="hover:text-[#0f172a] transition-colors cursor-pointer text-left"
+            className="h-auto p-0 text-left text-[#00687a] hover:text-[#0f172a]"
           >
             Contatar suporte
-          </button>
+          </Button>
         </div>
       </div>
     </footer>

@@ -8,6 +8,7 @@ import {
   Cpu,
   Code,
 } from 'lucide-react'
+import { Button } from './ui/button'
 
 interface ResearchGroupSummary {
   id: string
@@ -50,13 +51,16 @@ export const ResearchGroupCards: React.FC<ResearchGroupCardsProps> = ({
         <h2 className="text-2xl md:text-3xl font-semibold text-secondary tracking-tight">
           Grupos de Pesquisa Adicionados Recentemente
         </h2>
-        <button
+        <Button
+          type="button"
+          variant="link"
+          size="sm"
           onClick={onExploreAllGroups}
-          className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-secondary transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5"
+          className="h-auto gap-1.5 p-0 pb-0.5 text-xs uppercase tracking-wider text-primary hover:text-secondary"
         >
           <span>Explorar Grupos</span>
           <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -1,3 +1,4 @@
+import { Button } from '#/components/ui/button'
 import { AlignLeft, Check, Copy } from 'lucide-react'
 import { useState, type FC } from 'react'
 
@@ -5,9 +6,9 @@ interface AcademicProductionAbstractProps {
   abstract: string
 }
 
-export const AcademicProductionAbstract: FC<AcademicProductionAbstractProps> = ({
-  abstract
-}) => {
+export const AcademicProductionAbstract: FC<
+  AcademicProductionAbstractProps
+> = ({ abstract }) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
@@ -26,10 +27,12 @@ export const AcademicProductionAbstract: FC<AcademicProductionAbstractProps> = (
           <span>Resumo</span>
         </h2>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="xs"
           onClick={handleCopy}
-          className="text-xs font-semibold text-secondary hover:text-accent-teal flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-surface-container transition-colors cursor-pointer"
+          className="text-secondary hover:text-accent-teal"
           title="Copiar texto do resumo"
         >
           {copied ? (
@@ -43,7 +46,7 @@ export const AcademicProductionAbstract: FC<AcademicProductionAbstractProps> = (
               <span>Copiar resumo</span>
             </>
           )}
-        </button>
+        </Button>
       </div>
 
       <p className="text-base text-black leading-relaxed text-justify font-normal">

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Award } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 import type { Author } from '#/core/interfaces'
 
 interface GroupLeadersProps {
@@ -23,11 +24,12 @@ export const GroupLeaders: React.FC<GroupLeadersProps> = ({
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {leaders.length > 0 ? (
           leaders.map((leader) => (
-            <button
+            <Button
               key={leader.id}
               type="button"
+              variant="outline"
               onClick={() => onSelectLeader?.(leader.id)}
-              className="group flex cursor-pointer items-center gap-4 rounded-lg border border-border bg-surface-card p-4 text-left shadow-[0_4px_12px_rgba(15,23,42,0.03)] transition-colors hover:border-primary-400"
+              className="group h-auto justify-start gap-4 rounded-lg border-border bg-surface-card p-4 text-left shadow-[0_4px_12px_rgba(15,23,42,0.03)] hover:border-primary-400"
             >
               <img
                 src={leader.avatar}
@@ -47,7 +49,7 @@ export const GroupLeaders: React.FC<GroupLeadersProps> = ({
                   </div>
                 )}
               </div>
-            </button>
+            </Button>
           ))
         ) : (
           <div className="rounded-lg border border-border bg-surface-card p-6 text-sm text-muted-foreground sm:col-span-2">
