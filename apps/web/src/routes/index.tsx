@@ -1,78 +1,129 @@
+import {
+  featuredResearchGroupsQueryKey,
+  getFeaturedResearchGroups,
+} from '#/api/grupos-pesquisa'
+import { generalMetricsQueryKey, getGeneralMetrics } from '#/api/metricas'
+import { getProductions, productionsQueryKey } from '#/api/producoes'
 import { ApiBanner } from '#/components/ApiBanner'
 import { HeroMetrics } from '#/components/HeroMetrics'
-import { RepositoryUpdates } from '#/components/RepositoryUpdate'
+import { ProductionHighlights } from '#/components/ProductionHighlights'
 import { ResearchGroupCards } from '#/components/ResearchGroupCards'
+import { Button } from '#/components/ui/button'
+import type { ProductionItem } from '#/core/interfaces'
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
-import type { FilterState, ResearchArticle } from '../core/interfaces'
-import { MOCK_ARTICLES, MOCK_RESEARCH_GROUPS } from '../core/mock'
-import { SidebarFilters } from '#/components/SidebarFilterProps'
+
+const FEATURED_GROUPS_SIZE = 6
+const FEATURED_PRODUCTIONS_FILTERS = { page: 1, size: 4 } as const
 
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.query({
+        queryKey: generalMetricsQueryKey,
+        queryFn: getGeneralMetrics,
+        staleTime: 'static',
+      }),
+      context.queryClient.query({
+        queryKey: productionsQueryKey(FEATURED_PRODUCTIONS_FILTERS),
+        queryFn: () => getProductions(FEATURED_PRODUCTIONS_FILTERS),
+        staleTime: 'static',
+      }),
+      context.queryClient.query({
+        queryKey: featuredResearchGroupsQueryKey,
+        queryFn: () => getFeaturedResearchGroups(FEATURED_GROUPS_SIZE),
+        staleTime: 'static',
+      }),
+    ]),
+  pendingComponent: DiscoverPendingState,
+  errorComponent: ({ error, reset }) => (
+    <DiscoverErrorState error={error} onRetry={reset} />
+  ),
+  component: DiscoverRoute,
 })
 
-function RouteComponent() {
-  const [, setActiveTab] = useState<string>('discover')
-  const [searchQuery] = useState('')
-  const [filters, setFilters] = useState<FilterState>({
-    fieldsOfStudy: [],
-    publicationDate: 'Qualquer momento',
-    searchQuery: '',
-  })
-  const [, setSelectedArticle] = useState<ResearchArticle | null>(null)
+function DiscoverPendingState() {
+  return (
+    <main className="bg-background pt-28">
+      <div className="mx-auto max-w-[1280px] space-y-8 px-4 py-12 md:px-10">
+        <div className="h-80 animate-pulse rounded-lg bg-secondary/90" />
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-52 animate-pulse rounded-lg bg-surface"
+            />
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
 
-  const filteredArticles = useMemo(() => {
-    return MOCK_ARTICLES.filter((article) => {
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase()
-        const matchTitle = article.title.toLowerCase().includes(q)
-        const matchAbstract = article.abstract.toLowerCase().includes(q)
-        const matchAuthor = article.author.name.toLowerCase().includes(q)
-        const matchTag = article.tags.some((tag) =>
-          tag.toLowerCase().includes(q),
-        )
-        if (!matchTitle && !matchAbstract && !matchAuthor && !matchTag) {
-          return false
-        }
-      }
+function DiscoverErrorState({
+  error,
+  onRetry,
+}: {
+  error: unknown
+  onRetry: () => void
+}) {
+  return (
+    <main className="bg-background pt-28">
+      <section className="mx-auto max-w-[780px] px-4 py-20 text-center md:px-10">
+        <p className="mb-3 text-xs font-semibold tracking-wider text-primary uppercase">
+          Dados indisponíveis
+        </p>
+        <h1 className="mb-4 text-3xl font-semibold tracking-normal text-secondary">
+          Não foi possível carregar a página Descobrir.
+        </h1>
+        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+          {error instanceof Error
+            ? error.message
+            : 'A API retornou uma resposta inesperada.'}
+        </p>
+        <Button type="button" onClick={onRetry} size="lg">
+          Tentar novamente
+        </Button>
+      </section>
+    </main>
+  )
+}
 
-      if (
-        filters.fieldsOfStudy.length > 0 &&
-        !filters.fieldsOfStudy.includes(article.field)
-      ) {
-        return false
-      }
+function DiscoverRoute() {
+  const navigate = Route.useNavigate()
+  const [metrics, productionsPage, groupsPage] = Route.useLoaderData()
 
-      return true
+  function selectProduction(production: ProductionItem) {
+    void navigate({
+      to: '/producoes/$producaoId',
+      params: { producaoId: production.id },
     })
-  }, [searchQuery, filters])
+  }
 
   return (
     <>
-      <HeroMetrics />
+      <HeroMetrics metrics={metrics} />
       <ApiBanner />
-      <div className="mx-auto max-w-[1280px] px-4 py-16 pb-16 md:px-10">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-4">
-          <div className="lg:col-span-1">
-            <SidebarFilters filters={filters} onFilterChange={setFilters} />
-          </div>
+      <main className="bg-background">
+        <div className="mx-auto max-w-[1280px] space-y-16 px-4 py-16 md:px-10">
+          <ProductionHighlights
+            productions={productionsPage.data}
+            metrics={metrics}
+            onSelectProduction={selectProduction}
+            onViewAll={() => void navigate({ to: '/producoes' })}
+          />
 
-          <div className="space-y-12 lg:col-span-3">
-            <RepositoryUpdates
-              articles={filteredArticles}
-              onSelectArticle={(article) => setSelectedArticle(article)}
-              onSelectAuthor={() => setActiveTab('publications')}
-            />
-
-            <ResearchGroupCards
-              groups={MOCK_RESEARCH_GROUPS}
-              onSelectGroup={() => setActiveTab('groups')}
-              onExploreAllGroups={() => setActiveTab('groups')}
-            />
-          </div>
+          <ResearchGroupCards
+            groups={groupsPage.data}
+            onSelectGroup={(grupoId) =>
+              void navigate({
+                to: '/grupos/$grupoId',
+                params: { grupoId },
+              })
+            }
+            onExploreAllGroups={() => void navigate({ to: '/grupos' })}
+          />
         </div>
-      </div>
+      </main>
     </>
   )
 }

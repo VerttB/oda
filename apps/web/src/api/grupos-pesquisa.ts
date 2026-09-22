@@ -16,6 +16,11 @@ export const researchGroupsQueryKey = ['research-groups']
 
 export const researchGroupsMetricsQueryKey = ['research-groups-metrics']
 
+export const featuredResearchGroupsQueryKey = [
+  'research-groups',
+  'featured',
+] as const
+
 export const researchGroupDetailQueryKey = (grupoId: string) => [
   'research-group',
   grupoId,
@@ -340,14 +345,25 @@ function mapGroupDetail(
 
 const RESEARCH_GROUPS_PAGE_SIZE = 100
 
-async function fetchResearchGroupsPage(page: number) {
+async function fetchResearchGroupsPage(
+  page: number,
+  size = RESEARCH_GROUPS_PAGE_SIZE,
+) {
   const response = await fetchJson<
     GruposPesquisaResponse[] | PaginatedGruposPesquisaResponse
-  >(`/grupos-pesquisa?page=${page}&size=${RESEARCH_GROUPS_PAGE_SIZE}`)
+  >(`/grupos-pesquisa?page=${page}&size=${size}`)
 
   return getGroupsPageFromResponse(response)
 }
 
+export async function getFeaturedResearchGroups(size = 6) {
+  const page = await fetchResearchGroupsPage(1, size)
+
+  return {
+    data: page.data.map(mapGroupListItem),
+    meta: page.meta,
+  }
+}
 export async function getResearchGroups() {
   const firstPage = await fetchResearchGroupsPage(1)
   const remainingPages = Array.from(
@@ -356,7 +372,7 @@ export async function getResearchGroups() {
   )
 
   const remainingGroups = await Promise.all(
-    remainingPages.map(fetchResearchGroupsPage),
+    remainingPages.map((page) => fetchResearchGroupsPage(page)),
   )
 
   return [firstPage, ...remainingGroups]

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsEndpointRouteImport } from './routes/docs/endpoint'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
+  '/admin': typeof AdminIndexRoute
   '/docs': typeof DocsIndexRoute
   '/grupos': typeof GruposIndexRoute
   '/pesquisadores': typeof PesquisadoresIndexRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/docs/geral': typeof DocsGeralRoute
   '/grupos/$grupoId': typeof GruposGrupoIdRoute
   '/producoes/$producaoId': typeof ProducoesProducaoIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/grupos/': typeof GruposIndexRoute
   '/pesquisadores/': typeof PesquisadoresIndexRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/docs/geral'
     | '/grupos/$grupoId'
     | '/producoes/$producaoId'
+    | '/admin/'
     | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/docs/geral'
     | '/grupos/$grupoId'
     | '/producoes/$producaoId'
+    | '/admin'
     | '/docs'
     | '/grupos'
     | '/pesquisadores'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/docs/geral'
     | '/grupos/$grupoId'
     | '/producoes/$producaoId'
+    | '/admin/'
     | '/docs/'
     | '/grupos/'
     | '/pesquisadores/'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   DocsGeralRoute: typeof DocsGeralRoute
   GruposGrupoIdRoute: typeof GruposGrupoIdRoute
   ProducoesProducaoIdRoute: typeof ProducoesProducaoIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
   GruposIndexRoute: typeof GruposIndexRoute
   PesquisadoresIndexRoute: typeof PesquisadoresIndexRoute
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsGeralRoute: DocsGeralRoute,
   GruposGrupoIdRoute: GruposGrupoIdRoute,
   ProducoesProducaoIdRoute: ProducoesProducaoIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
   GruposIndexRoute: GruposIndexRoute,
   PesquisadoresIndexRoute: PesquisadoresIndexRoute,

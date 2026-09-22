@@ -1,91 +1,92 @@
-import React from 'react'
 import {
   ArrowRight,
+  Building2,
+  CalendarDays,
+  MapPin,
   Microscope,
-  Globe,
-  Brain,
-  Network,
-  Cpu,
-  Code,
 } from 'lucide-react'
+
+import type { DirectoryGroupItem } from '#/core/interfaces'
 import { Button } from './ui/button'
 
-interface ResearchGroupSummary {
-  id: string
-  name: string
-  description: string
-  membersCount: number
-  icon: 'biotech' | 'public' | 'psychology' | 'hub' | 'code' | 'cpu'
-}
-interface ResearchGroupCardsProps {
-  groups: ResearchGroupSummary[]
+type ResearchGroupCardsProps = {
+  groups: DirectoryGroupItem[]
   onSelectGroup: (groupId: string) => void
   onExploreAllGroups: () => void
 }
 
-export const ResearchGroupCards: React.FC<ResearchGroupCardsProps> = ({
+export function ResearchGroupCards({
   groups,
   onSelectGroup,
   onExploreAllGroups,
-}) => {
-  const renderIcon = (iconType: ResearchGroupSummary['icon']) => {
-    switch (iconType) {
-      case 'biotech':
-        return <Microscope className="w-8 h-8 text-secondary" />
-      case 'public':
-        return <Globe className="w-8 h-8 text-secondary" />
-      case 'psychology':
-        return <Brain className="w-8 h-8 text-secondary" />
-      case 'hub':
-        return <Network className="w-8 h-8 text-secondary" />
-      case 'cpu':
-        return <Cpu className="w-8 h-8 text-secondary" />
-      default:
-        return <Code className="w-8 h-8 text-secondary" />
-    }
-  }
-
+}: ResearchGroupCardsProps) {
   return (
-    <section id="top-research-groups" className="mt-12">
-      <div className="flex justify-between items-end mb-4 border-b border-border pb-2">
-        <h2 className="text-2xl md:text-3xl font-semibold text-secondary tracking-tight">
-          Grupos de Pesquisa Adicionados Recentemente
-        </h2>
+    <section id="research-groups-to-explore">
+      <div className="mb-5 flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="mb-1 text-xs font-semibold tracking-wider text-primary uppercase">
+            Diretório de pesquisa
+          </p>
+          <h2 className="text-2xl font-semibold tracking-normal text-secondary md:text-3xl">
+            Grupos para explorar
+          </h2>
+        </div>
         <Button
           type="button"
           variant="link"
           size="sm"
           onClick={onExploreAllGroups}
-          className="h-auto gap-1.5 p-0 pb-0.5 text-xs uppercase tracking-wider text-primary hover:text-secondary"
+          className="h-auto w-fit gap-1.5 p-0 pb-0.5 text-xs tracking-wider text-primary uppercase hover:text-secondary"
         >
-          <span>Explorar Grupos</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          Explorar grupos
+          <ArrowRight className="size-3.5" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {groups.map((group) => (
-          <div
-            key={group.id}
-            id={`group-summary-card-${group.id}`}
-            onClick={() => onSelectGroup(group.id)}
-            className="bg-surface border border-border p-6 flex flex-col items-center text-center hover:bg-surface-alt hover:border-accent transition-all cursor-pointer shadow-[0_4px_12px_rgba(15,23,42,0.05)] rounded-lg group"
-          >
-            <div className="w-16 h-16 rounded-full bg-surface-alt flex items-center justify-center text-secondary mb-4 group-hover:scale-105 transition-transform border border-border">
-              {renderIcon(group.icon)}
-            </div>
-            <h3 className="text-xl font-semibold text-secondary mb-2 group-hover:text-accent-hover transition-colors">
-              {group.name}
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              {group.description}
-            </p>
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-auto bg-white/70 px-3 py-1 rounded-full border border-border">
-              {group.membersCount.toLocaleString('pt-BR')} membros
-            </span>
-          </div>
-        ))}
-      </div>
+      {groups.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {groups.map((group) => (
+            <button
+              type="button"
+              key={group.id}
+              id={`group-summary-card-${group.id}`}
+              onClick={() => onSelectGroup(group.id)}
+              className="group flex min-h-64 flex-col rounded-lg border border-border bg-surface p-5 text-left shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-all hover:border-accent hover:bg-surface-alt"
+            >
+              <div className="mb-4 flex size-11 items-center justify-center rounded-md border border-border bg-background text-secondary transition-colors group-hover:text-primary">
+                <Microscope className="size-5" />
+              </div>
+              <p className="mb-2 text-xs font-semibold tracking-wider text-primary uppercase">
+                {group.knowledgeArea}
+              </p>
+              <h3 className="line-clamp-3 text-lg font-semibold leading-snug text-secondary transition-colors group-hover:text-primary">
+                {group.name}
+              </h3>
+
+              <div className="mt-auto space-y-2 pt-5 text-xs text-muted-foreground">
+                <p className="flex items-center gap-2">
+                  <Building2 className="size-3.5 shrink-0" />
+                  <span className="line-clamp-1">{group.institution}</span>
+                </p>
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="size-3.5" />
+                    {group.uf}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <CalendarDays className="size-3.5" />
+                    Desde {group.since}
+                  </span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-lg border border-border bg-surface p-8 text-center text-sm text-muted-foreground">
+          Nenhum grupo disponível no momento.
+        </p>
+      )}
     </section>
   )
 }
