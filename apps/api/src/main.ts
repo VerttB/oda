@@ -10,6 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule,{
     logger: ['error', 'warn', 'log', 'verbose'],
   });
+  app.enableCors({ origin: '*' });
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/static/',
   });
