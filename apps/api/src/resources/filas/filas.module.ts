@@ -1,10 +1,10 @@
 import { Logger, Module } from '@nestjs/common';
 import {
-  createDgpScraperQueue, createDiscoveryQueue, createEtlGroupQueue,
+  createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue,
   createEtlResearcherQueue, createLattesScraperQueue,
 } from '@oda/queue';
 import {
-  DGP_QUEUE, DISCOVERY_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE,
+  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE,
 } from './filas.constants';
 import { FilasJwtAuthGuard } from './filas-auth.guard';
 import { FilasRedisGuard } from './filas-redis.guard';
@@ -22,6 +22,7 @@ import { FilasService } from './filas.service';
     { provide: DISCOVERY_QUEUE, useFactory: () => withErrorHandler(createDiscoveryQueue()) },
     { provide: ETL_GROUP_QUEUE, useFactory: () => withErrorHandler(createEtlGroupQueue()) },
     { provide: ETL_RESEARCHER_QUEUE, useFactory: () => withErrorHandler(createEtlResearcherQueue()) },
+    { provide: ETL_DISPATCH_QUEUE, useFactory: () => withErrorHandler(createEtlDispatchQueue()) },
   ],
 })
 export class FilasModule {}

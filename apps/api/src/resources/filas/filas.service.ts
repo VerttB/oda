@@ -2,11 +2,11 @@ import {
   ConflictException, Inject, Injectable, NotFoundException, OnModuleDestroy, ServiceUnavailableException,
 } from '@nestjs/common';
 import {
-  createDgpScraperQueue, createDiscoveryQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue,
+  createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue,
   dgpJobId, discoveryJobId, DiscoverDgpGroupsJob,
-  enqueueDgpGroup, enqueueDiscoveryKey, enqueueLattesResearcher,
+  enqueueDgpGroup, enqueueDiscoveryKey, enqueueEtlDispatch, enqueueLattesResearcher,
   lattesJobId, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeLattesResearcherJob,
-  validateDiscoverDgpGroupsJob, validateEtlGroupJob, validateEtlResearcherJob,
+  validateDiscoverDgpGroupsJob, validateEtlDispatchJob, validateEtlGroupJob, validateEtlResearcherJob,
   validateScrapeDgpGroupJob, validateScrapeLattesResearcherJob,
 } from '@oda/queue';
 import {
@@ -18,12 +18,15 @@ import {
   EtlGroupJobProgress, EtlGroupJobProgressSchema, EtlGroupJobResponse, EtlGroupJobsAtivosResponse,
   EtlResearcherJobProgress, EtlResearcherJobProgressSchema, EtlResearcherJobResponse, EtlResearcherJobsAtivosResponse,
   WorkerFilaResponse, WorkersAtivosResponse,
+  ConsultarFilaJobsRequest, EnfileirarEtlRequest, EnfileirarEtlResponse,
+  EtlDispatchJobProgress, EtlDispatchJobProgressSchema, EtlDispatchJobResponse,
+  FilaJobsResponse, FilaNome, FilaResumoResponse,
 } from '@oda/shared-types';
 import { FilaExtracaoStatus, ModuloSistema, ModoExecucao, Prisma, StatusSessao } from '@oda/database';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  DGP_QUEUE, DISCOVERY_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE,
+  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE,
 } from './filas.constants';
 
 type DgpQueue = ReturnType<typeof createDgpScraperQueue>;
@@ -31,13 +34,16 @@ type LattesQueue = ReturnType<typeof createLattesScraperQueue>;
 type DiscoveryQueue = ReturnType<typeof createDiscoveryQueue>;
 type EtlGroupQueue = ReturnType<typeof createEtlGroupQueue>;
 type EtlResearcherQueue = ReturnType<typeof createEtlResearcherQueue>;
+type EtlDispatchQueue = ReturnType<typeof createEtlDispatchQueue>;
 type WorkerInfo = Record<string, string>;
 type DgpQueueJob = NonNullable<Awaited<ReturnType<DgpQueue['getJob']>>>;
 type LattesQueueJob = NonNullable<Awaited<ReturnType<LattesQueue['getJob']>>>;
 type DiscoveryQueueJob = NonNullable<Awaited<ReturnType<DiscoveryQueue['getJob']>>>;
 type EtlGroupQueueJob = NonNullable<Awaited<ReturnType<EtlGroupQueue['getJob']>>>;
 type EtlResearcherQueueJob = NonNullable<Awaited<ReturnType<EtlResearcherQueue['getJob']>>>;
-type QueueName = 'dgp' | 'lattes' | 'discovery' | 'etl-grupos' | 'etl-pesquisadores';
+type EtlDispatchQueueJob = NonNullable<Awaited<ReturnType<EtlDispatchQueue['getJob']>>>;
+type QueueName = FilaNome;
+const JOB_STATES = ['waiting', 'active', 'delayed', 'failed', 'completed', 'paused', 'prioritized', 'waiting-children'] as const;
 
 @Injectable()
 export class FilasService implements OnModuleDestroy {
@@ -47,13 +53,14 @@ export class FilasService implements OnModuleDestroy {
     @Inject(DISCOVERY_QUEUE) private readonly discoveryQueue: DiscoveryQueue,
     @Inject(ETL_GROUP_QUEUE) private readonly etlGroupQueue: EtlGroupQueue,
     @Inject(ETL_RESEARCHER_QUEUE) private readonly etlResearcherQueue: EtlResearcherQueue,
+    @Inject(ETL_DISPATCH_QUEUE) private readonly etlDispatchQueue: EtlDispatchQueue,
     private readonly prisma: PrismaService,
   ) {}
 
   async onModuleDestroy() {
     await Promise.all([
       this.dgpQueue.close(), this.lattesQueue.close(), this.discoveryQueue.close(),
-      this.etlGroupQueue.close(), this.etlResearcherQueue.close(),
+      this.etlGroupQueue.close(), this.etlResearcherQueue.close(), this.etlDispatchQueue.close(),
     ]);
   }
 
@@ -72,9 +79,9 @@ export class FilasService implements OnModuleDestroy {
   }
 
   async findActiveWorkers(): Promise<WorkersAtivosResponse> {
-    const [dgp, lattes, discovery, etlGroups, etlResearchers] = await Promise.all([
+    const [dgp, lattes, discovery, etlGroups, etlResearchers, etlDispatch] = await Promise.all([
       this.dgpQueue.getWorkers(), this.lattesQueue.getWorkers(), this.discoveryQueue.getWorkers(),
-      this.etlGroupQueue.getWorkers(), this.etlResearcherQueue.getWorkers(),
+      this.etlGroupQueue.getWorkers(), this.etlResearcherQueue.getWorkers(), this.etlDispatchQueue.getWorkers(),
     ]);
     const workers = [
       ...dgp.map(worker => this.mapWorker(worker, 'dgp')),
@@ -82,6 +89,7 @@ export class FilasService implements OnModuleDestroy {
       ...discovery.map(worker => this.mapWorker(worker, 'discovery')),
       ...etlGroups.map(worker => this.mapWorker(worker, 'etl-grupos')),
       ...etlResearchers.map(worker => this.mapWorker(worker, 'etl-pesquisadores')),
+      ...etlDispatch.map(worker => this.mapWorker(worker, 'etl-despacho')),
     ];
     return { total: workers.length, workers };
   }
@@ -144,6 +152,15 @@ export class FilasService implements OnModuleDestroy {
     };
   }
 
+  private normalizeEtlDispatchProgress(job: EtlDispatchQueueJob, state: string): EtlDispatchJobProgress {
+    const parsed = EtlDispatchJobProgressSchema.safeParse(job.progress);
+    return parsed.success ? parsed.data : {
+      etapa: state === 'completed' ? 'CONCLUIDO' : 'INICIANDO',
+      percentual: state === 'completed' ? 100 : 0,
+      progressoEm: this.progressDate(job),
+    };
+  }
+
   private jobRuntime(job: {
     processedBy?: string; attemptsStarted?: number; opts: { attempts?: number };
     processedOn?: number; finishedOn?: number; failedReason?: string;
@@ -197,6 +214,17 @@ export class FilasService implements OnModuleDestroy {
       fila: 'etl-pesquisadores', jobId: job.id!, lattesId: job.data.lattesId,
       arquivoJson: job.data.arquivoJson, pipelineLogId: job.data.pipelineLogId,
       estado: state, ...this.jobRuntime(job), progresso: this.normalizeEtlResearcherProgress(job, state),
+    };
+  }
+
+  private async mapEtlDispatchJob(job: EtlDispatchQueueJob): Promise<EtlDispatchJobResponse> {
+    const state = await job.getState();
+    validateEtlDispatchJob(job.data);
+    const result = job.returnvalue && typeof job.returnvalue === 'object' ? job.returnvalue : null;
+    return {
+      fila: 'etl-despacho', jobId: job.id!, requestId: job.data.requestId, tipo: job.data.tipo,
+      ids: job.data.ids, escopo: job.data.scope, pipelineLogId: result?.pipelineLogId ?? null,
+      estado: state, ...this.jobRuntime(job), progresso: this.normalizeEtlDispatchProgress(job, state),
     };
   }
 
@@ -255,6 +283,97 @@ export class FilasService implements OnModuleDestroy {
     const job = await this.etlResearcherQueue.getJob(jobId);
     if (!job) throw new NotFoundException(`Job ${jobId} nao foi encontrado na fila ETL de pesquisadores.`);
     return this.mapEtlResearcherJob(job);
+  }
+
+  async findEtlDispatchJob(jobId: string): Promise<EtlDispatchJobResponse> {
+    const job = await this.etlDispatchQueue.getJob(jobId);
+    if (!job) throw new NotFoundException(`Pedido ${jobId} nao foi encontrado na fila de despacho ETL.`);
+    return this.mapEtlDispatchJob(job);
+  }
+
+  async enqueueEtl(input: EnfileirarEtlRequest): Promise<EnfileirarEtlResponse> {
+    const requestId = randomUUID();
+    const data = {
+      version: 1 as const, requestId, requestedAt: new Date().toISOString(),
+      tipo: input.tipo, ids: input.ids, scope: input.escopo,
+    };
+    let stored: Awaited<ReturnType<typeof enqueueEtlDispatch>>;
+    try { stored = await enqueueEtlDispatch(data, this.etlDispatchQueue); }
+    catch (error) { throw this.publishError(error); }
+    return {
+      fila: 'etl-despacho', jobId: stored.id!, requestId, estado: await stored.getState(), duplicado: false,
+    };
+  }
+
+  private queue(fila: QueueName): any {
+    switch (fila) {
+      case 'dgp': return this.dgpQueue;
+      case 'lattes': return this.lattesQueue;
+      case 'discovery': return this.discoveryQueue;
+      case 'etl-despacho': return this.etlDispatchQueue;
+      case 'etl-grupos': return this.etlGroupQueue;
+      case 'etl-pesquisadores': return this.etlResearcherQueue;
+    }
+  }
+
+  private async counters(queue: any) {
+    const counts = await queue.getJobCounts(...JOB_STATES);
+    return {
+      waiting: counts.waiting || 0, active: counts.active || 0, delayed: counts.delayed || 0,
+      failed: counts.failed || 0, completed: counts.completed || 0, paused: counts.paused || 0,
+      prioritized: counts.prioritized || 0, waitingChildren: counts['waiting-children'] || 0,
+    };
+  }
+
+  async findQueue(fila: QueueName): Promise<FilaResumoResponse> {
+    const queue = this.queue(fila);
+    const [pausada, workers, contadores] = await Promise.all([
+      queue.isPaused(), queue.getWorkers(), this.counters(queue),
+    ]);
+    return { fila, pausada, workersAtivos: workers.length, contadores };
+  }
+
+  private mapQueueJob(fila: QueueName, job: any) {
+    switch (fila) {
+      case 'dgp': return this.mapDgpJob(job);
+      case 'lattes': return this.mapLattesJob(job);
+      case 'discovery': return this.mapDiscoveryJob(job);
+      case 'etl-despacho': return this.mapEtlDispatchJob(job);
+      case 'etl-grupos': return this.mapEtlGroupJob(job);
+      case 'etl-pesquisadores': return this.mapEtlResearcherJob(job);
+    }
+  }
+
+  async findQueueJobs(fila: QueueName, query: ConsultarFilaJobsRequest): Promise<FilaJobsResponse> {
+    const queue = this.queue(fila);
+    const states = query.estado ? [query.estado] : [...JOB_STATES];
+    const [stored, pausada, contadores] = await Promise.all([
+      queue.getJobs(states, 0, -1, false), queue.isPaused(), this.counters(queue),
+    ]);
+    let jobs = await Promise.all(stored.map((job: any) => this.mapQueueJob(fila, job)));
+    if (query.pipelineLogId) jobs = jobs.filter(job => job.pipelineLogId === query.pipelineLogId);
+    jobs.sort((left: any, right: any) => {
+      const leftTime = left.iniciadoEm || left.finalizadoEm || '';
+      const rightTime = right.iniciadoEm || right.finalizadoEm || '';
+      return rightTime.localeCompare(leftTime);
+    });
+    const total = jobs.length;
+    const start = (query.pagina - 1) * query.limite;
+    return {
+      fila, pausada, total, pagina: query.pagina, limite: query.limite,
+      totalPaginas: total ? Math.ceil(total / query.limite) : 0,
+      contadores, jobs: jobs.slice(start, start + query.limite),
+    };
+  }
+
+  async pauseQueue(fila: QueueName): Promise<FilaResumoResponse> {
+    await this.queue(fila).pause();
+    return this.findQueue(fila);
+  }
+
+  async resumeQueue(fila: QueueName): Promise<FilaResumoResponse> {
+    await this.queue(fila).resume();
+    return this.findQueue(fila);
   }
 
   private async removeTerminalJob(job: {

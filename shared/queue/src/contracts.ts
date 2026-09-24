@@ -4,6 +4,7 @@ export const QUEUE_NAMES = {
   DGP_DISCOVERY: 'oda-dgp-discovery',
   ETL_GROUPS: 'oda-etl-grupos',
   ETL_RESEARCHERS: 'oda-etl-pesquisadores',
+  ETL_DISPATCH: 'oda-etl-despacho',
   ETL_PIPELINE: 'oda-etl-pipeline',
   DEMO: 'oda-queue-demo',
 } as const;
@@ -14,6 +15,7 @@ export const JOB_NAMES = {
   DISCOVER_DGP_GROUPS: 'discover-dgp-groups',
   ETL_GROUP: 'etl-group',
   ETL_RESEARCHER: 'etl-researcher',
+  ETL_DISPATCH: 'etl-dispatch',
 } as const;
 
 type QueueJobManifest = {
@@ -146,6 +148,45 @@ export type EtlResearcherResult = {
   arquivoMovido: boolean;
 };
 
+export const ETL_DISPATCH_TYPES = ['TODOS', 'GRUPOS', 'PESQUISADORES'] as const;
+export type EtlDispatchType = typeof ETL_DISPATCH_TYPES[number];
+
+export type EtlDispatchJob = {
+  version: 1;
+  requestId: string;
+  requestedAt: string;
+  tipo: EtlDispatchType;
+  ids: string[];
+  scope: DataScope;
+};
+
+export type EtlDispatchResult = {
+  requestId: string;
+  pipelineLogId: string | null;
+  grupos: number;
+  pesquisadores: number;
+};
+
+export function validateEtlDispatchJob(data: unknown): asserts data is EtlDispatchJob {
+  const value = data as Partial<EtlDispatchJob> | null;
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!value || value.version !== 1 || !uuid.test(value.requestId || '')
+    || typeof value.requestedAt !== 'string' || !Number.isFinite(Date.parse(value.requestedAt))) {
+    throw new Error('O pedido de ETL possui identificadores ou data invalidos.');
+  }
+  if (!ETL_DISPATCH_TYPES.includes(value.tipo as EtlDispatchType)) throw new Error('Tipo de ETL invalido.');
+  if (!Array.isArray(value.ids) || value.ids.some(id => !/^\d{16}$/.test(id))) {
+    throw new Error('Os IDs do pedido de ETL devem conter exatamente 16 digitos.');
+  }
+  if (value.tipo === 'TODOS' && value.ids.length) {
+    throw new Error('IDs explicitos exigem ETL de GRUPOS ou PESQUISADORES.');
+  }
+  validateDataScope(value.scope);
+  if (value.scope === 'simcc' && value.tipo !== 'GRUPOS') {
+    throw new Error('O escopo SIMCC aceita somente ETL de grupos.');
+  }
+}
+
 function validateEtlFileManifest(value: Partial<EtlFileJobManifest> | null) {
   validateManifest(value);
   if (typeof value?.arquivoJson !== 'string' || !/^[^/\\]+\.json$/i.test(value.arquivoJson)) {
@@ -221,6 +262,12 @@ export const ETL_RESEARCHER_QUEUE_SETTINGS = {
   reconcileIntervalMs: 15_000,
 } as const;
 
+export const ETL_DISPATCH_QUEUE_SETTINGS = {
+  concurrency: 1,
+  attempts: 3,
+  retryDelayMs: 30_000,
+} as const;
+
 export function dgpJobId(dgpId: string) { return `dgp-${dgpId}`; }
 export function lattesJobId(lattesId: string) { return `lattes-${lattesId}`; }
 export function discoveryJobId(chave: string) {
@@ -228,3 +275,4 @@ export function discoveryJobId(chave: string) {
 }
 export function etlGroupJobId(dgpId: string) { return `etl-grupo-${dgpId}`; }
 export function etlResearcherJobId(lattesId: string) { return `etl-pesquisador-${lattesId}`; }
+export function etlDispatchJobId(requestId: string) { return `etl-despacho-${requestId}`; }

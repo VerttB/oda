@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -29,6 +29,13 @@ import {
   LattesJobsAtivosResponseDto,
   WorkerFilaResponseDto,
   WorkersAtivosResponseDto,
+  ConsultarFilaJobsDto,
+  EnfileirarEtlDto,
+  EnfileirarEtlResponseDto,
+  EtlDispatchJobResponseDto,
+  FilaJobsResponseDto,
+  FilaParamDto,
+  FilaResumoResponseDto,
 } from './dto/filas.dto';
 import { FilasService } from './filas.service';
 import { FilasJwtAuthGuard } from './filas-auth.guard';
@@ -167,5 +174,51 @@ export class FilasController {
   @ZodResponse({ status: 200, type: EtlResearcherJobResponseDto })
   findEtlResearcherJob(@Param('jobId') jobId: string) {
     return this.filasService.findEtlResearcherJob(jobId);
+  }
+
+  @Post('etl/lotes')
+  @ApiOperation({ summary: 'Solicita um lote ETL no servidor que possui os arquivos JSON' })
+  @ApiBadRequestResponse({ description: 'Tipo, escopo ou IDs inválidos.' })
+  @ZodResponse({ status: 201, type: EnfileirarEtlResponseDto })
+  enqueueEtl(@Body() input: EnfileirarEtlDto) {
+    return this.filasService.enqueueEtl(input);
+  }
+
+  @Get('etl/lotes/:jobId')
+  @ApiOperation({ summary: 'Consulta o despacho que prepara e publica um lote ETL' })
+  @ApiNotFoundResponse({ description: 'Pedido de ETL não encontrado no Redis.' })
+  @ZodResponse({ status: 200, type: EtlDispatchJobResponseDto })
+  findEtlDispatchJob(@Param('jobId') jobId: string) {
+    return this.filasService.findEtlDispatchJob(jobId);
+  }
+
+  @Get(':fila/jobs')
+  @ApiOperation({ summary: 'Lista todos os jobs de uma fila com paginação e filtros' })
+  @ZodResponse({ status: 200, type: FilaJobsResponseDto })
+  findQueueJobs(@Param() params: FilaParamDto, @Query() query: ConsultarFilaJobsDto) {
+    return this.filasService.findQueueJobs(params.fila, query);
+  }
+
+  @Get(':fila')
+  @ApiOperation({ summary: 'Consulta pausa, workers e contadores de uma fila' })
+  @ZodResponse({ status: 200, type: FilaResumoResponseDto })
+  findQueue(@Param() params: FilaParamDto) {
+    return this.filasService.findQueue(params.fila);
+  }
+
+  @Post(':fila/pausar')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Pausa globalmente uma fila; jobs ativos terminam normalmente' })
+  @ZodResponse({ status: 200, type: FilaResumoResponseDto })
+  pauseQueue(@Param() params: FilaParamDto) {
+    return this.filasService.pauseQueue(params.fila);
+  }
+
+  @Post(':fila/retomar')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Retoma globalmente o processamento de uma fila' })
+  @ZodResponse({ status: 200, type: FilaResumoResponseDto })
+  resumeQueue(@Param() params: FilaParamDto) {
+    return this.filasService.resumeQueue(params.fila);
   }
 }

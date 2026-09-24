@@ -28,6 +28,11 @@ import {
   etlResearcherJobId,
   validateEtlGroupJob,
   validateEtlResearcherJob,
+  ETL_DISPATCH_QUEUE_SETTINGS,
+  EtlDispatchJob,
+  EtlDispatchResult,
+  etlDispatchJobId,
+  validateEtlDispatchJob,
 } from './contracts';
 
 export function createDgpScraperQueue() {
@@ -124,6 +129,22 @@ export async function enqueueEtlResearcher(data: EtlResearcherJob, queue: Return
   validateEtlResearcherJob(data);
   const id = etlResearcherJobId(data.lattesId);
   await queue.add(JOB_NAMES.ETL_RESEARCHER, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export function createEtlDispatchQueue() {
+  return new Queue<EtlDispatchJob, EtlDispatchResult>(QUEUE_NAMES.ETL_DISPATCH, {
+    connection: createQueueConnection('producer'),
+    defaultJobOptions: defaultJobOptions(ETL_DISPATCH_QUEUE_SETTINGS.attempts, ETL_DISPATCH_QUEUE_SETTINGS.retryDelayMs),
+  });
+}
+
+export async function enqueueEtlDispatch(data: EtlDispatchJob, queue: ReturnType<typeof createEtlDispatchQueue>) {
+  validateEtlDispatchJob(data);
+  const id = etlDispatchJobId(data.requestId);
+  await queue.add(JOB_NAMES.ETL_DISPATCH, data, { jobId: id });
   const stored = await queue.getJob(id);
   if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
   return stored;

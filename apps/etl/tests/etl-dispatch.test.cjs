@@ -1,75 +1,40 @@
-const assert = require('node:assert/strict');
-const { randomUUID } = require('node:crypto');
 const { test } = require('node:test');
-const { reconcileEtlQueues } = require('../dist/queue/etlDispatch');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
-function manifest() {
-  return {
-    version: 1,
-    requestedAt: new Date().toISOString(),
-    pipelineLogId: randomUUID(),
-    pipelineItemId: randomUUID(),
-    arquivoJson: '1234567890123456.json',
-    tamanhoBytes: 100,
-    hashArquivo: 'a'.repeat(64),
-  };
-}
+test('despacho le arquivos no host ETL e cria um unico lote', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'oda-etl-dispatch-'));
+    process.env.SCRAPER_DATA_DIR = root;
+    const dgpDir = path.join(root, 'raw-data', 'dgp');
+    const lattesDir = path.join(root, 'raw-data', 'lattes');
+    fs.mkdirSync(dgpDir, { recursive: true });
+    fs.mkdirSync(lattesDir, { recursive: true });
+    fs.writeFileSync(path.join(dgpDir, '1234567890123456.json'), '{}');
+    fs.writeFileSync(path.join(lattesDir, '6543210987654321.json'), '{}');
 
-function queue() {
-  const jobs = new Map();
-  return {
-    added: [],
-    async add(name, data, options) {
-      const job = {
-        id: options.jobId,
-        name,
-        data,
-        attemptsMade: 0,
-        async getState() { return 'waiting'; },
-      };
-      jobs.set(options.jobId, job);
-      this.added.push(job);
-      return job;
-    },
-    async getJob(id) { return jobs.get(id) || null; },
-  };
-}
+    const { prepareEtlBatch } = require('../dist/queue/etlBatch');
+    const queue = { getJob: async () => null };
+    const progress = [];
+    const repository = {
+        async *openBatches() {},
+        getBatch: async () => null,
+        createBatch: async (groups, researchers, id) => {
+            assert.equal(groups.length, 1);
+            assert.equal(researchers.length, 1);
+            return { id, groupJobs: groups, researcherJobs: researchers };
+        },
+    };
+    const result = await prepareEtlBatch({
+        version: 1, requestId: '11111111-1111-4111-8111-111111111111',
+        requestedAt: new Date().toISOString(), tipo: 'TODOS', ids: [], scope: 'default',
+    }, queue, queue, repository, async (etapa, percentual) => progress.push({ etapa, percentual }));
 
-test('publica pesquisadores apenas depois de todos os grupos terminarem', async () => {
-  const base = manifest();
-  const groupJob = { ...base, dgpId: '1234567890123456' };
-  const researcherJob = {
-    ...manifest(),
-    pipelineLogId: base.pipelineLogId,
-    lattesId: '1234567890123456',
-  };
-  const batch = {
-    id: base.pipelineLogId,
-    groupJobs: [groupJob],
-    researcherJobs: [researcherJob],
-    groupsPublished: false,
-    researchersPublished: false,
-  };
-  const results = new Set();
-  const repository = {
-    async *openBatches() { yield batch; },
-    async result(data) { return results.has(data.pipelineItemId) ? { status: 'SUCESSO' } : null; },
-    async sealGroups(_batch, accepted) { batch.groupJobs = accepted; batch.groupsPublished = true; },
-    async sealResearchers(_batch, accepted) { batch.researcherJobs = accepted; batch.researchersPublished = true; },
-    async getOpenBatch() { return batch; },
-    async groupsFinished() { return batch.groupJobs.every(job => results.has(job.pipelineItemId)); },
-    async settle() {},
-  };
-  const groupQueue = queue();
-  const researcherQueue = queue();
-
-  await reconcileEtlQueues(groupQueue, researcherQueue, repository);
-  assert.equal(groupQueue.added.length, 1);
-  assert.equal(researcherQueue.added.length, 0);
-
-  results.add(groupJob.pipelineItemId);
-  await reconcileEtlQueues(groupQueue, researcherQueue, repository);
-  assert.equal(groupQueue.added.length, 1);
-  assert.equal(researcherQueue.added.length, 1);
-  assert.equal(researcherQueue.added[0].data.pipelineItemId, researcherJob.pipelineItemId);
+    assert.deepEqual(result, {
+        requestId: '11111111-1111-4111-8111-111111111111',
+        pipelineLogId: '11111111-1111-4111-8111-111111111111', grupos: 1, pesquisadores: 1,
+    });
+    assert.deepEqual(progress.map(item => item.etapa), ['LENDO_ARQUIVOS', 'CRIANDO_LOTE', 'PUBLICANDO']);
+    fs.rmSync(root, { recursive: true, force: true });
 });

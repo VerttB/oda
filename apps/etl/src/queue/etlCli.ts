@@ -2,7 +2,7 @@ import './env';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
-    createEtlGroupQueue, createEtlResearcherQueue, DataScope, etlGroupJobId, etlResearcherJobId, parseDataScope,
+    createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, DataScope, etlGroupJobId, etlResearcherJobId, parseDataScope,
     validateEtlGroupJob, validateEtlResearcherJob,
 } from '@oda/queue';
 import { getEtlDataPaths } from '../commom/config';
@@ -135,11 +135,12 @@ async function main() {
 
     const groupQueue = createEtlGroupQueue();
     const researcherQueue = createEtlResearcherQueue();
+    const dispatchQueue = createEtlDispatchQueue();
     const repository = new EtlQueueRepository(prisma);
     try {
         if (command === 'worker') {
             if (firstArg) throw new Error('O comando worker nao recebe argumentos.');
-            await runEtlWorkers(groupQueue, researcherQueue, repository);
+            await runEtlWorkers(groupQueue, researcherQueue, dispatchQueue, repository);
             return;
         }
         if (command === 'reconcile') {
@@ -183,7 +184,7 @@ async function main() {
             pesquisadoresAguardandoGrupos: groups.length > 0 && researchers.length > 0,
         });
     } finally {
-        await Promise.all([groupQueue.close(), researcherQueue.close()]);
+        await Promise.all([groupQueue.close(), researcherQueue.close(), dispatchQueue.close()]);
     }
 }
 

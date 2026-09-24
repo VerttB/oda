@@ -2,19 +2,25 @@ import { hostname } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
-    createEtlGroupQueue, createEtlResearcherQueue, createQueueConnection,
-    ETL_GROUP_QUEUE_SETTINGS, ETL_RESEARCHER_QUEUE_SETTINGS, QUEUE_NAMES, Worker,
+    createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createQueueConnection,
+    ETL_DISPATCH_QUEUE_SETTINGS, ETL_GROUP_QUEUE_SETTINGS, ETL_RESEARCHER_QUEUE_SETTINGS,
+    JOB_NAMES, QUEUE_NAMES, validateEtlDispatchJob, Worker,
 } from '@oda/queue';
 import { reconcileEtlQueues } from './etlDispatch';
 import { EtlQueueRepository } from './etlRepository';
+import { prepareEtlBatch } from './etlBatch';
 
 type GroupQueue = ReturnType<typeof createEtlGroupQueue>;
 type ResearcherQueue = ReturnType<typeof createEtlResearcherQueue>;
+type DispatchQueue = ReturnType<typeof createEtlDispatchQueue>;
 
-export async function runEtlWorkers(groupQueue: GroupQueue, researcherQueue: ResearcherQueue, repository: EtlQueueRepository) {
+export async function runEtlWorkers(
+    groupQueue: GroupQueue, researcherQueue: ResearcherQueue, dispatchQueue: DispatchQueue, repository: EtlQueueRepository,
+) {
     await Promise.all([
         groupQueue.setGlobalConcurrency(ETL_GROUP_QUEUE_SETTINGS.concurrency),
         researcherQueue.setGlobalConcurrency(ETL_RESEARCHER_QUEUE_SETTINGS.concurrency),
+        dispatchQueue.setGlobalConcurrency(ETL_DISPATCH_QUEUE_SETTINGS.concurrency),
     ]);
     await reconcileEtlQueues(groupQueue, researcherQueue, repository);
 
@@ -36,8 +42,27 @@ export async function runEtlWorkers(groupQueue: GroupQueue, researcherQueue: Res
             maxStalledCount: 1, maxStartedAttempts: 8, autorun: false,
         },
     );
+    const dispatchWorker = new Worker(
+        QUEUE_NAMES.ETL_DISPATCH,
+        async job => {
+            if (job.name !== JOB_NAMES.ETL_DISPATCH) throw new Error('Tipo de job de despacho ETL desconhecido.');
+            validateEtlDispatchJob(job.data);
+            const update = (etapa: string, percentual: number) => job.updateProgress({
+                etapa, percentual, progressoEm: new Date().toISOString(),
+            });
+            await update('INICIANDO', 0);
+            const result = await prepareEtlBatch(job.data, groupQueue, researcherQueue, repository, update);
+            await update('CONCLUIDO', 100);
+            return result;
+        },
+        {
+            connection: createQueueConnection('worker'), concurrency: ETL_DISPATCH_QUEUE_SETTINGS.concurrency,
+            name: process.env.ETL_DISPATCH_WORKER_NAME || `etl-despacho-${hostname()}-${process.pid}`,
+            maxStalledCount: 1, maxStartedAttempts: 8, autorun: false,
+        },
+    );
 
-    const workers = [groupWorker, researcherWorker];
+    const workers = [dispatchWorker, groupWorker, researcherWorker];
     let reconciliation: Promise<void> | undefined;
     let stopping = false;
     const sync = () => {
@@ -68,7 +93,7 @@ export async function runEtlWorkers(groupQueue: GroupQueue, researcherQueue: Res
     process.once('SIGINT', shutdown);
     process.once('SIGTERM', shutdown);
     try {
-        console.log(`[ETL Worker] Aguardando grupos em ${QUEUE_NAMES.ETL_GROUPS} e pesquisadores em ${QUEUE_NAMES.ETL_RESEARCHERS}.`);
+        console.log(`[ETL Worker] Aguardando despachos, grupos e pesquisadores nas filas ETL.`);
         await Promise.all(workers.map(worker => worker.run()));
     } finally {
         clearInterval(interval);

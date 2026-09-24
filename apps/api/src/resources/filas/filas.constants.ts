@@ -3,3 +3,4 @@ export const LATTES_QUEUE = Symbol('LATTES_QUEUE');
 export const DISCOVERY_QUEUE = Symbol('DISCOVERY_QUEUE');
 export const ETL_GROUP_QUEUE = Symbol('ETL_GROUP_QUEUE');
 export const ETL_RESEARCHER_QUEUE = Symbol('ETL_RESEARCHER_QUEUE');
+export const ETL_DISPATCH_QUEUE = Symbol('ETL_DISPATCH_QUEUE');

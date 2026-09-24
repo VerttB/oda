@@ -72,8 +72,7 @@ function sameJob(left: EtlJob, right: EtlJob) {
 export class EtlQueueRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
-    async createBatch(groups: EtlFileDescriptor[], researchers: EtlFileDescriptor[]): Promise<EtlBatch> {
-        const id = randomUUID();
+    async createBatch(groups: EtlFileDescriptor[], researchers: EtlFileDescriptor[], id: string = randomUUID()): Promise<EtlBatch> {
         const requestedAt = new Date().toISOString();
         const groupJobs = groups.map(file => ({
             version: 1 as const, dgpId: file.id, requestedAt, pipelineLogId: id,
@@ -130,6 +129,11 @@ export class EtlQueueRepository {
         const row = await this.prisma.pipelineLog.findUnique({ where: { id } });
         if (!row || row.status !== StatusSessao.EMANDAMENTO) return null;
         return toBatch(row.id, parseMetadata(row.metadata!));
+    }
+
+    async getBatch(id: string): Promise<EtlBatch | null> {
+        const row = await this.prisma.pipelineLog.findUnique({ where: { id } });
+        return row ? toBatch(row.id, parseMetadata(row.metadata!)) : null;
     }
 
     async result(data: EtlJob): Promise<{ status: StatusItemLog } | null> {

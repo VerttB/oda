@@ -13,6 +13,13 @@ import {
   EtlGroupJobsAtivosResponseSchema,
   EtlResearcherJobResponseSchema,
   EtlResearcherJobsAtivosResponseSchema,
+  ConsultarFilaJobsRequestSchema,
+  EnfileirarEtlRequestSchema,
+  EnfileirarEtlResponseSchema,
+  EtlDispatchJobResponseSchema,
+  FilaJobsResponseSchema,
+  FilaParamSchema,
+  FilaResumoResponseSchema,
   LattesJobResponseSchema,
   LattesJobsAtivosResponseSchema,
   WorkerFilaResponseSchema,
@@ -38,3 +45,10 @@ export class EtlGroupJobResponseDto extends createZodDto(EtlGroupJobResponseSche
 export class EtlGroupJobsAtivosResponseDto extends createZodDto(EtlGroupJobsAtivosResponseSchema) {}
 export class EtlResearcherJobResponseDto extends createZodDto(EtlResearcherJobResponseSchema) {}
 export class EtlResearcherJobsAtivosResponseDto extends createZodDto(EtlResearcherJobsAtivosResponseSchema) {}
+export class EnfileirarEtlDto extends createZodDto(EnfileirarEtlRequestSchema) {}
+export class EnfileirarEtlResponseDto extends createZodDto(EnfileirarEtlResponseSchema) {}
+export class EtlDispatchJobResponseDto extends createZodDto(EtlDispatchJobResponseSchema) {}
+export class FilaParamDto extends createZodDto(FilaParamSchema) {}
+export class ConsultarFilaJobsDto extends createZodDto(ConsultarFilaJobsRequestSchema) {}
+export class FilaResumoResponseDto extends createZodDto(FilaResumoResponseSchema) {}
+export class FilaJobsResponseDto extends createZodDto(FilaJobsResponseSchema) {}
