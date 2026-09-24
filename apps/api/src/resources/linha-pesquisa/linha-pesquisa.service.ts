@@ -8,7 +8,8 @@ import {
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
-const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list:v2';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -90,23 +91,31 @@ export class LinhaPesquisaService {
 
     const where: Prisma.LinhaPesquisaWhereInput = {};
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'titulo']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.LinhaPesquisaOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
       if (query.grupo) {
         where.grupoId = query.grupo;
       }
       if (query.nome) {
-        where.titulo = { contains: query.nome, mode: 'insensitive' };
+        where.id = {
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'linhaPesquisa', query.nome),
+        };
       }
     }
 
     // Bypass cache if filters or pagination are present (except default pagination)
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.linhaPesquisa.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.linhaPesquisa.count({ where }),
@@ -123,6 +132,7 @@ export class LinhaPesquisaService {
           this.prismaService.linhaPesquisa.findMany({
             skip: pagination.skip,
             take: pagination.take,
+            orderBy,
             omit: { criadoEm: true, atualizadoEm: true },
           }),
           this.prismaService.linhaPesquisa.count(),

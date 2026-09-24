@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema } from './pagination';
+import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 export const TipoProducaoSchema = z.enum(['ARTIGO', 'LIVROCAPITULO', 'OUTRA']);
 export const QualisSchema = z.enum(['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4', 'C']);
@@ -32,6 +32,8 @@ export const FindAllProducoesQuerySchema = PaginationQuerySchema.extend({
   issn: z.string().trim().toUpperCase().regex(/^\d{4}-?\d{3}[\dX]$/).optional(),
   pesquisadorId: z.string().uuid().optional(),
   grupoId: z.string().uuid().optional(),
+  ordenarPor: z.enum(['titulo', 'ano', 'tipo', 'qualis']).optional(),
+  ordem: SortOrderSchema.optional(),
 });
 
 export const FindProducoesByPesquisadorQuerySchema =

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema } from './pagination';
+import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 export const TipoPesquisadorSchema = z.enum([
   'TECNICO',
@@ -41,6 +41,8 @@ export const FindAllPesquisadoresQuerySchema = PaginationQuerySchema.extend({
   orcidId: z.string().optional(),
   grupoPesquisaId: z.string().uuid().optional(),
   eLider: booleanQuerySchema.optional(),
+  ordenarPor: z.enum(['nome', 'tipo', 'formacaoAcademica', 'indexH']).optional(),
+  ordem: SortOrderSchema.optional(),
 });
 
 export const FindPesquisadoresByGrupoQuerySchema =

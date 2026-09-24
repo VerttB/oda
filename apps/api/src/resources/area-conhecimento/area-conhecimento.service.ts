@@ -5,8 +5,9 @@ import { CreateAreaConhecimentoDto } from './dto/create-area-conhecimento.dto';
 import { UpdateAreaConhecimentoDto } from './dto/update-area-conhecimento.dto';
 import { FindAllAreaConhecimentoDto } from './dto/find-all-area-conhecimento.dto';
 import { Prisma } from '@oda/database';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
-const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v2';
+const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v3';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -60,9 +61,16 @@ export class AreaConhecimentoService {
       async findAll(query?: FindAllAreaConhecimentoDto) {
         const where: Prisma.AreaConhecimentoWhereInput = {};
         const pagination = getPagination(query);
+        const orderBy = [
+          { [query?.ordenarPor ?? 'nome']: query?.ordem ?? 'asc' },
+          { id: 'asc' as const },
+        ] as Prisma.AreaConhecimentoOrderByWithRelationInput[];
+        const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
         if (query?.nome) {
-          where.nome = { contains: query.nome, mode: 'insensitive' };
+          where.id = {
+            in: await findIdsByAccentInsensitiveText(this.prismaService, 'areaConhecimento', query.nome),
+          };
         }
         if (query?.tipo) {
           where.tipo = query.tipo;
@@ -71,14 +79,14 @@ export class AreaConhecimentoService {
           where.areaPaiId = query.areaPaiId;
         }
 
-        if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+        if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
               where,
               skip: pagination.skip,
               take: pagination.take,
               select: areaConhecimentoResumoSelect,
-              orderBy: { nome: 'asc' },
+              orderBy,
             }),
             this.prismaService.areaConhecimento.count({ where }),
           ]);
@@ -93,7 +101,7 @@ export class AreaConhecimentoService {
               skip: pagination.skip,
               take: pagination.take,
               select: areaConhecimentoResumoSelect,
-              orderBy: { nome: 'asc' },
+              orderBy,
             }),
             this.prismaService.areaConhecimento.count(),
           ]);

@@ -3,6 +3,7 @@ import { GruposPesquisaService } from './grupos-pesquisa.service';
 
 describe('GruposPesquisaService', () => {
   const prisma = {
+    $queryRaw: jest.fn(),
     grupoPesquisa: {
       findMany: jest.fn(),
       count: jest.fn(),
@@ -11,6 +12,7 @@ describe('GruposPesquisaService', () => {
   let service: GruposPesquisaService;
 
   beforeEach(() => {
+    prisma.$queryRaw.mockReset().mockResolvedValue([]);
     prisma.grupoPesquisa.findMany.mockReset().mockResolvedValue([]);
     prisma.grupoPesquisa.count.mockReset().mockResolvedValue(0);
     service = new GruposPesquisaService(prisma as any, {} as any, {} as any);
@@ -48,5 +50,20 @@ describe('GruposPesquisaService', () => {
     const sede = prisma.grupoPesquisa.findMany.mock.calls[0][0].where.AND[0].instituicoes.some;
 
     expect(sede).toEqual({ instituicaoId: 'instituicao-id', tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE });
+  });
+
+  it('aplica busca normalizada e ordenacao est�vel', async () => {
+    prisma.$queryRaw.mockResolvedValue([{ id: 'grupo-1' }]);
+
+    await service.findAll({
+      nome: 'CIENCIA DA COMPUTACAO',
+      ordenarPor: 'anoFormacao',
+      ordem: 'desc',
+    } as any);
+
+    const args = prisma.grupoPesquisa.findMany.mock.calls[0][0];
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+    expect(args.where.id).toEqual({ in: ['grupo-1'] });
+    expect(args.orderBy).toEqual([{ anoFormacao: 'desc' }, { id: 'asc' }]);
   });
 });

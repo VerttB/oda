@@ -6,8 +6,9 @@ import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
 import { FindAllInstituicaoDto } from './dto/find-all-instituicao.dto';
 import { Prisma } from '@oda/database';
 import { InstituicaoResponseSchema } from '@oda/shared-types';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
-const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list:v2';
+const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list:v3';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -79,19 +80,27 @@ export class InstituicaoService {
   async findAll(query?: FindAllInstituicaoDto) {
     const where: Prisma.InstituicaoWhereInput = {};
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'nome']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.InstituicaoOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query?.nome) {
-      where.nome = { contains: query.nome, mode: 'insensitive' };
+      where.id = {
+        in: await findIdsByAccentInsensitiveText(this.prismaService, 'instituicao', query.nome),
+      };
     }
     if (query?.estadoId) where.estadoId = query.estadoId;
     if (query?.uf) where.estado = { sigla: { equals: query.uf, mode: 'insensitive' } };
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.instituicao.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           include: instituicaoInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
@@ -107,6 +116,7 @@ export class InstituicaoService {
         this.prismaService.instituicao.findMany({
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           include: instituicaoInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),

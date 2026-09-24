@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema } from './pagination';
+import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 const uniqueUuidArray = z.array(z.string().uuid()).refine(
   (items) => new Set(items).size === items.length,
@@ -21,6 +21,8 @@ export const UpdateLinhaPesquisaRequestSchema =
 export const FindAllLinhaPesquisaQuerySchema = PaginationQuerySchema.extend({
   grupo: z.string().uuid().optional(),
   nome: z.string().optional(),
+  ordenarPor: z.enum(['titulo']).optional(),
+  ordem: SortOrderSchema.optional(),
 });
 
 export type CreateLinhaPesquisaRequest = z.infer<

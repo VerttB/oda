@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema } from './pagination';
+import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 export const TipoAreaConhecimentoSchema = z.enum([
   'GRANDE_AREA',
@@ -21,6 +21,8 @@ export const FindAllAreaConhecimentoQuerySchema = PaginationQuerySchema.extend({
   nome: z.string().optional(),
   tipo: TipoAreaConhecimentoSchema.optional(),
   areaPaiId: z.string().uuid().optional(),
+  ordenarPor: z.enum(['nome', 'tipo']).optional(),
+  ordem: SortOrderSchema.optional(),
 });
 
 export type CreateAreaConhecimentoRequest = z.infer<

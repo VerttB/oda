@@ -10,7 +10,8 @@ import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
-const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
 
 const SIMCC_INSTITUICOES: Prisma.InstituicaoWhereInput = {
   OR: [
@@ -85,13 +86,20 @@ export class GruposPesquisaService {
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'nome']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.GrupoPesquisaOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
       if (query.situacao) {
         where.situacao = query.situacao;
       }
       if (query.nome) {
-        where.nome = { contains: query.nome, mode: 'insensitive' };
+        where.id = {
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'grupoPesquisa', query.nome),
+        };
       }
       if (query.anoFormacao) {
         where.anoFormacao = query.anoFormacao;
@@ -123,13 +131,13 @@ export class GruposPesquisaService {
       where.AND = andConditions;
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
-          ...(simcc ? { orderBy: [{ nome: 'asc' as const }, { id: 'asc' as const }] } : {}),
+          orderBy,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
@@ -153,6 +161,7 @@ export class GruposPesquisaService {
         this.prismaService.grupoPesquisa.findMany({
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),

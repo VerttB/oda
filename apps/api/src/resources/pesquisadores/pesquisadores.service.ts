@@ -9,7 +9,8 @@ import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 import { FormacaoAcademica, Prisma, TipoPesquisador } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toPesquisadorResponse } from './pesquisadores.response';
-const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v2';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v3';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -49,10 +50,17 @@ export class PesquisadoresService {
   async findAll(query?: FindAllPesquisadoresDto) {
     const where: Prisma.PesquisadorWhereInput = {};
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'nome']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.PesquisadorOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
       if (query.nome) {
-        where.nome = { contains: query.nome, mode: 'insensitive' };
+        where.id = {
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'pesquisador', query.nome),
+        };
       }
       if (query.formacaoAcademica) {
         where.formacaoAcademica = query.formacaoAcademica;
@@ -76,12 +84,13 @@ export class PesquisadoresService {
       }
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count({ where }),
@@ -104,6 +113,7 @@ export class PesquisadoresService {
         this.prismaService.pesquisador.findMany({
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.pesquisador.count(),

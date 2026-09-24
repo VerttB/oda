@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema } from './pagination';
+import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 export const SituacaoGrupoPesquisaSchema = z.enum([
   'ATIVO',
@@ -38,6 +38,8 @@ export const FindAllGruposPesquisaQuerySchema = PaginationQuerySchema.extend({
   estadoId: z.string().uuid().optional(),
   cidade: z.string().optional(),
   uf: z.string().optional(),
+  ordenarPor: z.enum(['nome', 'anoFormacao', 'situacao']).optional(),
+  ordem: SortOrderSchema.optional(),
 });
 
 export type SituacaoGrupoPesquisa = z.infer<typeof SituacaoGrupoPesquisaSchema>;
