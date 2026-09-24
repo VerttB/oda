@@ -186,6 +186,7 @@ export function validateDiscoverDgpGroupsJob(data: unknown): asserts data is Dis
 
 export const DGP_QUEUE_SETTINGS = {
   concurrency: 1,
+  interGroupDelayMs: 15_000,
   attempts: 4,
   retryDelayMs: 60_000,
   reconcileIntervalMs: 30_000,
@@ -193,6 +194,7 @@ export const DGP_QUEUE_SETTINGS = {
 
 export const LATTES_QUEUE_SETTINGS = {
   concurrency: 1,
+  maxJobsPerProcess: 10,
   attempts: 4,
   retryDelayMs: 60_000,
   reconcileIntervalMs: 30_000,

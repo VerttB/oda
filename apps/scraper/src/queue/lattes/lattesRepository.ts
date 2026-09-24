@@ -31,6 +31,20 @@ export class LattesQueueRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
     async createBatch(targets: LattesTarget[]): Promise<LattesBatch> {
+        const activeSince = new Date(Date.now() - 2 * 60 * 60 * 1000);
+        const legacyPipeline = await this.prisma.pipelineLog.findFirst({
+            where: {
+                modulo: ModuloSistema.SCRAPER,
+                modoExecucao: ModoExecucao.APENAS_LATTES,
+                status: StatusSessao.EMANDAMENTO,
+                atualizadoEm: { gte: activeSince },
+                metadata: { path: ['comando'], equals: 'lattes-scraper' },
+            },
+            select: { id: true },
+        });
+        if (legacyPipeline) {
+            throw new Error('O scraper Lattes tradicional esta em andamento. Aguarde sua conclusao antes de publicar jobs BullMQ.');
+        }
         const id = randomUUID();
         const unique = [...new Map(targets.map(target => [target.lattesId, target])).values()];
         const jobs = unique.map(target => ({

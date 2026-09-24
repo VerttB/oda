@@ -8,14 +8,14 @@ import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEn
 import * as fs from 'fs';
 import * as path from 'path';
 import * as cheerio from 'cheerio';
-import { submitLattesSearch } from '../common/lattesSearchNavigation';
+import { captureLattesSearchFailure, submitLattesSearch } from '../common/lattesSearchNavigation';
 import { randomUUID } from 'node:crypto';
 
 const parser = new LattesParser();
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function normalizeName(n: string): string {
-    return n.trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, ' ');
+    return n.normalize('NFC').trim().replace(/\s+/g, ' ').toLocaleUpperCase('pt-BR');
 }
 
 async function getPaginationStatus(page: Page) {
@@ -23,16 +23,40 @@ async function getPaginationStatus(page: Page) {
         return await page.evaluate(() => {
             const scripts = Array.from(document.querySelectorAll('script'));
             const targetScript = scripts.find(s => s.textContent && s.textContent.includes('intLTotReg'));
-            if (!targetScript?.textContent) return null;
+            if (!targetScript?.textContent) {
+                const resultsCount = document.querySelectorAll('.resultado ol li').length;
+                const summaryText = Array.from(document.querySelectorAll('.tit_form'))
+                    .map(element => (element.textContent || '').replace(/\s+/g, ' ').trim())
+                    .find(text => /Resultados?\s+de/i.test(text)) || '';
+                const summary = summaryText.match(/Resultados?\s+de\s+(\d+)\s*-\s*(\d+)\s+(?:de|dos?)\s+(\d+)/i);
+                if (!summary) return null;
 
-            const totalRecords = Number(targetScript.textContent.match(/var\s+intLTotReg\s*=\s*(\d+)/)?.[1] || 0);
-            const recordsPerPage = Number(targetScript.textContent.match(/var\s+intLRegPagina\s*=\s*(\d+)/)?.[1] || 10);
+                const firstResult = Number(summary[1]);
+                const lastResult = Number(summary[2]);
+                const totalRecords = Number(summary[3]);
+                const displayedRecords = lastResult - firstResult + 1;
+
+                if (firstResult !== 1
+                    || displayedRecords !== resultsCount
+                    || totalRecords !== resultsCount) return null;
+
+                return {
+                    totalRecords,
+                    recordsPerPage: Math.max(resultsCount, 1),
+                    currentPage: 1,
+                };
+            }
+
+            const totalRecordsText = targetScript.textContent.match(/var\s+intLTotReg\s*=\s*(\d+)/)?.[1];
+            const recordsPerPageText = targetScript.textContent.match(/var\s+intLRegPagina\s*=\s*(\d+)/)?.[1];
+            if (!totalRecordsText || !recordsPerPageText) return null;
+            const totalRecords = Number(totalRecordsText);
+            const recordsPerPage = Number(recordsPerPageText);
             const currentPageText = document.querySelector('a[data-role="paginacao"] font[color="#ff0000"]')?.textContent
-                || document.querySelector('a[data-role="paginacao"].is-current')?.textContent
-                || '1';
-            const currentPage = Number.parseInt(currentPageText, 10) || 1;
+                || document.querySelector('a[data-role="paginacao"].is-current')?.textContent;
+            const currentPage = currentPageText ? Number.parseInt(currentPageText, 10) || null : null;
 
-            return { totalRecords, recordsPerPage, currentPage };
+            return recordsPerPage > 0 ? { totalRecords, recordsPerPage, currentPage } : null;
         });
     } catch {
         return null;
@@ -186,6 +210,23 @@ async function readSearchResults(page: Page) {
     })) as LattesSearchResult[];
 }
 
+async function hasStaleFileHandleResults(page: Page) {
+    return page.locator('.resultado ol li').evaluateAll(items => items.some(item =>
+        (item.textContent || '').trim().toLocaleLowerCase() === 'stale file handle',
+    ));
+}
+
+async function submitPagination(page: Page, pageNumber: number, recordsPerPage: number) {
+    const inicio = (pageNumber - 1) * recordsPerPage;
+    await Promise.all([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 45000 }),
+        page.evaluate(({ inicio, count }) => {
+            (window as any).submeterPaginacao(inicio, count);
+        }, { inicio, count: recordsPerPage }),
+    ]);
+    await sleep(1000);
+}
+
 function findMatchingResult(results: LattesSearchResult[], target: LattesTarget) {
     if (target.lattesId) {
         return results.find(result => result.lattesId === target.lattesId)
@@ -245,10 +286,10 @@ async function runLattesScraperBatch(
         settledTargets.add(key);
         activeTargets.delete(key);
         pesquisadoresComErro++;
-        log.warning('[Lattes] Pesquisador finalizado com erro', { lattesId: target.lattesId, nome: target.nome, tempoMs, retries, ...memorySnapshot() });
+        log.warning('[Lattes] Pesquisador finalizado com erro', { lattesId: target.lattesId, nome: target.nome, tempoMs, retries, pid: process.pid, ...memorySnapshot() });
     }
 
-    log.info(`[Lattes] Iniciando lote ${batchInfo.index}/${batchInfo.total}`, { pesquisadores: targets.length, workers: SCRAPER_SETTINGS.lattes.maxConcurrency, ...memorySnapshot() });
+    log.info(`[Lattes] Iniciando lote ${batchInfo.index}/${batchInfo.total}`, { pesquisadores: targets.length, workers: SCRAPER_SETTINGS.lattes.maxConcurrency, pid: process.pid, ...memorySnapshot() });
     const crawlerConfig = createCrawlerConfig('lattes', batchOptions.executionId);
     if (!persistLifecycle) crawlerConfig.set('persistStorage', false);
     log.info(`[Lattes] Storage Crawlee: ${CRAWLER_STORAGE_DIRS.lattes}`);
@@ -271,7 +312,7 @@ async function runLattesScraperBatch(
         ],
         async errorHandler({ request }, error) {
             totalRetries++;
-            log.warning('[Lattes] Falha transitoria; nova tentativa pelo Crawlee', { lattesId: request.userData.targetLattesId, retryCount: request.retryCount, erro: error.message, ...memorySnapshot() });
+            log.warning('[Lattes] Falha transitoria; nova tentativa pelo Crawlee', { lattesId: request.userData.targetLattesId, retryCount: request.retryCount, erro: error.message, pid: process.pid, ...memorySnapshot() });
         },
         async failedRequestHandler({ request }, error) {
             await recordFailure(request.uniqueKey, { nome: request.userData.name, lattesId: request.userData.targetLattesId }, error, request.retryCount);
@@ -282,22 +323,61 @@ async function runLattesScraperBatch(
             log.info(`🔍 Buscando no Lattes: ${name} (ID Esperado: ${targetLattesId || 'N/A'})`);
 
             const startTimer = activeTargets.get(request.uniqueKey)?.startedAt ?? performance.now();
-            
+
+            await page.goto(LATTES_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.fill("input[id='textoBusca']", name);
             const buscarDemais = await page.$("input[id='buscarDemais']");
             if (buscarDemais) await buscarDemais.click();
 
-            await submitLattesSearch(page, () => page.click("a[id='botaoBuscaFiltros']"));
+            await submitLattesSearch(page, () => page.click("a[id='botaoBuscaFiltros']"), {
+                lattesId: targetLattesId,
+                nome: name,
+                tentativa: request.retryCount + 1,
+            });
 
             let success = false;
             let lastPopupError: Error | undefined;
             let pageNumber = 1;
             const checkedResults = new Set<string>();
+            const staleResultRetries = new Map<number, number>();
 
             while (!success) {
                 const pagStatus = await getPaginationStatus(page);
-                const totalPages = pagStatus ? Math.ceil(pagStatus.totalRecords / pagStatus.recordsPerPage) : 1;
                 const results = await readSearchResults(page);
+                const hasStaleResults = await hasStaleFileHandleResults(page);
+
+                if (hasStaleResults && pagStatus) {
+                    const retry = (staleResultRetries.get(pageNumber) ?? 0) + 1;
+                    if (retry <= SCRAPER_SETTINGS.lattes.staleResultMaxRetries) {
+                        staleResultRetries.set(pageNumber, retry);
+                        log.warning('[Lattes] Servidor retornou Stale file handle; repetindo somente a pagina atual.', {
+                            nome: name,
+                            lattesId: targetLattesId || null,
+                            paginaAtual: pageNumber,
+                            tentativaLocal: retry,
+                            maxTentativasLocais: SCRAPER_SETTINGS.lattes.staleResultMaxRetries,
+                            esperaMs: SCRAPER_SETTINGS.lattes.staleResultRetryDelayMs,
+                        });
+                        await sleep(SCRAPER_SETTINGS.lattes.staleResultRetryDelayMs);
+                        await submitPagination(page, pageNumber, pagStatus.recordsPerPage);
+                        continue;
+                    }
+                }
+
+                if (!pagStatus
+                    || (pagStatus.currentPage !== null && pagStatus.currentPage !== pageNumber)
+                    || (pagStatus.totalRecords > 0 && results.length === 0)
+                    || results.length > pagStatus.totalRecords) {
+                    const incompleteResultError = new Error(`Resultado Lattes incompleto na pagina ${pageNumber}; a paginacao ou a lista de resultados nao foi confirmada.`);
+                    await captureLattesSearchFailure(page, {
+                        lattesId: targetLattesId,
+                        nome: name,
+                        tentativa: request.retryCount + 1,
+                        paginaAtual: pageNumber,
+                    }, incompleteResultError);
+                    throw incompleteResultError;
+                }
+                const totalPages = Math.max(1, Math.ceil(pagStatus.totalRecords / pagStatus.recordsPerPage));
                 await reportProgress({ etapa: 'ANALISANDO_RESULTADOS', percentual: 25, paginaAtual: pageNumber, paginasTotal: totalPages });
                 const resultKey = (result: LattesSearchResult) => `${pageNumber}:${result.source}:${result.index}`;
                 const match = findMatchingResult(results.filter(result => !checkedResults.has(resultKey(result))), { nome: name, lattesId: targetLattesId });
@@ -311,13 +391,11 @@ async function runLattesScraperBatch(
 
                 if (!match) {
                     const nextPage = pageNumber + 1;
-                    const nextInicio = pagStatus ? (nextPage - 1) * pagStatus.recordsPerPage : 0;
+                    const nextInicio = (nextPage - 1) * pagStatus.recordsPerPage;
 
-                    if (pagStatus && nextInicio < pagStatus.totalRecords) {
+                    if (nextInicio < pagStatus.totalRecords) {
                         log.info(`[Lattes] ID não encontrado na página ${pageNumber} de ${totalPages}. Avançando para a página ${nextPage}...`);
-                        await submitLattesSearch(page, () => page.evaluate(({ inicio, count }) => {
-                            (window as any).submeterPaginacao(inicio, count);
-                        }, { inicio: nextInicio, count: pagStatus.recordsPerPage }));
+                        await submitPagination(page, nextPage, pagStatus.recordsPerPage);
                         pageNumber = nextPage;
                         continue;
                     }
@@ -392,7 +470,7 @@ async function runLattesScraperBatch(
                             producoesExtraidas: parsed.producoesExtraidas,
                             imagemBaixada,
                         });
-                        log.info('[Lattes] Metricas do pesquisador', { lattesId: finalId, tempoMs, producoesExtraidas: parsed.producoesExtraidas, jsonBytes, retries: request.retryCount, lote: batchInfo.index, ...memorySnapshot() });
+                        log.info('[Lattes] Metricas do pesquisador', { lattesId: finalId, tempoMs, producoesExtraidas: parsed.producoesExtraidas, jsonBytes, retries: request.retryCount, lote: batchInfo.index, pid: process.pid, ...memorySnapshot() });
 
                         if (persistLifecycle && pipelineLogger) await pipelineLogger.pipelineLogItem(
                             pipelineLogId,
@@ -457,7 +535,7 @@ async function runLattesScraperBatch(
     } finally {
         onFinished({ pesquisadoresExtraidos, pesquisadoresComErro, tamanhoTotalBytes, producoesExtraidas, retries: totalRetries });
         await crawler.browserPool.destroy();
-        log.info(`[Lattes] Lote ${batchInfo.index}/${batchInfo.total} encerrado`, { tempoMs: Math.round(performance.now() - batchStartedAt), pesquisadoresExtraidos, pesquisadoresComErro, tamanhoTotalBytes, producoesExtraidas, retries: totalRetries, ...memorySnapshot() });
+        log.info(`[Lattes] Lote ${batchInfo.index}/${batchInfo.total} encerrado`, { tempoMs: Math.round(performance.now() - batchStartedAt), pesquisadoresExtraidos, pesquisadoresComErro, tamanhoTotalBytes, producoesExtraidas, retries: totalRetries, pid: process.pid, ...memorySnapshot() });
     }
     return [...collectedResults.values()];
 }
@@ -472,6 +550,9 @@ export async function collectLattesResearcher(target: LattesTarget, reportProgre
 }
 
 export async function runLattesScraper(names: string[] = [], pipelineLoggerPrev?: SharedPipelineLogger, dgpGrupo: string | null = null) {
+    if (await db.hasOpenLattesQueueBatch()) {
+        throw new Error('Existe um lote BullMQ Lattes em andamento. Finalize ou reconcilie a fila antes de iniciar o scraper tradicional.');
+    }
     let targets: { nome: string; lattesId: string }[] = [];
 
     if (!names || names.length === 0) {

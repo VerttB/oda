@@ -1,5 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const os = require('node:os');
 const path = require('node:path');
 require('ts-node').register({ transpileOnly: true, project: path.join(__dirname, '../tsconfig.json') });
 const cheerio = require('cheerio');
@@ -29,29 +31,48 @@ test('parser de projetos encerra quando nao existe bloco de descricao', () => {
     assert.equal(projects.projetoPesquisa.length, 1);
     assert.equal(projects.projetoPesquisa[0].nome, 'Projeto sem descricao');
 });
-test('busca aceita resposta POST com resultado igual e navegacao completa', async () => {
+test('busca aguarda o resultado sem depender do metodo da resposta', async () => {
     const browser = await chromium.launch({ headless: true });
     try {
         const page = await browser.newPage();
-        await page.route('https://lattes.test/**', async route => {
-            if (route.request().method() === 'POST') {
-                await route.fulfill({ contentType: 'text/html', body: '<div class="resultado">Pagina nova</div>' });
-                return;
-            }
-            await route.fulfill({ contentType: 'text/html', body: '<div class="resultado">Resultado igual</div>' });
-        });
-        await page.goto('https://lattes.test/buscatextual/busca.do');
-        await submitLattesSearch(page, () => page.evaluate(async () => {
-            await fetch('/buscatextual/busca.do', { method: 'POST' });
+        await page.setContent('<button id="buscar">Buscar</button>');
+        await page.locator('#buscar').evaluate(button => button.addEventListener('click', () => {
+            setTimeout(() => document.body.insertAdjacentHTML('beforeend', '<div class="resultado">Resultado</div>'), 50);
         }));
-        assert.equal(await page.locator('.resultado').textContent(), 'Resultado igual');
-        await submitLattesSearch(page, () => page.evaluate(() => {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/buscatextual/busca.do';
-            document.body.appendChild(form);
-            form.submit();
-        }));
-        assert.equal(await page.locator('.resultado').textContent(), 'Pagina nova');
+        await submitLattesSearch(page, () => page.click('#buscar'));
+        assert.equal(await page.locator('.resultado').textContent(), 'Resultado');
     } finally { await browser.close(); }
+});
+test('falha na busca salva HTML e metadados sem substituir o erro original', async () => {
+    const diagnosticsDir = await fs.mkdtemp(path.join(os.tmpdir(), 'oda-lattes-diagnostic-'));
+    const browser = await chromium.launch({ headless: true });
+    try {
+        const page = await browser.newPage();
+        await page.setContent('<form><input id="textoBusca"><div class="alert">Servico indisponivel</div></form>');
+        await assert.rejects(
+            submitLattesSearch(page, async () => undefined, {
+                lattesId: '0008785408235675',
+                nome: 'Pesquisador Teste',
+                tentativa: 2,
+                timeoutMs: 20,
+                diagnosticsDir,
+            }),
+            /Timeout/,
+        );
+        const files = await fs.readdir(diagnosticsDir);
+        const htmlFile = files.find(file => file.endsWith('.html'));
+        const metadataFile = files.find(file => file.endsWith('.json'));
+        assert.ok(htmlFile);
+        assert.ok(metadataFile);
+        assert.match(await fs.readFile(path.join(diagnosticsDir, htmlFile), 'utf8'), /Servico indisponivel/);
+        const metadata = JSON.parse(await fs.readFile(path.join(diagnosticsDir, metadataFile), 'utf8'));
+        assert.equal(metadata.lattesId, '0008785408235675');
+        assert.equal(metadata.tentativa, 2);
+        assert.equal(metadata.seletores.campoBusca, 1);
+        assert.equal(metadata.seletores.mensagemErro, 1);
+        assert.match(metadata.erro, /Timeout/);
+    } finally {
+        await browser.close();
+        await fs.rm(diagnosticsDir, { recursive: true, force: true });
+    }
 });

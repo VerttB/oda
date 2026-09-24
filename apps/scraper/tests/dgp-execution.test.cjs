@@ -14,7 +14,7 @@ replace('@oda/database', {
     TipoErroColeta: enums('DESCONHECIDO'), StatusSessao: enums('CONCLUIDO', 'ERRO'),
     StatusItemLog: enums('SUCESSO', 'ERRO'), TipoEntidadeLog: enums('GRUPO'),
     ModuloSistema: enums('SCRAPER'), ModoExecucao: enums('APENAS_DGP'),
-    PipelineEtapa: enums('SCRAPE_GROUP_PAGE'),
+    PipelineEtapa: enums('SCRAPE_GROUP_PAGE', 'RH_DETALHES', 'INSTITUICOES_PARCEIRAS', 'LINHA_PESQUISA'),
     SharedPipelineLogger: class {
         async startPipelineLogger(_module, group) { state.sessions.push(group); return 'session'; }
         async pipelineLogItem(id, step, status, options) {
@@ -38,22 +38,45 @@ replace('../src/common/database', {
 });
 replace('../src/common/config', {
     DGP_TIMEOUTS: { popupMs: 30000, detailMs: 45000, mirrorMs: 60000 },
-    SCRAPER_SETTINGS: { dgp: { take: 2, maxRequestRetries: 1, loginRetryDelayMs: 1 } }, CRAWLER_STORAGE_DIRS: { dgp: 'mock' },
+    SCRAPER_SETTINGS: { dgp: {
+        take: 2,
+        maxRequestRetries: 1,
+        loginRetryDelayMs: 1,
+        detailMaxAttempts: 2,
+        detailRetryDelayMs: 3000,
+        rhDelayMinMs: 2000,
+        rhDelayMaxMs: 4000,
+    } }, CRAWLER_STORAGE_DIRS: { dgp: 'mock' },
     createCrawlerConfig: () => ({}), createCrawlerOptions: () => ({}),
     getDgpDataDir: scope => scope === 'simcc' ? 'mock/simcc/raw-data/dgp' : 'mock/raw-data/dgp',
     purgeCrawlerStorage: async () => {}, saveJson: (_data, dir) => { state.savedDirs.push(dir); return 100; },
 });
-replace('../src/common/utils', { randomSleep: async () => {} });
-replace('../src/common/dgpDetailButtons', { DGP_DETAIL_SELECTORS: {}, readDgpDetailButtons: async () => [] });
+replace('../src/common/utils', {
+    randomSleep: async () => {},
+    sleep: async ms => { state.sleeps.push(ms); },
+});
+replace('../src/common/dgpDetailButtons', {
+    DGP_DETAIL_SELECTORS: { rh: 'rh', institutions: 'institutions', lines: 'lines' },
+    readDgpDetailButtons: async (_page, selector) => selector === 'rh' ? state.rhButtons || [] : [],
+    resolveDgpDetailButton: async () => ({ click: async () => {} }),
+});
 replace('../src/parsers/dgpParser', { DGPExtractor: class {
     extractGroupMirror() { return { nome: 'Grupo', membros: state.members || [], linhas: [], instituicoes: [] }; }
+    extractRHDetails() { return { nome: 'Pesquisador' }; }
 } });
 class Page extends EventEmitter {
-    url() { return 'http://dgp.cnpq.br/dgp/espelhogrupo/1'; }
+    constructor() { super(); this.closed = false; }
+    url() { return 'http://dgp.cnpq.br/dgp/espelhogrupo/0000000000000001'; }
     async waitForSelector() {}
     async waitForLoadState() {}
-    locator() { return { first: () => ({ waitFor: async () => {} }) }; }
-    isClosed() { return false; }
+    locator() { return { count: async () => 1, first: () => ({ waitFor: async () => {} }) }; }
+    isClosed() { return this.closed; }
+    async close() { this.closed = true; this.emit('close'); }
+    async waitForEvent(event) {
+        assert.equal(event, 'popup');
+        if (state.popupFailures-- > 0) throw new Error('page.waitForEvent: Timeout 30000ms exceeded');
+        return new Page();
+    }
     async evaluate() {
         if (state.readFailures-- > 0) throw new Error('Execution context was destroyed');
         return '<html>grupo</html>';
@@ -86,9 +109,12 @@ replace('crawlee', {
         }
     },
 });
-const { runDgpScraper } = require('../src/scrapers/dgpScraper');
+const { runDgpScraper, scrapeGroupPage } = require('../src/scrapers/dgpScraper');
 const { readDgpPageContent } = require('../src/common/dgpPageContent');
-beforeEach(() => { state = { sessions: [], items: [], finished: [], transitions: [], readFailures: 0, savedDirs: [], researchersQueued: 0 }; });
+beforeEach(() => { state = {
+    sessions: [], items: [], finished: [], transitions: [], readFailures: 0,
+    savedDirs: [], researchersQueued: 0, sleeps: [], popupFailures: 0,
+}; });
 test('dois grupos compartilham uma sessao e geram dois resultados', async () => {
     await runDgpScraper();
     assert.deepEqual(state.sessions, [null]);
@@ -136,4 +162,15 @@ test('leitura repete navegacao transitoria e rejeita login', async () => {
     const page = new Page();
     page.url = () => 'https://login.cnpq.br/auth/';
     await assert.rejects(readDgpPageContent(page, '#recursosHumanos'), /login/);
+});
+test('falha transitoria de popup repete apenas o detalhe atual', async () => {
+    state.rhButtons = [{ id: 'rh-1', selector: 'rh', index: 0, nome: 'Pesquisador' }];
+    state.popupFailures = 1;
+
+    const metadata = await scrapeGroupPage(new Page(), '0000000000000001');
+
+    assert.equal(metadata.dgpTentativasDetalheLocal, 1);
+    assert.equal(metadata.dgpDetalhesRecuperadosLocalmente, 1);
+    assert.deepEqual(metadata.dgpTentativasDetalhePorEtapa, { RH_DETALHES: 1 });
+    assert.deepEqual(state.sleeps, [3000]);
 });

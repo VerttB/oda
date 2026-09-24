@@ -1,5 +1,6 @@
 import { PrismaClient, prismaConfig } from "@oda/database"
-import { FilaExtracaoStatus, StatusColeta } from "@oda/database";
+import { FilaExtracaoStatus, StatusColeta, StatusSessao } from "@oda/database";
+import { QUEUE_NAMES } from "@oda/queue";
 import { cleanStr } from "./utils";
 export const prisma = new PrismaClient(prismaConfig)
 
@@ -180,13 +181,30 @@ export const db = {
    * Recupera itens que ficaram presos em PROCESSANDO apos queda fatal do processo.
    */
   async resetProcessingResearchersQueue() {
-      return prisma.filaExtracaoPesquisador.updateMany({
-          where: { status: FilaExtracaoStatus.PROCESSANDO },
-          data: {
-              status: FilaExtracaoStatus.PENDENTE,
-              processamentoIniciadoEm: null,
+      const count = await prisma.$executeRaw`
+          UPDATE fila_extracao_pesquisador AS pesquisador
+          SET status = 'PENDENTE', processamento_iniciado_em = NULL
+          WHERE pesquisador.status = 'PROCESSANDO'
+            AND NOT EXISTS (
+              SELECT 1
+              FROM pipeline_log AS pipeline
+              WHERE pipeline.status = 'EMANDAMENTO'
+                AND pipeline.metadata->>'queue' = ${QUEUE_NAMES.LATTES_SCRAPER}
+                AND pipeline.metadata->'jobs' @> jsonb_build_array(jsonb_build_object('lattesId', pesquisador.lattes_id))
+            )
+      `;
+      return { count };
+  },
+
+  async hasOpenLattesQueueBatch() {
+      const batch = await prisma.pipelineLog.findFirst({
+          where: {
+              status: StatusSessao.EMANDAMENTO,
+              metadata: { path: ['queue'], equals: QUEUE_NAMES.LATTES_SCRAPER },
           },
+          select: { id: true },
       });
+      return Boolean(batch);
   },
 
   /**

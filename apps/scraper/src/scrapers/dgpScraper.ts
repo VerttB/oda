@@ -8,7 +8,7 @@ import { DGPExtractor } from '../parsers/dgpParser';
 import { db, prisma } from '../common/database';
 import { createCrawlerConfig, createCrawlerOptions, SCRAPER_SETTINGS, CRAWLER_STORAGE_DIRS, getDgpDataDir, purgeCrawlerStorage, saveJson } from '../common/config';
 import { memorySnapshot } from '../common/scraperMetrics';
-import { DGP_DETAIL_SELECTORS, readDgpDetailButtons, resolveDgpDetailButton } from '../common/dgpDetailButtons';
+import { DGP_DETAIL_SELECTORS, readDgpDetailButtons, resolveDgpDetailButton, type DgpDetailButton } from '../common/dgpDetailButtons';
 import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, PipelineEtapa } from '@oda/database';
 import { randomSleep, sleep } from '../common/utils';
 import { SharedPipelineLogger } from '@oda/database';
@@ -44,6 +44,9 @@ type DgpRecoveryStats = {
     redirecionamentosLogin: number;
     tempoRecuperacaoMs: number;
     recuperacoesPorEtapa: Record<string, number>;
+    tentativasDetalheLocal: number;
+    detalhesRecuperadosLocalmente: number;
+    tentativasDetalhePorEtapa: Record<string, number>;
 };
 
 function createDgpRecoveryStats(): DgpRecoveryStats {
@@ -52,12 +55,26 @@ function createDgpRecoveryStats(): DgpRecoveryStats {
         redirecionamentosLogin: 0,
         tempoRecuperacaoMs: 0,
         recuperacoesPorEtapa: {},
+        tentativasDetalheLocal: 0,
+        detalhesRecuperadosLocalmente: 0,
+        tentativasDetalhePorEtapa: {},
     };
 }
 
 function isCnpqLoginUrl(url: string) {
     return url.includes('login.cnpq.br/auth/realms/cnpq')
         || url.includes('/faces/login.jsf');
+}
+
+function urlWithoutSessionParams(url: string) {
+    try {
+        const parsed = new URL(url);
+        parsed.search = '';
+        parsed.hash = '';
+        return parsed.href;
+    } catch {
+        return '[URL invalida]';
+    }
 }
 
 async function safeCount(page: Page, selector: string) {
@@ -96,7 +113,7 @@ async function ensureGroupMirrorReady(
     }
 
     if (recoveryStats.tentativasRecuperacao > SCRAPER_SETTINGS.dgp.maxRecoveriesPerGroup) {
-        throw new Error(`Limite de recuperações do espelho DGP excedido para o grupo ${dgpId}. Tentativas: ${recoveryStats.tentativasRecuperacao}. Ultima URL: ${currentUrl}`);
+        throw new Error(`Limite de recuperações do espelho DGP excedido para o grupo ${dgpId}. Tentativas: ${recoveryStats.tentativasRecuperacao}. Ultima URL: ${urlWithoutSessionParams(currentUrl)}`);
     }
 
     const startedAt = performance.now();
@@ -105,11 +122,20 @@ async function ensureGroupMirrorReady(
         etapa,
         tentativaRecuperacao: recoveryStats.tentativasRecuperacao,
         redirecionadoParaLogin,
-        urlAtual: currentUrl,
+        urlAtual: urlWithoutSessionParams(currentUrl),
         seletorDetalhe: detailSelector,
         recursosHumanosEncontrados: humanResourcesCount,
         botoesDetalheEncontrados: detailButtonsCount,
     });
+
+    if (redirecionadoParaLogin) {
+        log.warning('[DGP] Login detectado durante a recuperacao do espelho; aguardando antes de recarregar.', {
+            dgpId,
+            etapa,
+            esperaMs: SCRAPER_SETTINGS.dgp.loginRetryDelayMs,
+        });
+        await sleep(SCRAPER_SETTINGS.dgp.loginRetryDelayMs);
+    }
 
     await groupPage.goto(`http://dgp.cnpq.br/dgp/espelhogrupo/${dgpId}`, {
         waitUntil: 'load',
@@ -127,6 +153,97 @@ async function ensureGroupMirrorReady(
         tentativaRecuperacao: recoveryStats.tentativasRecuperacao,
         tempoMs,
     });
+}
+
+function isTransientDgpDetailError(error: unknown) {
+    if (isDgpLoginRedirectError(error)) return false;
+    const message = error instanceof Error ? error.message : String(error);
+    return /Timeout .* exceeded|Execution context was destroyed|navigat(?:e|ing|ion)|Unable to retrieve content|Target page, context or browser has been closed|Documento DGP mudou|Nao foi possivel resolver botao DGP/i.test(message);
+}
+
+type DgpPopupDetailOptions<T> = {
+    groupPage: Page;
+    activePopups: Set<Page>;
+    dgpId: string;
+    item: DgpDetailButton;
+    etapa: PipelineEtapa;
+    expectedSelector: string;
+    recoveryStats: DgpRecoveryStats;
+    extract: (html: string) => T;
+};
+
+async function extractDgpPopupDetail<T>({
+    groupPage,
+    activePopups,
+    dgpId,
+    item,
+    etapa,
+    expectedSelector,
+    recoveryStats,
+    extract,
+}: DgpPopupDetailOptions<T>): Promise<T> {
+    const maxAttempts = SCRAPER_SETTINGS.dgp.detailMaxAttempts;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        let openedPopup: Page | undefined;
+        try {
+            await ensureGroupMirrorReady(groupPage, dgpId, item.selector, etapa, recoveryStats);
+            const button = await resolveDgpDetailButton(groupPage, item);
+            [openedPopup] = await Promise.all([
+                groupPage.waitForEvent('popup', { timeout: DGP_TIMEOUTS.popupMs }),
+                button.click({ timeout: DGP_TIMEOUTS.popupMs }),
+            ]);
+            const html = await readDgpPageContent(openedPopup, expectedSelector);
+            const result = extract(html);
+
+            if (attempt > 1) {
+                recoveryStats.detalhesRecuperadosLocalmente += 1;
+                log.info('[DGP] Detalhe recuperado sem reiniciar o grupo.', {
+                    dgpId,
+                    etapa,
+                    nome: item.nome || null,
+                    tentativa: attempt,
+                });
+            }
+
+            return result;
+        } catch (error) {
+            const canRetry = !groupPage.isClosed()
+                && attempt < maxAttempts
+                && isTransientDgpDetailError(error);
+            if (!canRetry) throw error;
+
+            if (openedPopup && !openedPopup.isClosed()) {
+                try {
+                    await openedPopup.close();
+                } catch {}
+                openedPopup = undefined;
+            }
+            await closePopup(activePopups, groupPage);
+
+            recoveryStats.tentativasDetalheLocal += 1;
+            recoveryStats.tentativasDetalhePorEtapa[etapa] = (recoveryStats.tentativasDetalhePorEtapa[etapa] || 0) + 1;
+            log.warning('[DGP] Falha transitoria em detalhe; repetindo apenas o item atual.', {
+                dgpId,
+                etapa,
+                nome: item.nome || null,
+                tentativaConcluida: attempt,
+                proximaTentativa: attempt + 1,
+                esperaMs: SCRAPER_SETTINGS.dgp.detailRetryDelayMs,
+                erro: error instanceof Error ? error.message : String(error),
+            });
+            await sleep(SCRAPER_SETTINGS.dgp.detailRetryDelayMs);
+        } finally {
+            if (openedPopup && !openedPopup.isClosed()) {
+                try {
+                    await openedPopup.close();
+                } catch {}
+            }
+            await closePopup(activePopups, groupPage);
+        }
+    }
+
+    throw new Error('Tentativas locais de detalhe DGP esgotadas.');
 }
 
 export async function scrapeGroupPage(
@@ -168,18 +285,20 @@ export async function scrapeGroupPage(
         for (const [index, item] of rhButtons.entries()) {
             const nome = item.nome;
 
-            await randomSleep(500, 1500);
+            await randomSleep(SCRAPER_SETTINGS.dgp.rhDelayMinMs, SCRAPER_SETTINGS.dgp.rhDelayMaxMs);
+            const memberStartedAt = performance.now();
             try {
-                await ensureGroupMirrorReady(groupPage, dgpId, item.selector, PipelineEtapa.RH_DETALHES, recoveryStats);
-                const btn = await resolveDgpDetailButton(groupPage, item);
-                const [openedPopup] = await Promise.all([
-                    groupPage.waitForEvent('popup', { timeout: DGP_TIMEOUTS.popupMs }),
-                    btn.click({ timeout: DGP_TIMEOUTS.popupMs }),
-                ]);
-                const html = await readDgpPageContent(openedPopup, "tbody[id*='tblEspelhoRHGPAtuacao_data'], tbody[id*='tblEspelhoRHLPAtuacao_data']");
-                // Extração dos pesquisadores do grupo de pesquisa
-                rhDetailsMap.set(nome || 'Desconhecido', extractor.extractRHDetails(html));
-                await openedPopup.close();
+                const details = await extractDgpPopupDetail({
+                    groupPage,
+                    activePopups,
+                    dgpId,
+                    item,
+                    etapa: PipelineEtapa.RH_DETALHES,
+                    expectedSelector: "tbody[id*='tblEspelhoRHGPAtuacao_data'], tbody[id*='tblEspelhoRHLPAtuacao_data']",
+                    recoveryStats,
+                    extract: html => extractor.extractRHDetails(html),
+                });
+                rhDetailsMap.set(nome || 'Desconhecido', details);
                 await reportProgress({
                     etapa: 'RECURSOS_HUMANOS',
                     percentual: stagePercent(20, 50, index + 1, rhButtons.length),
@@ -187,7 +306,18 @@ export async function scrapeGroupPage(
                     itensTotal: rhButtons.length,
                 });
             } catch (err: any) {
-                log.error(`[Scraper] Erro ao extrair detalhes do RH para ${nome}: ${err.message}`);
+                const popup = [...activePopups].find(page => page !== groupPage && !page.isClosed());
+                log.error('[DGP] Falha ao extrair detalhes do RH.', {
+                    dgpId,
+                    nome,
+                    indice: index + 1,
+                    total: rhButtons.length,
+                    tempoMs: Math.round(performance.now() - memberStartedAt),
+                    tipoErro: isDgpLoginRedirectError(err) ? 'LOGIN_REDIRECT' : 'EXTRACAO_RH',
+                    urlGrupo: urlWithoutSessionParams(groupPage.url()),
+                    urlPopup: popup ? urlWithoutSessionParams(popup.url()) : null,
+                    erro: err instanceof Error ? err.message : String(err),
+                });
                 err.message = `RH ${nome}: ${err.message}`;
                 throw err;
             } finally {
@@ -205,15 +335,17 @@ export async function scrapeGroupPage(
             await randomSleep(500, 1500);
             const instNome = item.nome;
             try {
-                await ensureGroupMirrorReady(groupPage, dgpId, item.selector, PipelineEtapa.INSTITUICOES_PARCEIRAS, recoveryStats);
-                const btn = await resolveDgpDetailButton(groupPage, item);
-                const [openedPopup] = await Promise.all([
-                    groupPage.waitForEvent('popup', { timeout: DGP_TIMEOUTS.popupMs }),
-                    btn.click({ timeout: DGP_TIMEOUTS.popupMs }),
-                ]);
-                const html = await readDgpPageContent(openedPopup, "[id='idFormVisualizarParceira']");
-                instMap.set(instNome || "Desconhecido", extractor.extractPartnerInstitutions(html));
-                await openedPopup.close();
+                const details = await extractDgpPopupDetail({
+                    groupPage,
+                    activePopups,
+                    dgpId,
+                    item,
+                    etapa: PipelineEtapa.INSTITUICOES_PARCEIRAS,
+                    expectedSelector: "[id='idFormVisualizarParceira']",
+                    recoveryStats,
+                    extract: html => extractor.extractPartnerInstitutions(html),
+                });
+                instMap.set(instNome || 'Desconhecido', details);
                 await reportProgress({
                     etapa: 'INSTITUICOES',
                     percentual: stagePercent(50, 65, index + 1, instButtons.length),
@@ -239,15 +371,17 @@ export async function scrapeGroupPage(
             await randomSleep(500, 1500);
             const linhaNome = item.nome;
             try {
-                await ensureGroupMirrorReady(groupPage, dgpId, item.selector, PipelineEtapa.LINHA_PESQUISA, recoveryStats);
-                const btn = await resolveDgpDetailButton(groupPage, item);
-                const [openedPopup] = await Promise.all([
-                    groupPage.waitForEvent('popup', { timeout: DGP_TIMEOUTS.popupMs }),
-                    btn.click({ timeout: DGP_TIMEOUTS.popupMs }),
-                ]);
-                const html = await readDgpPageContent(openedPopup, '#linhaPesquisa');
-                linesMap.set(linhaNome || "Desconhecido", extractor.extractLineDetails(html, linhaNome));
-                await openedPopup.close();
+                const details = await extractDgpPopupDetail({
+                    groupPage,
+                    activePopups,
+                    dgpId,
+                    item,
+                    etapa: PipelineEtapa.LINHA_PESQUISA,
+                    expectedSelector: '#linhaPesquisa',
+                    recoveryStats,
+                    extract: html => extractor.extractLineDetails(html, linhaNome),
+                });
+                linesMap.set(linhaNome || 'Desconhecido', details);
                 await reportProgress({
                     etapa: 'LINHAS_PESQUISA',
                     percentual: stagePercent(65, 85, index + 1, linesButtons.length),
@@ -320,6 +454,9 @@ export async function scrapeGroupPage(
             dgpRedirecionamentosLogin: recoveryStats.redirecionamentosLogin,
             dgpTempoRecuperacaoMs: recoveryStats.tempoRecuperacaoMs,
             dgpRecuperacoesPorEtapa: recoveryStats.recuperacoesPorEtapa,
+            dgpTentativasDetalheLocal: recoveryStats.tentativasDetalheLocal,
+            dgpDetalhesRecuperadosLocalmente: recoveryStats.detalhesRecuperadosLocalmente,
+            dgpTentativasDetalhePorEtapa: recoveryStats.tentativasDetalhePorEtapa,
         };
 
     } finally {
@@ -480,8 +617,13 @@ export async function runDgpScraper(dgpIds: string[] = [], scope: DataScope = 'd
             recoveryTotals.tentativasRecuperacao += stats.tentativasRecuperacao;
             recoveryTotals.redirecionamentosLogin += stats.redirecionamentosLogin;
             recoveryTotals.tempoRecuperacaoMs += stats.tempoRecuperacaoMs;
+            recoveryTotals.tentativasDetalheLocal += stats.tentativasDetalheLocal;
+            recoveryTotals.detalhesRecuperadosLocalmente += stats.detalhesRecuperadosLocalmente;
             for (const [etapa, count] of Object.entries(stats.recuperacoesPorEtapa)) {
                 recoveryTotals.recuperacoesPorEtapa[etapa] = (recoveryTotals.recuperacoesPorEtapa[etapa] ?? 0) + count;
+            }
+            for (const [etapa, count] of Object.entries(stats.tentativasDetalhePorEtapa)) {
+                recoveryTotals.tentativasDetalhePorEtapa[etapa] = (recoveryTotals.tentativasDetalhePorEtapa[etapa] ?? 0) + count;
             }
         }
         await pipelineLogger.finishPipelineLogger(pipelineLogId, fatalError || totals.itensComErro ? StatusSessao.ERRO : StatusSessao.CONCLUIDO, {
@@ -492,6 +634,9 @@ export async function runDgpScraper(dgpIds: string[] = [], scope: DataScope = 'd
             dgpRedirecionamentosLogin: recoveryTotals.redirecionamentosLogin,
             dgpTempoRecuperacaoMs: recoveryTotals.tempoRecuperacaoMs,
             dgpRecuperacoesPorEtapa: recoveryTotals.recuperacoesPorEtapa,
+            dgpTentativasDetalheLocal: recoveryTotals.tentativasDetalheLocal,
+            dgpDetalhesRecuperadosLocalmente: recoveryTotals.detalhesRecuperadosLocalmente,
+            dgpTentativasDetalhePorEtapa: recoveryTotals.tentativasDetalhePorEtapa,
         });
     }
     

@@ -7,8 +7,27 @@ import type { DataScope } from '@oda/queue';
 
 // Limites operacionais ficam em codigo ate termos medidas de uma coleta prolongada.
 export const SCRAPER_SETTINGS = {
-    lattes: { take: 500, batchSize: 15, maxConcurrency: 1, requestHandlerTimeoutSecs: 300, maxRequestRetries: 3 },
-    dgp: { take: 200, maxConcurrency: 1, requestHandlerTimeoutSecs: 3600, maxRequestRetries: 3, maxRecoveriesPerGroup: 10, loginRetryDelayMs: 60000 },
+    lattes: {
+        take: 500,
+        batchSize: 15,
+        maxConcurrency: 1,
+        requestHandlerTimeoutSecs: 1200,
+        maxRequestRetries: 3,
+        staleResultMaxRetries: 2,
+        staleResultRetryDelayMs: 60000,
+    },
+    dgp: {
+        take: 200,
+        maxConcurrency: 1,
+        requestHandlerTimeoutSecs: 3600,
+        maxRequestRetries: 3,
+        maxRecoveriesPerGroup: 10,
+        loginRetryDelayMs: 60000,
+        detailMaxAttempts: 2,
+        detailRetryDelayMs: 3000,
+        rhDelayMinMs: 2000,
+        rhDelayMaxMs: 4000,
+    },
     discovery: { maxConcurrency: 4, requestHandlerTimeoutSecs: 5000 },
 };
 export const LATTES_URL = 'https://buscatextual.cnpq.br/buscatextual/busca.do';
@@ -74,6 +93,7 @@ export const DATA_DIR = path.resolve(ROOT_DIR, 'data');
 export const RAW_DATA_DIR = path.join(DATA_DIR, 'raw-data');
 export const DGP_DATA_DIR = path.join(RAW_DATA_DIR, 'dgp');
 export const LATTES_DATA_DIR = path.join(RAW_DATA_DIR, 'lattes');
+export const LATTES_DIAGNOSTICS_DIR = path.join(DATA_DIR, 'diagnostics', 'lattes');
 export const SIMCC_DATA_DIR = path.join(DATA_DIR, 'simcc');
 export const SIMCC_RAW_DATA_DIR = path.join(SIMCC_DATA_DIR, 'raw-data');
 export const SIMCC_DGP_DATA_DIR = path.join(SIMCC_RAW_DATA_DIR, 'dgp');
@@ -92,7 +112,7 @@ export function getDgpDataDir(scope: DataScope = 'default') {
     return scope === 'simcc' ? SIMCC_DGP_DATA_DIR : DGP_DATA_DIR;
 }
 
-[DATA_DIR, RAW_DATA_DIR, DGP_DATA_DIR, LATTES_DATA_DIR, SIMCC_DGP_DATA_DIR, IMAGE_DIR, CRAWLER_STORAGE_ROOT_DIR, ...Object.values(CRAWLER_STORAGE_DIRS)].forEach(dir => {
+[DATA_DIR, RAW_DATA_DIR, DGP_DATA_DIR, LATTES_DATA_DIR, LATTES_DIAGNOSTICS_DIR, SIMCC_DGP_DATA_DIR, IMAGE_DIR, CRAWLER_STORAGE_ROOT_DIR, ...Object.values(CRAWLER_STORAGE_DIRS)].forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }

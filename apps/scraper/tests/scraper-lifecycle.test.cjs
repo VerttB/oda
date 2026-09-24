@@ -30,6 +30,9 @@ function replaceModule(name, exports) {
 }
 replaceModule('@oda/database', database);
 const db = {
+    async hasOpenLattesQueueBatch() {
+        return Boolean(state.openBullBatch);
+    },
     async resetProcessingResearchersQueue() {
         return { count: 0 };
     },
@@ -53,6 +56,7 @@ replaceModule('../src/common/database', {
 class FakePage extends EventEmitter {
     constructor(id, popup = false, name = 'Pessoa') { super(); this.id = id; this.popup = popup; this.name = name; this.closed = false; }
     context() { return { route: async () => {} }; }
+    async goto() {}
     async fill() {}
     async $() { return null; }
     async click() {}
@@ -71,6 +75,9 @@ class FakePage extends EventEmitter {
         };
         assert.equal(predicate(response), true);
         return response;
+    }
+    async evaluate() {
+        return { totalRecords: state.noResults ? 0 : 1, recordsPerPage: 10, currentPage: 1 };
     }
     keyboard = { press: async () => {} };
     locator(selector) {
@@ -243,6 +250,13 @@ test('lotes seguintes so iniciam depois do encerramento do anterior', async () =
     assert.deepEqual(state.crawlers.map(c => c.requests.length), [15, 15]);
     assert.equal(state.destroyed, 2);
     assert.equal(state.finished.metadata.pesquisadoresComErro, 30);
+});
+
+test('modo tradicional nao inicia durante lote BullMQ Lattes aberto', async () => {
+    state.openBullBatch = true;
+    await assert.rejects(runLattesScraper(), /lote BullMQ Lattes em andamento/);
+    assert.equal(state.transitions.length, 0);
+    assert.equal(state.crawlers.length, 0);
 });
 
 test('DGP nao inicia Lattes ao terminar e registra falha definitiva de navegacao', async () => {
