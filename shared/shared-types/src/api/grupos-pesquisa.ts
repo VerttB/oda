@@ -2,7 +2,11 @@ import { z } from 'zod';
 import { PaginationQuerySchema, SortOrderSchema } from './pagination';
 
 export const SituacaoGrupoPesquisaSchema = z.enum([
-  'ATIVO',
+  'CERTIFICADO',
+  'EM_PREENCHIMENTO',
+  'EXCLUIDO',
+  'AGUARDANDO_CERTIFICACAO',
+  // Retidos para leitura de registros legados já persistidos.
   'INATIVO',
   'EM_ANALISE',
 ]);
@@ -22,7 +26,7 @@ export const CreateGruposPesquisaRequestSchema = z.object({
   anoFormacao: z.coerce.number().int().optional(),
   areaPredominante: z.string(),
   repercussao: z.string().optional(),
-  situacao: SituacaoGrupoPesquisaSchema.optional(),
+  situacao: SituacaoGrupoPesquisaSchema,
   instituicoes: z.array(GrupoPesquisaInstituicaoRequestSchema).nonempty(),
 });
 

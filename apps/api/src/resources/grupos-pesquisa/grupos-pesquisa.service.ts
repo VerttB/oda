@@ -55,7 +55,7 @@ export class GruposPesquisaService {
       const created = await tx.grupoPesquisa.create({
         data: {
           ...grupoData,
-          situacao: situacao as Situacao | undefined,
+          situacao: situacao as Situacao,
         },
       });
       await this.syncGrupoInstituicoes(

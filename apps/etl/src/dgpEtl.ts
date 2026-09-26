@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, PipelineEtapa } from '@oda/database';
+import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, TipoRelacaoGrupoInstituicao, PipelineEtapa, Situacao } from '@oda/database';
 import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
+import { mapDgpGroupSituation } from './commom/groupSituation';
 import type { DataScope } from '@oda/queue';
 import {
     createLinhaPesquisa,
@@ -182,6 +183,7 @@ export async function saveGroupToDb(data: any, reportProgress: GroupEtlProgressR
     let grupoId = "";
 
     try {
+        const situacao = mapDgpGroupSituation(data.situacao);
         await reportProgress({ etapa: 'SALVANDO_GRUPO', percentual: 20, itensProcessados: null, itensTotal: null });
         const grupo = await prisma.$transaction(async (tx) => {
             const filaGrupo = await tx.filaExtracaoGrupo.findFirst({ where: { dgpId } });
@@ -211,6 +213,7 @@ export async function saveGroupToDb(data: any, reportProgress: GroupEtlProgressR
                     nome: data.nome.trim(),
                     anoFormacao: ano,
                     areaPredominante,
+                    situacao,
                     repercussao: data.repercussao?.trim() || null,
                     email: data.email?.trim() || null,
                     telefone: data.telefone?.trim() || null,
@@ -230,6 +233,7 @@ export async function saveGroupToDb(data: any, reportProgress: GroupEtlProgressR
                     nome: data.nome.trim(),
                     anoFormacao: ano,
                     areaPredominante,
+                    situacao,
                     repercussao: data.repercussao?.trim() || null,
                     email: data.email?.trim() || null,
                     telefone: data.telefone?.trim() || null,

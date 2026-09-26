@@ -68,9 +68,12 @@ model Estado {
 }
 
 enum Situacao {
-  ATIVO      @map("certificado")
-  INATIVO    @map("inativo")
-  EM_ANALISE @map("em_analise")
+  CERTIFICADO             @map("certificado")
+  EM_PREENCHIMENTO        @map("em_preenchimento")
+  EXCLUIDO                @map("excluido")
+  AGUARDANDO_CERTIFICACAO @map("aguardando_certificacao")
+  INATIVO                 @map("inativo")
+  EM_ANALISE              @map("em_analise")
 
   @@map("situacao")
 }
@@ -98,7 +101,7 @@ model GrupoPesquisa {
   areaConhecimento   AreaConhecimento?               @relation("GrupoPesquisaAreaPrincipal", fields: [areaConhecimentoId], references: [id])
   areasConhecimento GrupoPesquisaAreaConhecimento[]
   instituicoes      GrupoPesquisaInstituicao[]
-  situacao          Situacao                        @default(ATIVO)
+  situacao          Situacao
   membros           MembroGrupo[]
   linhasPesquisa    LinhaPesquisa[]
   criadoEm          DateTime                        @default(now()) @map("criado_em")

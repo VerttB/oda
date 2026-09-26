@@ -50,7 +50,7 @@ describe('Filtros de producoes e instituicoes', () => {
       estado: { id: 'e1', nome: 'Bahia', sigla: 'BA', regiao: 'Nordeste', criadoEm: new Date() },
       _count: { gruposPesquisaVinculos: 1 },
       gruposPesquisaVinculos: [{ grupoId: 'g1', instituicaoId: 'i1', tipoRelacao: 'PARCEIRA', unidade: 'Campus', unidadeUf: null,
-        grupoPesquisa: { id: 'g1', dgpId: '123', nome: 'Grupo', situacao: 'ATIVO', uf: 'PE', cidade: null } }],
+        grupoPesquisa: { id: 'g1', dgpId: '123', nome: 'Grupo', situacao: 'CERTIFICADO', uf: 'PE', cidade: null } }],
     };
     const prisma = { instituicao: { findMany: jest.fn().mockResolvedValue([record]), count: jest.fn().mockResolvedValue(1),
       findUniqueOrThrow: jest.fn().mockResolvedValue(record) } };
@@ -61,7 +61,7 @@ describe('Filtros de producoes e instituicoes', () => {
   it('instituicao retorna grupos diretos com tipo e unidade, sem IDs ou auditoria duplicados', async () => {
     const { service } = institutionSetup();
     const result = await service.findOne('i1');
-    expect(result.gruposPesquisa[0]).toEqual({ id: 'g1', dgpId: '123', nome: 'Grupo', situacao: 'ATIVO', uf: 'PE', cidade: null,
+    expect(result.gruposPesquisa[0]).toEqual({ id: 'g1', dgpId: '123', nome: 'Grupo', situacao: 'CERTIFICADO', uf: 'PE', cidade: null,
       tipoRelacao: 'PARCEIRA', unidade: { nome: 'Campus', uf: null } });
     expect(result.totalGruposPesquisa).toBe(1);
     expect(JSON.stringify(result)).not.toMatch(/"(criadoEm|atualizadoEm|instituicaoId|grupoId|estadoId|_count|gruposPesquisaVinculos)":/);

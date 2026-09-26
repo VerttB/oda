@@ -9,6 +9,7 @@
     "etl:grupo": "ts-node src/main.ts grupo",
     "etl:pesquisador": "ts-node src/main.ts pesquisador",
     "etl:all": "ts-node src/run-all.ts",
+    "backfill:group-situations": "ts-node src/backfillGroupSituations.ts",
     "queue:prepare": "pnpm --filter @oda/etl... run build --incremental false",
     "queue:etl": "node dist/queue/etlCli.js",
     "test:queue": "pnpm run build && node --test tests/*.test.cjs",

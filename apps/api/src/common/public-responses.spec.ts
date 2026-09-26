@@ -10,7 +10,7 @@ const pesquisadorBase = {
 };
 const grupoBase = {
   id: 'grupo-1', dgpId: '456', nome: 'Grupo', anoFormacao: 2020, areaPredominante: 'Computacao',
-  repercussao: null, situacao: 'ATIVO' as const, email: null, telefone: null, website: null,
+  repercussao: null, situacao: 'CERTIFICADO' as const, email: null, telefone: null, website: null,
   logradouro: null, numero: null, complemento: null, bairro: null, cidade: null, uf: 'BA', cep: null,
   latitude: 0, longitude: 0, areaConhecimentoId: 'area-1', ...audit,
 };
