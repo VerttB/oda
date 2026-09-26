@@ -3,6 +3,7 @@ import * as path from 'path';
 import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PipelineEtapa, TipoPesquisador } from '@oda/database';
 import { OPEN_ALEX_URL, DOI_URL } from './commom/config';
 import { stripHtml } from './commom/normalize';
+import { getOrCreateAreaConhecimentoHierarchy } from './commom/database';
 import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
 import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
 
@@ -392,6 +393,19 @@ export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlPro
                     imageUrl: `/static/${lattesId}.webp`
                 }
             });
+
+            const areasAtuacao: string[] = Array.isArray(data.areasAtuacao)
+                ? [...new Set<string>(data.areasAtuacao.filter((area: unknown): area is string => typeof area === 'string').map((area: string) => area.trim()).filter((area: string) => area.length > 0))]
+                : [];
+            for (const areaPath of areasAtuacao) {
+                const area = await getOrCreateAreaConhecimentoHierarchy(tx, areaPath);
+                if (!area) continue;
+                await tx.pesquisadoresAreaConhecimento.upsert({
+                    where: { pesquisadorId_areaId: { pesquisadorId: pesquisador.id, areaId: area.id } },
+                    update: {},
+                    create: { pesquisadorId: pesquisador.id, areaId: area.id },
+                });
+            }
 
             return pesquisador.id;
         }, { maxWait: 15000, timeout: 30000 });

@@ -159,6 +159,7 @@ function parseCurriculum(html: string, target: LattesTarget) {
             nome: target.nome,
             lattesId: parsedId,
             ...basicInfo,
+            areasAtuacao: parser.extractAreasAtuacao($),
             ...parser.extractProjectDetails($),
             ...parser.extractEventDetails($),
             ...parser.extractFormationDetails($),

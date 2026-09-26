@@ -5,6 +5,27 @@ import { Element } from 'crawlee';
 import { extractLattesId } from '../common/lattesIdentity';
 
 export class LattesParser {
+  extractAreasAtuacao($: cheerio.CheerioAPI): string[] {
+    const anchor = $('a[name="AreasAtuacao"]').first();
+    if (!anchor.length) return [];
+    const section = anchor.closest('.title-wrapper').find('.layout-cell-12.data-cell').first();
+    if (!section.length) return [];
+    const areas = new Set<string>();
+    section.find('.layout-cell-9').each((_, element) => {
+      const text = cleanText($(element).find('.layout-cell-pad-5').first().text() || $(element).text());
+      const labels = [...text.matchAll(/(Grande\s+área|Área|Subárea|Especialidade)\s*:/giu)];
+      const hierarchy: string[] = [];
+      labels.forEach((match, index) => {
+        const start = (match.index ?? 0) + match[0].length;
+        const end = labels[index + 1]?.index ?? text.length;
+        const value = text.slice(start, end).replace(/\/\s*$/, '').replace(/\.\s*$/, '').trim();
+        if (value) hierarchy.push(value);
+      });
+      if (hierarchy.length) areas.add(hierarchy.join(' > '));
+    });
+    return [...areas];
+  }
+
   /**
    * Extrai informações básicas do currículo
    */
