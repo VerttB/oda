@@ -95,7 +95,7 @@ export function createDiscoveryQueue() {
 
 export async function enqueueDiscoveryKey(data: DiscoverDgpGroupsJob, queue: ReturnType<typeof createDiscoveryQueue>) {
   validateDiscoverDgpGroupsJob(data);
-  const id = discoveryJobId(data.chave);
+  const id = discoveryJobId(data.chave, data.uf);
   await queue.add(JOB_NAMES.DISCOVER_DGP_GROUPS, data, { jobId: id });
   const stored = await queue.getJob(id);
   if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);

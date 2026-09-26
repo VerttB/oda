@@ -29,7 +29,10 @@ export async function runDiscoveryWorker(queue: ReturnType<typeof createDiscover
         }
     };
     const interval = setInterval(sync, DISCOVERY_QUEUE_SETTINGS.reconcileIntervalMs);
-    worker.on('completed', job => { console.log('[Discovery Worker] Concluido.', { jobId: job.id, chave: job.data.chave }); sync(); });
+    worker.on('completed', job => {
+        console.log('[Discovery Worker] Concluido.', { jobId: job.id, chave: job.data.chave, uf: job.data.uf ?? 'BA' });
+        sync();
+    });
     worker.on('failed', (job, error) => { console.error('[Discovery Worker] Tentativa falhou.', { jobId: job?.id, attemptsMade: job?.attemptsMade, erro: error.message }); sync(); });
     worker.on('stalled', jobId => console.warn('[Discovery Worker] Lock expirou; BullMQ verificara a retomada.', { jobId }));
     worker.on('progress', (job, progress) => console.log('[Discovery Worker] Progresso.', { jobId: job.id, progress }));

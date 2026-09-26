@@ -24,7 +24,7 @@ export async function reconcileDiscoveryQueue(queue: Queue, repository: Discover
         }
         for (const data of batch.jobs) {
             if (await repository.result(data)) continue;
-            const job = await queue.getJob(discoveryJobId(data.chave));
+            const job = await queue.getJob(discoveryJobId(data.chave, data.uf));
             if (!job) {
                 await enqueueDiscoveryKey(data, queue);
                 continue;

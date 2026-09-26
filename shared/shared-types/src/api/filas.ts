@@ -119,12 +119,21 @@ export const LattesJobsAtivosResponseSchema = z.object({
   jobs: z.array(LattesJobResponseSchema),
 });
 
+export const UfBrasilSchema = z.enum([
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG',
+  'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
+]);
+
+export const RegiaoBrasilSchema = z.enum(['NORTE', 'NORDESTE', 'CENTRO_OESTE', 'SUDESTE', 'SUL']);
+
 export const EnfileirarDiscoveryRequestSchema = z.object({
   chave: z.string().trim().min(1).max(100),
+  uf: UfBrasilSchema.default('BA'),
 });
 
 export const EnfileirarDiscoveryResponseSchema = EnfileirarDgpResponseSchema.extend({
   fila: z.literal('discovery'),
+  uf: UfBrasilSchema,
 });
 
 export const DiscoveryJobEtapaSchema = z.enum([
@@ -149,6 +158,8 @@ export const DiscoveryJobResponseSchema = z.object({
   fila: z.literal('discovery'),
   jobId: z.string(),
   chave: z.string(),
+  uf: UfBrasilSchema,
+  regiao: RegiaoBrasilSchema,
   pipelineLogId: z.string().uuid(),
   estado: z.string(),
   worker: z.string().nullable(),

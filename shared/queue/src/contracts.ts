@@ -32,6 +32,66 @@ export function normalizeDataScope(scope?: DataScope): DataScope {
   return scope ?? 'default';
 }
 
+export const BRAZIL_REGIONS = ['NORTE', 'NORDESTE', 'CENTRO_OESTE', 'SUDESTE', 'SUL'] as const;
+export type BrazilRegion = typeof BRAZIL_REGIONS[number];
+
+export const BRAZIL_STATES = [
+  { uf: 'AC', nome: 'Acre', regiao: 'NORTE' },
+  { uf: 'AL', nome: 'Alagoas', regiao: 'NORDESTE' },
+  { uf: 'AP', nome: 'Amapá', regiao: 'NORTE' },
+  { uf: 'AM', nome: 'Amazonas', regiao: 'NORTE' },
+  { uf: 'BA', nome: 'Bahia', regiao: 'NORDESTE' },
+  { uf: 'CE', nome: 'Ceará', regiao: 'NORDESTE' },
+  { uf: 'DF', nome: 'Distrito Federal', regiao: 'CENTRO_OESTE' },
+  { uf: 'ES', nome: 'Espírito Santo', regiao: 'SUDESTE' },
+  { uf: 'GO', nome: 'Goiás', regiao: 'CENTRO_OESTE' },
+  { uf: 'MA', nome: 'Maranhão', regiao: 'NORDESTE' },
+  { uf: 'MT', nome: 'Mato Grosso', regiao: 'CENTRO_OESTE' },
+  { uf: 'MS', nome: 'Mato Grosso do Sul', regiao: 'CENTRO_OESTE' },
+  { uf: 'MG', nome: 'Minas Gerais', regiao: 'SUDESTE' },
+  { uf: 'PA', nome: 'Pará', regiao: 'NORTE' },
+  { uf: 'PB', nome: 'Paraíba', regiao: 'NORDESTE' },
+  { uf: 'PR', nome: 'Paraná', regiao: 'SUL' },
+  { uf: 'PE', nome: 'Pernambuco', regiao: 'NORDESTE' },
+  { uf: 'PI', nome: 'Piauí', regiao: 'NORDESTE' },
+  { uf: 'RJ', nome: 'Rio de Janeiro', regiao: 'SUDESTE' },
+  { uf: 'RN', nome: 'Rio Grande do Norte', regiao: 'NORDESTE' },
+  { uf: 'RS', nome: 'Rio Grande do Sul', regiao: 'SUL' },
+  { uf: 'RO', nome: 'Rondônia', regiao: 'NORTE' },
+  { uf: 'RR', nome: 'Roraima', regiao: 'NORTE' },
+  { uf: 'SC', nome: 'Santa Catarina', regiao: 'SUL' },
+  { uf: 'SP', nome: 'São Paulo', regiao: 'SUDESTE' },
+  { uf: 'SE', nome: 'Sergipe', regiao: 'NORDESTE' },
+  { uf: 'TO', nome: 'Tocantins', regiao: 'NORTE' },
+] as const satisfies readonly { uf: string; nome: string; regiao: BrazilRegion }[];
+
+export type BrazilStateCode = typeof BRAZIL_STATES[number]['uf'];
+export type BrazilState = typeof BRAZIL_STATES[number];
+
+export function parseBrazilState(value: string | undefined): BrazilStateCode {
+  const uf = value?.trim().toUpperCase();
+  if (!BRAZIL_STATES.some(state => state.uf === uf)) {
+    throw new Error(`UF invalida: ${value || '(vazia)'}.`);
+  }
+  return uf as BrazilStateCode;
+}
+
+export function parseBrazilRegion(value: string | undefined): BrazilRegion {
+  const region = value?.trim().toUpperCase().replace(/[\s-]+/g, '_');
+  if (!BRAZIL_REGIONS.includes(region as BrazilRegion)) {
+    throw new Error(`Regiao invalida: ${value || '(vazia)'}.`);
+  }
+  return region as BrazilRegion;
+}
+
+export function getBrazilState(uf: BrazilStateCode = 'BA'): BrazilState {
+  return BRAZIL_STATES.find(state => state.uf === uf)!;
+}
+
+export function statesByRegion(region: BrazilRegion): BrazilStateCode[] {
+  return BRAZIL_STATES.filter(state => state.regiao === region).map(state => state.uf);
+}
+
 export function parseDataScope(value: string | undefined): DataScope {
   if (!value || !DATA_SCOPES.includes(value as DataScope)) {
     throw new Error('Use --scope default ou --scope simcc.');
@@ -101,10 +161,14 @@ export function validateScrapeLattesResearcherJob(data: unknown): asserts data i
 
 export type DiscoverDgpGroupsJob = QueueJobManifest & {
   chave: string;
+  /** Ausente apenas em jobs legados, que representam a Bahia. */
+  uf?: BrazilStateCode;
 };
 
 export type DiscoverDgpGroupsResult = {
   chave: string;
+  uf: BrazilStateCode;
+  regiao: BrazilRegion;
   paginasProcessadas: number;
   itensDescobertos: number;
   itensPulados: number;
@@ -222,6 +286,7 @@ export function validateDiscoverDgpGroupsJob(data: unknown): asserts data is Dis
   if (!value || typeof value.chave !== 'string' || !value.chave.trim() || value.chave.trim().length > 100) {
     throw new Error('A chave de descoberta deve conter entre 1 e 100 caracteres.');
   }
+  if (value.uf !== undefined) parseBrazilState(value.uf);
   validateManifest(value);
 }
 
@@ -270,8 +335,9 @@ export const ETL_DISPATCH_QUEUE_SETTINGS = {
 
 export function dgpJobId(dgpId: string) { return `dgp-${dgpId}`; }
 export function lattesJobId(lattesId: string) { return `lattes-${lattesId}`; }
-export function discoveryJobId(chave: string) {
-  return `discovery-${Buffer.from(chave.trim().toLocaleLowerCase('pt-BR')).toString('base64url')}`;
+export function discoveryJobId(chave: string, uf?: BrazilStateCode) {
+  const encodedKey = Buffer.from(chave.trim().toLocaleLowerCase('pt-BR')).toString('base64url');
+  return uf ? `discovery-${uf}-${encodedKey}` : `discovery-${encodedKey}`;
 }
 export function etlGroupJobId(dgpId: string) { return `etl-grupo-${dgpId}`; }
 export function etlResearcherJobId(lattesId: string) { return `etl-pesquisador-${lattesId}`; }

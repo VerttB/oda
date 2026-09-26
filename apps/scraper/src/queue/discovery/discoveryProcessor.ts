@@ -34,6 +34,7 @@ export default async function processDiscoveryJob(job: SandboxedJob<DiscoverDgpG
             pipelineLogId: job.data.pipelineLogId,
             executionId: `bull-${randomUUID()}`,
             reportProgress,
+            uf: job.data.uf ?? 'BA',
         });
         await repository.settle(job.data, result);
         return result;

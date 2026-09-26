@@ -5,7 +5,7 @@ import {
   createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue,
   dgpJobId, discoveryJobId, DiscoverDgpGroupsJob,
   enqueueDgpGroup, enqueueDiscoveryKey, enqueueEtlDispatch, enqueueLattesResearcher,
-  lattesJobId, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeLattesResearcherJob,
+  getBrazilState, lattesJobId, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeLattesResearcherJob,
   validateDiscoverDgpGroupsJob, validateEtlDispatchJob, validateEtlGroupJob, validateEtlResearcherJob,
   validateScrapeDgpGroupJob, validateScrapeLattesResearcherJob,
 } from '@oda/queue';
@@ -193,7 +193,9 @@ export class FilasService implements OnModuleDestroy {
   private async mapDiscoveryJob(job: DiscoveryQueueJob): Promise<DiscoveryJobResponse> {
     const state = await job.getState();
     validateDiscoverDgpGroupsJob(job.data);
-    return { fila: 'discovery', jobId: job.id!, chave: job.data.chave, pipelineLogId: job.data.pipelineLogId,
+    const territory = getBrazilState(job.data.uf ?? 'BA');
+    return { fila: 'discovery', jobId: job.id!, chave: job.data.chave, uf: territory.uf, regiao: territory.regiao,
+      pipelineLogId: job.data.pipelineLogId,
       estado: state, ...this.jobRuntime(job), progresso: this.normalizeDiscoveryProgress(job, state) };
   }
 
@@ -460,15 +462,26 @@ export class FilasService implements OnModuleDestroy {
   }
 
   async enqueueDiscovery(input: EnfileirarDiscoveryRequest): Promise<EnfileirarDiscoveryResponse> {
-    const existing = await this.discoveryQueue.getJob(discoveryJobId(input.chave));
+    const uf = input.uf ?? 'BA';
+    let existing = await this.discoveryQueue.getJob(discoveryJobId(input.chave, uf));
+    if (!existing && uf === 'BA') existing = await this.discoveryQueue.getJob(discoveryJobId(input.chave));
     if (existing) {
       validateDiscoverDgpGroupsJob(existing.data);
       const state = await this.removeTerminalJob(existing);
-      if (state) return { fila: 'discovery', jobId: existing.id!, pipelineLogId: existing.data.pipelineLogId, estado: state, duplicado: true };
+      if (state) return {
+        fila: 'discovery', jobId: existing.id!, pipelineLogId: existing.data.pipelineLogId,
+        estado: state, duplicado: true, uf,
+      };
     }
     const pipelineLogId = randomUUID();
-    const data: DiscoverDgpGroupsJob = { version: 1, chave: input.chave.trim(), requestedAt: new Date().toISOString(), pipelineLogId, pipelineItemId: randomUUID() };
-    const initialMetadata = { queue: QUEUE_NAMES.DGP_DISCOVERY, jobs: [data], published: false, resultados: {}, itensFila: 1 };
+    const data: DiscoverDgpGroupsJob = {
+      version: 1, chave: input.chave.trim(), uf, requestedAt: new Date().toISOString(),
+      pipelineLogId, pipelineItemId: randomUUID(),
+    };
+    const initialMetadata = {
+      queue: QUEUE_NAMES.DGP_DISCOVERY, jobs: [data], published: false, resultados: {},
+      itensFila: 1, abrangencia: `ESTADOS_${uf}`, ufs: [uf], chaves: [data.chave],
+    };
     const pipeline = await this.prisma.pipelineLog.create({ data: {
       id: pipelineLogId, modulo: ModuloSistema.SCRAPER, modoExecucao: ModoExecucao.APENAS_DGP,
       metadata: initialMetadata as Prisma.InputJsonValue,
@@ -477,7 +490,10 @@ export class FilasService implements OnModuleDestroy {
     try { stored = await enqueueDiscoveryKey(data, this.discoveryQueue); } catch (error) { throw this.publishError(error); }
     const accepted = stored.data.pipelineItemId === data.pipelineItemId;
     await this.confirmPipeline(pipeline, initialMetadata, accepted);
-    return { fila: 'discovery', jobId: stored.id!, pipelineLogId: stored.data.pipelineLogId, estado: await stored.getState(), duplicado: !accepted };
+    return {
+      fila: 'discovery', jobId: stored.id!, pipelineLogId: stored.data.pipelineLogId,
+      estado: await stored.getState(), duplicado: !accepted, uf,
+    };
   }
 
   private publishError(error: unknown) {

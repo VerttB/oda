@@ -135,8 +135,8 @@ export class FilasController {
   }
 
   @Post('discovery/jobs')
-  @ApiOperation({ summary: 'Publica uma chave na fila de descoberta DGP' })
-  @ApiBadRequestResponse({ description: 'A chave deve conter entre 1 e 100 caracteres.' })
+  @ApiOperation({ summary: 'Publica uma chave e UF na fila de descoberta DGP' })
+  @ApiBadRequestResponse({ description: 'A chave ou a UF informada é inválida.' })
   @ApiConflictResponse({ description: 'Um job finalizado ainda aguarda reconciliação.' })
   @ApiServiceUnavailableResponse({ description: 'O manifesto foi salvo, mas o Redis não aceitou a publicação.' })
   @ZodResponse({ status: 201, type: EnfileirarDiscoveryResponseDto })

@@ -4,7 +4,7 @@ import {
     StatusItemLog, StatusSessao, TipoEntidadeLog, TipoErroColeta,
 } from '@oda/database';
 import {
-    DiscoverDgpGroupsJob, DiscoverDgpGroupsResult, QUEUE_NAMES,
+    BrazilStateCode, DiscoverDgpGroupsJob, DiscoverDgpGroupsResult, QUEUE_NAMES,
     validateDiscoverDgpGroupsJob,
 } from '@oda/queue';
 
@@ -29,12 +29,19 @@ function metadata(value: Prisma.JsonValue): BatchMetadata {
 export class DiscoveryQueueRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
-    async createBatch(keys: string[]): Promise<DiscoveryBatch> {
+    async createBatch(
+        targets: { chave: string; uf: BrazilStateCode }[],
+        abrangencia: string,
+    ): Promise<DiscoveryBatch> {
         const id = randomUUID();
-        const uniqueKeys = [...new Map(keys.map(key => [key.trim().toLocaleLowerCase('pt-BR'), key.trim()])).values()];
-        const jobs = uniqueKeys.map(chave => ({
+        const uniqueTargets = [...new Map(targets.map(target => [
+            `${target.uf}:${target.chave.trim().toLocaleLowerCase('pt-BR')}`,
+            { chave: target.chave.trim(), uf: target.uf },
+        ])).values()];
+        const jobs = uniqueTargets.map(({ chave, uf }) => ({
             version: 1 as const,
             chave,
+            uf,
             requestedAt: new Date().toISOString(),
             pipelineLogId: id,
             pipelineItemId: randomUUID(),
@@ -51,6 +58,9 @@ export class DiscoveryQueueRepository {
                     published: false,
                     resultados: {},
                     itensFila: jobs.length,
+                    abrangencia,
+                    ufs: [...new Set(jobs.map(job => job.uf))],
+                    chaves: [...new Set(jobs.map(job => job.chave))],
                 },
             },
         });
@@ -137,7 +147,8 @@ export class DiscoveryQueueRepository {
 
     async begin(data: DiscoverDgpGroupsJob): Promise<DiscoverDgpGroupsResult | null> {
         return this.locked(data.pipelineLogId, async (tx, meta) => {
-            if (!meta.jobs.some(job => job.pipelineItemId === data.pipelineItemId && job.chave === data.chave)) {
+            if (!meta.jobs.some(job => job.pipelineItemId === data.pipelineItemId
+                && job.chave === data.chave && (job.uf ?? 'BA') === (data.uf ?? 'BA'))) {
                 throw new Error('Job nao consta no lote de descoberta informado.');
             }
             const item = await tx.pipelineLogItem.findUnique({ where: { id: data.pipelineItemId } });
@@ -154,13 +165,13 @@ export class DiscoveryQueueRepository {
                 data: {
                     id: data.pipelineItemId,
                     pipelineLogId: data.pipelineLogId,
-                    entidadeId: data.chave,
+                    entidadeId: `${data.uf ?? 'BA'}:${data.chave}`,
                     tipoEntidade: TipoEntidadeLog.GERAL,
                     etapa: PipelineEtapa.DGP_DISCOVERY,
                     status: result ? StatusItemLog.SUCESSO : StatusItemLog.ERRO,
                     tipoErro: result ? null : TipoErroColeta.DESCONHECIDO,
                     mensagemErro: result ? null : error || 'Job interrompido.',
-                    detalhesErro: result ? null : JSON.stringify({ attempts, chave: data.chave }),
+                    detalhesErro: result ? null : JSON.stringify({ attempts, chave: data.chave, uf: data.uf ?? 'BA' }),
                 },
             });
             if (result) meta.resultados[data.pipelineItemId] = result;
