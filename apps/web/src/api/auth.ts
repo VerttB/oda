@@ -1,14 +1,6 @@
+import { API_BASE_URL } from '#/api/config'
 import type { LoginRequest, LoginResponse } from '@oda/shared-types'
 
-const REMOTE_API_BASE_URL = 'https://oda.vertb.com.br'
-const DEFAULT_API_BASE_URL = import.meta.env.SSR
-  ? REMOTE_API_BASE_URL
-  : import.meta.env.DEV
-    ? '/api'
-    : REMOTE_API_BASE_URL
-const API_BASE_URL = (
-  import.meta.env.VITE_API_URL ?? DEFAULT_API_BASE_URL
-).replace(/\/$/, '')
 const AUTH_TOKEN_KEY = 'oda.admin.access-token'
 
 export async function login(credentials: LoginRequest) {

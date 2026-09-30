@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '#/api/config'
+import type { SortOrder } from '#/api/sorting'
 import type {
   Author,
   DirectoryGroupItem,
@@ -12,7 +14,15 @@ import type {
   PaginatedGruposPesquisaResponse,
 } from '@oda/shared-types'
 
-export const researchGroupsQueryKey = ['research-groups']
+export type ResearchGroupSortField = 'nome' | 'anoFormacao' | 'situacao'
+
+export type ResearchGroupsFilters = {
+  ordenarPor?: ResearchGroupSortField
+  ordem?: SortOrder
+}
+
+export const researchGroupsQueryKey = (filters: ResearchGroupsFilters = {}) =>
+  ['research-groups', filters] as const
 
 export const researchGroupsMetricsQueryKey = ['research-groups-metrics']
 
@@ -25,18 +35,6 @@ export const researchGroupDetailQueryKey = (grupoId: string) => [
   'research-group',
   grupoId,
 ]
-
-const REMOTE_API_BASE_URL = 'https://oda.vertb.com.br'
-
-const DEFAULT_API_BASE_URL = import.meta.env.SSR
-  ? REMOTE_API_BASE_URL
-  : import.meta.env.DEV
-    ? '/api'
-    : REMOTE_API_BASE_URL
-
-const API_BASE_URL = (
-  import.meta.env.VITE_API_URL ?? DEFAULT_API_BASE_URL
-).replace(/\/$/, '')
 
 const DEFAULT_AVATAR = '/headshot-on-white.jpg'
 
@@ -345,13 +343,36 @@ function mapGroupDetail(
 
 const RESEARCH_GROUPS_PAGE_SIZE = 100
 
+function buildResearchGroupsSearchParams(
+  page: number,
+  size: number,
+  filters: ResearchGroupsFilters,
+) {
+  const params = new URLSearchParams({
+    page: String(page),
+    size: String(size),
+  })
+
+  if (filters.ordenarPor) {
+    params.set('ordenarPor', filters.ordenarPor)
+  }
+
+  if (filters.ordem) {
+    params.set('ordem', filters.ordem)
+  }
+
+  return params
+}
+
 async function fetchResearchGroupsPage(
   page: number,
   size = RESEARCH_GROUPS_PAGE_SIZE,
+  filters: ResearchGroupsFilters = {},
 ) {
+  const params = buildResearchGroupsSearchParams(page, size, filters)
   const response = await fetchJson<
     GruposPesquisaResponse[] | PaginatedGruposPesquisaResponse
-  >(`/grupos-pesquisa?page=${page}&size=${size}`)
+  >(`/grupos-pesquisa?${params.toString()}`)
 
   return getGroupsPageFromResponse(response)
 }
@@ -364,22 +385,28 @@ export async function getFeaturedResearchGroups(size = 6) {
     meta: page.meta,
   }
 }
-export async function getResearchGroups() {
-  const firstPage = await fetchResearchGroupsPage(1)
+
+export async function getResearchGroups(filters: ResearchGroupsFilters = {}) {
+  const firstPage = await fetchResearchGroupsPage(
+    1,
+    RESEARCH_GROUPS_PAGE_SIZE,
+    filters,
+  )
   const remainingPages = Array.from(
     { length: Math.max(0, firstPage.meta.totalPages - 1) },
     (_, index) => index + 2,
   )
 
   const remainingGroups = await Promise.all(
-    remainingPages.map((page) => fetchResearchGroupsPage(page)),
+    remainingPages.map((page) =>
+      fetchResearchGroupsPage(page, RESEARCH_GROUPS_PAGE_SIZE, filters),
+    ),
   )
 
   return [firstPage, ...remainingGroups]
     .flatMap((page) => page.data)
     .map(mapGroupListItem)
 }
-
 export async function getResearchGroupsMetrics(): Promise<ResearchGroupsDirectoryMetrics> {
   const metrics = await fetchJson<MetricasGruposPesquisaResponse>(
     '/metricas/grupos-pesquisa',

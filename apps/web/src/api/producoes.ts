@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '#/api/config'
+import type { SortOrder } from '#/api/sorting'
 import type {
   AcademicAuthor,
   AcademicProductionDetailData,
@@ -9,21 +11,14 @@ import type {
   ProducaoResponse,
 } from '@oda/shared-types'
 
-const REMOTE_API_BASE_URL = 'https://oda.vertb.com.br'
-
-const DEFAULT_API_BASE_URL = import.meta.env.SSR
-  ? REMOTE_API_BASE_URL
-  : import.meta.env.DEV
-    ? '/api'
-    : REMOTE_API_BASE_URL
-
-const API_BASE_URL = (
-  import.meta.env.VITE_API_URL ?? DEFAULT_API_BASE_URL
-).replace(/\/$/, '')
-
 export type ProductionTypeFilter = NonNullable<FindAllProducoesQuery['tipo']>
 
-export type ProductionsFilters = Partial<FindAllProducoesQuery>
+export type ProductionSortField = 'titulo' | 'ano' | 'tipo' | 'qualis'
+
+export type ProductionsFilters = Partial<FindAllProducoesQuery> & {
+  ordenarPor?: ProductionSortField
+  ordem?: SortOrder
+}
 
 export const productionsQueryKey = (filters: ProductionsFilters = {}) => [
   'productions',
@@ -272,6 +267,14 @@ function buildProductionsSearchParams(filters: ProductionsFilters) {
 
   if (filters.tipo) {
     params.set('tipo', filters.tipo)
+  }
+
+  if (filters.ordenarPor) {
+    params.set('ordenarPor', filters.ordenarPor)
+  }
+
+  if (filters.ordem) {
+    params.set('ordem', filters.ordem)
   }
 
   return params
