@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { createPaginatedResponseSchema } from './pagination';
 
 const uniqueUuidArray = z.array(z.string().uuid()).refine(
   (items) => new Set(items).size === items.length,
@@ -34,3 +35,27 @@ export type UpdateLinhaPesquisaRequest = z.infer<
 export type FindAllLinhaPesquisaQuery = z.infer<
   typeof FindAllLinhaPesquisaQuerySchema
 >;
+
+// ==========================================
+// RESPONSE SCHEMAS
+// ==========================================
+
+const RawVinculoResponseSchema = z.record(z.string(), z.unknown());
+
+export const LinhaPesquisaResponseSchema = z.object({
+  id: z.string(),
+  dgpId: z.string().nullable(),
+  titulo: z.string(),
+  objetivo: z.string().nullable(),
+  grupoId: z.string(),
+  membros: z.array(RawVinculoResponseSchema).optional(),
+  palavrasChave: z.array(RawVinculoResponseSchema).optional(),
+  setoresAplicacao: z.array(RawVinculoResponseSchema).optional(),
+}).passthrough();
+
+export const PaginatedLinhaPesquisaResponseSchema =
+  createPaginatedResponseSchema(LinhaPesquisaResponseSchema);
+
+// Export response types
+export type LinhaPesquisaResponse = z.infer<typeof LinhaPesquisaResponseSchema>;
+export type PaginatedLinhaPesquisaResponse = z.infer<typeof PaginatedLinhaPesquisaResponseSchema>;

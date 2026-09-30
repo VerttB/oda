@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { createPaginatedResponseSchema } from './pagination';
 
 export const TipoProducaoSchema = z.enum(['ARTIGO', 'LIVROCAPITULO', 'OUTRA']);
 export const QualisSchema = z.enum(['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4', 'C']);
@@ -45,3 +46,77 @@ export type FindAllProducoesQuery = z.infer<typeof FindAllProducoesQuerySchema>;
 export type FindProducoesByPesquisadorQuery = z.infer<
   typeof FindProducoesByPesquisadorQuerySchema
 >;
+
+// ==========================================
+// RESPONSE SCHEMAS
+// ==========================================
+
+const RawVinculoResponseSchema = z.record(z.string(), z.unknown());
+
+export const ProducaoResponseSchema = z.object({
+  id: z.string(),
+  titulo: z.string(),
+  ano: z.number().nullable(),
+  tipo: TipoProducaoSchema,
+  doi: z.string().nullable(),
+  url: z.string().nullable(),
+  veiculo: z.string().nullable(),
+  issn: z.string().nullable(),
+  qualis: QualisSchema.nullable(),
+  resumo: z.string().nullable(),
+  autores: z.array(RawVinculoResponseSchema).optional(),
+  palavrasChave: z.array(RawVinculoResponseSchema).optional(),
+}).passthrough();
+
+export const ProducaoPesquisadorResponseSchema = z.object({
+  id: z.string(), titulo: z.string(), ano: z.number().nullable(),
+  tipo: TipoProducaoSchema,
+  doi: z.string().nullable(), url: z.string().nullable(), veiculo: z.string().nullable(),
+  issn: z.string().nullable(), qualis: QualisSchema.nullable(),
+  resumo: z.string().nullable(), ordemAutoria: z.number().nullable(),
+});
+
+export const PaginatedProducaoResponseSchema =
+  createPaginatedResponseSchema(ProducaoResponseSchema);
+
+const TotalPorAnoResponseSchema = z.object({
+  ano: z.number().nullable(),
+  total: z.number().int().min(0),
+});
+
+const TotalPorTipoProducaoResponseSchema = z.object({
+  tipo: z.string(),
+  total: z.number().int().min(0),
+});
+
+const TotalPorQualisResponseSchema = z.object({
+  qualis: z.string().nullable(),
+  total: z.number().int().min(0),
+});
+
+export const MetricasProducoesResponseSchema = z.object({
+  total: z.number().int().min(0),
+  valoresNulos: z.object({
+    doi: z.number().int().min(0),
+    resumo: z.number().int().min(0),
+    issn: z.number().int().min(0),
+    qualis: z.number().int().min(0),
+    url: z.number().int().min(0),
+  }),
+  cobertura: z.object({
+    doiPercentual: z.number(),
+    resumoPercentual: z.number(),
+    issnPercentual: z.number(),
+    qualisPercentual: z.number(),
+    urlPercentual: z.number(),
+  }),
+  totalPorQualis: z.array(TotalPorQualisResponseSchema),
+  totalPorTipo: z.array(TotalPorTipoProducaoResponseSchema),
+  totalPorAno: z.array(TotalPorAnoResponseSchema),
+});
+
+// Export response types
+export type ProducaoResponse = z.infer<typeof ProducaoResponseSchema>;
+export type ProducaoPesquisadorResponse = z.infer<typeof ProducaoPesquisadorResponseSchema>;
+export type PaginatedProducaoResponse = z.infer<typeof PaginatedProducaoResponseSchema>;
+export type MetricasProducoesResponse = z.infer<typeof MetricasProducoesResponseSchema>;

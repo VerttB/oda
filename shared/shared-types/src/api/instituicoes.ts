@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { createPaginatedResponseSchema } from './pagination';
+import { GrupoPesquisaResumoResponseSchema, TipoRelacaoGrupoInstituicaoSchema, GrupoPesquisaInstituicaoResponseSchema, EstadoResponseSchema } from './grupos-pesquisa';
 
 export const CreateInstituicaoRequestSchema = z.object({
   nome: z.string().min(2).max(255),
@@ -28,3 +30,56 @@ export type UpdateInstituicaoRequest = z.infer<
 export type FindAllInstituicaoQuery = z.infer<
   typeof FindAllInstituicaoQuerySchema
 >;
+
+// ==========================================
+// RESPONSE SCHEMAS
+// ==========================================
+
+export const InstituicaoResponseSchema = z.object({
+  id: z.string(), nome: z.string(), sigla: z.string(),
+  imageUrl: z.string().nullable(),
+  estado: EstadoResponseSchema.nullable(),
+  gruposPesquisa: z.array(GrupoPesquisaResumoResponseSchema.pick({
+    id: true, dgpId: true, nome: true, situacao: true, uf: true, cidade: true,
+  }).extend({
+    tipoRelacao: TipoRelacaoGrupoInstituicaoSchema,
+    unidade: GrupoPesquisaInstituicaoResponseSchema.shape.unidade,
+  })),
+  totalGruposPesquisa: z.number().int().nonnegative(),
+});
+
+export const InstituicaoResumoResponseSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  sigla: z.string(),
+  imageUrl: z.string().nullable(),
+  estadoId: z.string().nullable(),
+});
+
+export const PaginatedInstituicaoResponseSchema =
+  createPaginatedResponseSchema(InstituicaoResponseSchema);
+
+export const MetricasInstituicoesResponseSchema = z.object({
+  total: z.number().int().min(0),
+  semUf: z.number().int().min(0),
+  porUf: z.array(z.object({
+    uf: z.string(),
+    estado: z.string().nullable(),
+    regiao: z.string().nullable(),
+    total: z.number().int().min(0),
+  })),
+  vinculosComGrupos: z.object({
+    sede: z.number().int().min(0),
+    parceira: z.number().int().min(0),
+  }),
+  instituicoesComGrupos: z.object({
+    sede: z.number().int().min(0),
+    parceira: z.number().int().min(0),
+  }),
+});
+
+// Export response types
+export type InstituicaoResponse = z.infer<typeof InstituicaoResponseSchema>;
+export type InstituicaoResumoResponse = z.infer<typeof InstituicaoResumoResponseSchema>;
+export type PaginatedInstituicaoResponse = z.infer<typeof PaginatedInstituicaoResponseSchema>;
+export type MetricasInstituicoesResponse = z.infer<typeof MetricasInstituicoesResponseSchema>;
