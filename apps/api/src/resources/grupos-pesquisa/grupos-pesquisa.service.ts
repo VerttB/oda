@@ -3,13 +3,23 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateGruposPesquisaRequest,
+  SIMCC_INSTITUTIONS,
   UpdateGruposPesquisaRequest,
 } from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
-const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v2';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
+
+const SIMCC_INSTITUICOES: Prisma.InstituicaoWhereInput = {
+  OR: [
+    { sigla: { in: SIMCC_INSTITUTIONS.filter(item => item.sigla !== 'FIOCRUZ').map(item => item.sigla) } },
+    { sigla: { startsWith: 'IFBA -', mode: 'insensitive' } },
+    { sigla: 'FIOCRUZ', nome: { contains: 'Moniz', mode: 'insensitive' } },
+  ],
+};
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -45,7 +55,7 @@ export class GruposPesquisaService {
       const created = await tx.grupoPesquisa.create({
         data: {
           ...grupoData,
-          situacao: situacao as Situacao | undefined,
+          situacao: situacao as Situacao,
         },
       });
       await this.syncGrupoInstituicoes(
@@ -65,29 +75,34 @@ export class GruposPesquisaService {
   }
 
   async findAll(query?: FindAllGruposPesquisaDto) {
+    return this.list(query);
+  }
+
+  async findSimcc(query?: FindAllGruposPesquisaDto) {
+    return this.list(query, true);
+  }
+
+  private async list(query?: FindAllGruposPesquisaDto, simcc = false) {
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'nome']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.GrupoPesquisaOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
       if (query.situacao) {
         where.situacao = query.situacao;
       }
       if (query.nome) {
-        where.nome = { contains: query.nome, mode: 'insensitive' };
+        where.id = {
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'grupoPesquisa', query.nome),
+        };
       }
       if (query.anoFormacao) {
         where.anoFormacao = query.anoFormacao;
-      }
-      if (query.instituicaoId) {
-        andConditions.push({
-          instituicoes: {
-            some: {
-              instituicaoId: query.instituicaoId,
-              tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
-            },
-          },
-        });
       }
       if (query.areaConhecimentoId) {
         where.areaConhecimentoId = query.areaConhecimentoId;
@@ -104,16 +119,25 @@ export class GruposPesquisaService {
         where.uf = { equals: query.uf, mode: 'insensitive' };
       }
     }
+    if (query?.instituicaoId || simcc) {
+      const vinculo: Prisma.GrupoPesquisaInstituicaoWhereInput = {
+        tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
+        ...(query?.instituicaoId ? { instituicaoId: query.instituicaoId } : {}),
+        ...(simcc ? { instituicao: SIMCC_INSTITUICOES } : {}),
+      };
+      andConditions.push({ instituicoes: { some: vinculo } });
+    }
     if (andConditions.length > 0) {
       where.AND = andConditions;
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
@@ -137,6 +161,7 @@ export class GruposPesquisaService {
         this.prismaService.grupoPesquisa.findMany({
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           include: grupoPesquisaInclude,
           omit: { criadoEm: true, atualizadoEm: true },
         }),

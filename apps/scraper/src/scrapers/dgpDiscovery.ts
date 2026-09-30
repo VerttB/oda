@@ -1,46 +1,65 @@
 import { PlaywrightCrawler, log } from 'crawlee';
 import { db, prisma } from '../common/database';
+import { createCrawlerConfig, createCrawlerOptions, CRAWLER_STORAGE_DIRS, purgeCrawlerStorage } from '../common/config';
 import { randomSleep, sleep, cleanStr } from '../common/utils';
 import { PageGroupItemInfo, RequestType } from '../common/interfaces';
 import { Locator, Page } from 'playwright';
 import { ModuloSistema, ModoExecucao, PipelineEtapa, SharedPipelineLogger, StatusItemLog, StatusSessao, TipoEntidadeLog, TipoErroColeta } from '@oda/database';
+import { BrazilState, BrazilStateCode, getBrazilState } from '@oda/queue';
 const SEARCH_URL = 'http://dgp.cnpq.br/dgp/faces/consulta/consulta_parametrizada.jsf';
 const pipelineLogger = new SharedPipelineLogger(prisma);
+const REGION_LABELS = {
+    NORTE: 'Norte',
+    NORDESTE: 'Nordeste',
+    CENTRO_OESTE: 'Centro-Oeste',
+    SUDESTE: 'Sudeste',
+    SUL: 'Sul',
+} as const;
 
+export type DiscoveryProgressUpdate = {
+    etapa: 'INICIANDO' | 'PREPARANDO_BUSCA' | 'PROCESSANDO_PAGINAS' | 'NORMALIZANDO' | 'CONCLUIDO';
+    percentual: number | null;
+    paginasProcessadas: number;
+    itensDescobertos: number;
+    itensPulados: number;
+    itensComErro: number;
+};
+export type DiscoveryProgressReporter = (progress: DiscoveryProgressUpdate) => Promise<void>;
+export type DiscoveryCollectionResult = {
+    chave: string;
+    uf: BrazilStateCode;
+    regiao: BrazilState['regiao'];
+    paginasProcessadas: number;
+    itensDescobertos: number;
+    itensPulados: number;
+    itensComErro: number;
+    tamanhoCacheInicial: number;
+    tamanhoCacheFinal: number;
+};
+type DiscoveryRunOptions = {
+    pipelineLogId?: string;
+    executionId?: string;
+    reportProgress?: DiscoveryProgressReporter;
+    uf?: BrazilStateCode;
+};
 
-// Cache global de metadados em memória RAM para evitar navegações duplicadas (exclusão global)
-const processedKeys = new Set<string>();
-// Cache de páginas processadas para evitar processar a mesma página duas vezes pelas duas direções
-const processedPages = new Set<string>();
-// Páginas em progresso
-const processingPages = new Set<string>();
-// Progresso atual da página
-const requestPageProgress = new Map<string, number>();
-
-
-
-let isCacheLoaded = false;
 
 /** 
 * 
 * Carrega itens da fila de extração no banco em memória
 */
-async function loadCacheIfNeeded() {
-    if (isCacheLoaded) return;
+async function loadCache(processedKeys: Set<string>) {
     try {
-        // Roda sempre para corrigir erros na coluna `similares`
-        await db.normalizeQueueData();
-
         log.info("Carregando cache de itens já descobertos a partir do banco de dados...");
         const alreadyDiscovered = await db.getGroupQueueDiscovery();
         for (const item of alreadyDiscovered) {
             const key = `${cleanStr(item.nome)}|${cleanStr(item.area)}|${cleanStr(item.instituicao)}`;
             processedKeys.add(key);
         }
-        isCacheLoaded = true;
         log.info(`Cache inicializado com ${processedKeys.size} itens do banco.`);
     } catch (err: any) {
         log.error(`Erro ao carregar cache do banco: ${err.message}`);
+        throw err;
     }
 }
 
@@ -64,17 +83,30 @@ async function handleNotDisabled(page: Page, btn: Locator){
     }, firstItemBefore, { timeout: 40000 });
 }
 
-async function handleSessionRecovery(page: any, chave: string, pageNum: number, direction: string, message: string) {
+async function handleSessionRecovery(
+    page: any,
+    chave: string,
+    pageNum: number,
+    direction: string,
+    message: string,
+    territory: BrazilState,
+) {
     log.warning(`⚠️ [${direction.toUpperCase()}] ${message}. Recuperando sessão em 1 minuto...`);
     await sleep(60000);
-    await prepareSearchPage(page, chave, pageNum, direction);
+    await prepareSearchPage(page, chave, pageNum, direction, territory);
 }
 
 /**
  * Reconecta ao portal do DGP, refaz a pesquisa e navega até a página de listagem correta.
  * Utilizado para recuperar a sessão em caso de expiração ou redirecionamento para o login.
  */
-async function prepareSearchPage(page: Page, chave: string, pageNum: number, direction: string): Promise<number> {
+async function prepareSearchPage(
+    page: Page,
+    chave: string,
+    pageNum: number,
+    direction: string,
+    territory: BrazilState,
+): Promise<number> {
     let success = false;
     let attempts = 0;
     let finalPageNum = pageNum;
@@ -103,7 +135,8 @@ async function prepareSearchPage(page: Page, chave: string, pageNum: number, dir
             // Seleciona Região
             await randomSleep(500,1500)
             await page.locator("div[id='idFormConsultaParametrizada:idRegiao']")
-            await page.locator("ul.ui-selectonemenu-items li").getByText("Nordeste", { exact: true }).click();
+            await page.locator("ul.ui-selectonemenu-items li")
+                .getByText(REGION_LABELS[territory.regiao], { exact: true }).click();
 
           
             await page.waitForLoadState('networkidle');
@@ -111,7 +144,8 @@ async function prepareSearchPage(page: Page, chave: string, pageNum: number, dir
         
             //Seleciona UF
             await page.locator("div[id='idFormConsultaParametrizada:idUF']").click();
-            await page.locator("ul.ui-selectonemenu-items li").getByText("Bahia", { exact: true }).click();
+            await page.locator("ul.ui-selectonemenu-items li")
+                .getByText(territory.nome, { exact: true }).click();
 
             
             await page.click("button[id='idFormConsultaParametrizada:idPesquisar']");
@@ -185,55 +219,58 @@ async function prepareSearchPage(page: Page, chave: string, pageNum: number, dir
     return finalPageNum;
 }
 
-export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]) {
+export async function runDgpDiscovery(
+    keys: string[] = ["a", "e", "i", "o", "u"],
+    runOptions: DiscoveryRunOptions = {},
+): Promise<DiscoveryCollectionResult> {
+    if (!keys.length) throw new Error('Informe ao menos uma chave para a descoberta DGP.');
+    const territory = getBrazilState(runOptions.uf ?? 'BA');
+    const reportProgress = runOptions.reportProgress ?? (async () => {});
+    await reportProgress({ etapa: 'INICIANDO', percentual: 0, paginasProcessadas: 0, itensDescobertos: 0, itensPulados: 0, itensComErro: 0 });
     log.info(`Iniciando Discovery DGP para as chaves: ${keys.join(', ')}`);
 
-    await loadCacheIfNeeded();
+    // Caches pertencem apenas a esta execucao; as direcoes compartilham a deduplicacao.
+    const processedKeys = new Set<string>();
+    const processedPages = new Set<string>();
+    const processingPages = new Set<string>();
+    const requestPageProgress = new Map<string, number>();
+    await loadCache(processedKeys);
     const initialCacheSize = processedKeys.size;
     let paginasProcessadas = 0;
     let itensDescobertos = 0;
     let itensPulados = 0;
     let itensComErro = 0;
 
-    const concurrency = Math.min(Math.max(2, keys.length * 2), 8);
+    const options = createCrawlerOptions('discovery', keys.length);
+    const concurrency = options.maxConcurrency;
     log.info(`Configurando crawler com ${concurrency} workers concorrentes.`);
+    const crawlerConfig = createCrawlerConfig('discovery', runOptions.executionId);
+    if (runOptions.pipelineLogId) crawlerConfig.set('persistStorage', false);
+    log.info(`[Discovery DGP] Storage Crawlee: ${CRAWLER_STORAGE_DIRS.discovery}`);
+    await purgeCrawlerStorage(crawlerConfig);
 
-    const pipelineLogId = await pipelineLogger.startPipelineLogger(
+    const ownsPipeline = !runOptions.pipelineLogId;
+    const pipelineLogId = runOptions.pipelineLogId || await pipelineLogger.startPipelineLogger(
         ModuloSistema.SCRAPER,
         'DGP_DISCOVERY',
         ModoExecucao.APENAS_DGP,
         {
             comando: 'dgp-discovery',
             chaves: keys,
+            uf: territory.uf,
+            regiao: territory.regiao,
             tamanhoCacheInicial: initialCacheSize,
-        }
+        },
     );
+    await reportProgress({ etapa: 'PREPARANDO_BUSCA', percentual: 5, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
 
     const crawler = new PlaywrightCrawler({
-        launchContext: {
-            useIncognitoPages: true,
-        },
-        headless: true,
-        maxConcurrency: concurrency,
-        minConcurrency: concurrency,
-        requestHandlerTimeoutSecs: 5000,
-
-        preNavigationHooks: [
-            async ({ page }) => {
-                const context = page.context();
-                await context.route('**/*', (route) => {
-                    if (['image', 'font', 'stylesheet', 'media'].includes(route.request().resourceType())) {
-                        return route.abort();
-                    }
-                    return route.continue();
-                });
-            }
-        ],
+        ...options,
 
         async requestHandler({ page, request  }) {
             const chave = request.userData.chave;
             const direction = request.userData.direction || 'forward';
-            log.info(`\n Descobrindo grupos para a chave: '${chave.toUpperCase()}' em direção [${direction.toUpperCase()}]`);
+            log.info(`\n Descobrindo grupos para a chave: '${chave.toUpperCase()}' em ${territory.uf} na direção [${direction.toUpperCase()}]`);
             
             const activePopups = new Set<any>();
             const popupListener = (p: any) => {
@@ -244,12 +281,13 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
             const progressKey = `${chave}|${direction}`;
             let pageNum = requestPageProgress.get(progressKey) || 1;
+            let ownedPageKey: string | undefined;
 
             try {
                 let hasNextPage = true;
 
                 // Inicializa a sessão de busca e define a página inicial de cada direção
-                pageNum = await prepareSearchPage(page, chave, pageNum, direction);
+                pageNum = await prepareSearchPage(page, chave, pageNum, direction, territory);
                 
                 while (hasNextPage) {
                     const pageKey = `${chave}|${pageNum}`;
@@ -259,9 +297,10 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                         break;
                     }
                     processingPages.add(pageKey);
+                    ownedPageKey = pageKey;
 
                     if (await isLoginRedirect(page)) {
-                        await handleSessionRecovery(page, chave, pageNum, direction, `Login detectado no início da página ${pageNum}`);
+                        await handleSessionRecovery(page, chave, pageNum, direction, `Login detectado no início da página ${pageNum}`, territory);
                     }
 
                     log.info(`📍 [${direction.toUpperCase()}] Processando página ${pageNum} da chave '${chave}'`);
@@ -340,7 +379,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
                                 if (await isLoginRedirect(openedPage)) {
                                     await openedPage.close();
-                                    await handleSessionRecovery(page, chave, pageNum, direction, `Redirecionado para login no popup do item ${index + 1} (${nome})`);
+                                    await handleSessionRecovery(page, chave, pageNum, direction, `Redirecionado para login no popup do item ${index + 1} (${nome})`, territory);
                                     itemAttempts++;
                                     continue;
                                 }
@@ -355,7 +394,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                             } catch (itemErr: any) {
                                 log.error(`Tentativa ${itemAttempts + 1} falhou para o item ${index + 1} (${nome}): ${itemErr.message}`);
                                 if (await isLoginRedirect(page)) {
-                                    await handleSessionRecovery(page, chave, pageNum, direction, "Sessão principal perdida (login detectado)");
+                                    await handleSessionRecovery(page, chave, pageNum, direction, "Sessão principal perdida (login detectado)", territory);
                                 }
 
                                 itemAttempts++;
@@ -434,8 +473,19 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
 
                     // Adiciona a página concluída ao cache de páginas processadas
                     processedPages.add(pageKey);
+                    processingPages.delete(pageKey);
+                    ownedPageKey = undefined;
                     paginasProcessadas++;
                     itensPulados += skippedCount;
+
+                    await reportProgress({
+                        etapa: 'PROCESSANDO_PAGINAS',
+                        percentual: null,
+                        paginasProcessadas,
+                        itensDescobertos,
+                        itensPulados,
+                        itensComErro,
+                    });
 
                     await pipelineLogger.pipelineLogItem(
                         pipelineLogId,
@@ -457,14 +507,11 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                         const isDisabled = await pageBtn.evaluate((el) => el.classList.contains('ui-state-disabled'));
                         if (!isDisabled) {
                             await randomSleep(1000, 2000);
+                            // Em falha de navegacao, a retentativa retoma a proxima pagina, ja que esta foi concluida.
+                            const nextPageNum = direction === 'forward' ? pageNum + 1 : pageNum - 1;
+                            requestPageProgress.set(progressKey, nextPageNum);
                             await handleNotDisabled(page, pageBtn);
-                            
-                            if (direction === 'forward') {
-                                pageNum++;
-                            } else {
-                                pageNum--;
-                            }
-                            requestPageProgress.set(progressKey, pageNum);
+                            pageNum = nextPageNum;
                         } else {
                             hasNextPage = false;
                         }
@@ -489,11 +536,8 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 );
                 throw error;
             } finally {
-                // Remove a página atual de ambos os caches em caso de erro,
-                // garantindo que a retentativa possa processar o canal livremente.
-                const pageKey = `${chave}|${pageNum}`;
-                processingPages.delete(pageKey);
-                processedPages.delete(pageKey);
+                // Libera apenas a pagina deste handler; paginas concluidas continuam no cache.
+                if (ownedPageKey) processingPages.delete(ownedPageKey);
 
                 page.off('popup', popupListener);
                 for (const p of activePopups) {
@@ -507,7 +551,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 } catch (closeErr) {}
             }
         },
-    });
+    }, crawlerConfig);
     
 
     const requests:RequestType[] = [];
@@ -515,12 +559,12 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
         requests.push({
             url: SEARCH_URL,
             userData: { chave, direction: 'forward' },
-            uniqueKey: `DGP-DISCOVERY-${chave}-FORWARD`
+            uniqueKey: `DGP-DISCOVERY-${territory.uf}-${chave}-FORWARD`
         });
         requests.push({
             url: SEARCH_URL,
             userData: { chave, direction: 'backward' },
-            uniqueKey: `DGP-DISCOVERY-${chave}-BACKWARD`
+            uniqueKey: `DGP-DISCOVERY-${territory.uf}-${chave}-BACKWARD`
         });
     }
 
@@ -529,6 +573,7 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
         await crawler.run();
 
         log.info("Recalculating column 'similares' in database...");
+        await reportProgress({ etapa: 'NORMALIZANDO', percentual: 95, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
         await db.normalizeQueueData();
 
         const finalCacheSize = processedKeys.size;
@@ -542,12 +587,14 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 tipoEntidade: TipoEntidadeLog.GERAL,
             }
         );
-        await pipelineLogger.finishPipelineLogger(
+        if (ownsPipeline) await pipelineLogger.finishPipelineLogger(
             pipelineLogId,
             itensComErro > 0 ? StatusSessao.ERRO : StatusSessao.CONCLUIDO,
             {
                 comando: 'dgp-discovery',
                 chaves: keys,
+                uf: territory.uf,
+                regiao: territory.regiao,
                 paginasProcessadas,
                 itensDescobertos,
                 itensPulados,
@@ -557,14 +604,28 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
                 gruposPendentes: newlyDiscovered,
             }
         );
+        await reportProgress({ etapa: 'CONCLUIDO', percentual: 100, paginasProcessadas, itensDescobertos, itensPulados, itensComErro });
         log.info(`🏁 Discovery DGP finalizado. Total de itens cacheados: ${finalCacheSize} (Novos itens descobertos e cacheados nesta rodada: ${newlyDiscovered}).`);
+        return {
+            chave: keys.join(','),
+            uf: territory.uf,
+            regiao: territory.regiao,
+            paginasProcessadas,
+            itensDescobertos,
+            itensPulados,
+            itensComErro,
+            tamanhoCacheInicial: initialCacheSize,
+            tamanhoCacheFinal: finalCacheSize,
+        };
     } catch (error: any) {
-        await pipelineLogger.finishPipelineLogger(
+        if (ownsPipeline) await pipelineLogger.finishPipelineLogger(
             pipelineLogId,
             StatusSessao.ERRO,
             {
                 comando: 'dgp-discovery',
                 chaves: keys,
+                uf: territory.uf,
+                regiao: territory.regiao,
                 paginasProcessadas,
                 itensDescobertos,
                 itensPulados,
@@ -574,5 +635,11 @@ export async function runDgpDiscovery(keys: string[] = ["a", "e", "i", "o", "u"]
             }
         );
         throw error;
+    } finally {
+        await crawler.browserPool.destroy();
+        processedKeys.clear();
+        processedPages.clear();
+        processingPages.clear();
+        requestPageProgress.clear();
     }
 }

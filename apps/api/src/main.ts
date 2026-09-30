@@ -7,10 +7,10 @@ import { join } from 'path';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') ?? true,
+  const app = await NestFactory.create<NestExpressApplication>(AppModule,{
+    logger: ['error', 'warn', 'log', 'verbose'],
   });
+  app.enableCors({ origin: '*' });
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/static/',
   });
@@ -20,9 +20,11 @@ async function bootstrap() {
     .setTitle('Open DGP API')
     .setDescription('API para coleta e busca semântica de dados do DGP/CNPq')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('grupos-pesquisa')
     .addTag('pesquisadores')
     .addTag('linha-pesquisa')
+    .addTag('admin-filas')
     .build();
   const document = cleanupOpenApiDoc(SwaggerModule.createDocument(app, config));
   SwaggerModule.setup('api', app, document);

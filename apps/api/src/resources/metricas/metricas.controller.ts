@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { MetricasService } from './metricas.service';
 import {
@@ -9,6 +9,8 @@ import {
   MetricasInstituicoesResponseDto,
   MetricasPesquisadoresResponseDto,
   MetricasProducoesResponseDto,
+  MetricasDiariasResponseDto,
+  MetricasDiariasQueryDto
 } from './dto/response-metricas.dto';
 
 @ApiTags('metricas')
@@ -55,5 +57,24 @@ export class MetricasController {
   @ZodResponse({ status: 200, type: MetricasInstituicoesResponseDto })
   findMetricasInstituicoes(){
     return this.metricasService.findMetricasInstituicoes();
+  }
+
+  @Get('diarias')
+  @ApiOperation({ 
+    summary: 'Retorna Métricas Diárias do Sistema',
+    description: 'Retorna métricas diárias agrupadas por entidade. Suporta filtros por período (dataInicio/dataFim no formato YYYY-MM-DD) e por entidade específica.'
+  })
+  @ApiQuery({ name: 'dataInicio', required: false, description: 'Data inicial no formato YYYY-MM-DD (ex: 2025-01-01)' })
+  @ApiQuery({ name: 'dataFim', required: false, description: 'Data final no formato YYYY-MM-DD (ex: 2025-12-31)' })
+  @ApiQuery({ 
+    name: 'entidade', 
+    required: false, 
+    isArray: true, 
+    enum: ['grupo_pesquisa', 'area_conhecimento', 'linha_pesquisa', 'instituicao', 'pesquisador', 'producoes'],
+    description: 'Entidade(s) para filtrar. Pode ser repetido para múltiplas entidades. Valores: grupo_pesquisa, area_conhecimento, linha_pesquisa, instituicao, pesquisador, producoes'
+  })
+  @ZodResponse({status: 200, type: MetricasDiariasResponseDto})
+  findMetricasDiarias(@Query() query: MetricasDiariasQueryDto){
+    return this.metricasService.findMetricasDiarias(query);
   }
 }

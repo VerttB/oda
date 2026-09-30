@@ -10,7 +10,7 @@ const pesquisadorBase = {
 };
 const grupoBase = {
   id: 'grupo-1', dgpId: '456', nome: 'Grupo', anoFormacao: 2020, areaPredominante: 'Computacao',
-  repercussao: null, situacao: 'ATIVO' as const, email: null, telefone: null, website: null,
+  repercussao: null, situacao: 'CERTIFICADO' as const, email: null, telefone: null, website: null,
   logradouro: null, numero: null, complemento: null, bairro: null, cidade: null, uf: 'BA', cep: null,
   latitude: 0, longitude: 0, areaConhecimentoId: 'area-1', ...audit,
 };
@@ -84,7 +84,8 @@ describe('Contratos publicos de grupos e pesquisadores', () => {
     const { grupos, grupo } = setup();
     const result = await grupos.findOne(grupo.id);
     expectClean(result);
-    expect(result.instituicoes?.[0]).toEqual({ id: 'instituicao-1', nome: 'Universidade', sigla: 'UNEB', tipoRelacao: 'SEDE',
+    expect(result.instituicoes?.[0]).toEqual({ id: 'instituicao-1', nome: 'Universidade', sigla: 'UNEB',
+      imageUrl: null, tipoRelacao: 'SEDE',
       unidade: { nome: 'Departamento', uf: 'BA' }, estado: { id: 'estado-1', nome: 'Bahia', sigla: 'BA', regiao: 'Nordeste' } });
     expect(result.membros?.[0]).toMatchObject({ id: 'pesquisador-1', eLider: true, dataEntrada: '2025-01-01T00:00:00.000Z' });
     expect(result.areaConhecimento).toMatchObject({ id: 'area-1', areaPaiId: 'area-pai', tipo: 'AREA' });

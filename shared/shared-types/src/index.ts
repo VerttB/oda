@@ -1,16 +1,167 @@
 import { z } from 'zod';
 
-export * from './api/area-conhecimento';
-export * from './api/auth';
-export * from './api/grupos-pesquisa';
-export * from './api/instituicoes';
-export * from './api/langchain';
-export * from './api/linha-pesquisa';
-export * from './api/pagination';
-export * from './api/pesquisadores';
-export * from './api/producoes';
-export * from './api/responses';
+// Re-export area-conhecimento - defines AreaConhecimentoResponseSchema, AreaConhecimentoDetalheResponseSchema, MetricasAreasConhecimentoResponseSchema
+export {
+  TipoAreaConhecimentoSchema,
+  CreateAreaConhecimentoRequestSchema,
+  UpdateAreaConhecimentoRequestSchema,
+  FindAllAreaConhecimentoQuerySchema,
+  type CreateAreaConhecimentoRequest,
+  type UpdateAreaConhecimentoRequest,
+  type FindAllAreaConhecimentoQuery,
+  AreaConhecimentoResponseSchema,
+  AreaConhecimentoDetalheResponseSchema,
+  PaginatedAreaConhecimentoResponseSchema,
+  MetricasAreasConhecimentoResponseSchema,
+  type AreaConhecimentoResponse,
+  type AreaConhecimentoDetalheResponse,
+  type PaginatedAreaConhecimentoResponse,
+  type MetricasAreasConhecimentoResponse,
+} from './api/area-conhecimento';
 
+// Re-export auth
+export * from './api/auth';
+
+// Re-export filas
+export * from './api/filas';
+
+// Re-export grupos-pesquisa - defines GrupoPesquisaAreaConhecimentoResponseSchema, GrupoPesquisaResumoResponseSchema, GrupoPesquisaInstituicaoResponseSchema, EstadoResponseSchema, GruposPesquisaResponseSchema, MetricasGruposPesquisaResponseSchema
+export {
+  SituacaoGrupoPesquisaSchema,
+  TipoRelacaoGrupoInstituicaoSchema,
+  GrupoPesquisaInstituicaoRequestSchema,
+  CreateGruposPesquisaRequestSchema,
+  UpdateGruposPesquisaRequestSchema,
+  FindAllGruposPesquisaQuerySchema,
+  type SituacaoGrupoPesquisa,
+  type TipoRelacaoGrupoInstituicaoRequest,
+  type GrupoPesquisaInstituicaoRequest,
+  type CreateGruposPesquisaRequest,
+  type UpdateGruposPesquisaRequest,
+  type FindAllGruposPesquisaQuery,
+  GrupoPesquisaAreaConhecimentoResponseSchema,
+  GrupoPesquisaResumoResponseSchema,
+  GrupoPesquisaInstituicaoResponseSchema,
+  EstadoResponseSchema,
+  GruposPesquisaResponseSchema,
+  PaginatedGruposPesquisaResponseSchema,
+  GrupoPesquisaMetricasResponseSchema,
+  MetricasGruposPesquisaResponseSchema,
+  type GrupoPesquisaAreaConhecimentoResponse,
+  type GrupoPesquisaResumoResponse,
+  type GrupoPesquisaInstituicaoResponse,
+  type GruposPesquisaResponse,
+  type PaginatedGruposPesquisaResponse,
+  type GrupoPesquisaMetricasResponse,
+  type MetricasGruposPesquisaResponse,
+  type EstadoResponse,
+} from './api/grupos-pesquisa';
+
+// Re-export instituicoes - defines InstituicaoResponseSchema, InstituicaoResumoResponseSchema, MetricasInstituicoesResponseSchema
+export {
+  CreateInstituicaoRequestSchema,
+  UpdateInstituicaoRequestSchema,
+  FindAllInstituicaoQuerySchema,
+  type CreateInstituicaoRequest,
+  type UpdateInstituicaoRequest,
+  type FindAllInstituicaoQuery,
+  InstituicaoResponseSchema,
+  InstituicaoResumoResponseSchema,
+  PaginatedInstituicaoResponseSchema,
+  MetricasInstituicoesResponseSchema,
+  type InstituicaoResponse,
+  type InstituicaoResumoResponse,
+  type PaginatedInstituicaoResponse,
+  type MetricasInstituicoesResponse,
+} from './api/instituicoes';
+
+// Re-export langchain
+export * from './api/langchain';
+
+// Re-export linha-pesquisa - defines LinhaPesquisaResponseSchema
+export {
+  CreateLinhaPesquisaRequestSchema,
+  UpdateLinhaPesquisaRequestSchema,
+  FindAllLinhaPesquisaQuerySchema,
+  type CreateLinhaPesquisaRequest,
+  type UpdateLinhaPesquisaRequest,
+  type FindAllLinhaPesquisaQuery,
+  LinhaPesquisaResponseSchema,
+  PaginatedLinhaPesquisaResponseSchema,
+  type LinhaPesquisaResponse,
+  type PaginatedLinhaPesquisaResponse,
+} from './api/linha-pesquisa';
+
+// Re-export metricas - defines MetricasDiariasQuerySchema, MetricasDiariasResponseSchema, MetricasFilasExtracaoResponseSchema, MetricasGeraisResponseSchema
+export {
+  MetricasDiariasQuerySchema,
+  MetricasDiariasResponseSchema,
+  MetricasFilasExtracaoResponseSchema,
+  MetricasGeraisResponseSchema,
+  type MetricasDiariasQuery,
+  type MetricasDiariasResponse,
+  type MetricasFilasExtracaoResponse,
+  type MetricasGeraisResponse,
+} from './api/metricas';
+
+// Re-export pagination
+export * from './api/pagination';
+
+// Re-export pesquisadores - defines PesquisadorResumoResponseSchema, PesquisadorResponseSchema, MetricasPesquisadoresResponseSchema
+export {
+  TipoPesquisadorSchema,
+  FormacaoAcademicaSchema,
+  CreatePesquisadorRequestSchema,
+  UpdatePesquisadorRequestSchema,
+  FindAllPesquisadoresQuerySchema,
+  FindPesquisadoresByGrupoQuerySchema,
+  type TipoPesquisadorRequest,
+  type FormacaoAcademicaRequest,
+  type CreatePesquisadorRequest,
+  type UpdatePesquisadorRequest,
+  type FindAllPesquisadoresQuery,
+  type FindPesquisadoresByGrupoQuery,
+  PesquisadorResumoResponseSchema,
+  PesquisadorResponseSchema,
+  PaginatedPesquisadorResumoResponseSchema,
+  PaginatedPesquisadorResponseSchema,
+  PesquisadorMetricasResponseSchema,
+  MetricasPesquisadoresResponseSchema,
+  type PesquisadorResumoResponse,
+  type PesquisadorResponse,
+  type PaginatedPesquisadorResumoResponse,
+  type PaginatedPesquisadorResponse,
+  type PesquisadorMetricasResponse,
+  type MetricasPesquisadoresResponse,
+} from './api/pesquisadores';
+
+// Re-export producoes - defines ProducaoResponseSchema, ProducaoPesquisadorResponseSchema, MetricasProducoesResponseSchema
+export {
+  TipoProducaoSchema,
+  QualisSchema,
+  ProducaoAutorRequestSchema,
+  CreateProducaoRequestSchema,
+  UpdateProducaoRequestSchema,
+  FindAllProducoesQuerySchema,
+  FindProducoesByPesquisadorQuerySchema,
+  type CreateProducaoRequest,
+  type UpdateProducaoRequest,
+  type FindAllProducoesQuery,
+  type FindProducoesByPesquisadorQuery,
+  ProducaoResponseSchema,
+  ProducaoPesquisadorResponseSchema,
+  PaginatedProducaoResponseSchema,
+  MetricasProducoesResponseSchema,
+  type ProducaoResponse,
+  type ProducaoPesquisadorResponse,
+  type PaginatedProducaoResponse,
+  type MetricasProducoesResponse,
+} from './api/producoes';
+
+// Re-export simcc
+export * from './simcc';
+
+// Local schemas
 export const PageGroupItemInfoSchema = z.object({
   nome: z.string(),
   area: z.string(),
@@ -174,6 +325,10 @@ export const ScraperMetadataSchema = z.object({
   linhasExtraidas: z.number().int().nonnegative().optional(),
   instituicoesExtraidas: z.number().int().nonnegative().optional(),
   pesquisadoresEnfileirados: z.number().int().nonnegative().optional(),
+  dgpRecuperacoesEspelho: z.number().int().nonnegative().optional(),
+  dgpRedirecionamentosLogin: z.number().int().nonnegative().optional(),
+  dgpTempoRecuperacaoMs: z.number().int().nonnegative().optional(),
+  dgpRecuperacoesPorEtapa: z.record(z.string(), z.number().int().nonnegative()).optional(),
   arquivoJson: z.string().optional(),
 }).passthrough();
 export type ScraperMetadata = z.infer<typeof ScraperMetadataSchema>;
@@ -209,4 +364,3 @@ export const PipelineMetadataSchema = z.union([
   RagMetadataSchema,
 ]);
 export type PipelineMetadata = z.infer<typeof PipelineMetadataSchema>;
-

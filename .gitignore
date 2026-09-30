@@ -18,3 +18,4 @@ backups/
 metadata/hop-config.json
 *.hpl.cache
 *.hwf.cache
+*.tsbuildinfo

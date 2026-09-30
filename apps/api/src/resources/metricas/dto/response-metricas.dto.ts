@@ -6,6 +6,8 @@ import {
   MetricasInstituicoesResponseSchema,
   MetricasPesquisadoresResponseSchema,
   MetricasProducoesResponseSchema,
+  MetricasDiariasResponseSchema,
+  MetricasDiariasQuerySchema
 } from '@oda/shared-types';
 
 export class MetricasGeraisResponseDto extends createZodDto(
@@ -30,4 +32,12 @@ export class MetricasProducoesResponseDto extends createZodDto(
 
 export class MetricasInstituicoesResponseDto extends createZodDto(
   MetricasInstituicoesResponseSchema,
+) {}
+
+export class MetricasDiariasResponseDto extends createZodDto(
+  MetricasDiariasResponseSchema,
+){}
+
+export class MetricasDiariasQueryDto extends createZodDto(
+  MetricasDiariasQuerySchema,
 ) {}

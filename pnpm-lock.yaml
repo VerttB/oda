@@ -66,6 +66,9 @@ importers:
       '@oda/database':
         specifier: workspace:*
         version: link:../../shared/database
+      '@oda/queue':
+        specifier: workspace:*
+        version: link:../../shared/queue
       '@oda/shared-types':
         specifier: workspace:*
         version: link:../../shared/shared-types
@@ -181,6 +184,9 @@ importers:
       '@oda/database':
         specifier: workspace:*
         version: link:../../shared/database
+      '@oda/queue':
+        specifier: workspace:*
+        version: link:../../shared/queue
       '@oda/shared-types':
         specifier: workspace:*
         version: link:../../shared/shared-types
@@ -264,6 +270,9 @@ importers:
       '@oda/database':
         specifier: workspace:*
         version: link:../../shared/database
+      '@oda/queue':
+        specifier: workspace:*
+        version: link:../../shared/queue
       '@oda/shared-types':
         specifier: workspace:*
         version: link:../../shared/shared-types
@@ -276,9 +285,6 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
-      p-limit:
-        specifier: ^7.3.0
-        version: 7.3.0
       playwright:
         specifier: ^1.50.1
         version: 1.61.0
@@ -486,6 +492,19 @@ importers:
         version: 10.9.2(@types/node@24.13.2)(typescript@5.9.3)
       typescript:
         specifier: ^5.7.3
+        version: 5.9.3
+
+  shared/queue:
+    dependencies:
+      bullmq:
+        specifier: ^5.79.0
+        version: 5.79.0
+    devDependencies:
+      '@types/node':
+        specifier: ^24.13.2
+        version: 24.13.2
+      typescript:
+        specifier: ^5.9.3
         version: 5.9.3
 
   shared/shared-types:
@@ -6993,14 +7012,6 @@ packages:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
     engines: {node: '>=10'}
 
-  p-limit@6.2.0:
-    resolution: {integrity: sha512-kuUqqHNUqoIWp/c467RI4X6mmyuojY5jGutNU0wVTmEOOfcuwLqyMVoAi9MKi2Ak+5i9+nhmrK4ufZE8069kHA==}
-    engines: {node: '>=18'}
-
-  p-limit@7.3.0:
-    resolution: {integrity: sha512-7cIXg/Z0M5WZRblrsOla88S4wAK+zOQQWeBYfV3qJuJXMr+LnbYjaadrFaS0JILfEDPVqHyKnZ1Z/1d6J9VVUw==}
-    engines: {node: '>=20'}
-
   p-locate@4.1.0:
     resolution: {integrity: sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==}
     engines: {node: '>=8'}
@@ -8537,10 +8548,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  yocto-queue@1.2.2:
-    resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
-    engines: {node: '>=12.20'}
-
   yoctocolors-cjs@2.1.3:
     resolution: {integrity: sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==}
     engines: {node: '>=18'}
@@ -8556,14 +8563,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
-
   zod@4.5.4:
     resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
-
-  zwitch@2.0.4:
-    resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
@@ -15631,14 +15632,6 @@ snapshots:
     dependencies:
       yocto-queue: 0.1.0
 
-  p-limit@6.2.0:
-    dependencies:
-      yocto-queue: 1.2.2
-
-  p-limit@7.3.0:
-    dependencies:
-      yocto-queue: 1.2.2
-
   p-locate@4.1.0:
     dependencies:
       p-limit: 2.3.0
@@ -17175,8 +17168,6 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  yocto-queue@1.2.2: {}
-
   yoctocolors-cjs@2.1.3: {}
 
   zeptomatch@2.1.0:
@@ -17190,8 +17181,4 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.4.3: {}
-
   zod@4.5.4: {}
-
-  zwitch@2.0.4: {}

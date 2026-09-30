@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +18,8 @@ import { OmitAuditFieldsInterceptor } from './common/interceptors/omit-audit-fie
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { MetricasModule } from './resources/metricas/metricas.module';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
+import { FilasModule } from './resources/filas/filas.module';
+import { LoggerMiddleware } from './common/logger/logger.middleware';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
     AreaConhecimentoModule,
     UfModule,
     MetricasModule,
+    FilasModule,
   ],
   controllers: [AppController],
   providers: [
@@ -53,4 +56,8 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
     // },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+      consumer.apply(LoggerMiddleware).forRoutes("*")
+  }
+}

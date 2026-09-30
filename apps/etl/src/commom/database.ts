@@ -1,14 +1,41 @@
-import { PrismaClient, prismaConfig } from '@oda/database';
+import {
+    MetodoInferenciaGrupoArea,
+    PrismaClient,
+    prismaConfig,
+    TipoAreaConhecimento,
+    TipoRelacaoGrupoArea,
+} from '@oda/database';
 import { normalizeString } from './normalize';
 const prisma = new PrismaClient(prismaConfig);
+
+export function splitAreaHierarchy(areaStr?: string | null): string[] {
+    if (!areaStr) return [];
+    return areaStr.split(/[>;]/).map(p => p.trim()).filter(p => p.length > 0);
+}
+
+export function getLeafAreaName(areaStr?: string | null): string | null {
+    const parts = splitAreaHierarchy(areaStr);
+    return parts.length > 0 ? parts[parts.length - 1] : null;
+}
+
+function getAreaTipoByDepth(depth: number, total: number): TipoAreaConhecimento | null {
+    if (total <= 1) return null;
+    if (depth <= 0) return TipoAreaConhecimento.GRANDE_AREA;
+    if (depth === 1) return TipoAreaConhecimento.AREA;
+    if (depth === 2) return TipoAreaConhecimento.SUBAREA;
+    return TipoAreaConhecimento.TOPICO;
+}
+
 export async function getOrCreateAreaConhecimentoHierarchy(tx: any, areaStr: string) {
     if (!areaStr) return null;
-    const parts = areaStr.split(/[>;]/).map(p => p.trim()).filter(p => p.length > 0);
+    const parts = splitAreaHierarchy(areaStr);
     let currentParentId: string | null = null;
     let leafArea = null;
 
-    for (const part of parts) {
+    for (let index = 0; index < parts.length; index++) {
+        const part = parts[index];
         const nomeNormalizado = normalizeString(part);
+        const tipo = getAreaTipoByDepth(index, parts.length);
         let area = await tx.areaConhecimento.findUnique({
             where: { nomeNormalizado }
         });
@@ -19,6 +46,7 @@ export async function getOrCreateAreaConhecimentoHierarchy(tx: any, areaStr: str
                     data: {
                         nome: part,
                         nomeNormalizado,
+                        ...(tipo ? { tipo } : {}),
                         areaPaiId: currentParentId
                     }
                 });
@@ -27,11 +55,14 @@ export async function getOrCreateAreaConhecimentoHierarchy(tx: any, areaStr: str
                     where: { nomeNormalizado }
                 });
             }
-        } else if (currentParentId && area.areaPaiId !== currentParentId) {
+        } else if ((currentParentId && area.areaPaiId !== currentParentId) || (tipo && !area.tipo)) {
             try {
                 await tx.areaConhecimento.update({
                     where: { id: area.id },
-                    data: { areaPaiId: currentParentId }
+                    data: {
+                        ...(currentParentId && area.areaPaiId !== currentParentId ? { areaPaiId: currentParentId } : {}),
+                        ...(tipo && !area.tipo ? { tipo } : {}),
+                    }
                 });
             } catch (e) {}
         }
@@ -40,6 +71,58 @@ export async function getOrCreateAreaConhecimentoHierarchy(tx: any, areaStr: str
             leafArea = area;
         }
     }
+    return leafArea;
+}
+
+export async function upsertGrupoAreaPrincipalDgp(
+    tx: any,
+    grupoId: string,
+    areaStr: string,
+    campoOrigem: string,
+) {
+    const leafArea = await getOrCreateAreaConhecimentoHierarchy(tx, areaStr);
+    if (!leafArea) return null;
+
+    const metadata = {
+        origem: 'DGP',
+        campo: campoOrigem,
+        valorOriginal: areaStr,
+        areaFolha: leafArea.nome,
+    };
+
+    await tx.grupoPesquisa.update({
+        where: { id: grupoId },
+        data: {
+            areaPredominante: leafArea.nome,
+            areaConhecimentoId: leafArea.id,
+        },
+    });
+
+    await tx.grupoPesquisaAreaConhecimento.upsert({
+        where: {
+            grupoId_areaId: {
+                grupoId,
+                areaId: leafArea.id,
+            },
+        },
+        update: {
+            relacao: TipoRelacaoGrupoArea.PRINCIPAL,
+            metodoInferencia: MetodoInferenciaGrupoArea.DGP,
+            confianca: 1,
+            justificativa: 'Area principal informada pelo DGP.',
+            metadata,
+        },
+        create: {
+            grupoId,
+            areaId: leafArea.id,
+            relacao: TipoRelacaoGrupoArea.PRINCIPAL,
+            metodoInferencia: MetodoInferenciaGrupoArea.DGP,
+            confianca: 1,
+            justificativa: 'Area principal informada pelo DGP.',
+            metadata,
+        },
+    });
+
     return leafArea;
 }
 

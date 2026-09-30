@@ -63,6 +63,13 @@ export class GruposPesquisaController {
     return  await this.gruposPesquisaService.findAll(query);
   }
 
+  @Get('simcc')
+  @ApiOperation({ summary: 'Lista grupos com sede nas instituições do SIMCC' })
+  @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
+  findSimcc(@Query() query: FindAllGruposPesquisaDto) {
+    return this.gruposPesquisaService.findSimcc(query);
+  }
+
   @Get('busca-semantica')
   @ApiOperation({ summary: 'Busca grupos de pesquisa por similaridade semântica' })
   @ApiQuery({ name: 'q', type: String, required: true, example: 'inteligência artificial na educação' })

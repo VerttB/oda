@@ -1,5 +1,6 @@
 import { PrismaClient, prismaConfig } from "@oda/database"
-import { FilaExtracaoStatus, StatusColeta } from "@oda/database";
+import { FilaExtracaoStatus, StatusColeta, StatusSessao } from "@oda/database";
+import { QUEUE_NAMES } from "@oda/queue";
 import { cleanStr } from "./utils";
 export const prisma = new PrismaClient(prismaConfig)
 
@@ -69,7 +70,9 @@ export const db = {
    * Normaliza os dados da fila existentes e atualiza a coluna similares.
    */
   async normalizeQueueData() {
-    const allItems = await prisma.filaExtracaoGrupo.findMany();
+    const allItems = await prisma.filaExtracaoGrupo.findMany({
+      select: { dgpId: true, nome: true, area: true, instituicao: true, similares: true },
+    });
     let updatedCount = 0;
     for (const item of allItems) {
         const cleanNome = cleanStr(item.nome);
@@ -95,21 +98,20 @@ export const db = {
         console.log(`[Database] Normalizadas strings de ${updatedCount} registros no banco.`);
     }
 
-    const itemsAfterNormalization = await prisma.filaExtracaoGrupo.findMany();
-    const groupsMap = new Map<string, string[]>();
-    for (const item of itemsAfterNormalization) {
+    const groupsMap = new Map<string, typeof allItems>();
+    for (const item of allItems) {
         const key = `${item.nome}|${item.area}|${item.instituicao}`;
         if (!groupsMap.has(key)) {
             groupsMap.set(key, []);
         }
-        groupsMap.get(key)!.push(item.dgpId);
+        groupsMap.get(key)!.push(item);
     }
 
     let updatedSimilares = 0;
-    for (const [_, dgpIds] of groupsMap.entries()) {
-        const count = dgpIds.length;
-        const sampleItem = itemsAfterNormalization.find(i => i.dgpId === dgpIds[0]);
-        if (sampleItem && sampleItem.similares !== count) {
+    for (const items of groupsMap.values()) {
+        const count = items.length;
+        const dgpIds = items.filter(item => item.similares !== count).map(item => item.dgpId);
+        if (dgpIds.length > 0) {
             await prisma.filaExtracaoGrupo.updateMany({
                 where: { dgpId: { in: dgpIds } },
                 data: { similares: count }
@@ -173,6 +175,36 @@ export const db = {
           where: { lattesId },
           data: buildQueueStatusData(status, errorData)
       });
+  },
+
+  /**
+   * Recupera itens que ficaram presos em PROCESSANDO apos queda fatal do processo.
+   */
+  async resetProcessingResearchersQueue() {
+      const count = await prisma.$executeRaw`
+          UPDATE fila_extracao_pesquisador AS pesquisador
+          SET status = 'PENDENTE', processamento_iniciado_em = NULL
+          WHERE pesquisador.status = 'PROCESSANDO'
+            AND NOT EXISTS (
+              SELECT 1
+              FROM pipeline_log AS pipeline
+              WHERE pipeline.status = 'EMANDAMENTO'
+                AND pipeline.metadata->>'queue' = ${QUEUE_NAMES.LATTES_SCRAPER}
+                AND pipeline.metadata->'jobs' @> jsonb_build_array(jsonb_build_object('lattesId', pesquisador.lattes_id))
+            )
+      `;
+      return { count };
+  },
+
+  async hasOpenLattesQueueBatch() {
+      const batch = await prisma.pipelineLog.findFirst({
+          where: {
+              status: StatusSessao.EMANDAMENTO,
+              metadata: { path: ['queue'], equals: QUEUE_NAMES.LATTES_SCRAPER },
+          },
+          select: { id: true },
+      });
+      return Boolean(batch);
   },
 
   /**

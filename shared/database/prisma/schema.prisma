@@ -1,13 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider        = "prisma-client-js"
   output          = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions", "views"]
   moduleFormat    = "esm"
-  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
@@ -15,26 +10,18 @@ datasource db {
   extensions = [pgvector(map: "vector")]
 }
 
-// Domínio da API
 model Instituicao {
   id                     String                     @id @default(uuid())
   nome                   String
   sigla                  String
-  estado                 Estado?                    @relation(fields: [estadoId], references: [id])
+  criadoEm               DateTime                   @default(now()) @map("criado_em")
+  atualizadoEm           DateTime                   @updatedAt @map("atualizado_em")
   estadoId               String?                    @map("estado_id")
+  imageUrl               String?                    @map("image_url")
   gruposPesquisaVinculos GrupoPesquisaInstituicao[]
-
-  criadoEm     DateTime @default(now()) @map("criado_em")
-  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+  estado                 Estado?                    @relation(fields: [estadoId], references: [id])
 
   @@map("instituicao")
-}
-
-enum TipoRelacaoGrupoInstituicao {
-  SEDE     @map("sede")
-  PARCEIRA @map("parceira")
-
-  @@map("tipo_relacao_grupo_instituicao")
 }
 
 model GrupoPesquisaInstituicao {
@@ -42,11 +29,11 @@ model GrupoPesquisaInstituicao {
   instituicaoId String                      @map("instituicao_id")
   tipoRelacao   TipoRelacaoGrupoInstituicao @map("tipo_relacao")
   unidade       String?
+  criadoEm      DateTime                    @default(now()) @map("criado_em")
+  atualizadoEm  DateTime                    @updatedAt @map("atualizado_em")
   unidadeUf     String?                     @map("unidade_uf")
   grupoPesquisa GrupoPesquisa               @relation(fields: [grupoId], references: [id], onDelete: Cascade)
   instituicao   Instituicao                 @relation(fields: [instituicaoId], references: [id])
-  criadoEm      DateTime                    @default(now()) @map("criado_em")
-  atualizadoEm  DateTime                    @updatedAt @map("atualizado_em")
 
   @@id([grupoId, instituicaoId])
   @@index([instituicaoId])
@@ -59,49 +46,41 @@ model Estado {
   sigla        String        @unique
   nome         String
   regiao       String
-  instituicoes Instituicao[]
   criadoEm     DateTime      @default(now()) @map("criado_em")
   atualizadoEm DateTime      @updatedAt @map("atualizado_em")
+  instituicoes Instituicao[]
 
   @@map("estado")
 }
 
-enum Situacao {
-  ATIVO      @map("certificado")
-  INATIVO    @map("inativo")
-  EM_ANALISE @map("em_analise")
-
-  @@map("situacao")
-}
-
 model GrupoPesquisa {
-  id                String                          @id @default(uuid())
-  dgpId             String?                         @unique @map("dgp_id")
-  nome              String
-  anoFormacao       Int?                            @map("ano_formacao")
-  areaPredominante  String                          @map("area_predominante")
-  repercussao       String?
-  email             String?
-  telefone          String?
-  website           String?
-  logradouro        String?
-  numero            String?
-  complemento       String?
-  bairro            String?
-  cidade            String?
-  uf                String?
-  cep               String?
-  latitude          Float?
-  longitude         Float?
+  id                 String                          @id @default(uuid())
+  dgpId              String?                         @unique @map("dgp_id")
+  nome               String
+  anoFormacao        Int?                            @map("ano_formacao")
+  areaPredominante   String                          @map("area_predominante")
+  repercussao        String?
+  situacao           Situacao
+  criadoEm           DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm       DateTime                        @updatedAt @map("atualizado_em")
+  bairro             String?
+  cep                String?
+  cidade             String?
+  complemento        String?
+  email              String?
+  latitude           Float?
+  logradouro         String?
+  longitude          Float?
+  numero             String?
+  telefone           String?
+  uf                 String?
+  website            String?
   areaConhecimentoId String?                         @map("area_conhecimento_id")
   areaConhecimento   AreaConhecimento?               @relation("GrupoPesquisaAreaPrincipal", fields: [areaConhecimentoId], references: [id])
-  areasConhecimento GrupoPesquisaAreaConhecimento[]
-  instituicoes      GrupoPesquisaInstituicao[]
-  situacao          Situacao                        @default(ATIVO)
-  membros           MembroGrupo[]
-  linhasPesquisa    LinhaPesquisa[]
-  criadoEm          DateTime                        @default(now()) @map("criado_em")
-  atualizadoEm      DateTime                        @updatedAt @map("atualizado_em")
+  areasConhecimento  GrupoPesquisaAreaConhecimento[]
+  instituicoes       GrupoPesquisaInstituicao[]
+  linhasPesquisa     LinhaPesquisa[]
+  membros            MembroGrupo[]
 
   @@index([areaConhecimentoId])
   @@map("grupo_pesquisa")
@@ -109,18 +88,390 @@ model GrupoPesquisa {
 
 model LinhaPesquisa {
   id               String                        @id @default(uuid())
-  dgpId            String?                       @unique @map("dgp_id")
   titulo           String
   objetivo         String?
-  grupo            GrupoPesquisa                 @relation(fields: [grupoId], references: [id])
   grupoId          String                        @map("grupo_id")
-  membros          MembroLinhaPesquisa[]
-  palavrasChave    LinhaPesquisaPalavraChave[]
-  setoresAplicacao LinhaPesquisaSetorAplicacao[]
   criadoEm         DateTime                      @default(now()) @map("criado_em")
   atualizadoEm     DateTime                      @updatedAt @map("atualizado_em")
+  dgpId            String?                       @unique @map("dgp_id")
+  grupo            GrupoPesquisa                 @relation(fields: [grupoId], references: [id])
+  palavrasChave    LinhaPesquisaPalavraChave[]
+  setoresAplicacao LinhaPesquisaSetorAplicacao[]
+  membros          MembroLinhaPesquisa[]
 
   @@map("linha_pesquisa")
+}
+
+model Pesquisador {
+  id                   String                          @id @default(uuid())
+  lattesId             String?                         @unique @map("lattes_id")
+  nome                 String
+  tipo                 TipoPesquisador?
+  formacaoAcademica    FormacaoAcademica?              @map("formacao_academica")
+  criadoEm             DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm         DateTime                        @updatedAt @map("atualizado_em")
+  indexH               Int?                            @map("index_h")
+  indexI10             Int?                            @map("index_i_10")
+  openAlexId           String?                         @unique @map("open_alex_id")
+  imageUrl             String?                         @map("image_url")
+  orcidId              String?                         @unique @map("orcid_id")
+  membrosGrupo         MembroGrupo[]
+  membrosLinhaPesquisa MembroLinhaPesquisa[]
+  areasConhecimento    PesquisadoresAreaConhecimento[]
+  producoes            ProducaoPesquisador[]
+
+  @@map("pesquisador")
+}
+
+model MembroGrupo {
+  pesquisadorId String        @map("pesquisador_id")
+  grupoId       String        @map("grupo_id")
+  dataEntrada   DateTime?     @map("data_entrada")
+  criadoEm      DateTime      @default(now()) @map("criado_em")
+  atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
+  eLider        Boolean       @default(false) @map("e_lider")
+  grupoPesquisa GrupoPesquisa @relation(fields: [grupoId], references: [id])
+  pesquisador   Pesquisador   @relation(fields: [pesquisadorId], references: [id])
+
+  @@id([pesquisadorId, grupoId])
+  @@map("membro_grupo")
+}
+
+model MembroLinhaPesquisa {
+  linhaPesquisaId String        @map("linha_pesquisa_id")
+  pesquisadorId   String        @map("pesquisador_id")
+  criadoEm        DateTime      @default(now()) @map("criado_em")
+  linhaPesquisa   LinhaPesquisa @relation(fields: [linhaPesquisaId], references: [id])
+  pesquisador     Pesquisador   @relation(fields: [pesquisadorId], references: [id])
+
+  @@id([linhaPesquisaId, pesquisadorId])
+  @@map("membro_linha_pesquisa")
+}
+
+model AreaConhecimento {
+  id                      String                          @id @default(uuid())
+  nome                    String
+  areaPaiId               String?                         @map("area_pai_id")
+  criadoEm                DateTime                        @default(now()) @map("criado_em")
+  atualizadoEm            DateTime                        @updatedAt @map("atualizado_em")
+  nomeNormalizado         String                          @unique
+  tipo                    TipoAreaConhecimento?
+  areaPai                 AreaConhecimento?               @relation("AreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
+  subareas                AreaConhecimento[]              @relation("AreaConhecimentoHierarquia")
+  gruposPesquisaPrincipal GrupoPesquisa[]                 @relation("GrupoPesquisaAreaPrincipal")
+  gruposPesquisa          GrupoPesquisaAreaConhecimento[]
+  mapeamentosOpenAlex     MapeamentoAreaTaxonomia[]
+  pesquisadores           PesquisadoresAreaConhecimento[]
+
+  @@map("area_conhecimento")
+}
+
+model OpenAlexAreaConhecimento {
+  id                String                       @id @default(uuid())
+  termo             String
+  termoNormalizado  String                       @map("termo_normalizado")
+  termoEstrangeiro  String?                      @map("termo_estrangeiro")
+  externalId        String                       @unique @map("external_id")
+  tipo              TipoOpenAlexAreaConhecimento
+  descricao         String?
+  nomesAlternativos String[]                     @default([]) @map("nomes_alternativos")
+  wikidataUrl       String?                      @map("wikidata_url")
+  wikipediaUrl      String?                      @map("wikipedia_url")
+  areaPaiId         String?                      @map("area_pai_id")
+  criadoEm          DateTime                     @default(now()) @map("criado_em")
+  atualizadoEm      DateTime                     @updatedAt @map("atualizado_em")
+  mapeamentosCnpq   MapeamentoAreaTaxonomia[]
+  areaPai           OpenAlexAreaConhecimento?    @relation("OpenAlexAreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
+  subareas          OpenAlexAreaConhecimento[]   @relation("OpenAlexAreaConhecimentoHierarquia")
+
+  @@index([termoNormalizado])
+  @@index([tipo])
+  @@index([areaPaiId])
+  @@map("open_alex_area_conhecimento")
+}
+
+model MapeamentoAreaTaxonomia {
+  id                 String                        @id @default(uuid())
+  openAlexAreaId     String                        @map("open_alex_area_id")
+  areaConhecimentoId String                        @map("area_conhecimento_id")
+  tipoRelacao        TipoRelacaoAreaTaxonomia?     @map("tipo_relacao")
+  metodo             MetodoMapeamentoAreaTaxonomia
+  status             StatusMapeamentoAreaTaxonomia @default(PENDENTE)
+  observacao         String?
+  criadoEm           DateTime                      @default(now()) @map("criado_em")
+  atualizadoEm       DateTime                      @updatedAt @map("atualizado_em")
+  areaConhecimento   AreaConhecimento              @relation(fields: [areaConhecimentoId], references: [id])
+  openAlexArea       OpenAlexAreaConhecimento      @relation(fields: [openAlexAreaId], references: [id])
+
+  @@unique([openAlexAreaId, areaConhecimentoId])
+  @@index([areaConhecimentoId])
+  @@index([status])
+  @@map("mapeamento_area_taxonomia")
+}
+
+model PesquisadoresAreaConhecimento {
+  pesquisadorId String           @map("pesquisador_id")
+  areaId        String           @map("area_conhecimento_id")
+  area          AreaConhecimento @relation(fields: [areaId], references: [id])
+  pesquisador   Pesquisador      @relation(fields: [pesquisadorId], references: [id])
+
+  @@id([pesquisadorId, areaId])
+  @@map("pesquisador_area_conhecimento")
+}
+
+model GrupoPesquisaAreaConhecimento {
+  grupoId          String                    @map("grupo_id")
+  areaId           String                    @map("area_conhecimento_id")
+  atualizadoEm     DateTime?                 @updatedAt @map("atualizado_em")
+  confianca        Float?
+  criadoEm         DateTime                  @default(now()) @map("criado_em")
+  justificativa    String?
+  metadata         Json?
+  metodoInferencia MetodoInferenciaGrupoArea @default(MANUAL) @map("metodo_inferencia")
+  relacao          TipoRelacaoGrupoArea      @default(ADICIONAL)
+  area             AreaConhecimento          @relation(fields: [areaId], references: [id])
+  grupo            GrupoPesquisa             @relation(fields: [grupoId], references: [id])
+
+  @@id([grupoId, areaId])
+  @@index([areaId])
+  @@index([relacao])
+  @@index([metodoInferencia])
+  @@map("grupo_pesquisa_area_conhecimento")
+}
+
+model PalavraChave {
+  id               String                      @id @default(uuid())
+  termo            String                      @unique
+  termoNormalizado String                      @unique @map("termo_normalizado")
+  criadoEm         DateTime                    @default(now()) @map("criado_em")
+  atualizadoEm     DateTime                    @updatedAt @map("atualizado_em")
+  linhasPesquisa   LinhaPesquisaPalavraChave[]
+  producoes        ProducaoPalavraChave[]
+
+  @@map("palavra_chave")
+}
+
+model SetorAplicacao {
+  id              String                        @id @default(uuid())
+  nome            String                        @unique
+  nomeNormalizado String                        @unique @map("nome_normalizado")
+  criadoEm        DateTime                      @default(now()) @map("criado_em")
+  atualizadoEm    DateTime                      @updatedAt @map("atualizado_em")
+  linhasPesquisa  LinhaPesquisaSetorAplicacao[]
+
+  @@map("setor_aplicacao")
+}
+
+model LinhaPesquisaSetorAplicacao {
+  linhaPesquisaId  String         @map("linha_pesquisa_id")
+  setorAplicacaoId String         @map("setor_aplicacao_id")
+  criadoEm         DateTime       @default(now()) @map("criado_em")
+  linhaPesquisa    LinhaPesquisa  @relation(fields: [linhaPesquisaId], references: [id])
+  setorAplicacao   SetorAplicacao @relation(fields: [setorAplicacaoId], references: [id])
+
+  @@id([linhaPesquisaId, setorAplicacaoId])
+  @@map("linha_pesquisa_setor_aplicacao")
+}
+
+model LinhaPesquisaPalavraChave {
+  linhaPesquisaId String        @map("linha_pesquisa_id")
+  palavraChaveId  String        @map("palavra_chave_id")
+  criadoEm        DateTime      @default(now()) @map("criado_em")
+  linhaPesquisa   LinhaPesquisa @relation(fields: [linhaPesquisaId], references: [id])
+  palavraChave    PalavraChave  @relation(fields: [palavraChaveId], references: [id])
+
+  @@id([linhaPesquisaId, palavraChaveId])
+  @@map("linha_pesquisa_palavra_chave")
+}
+
+model Producao {
+  id            String                 @id @default(uuid())
+  titulo        String
+  ano           Int?
+  tipo          TipoProducao           @default(OUTRA)
+  doi           String?                @unique
+  url           String?
+  veiculo       String?
+  resumo        String?
+  criadoEm      DateTime               @default(now()) @map("criado_em")
+  atualizadoEm  DateTime               @updatedAt @map("atualizado_em")
+  issn          String?
+  qualis        Qualis?
+  palavrasChave ProducaoPalavraChave[]
+  autores       ProducaoPesquisador[]
+
+  @@map("producao")
+}
+
+model ProducaoPesquisador {
+  producaoId    String      @map("producao_id")
+  pesquisadorId String      @map("pesquisador_id")
+  ordemAutoria  Int?        @map("ordem_autoria")
+  criadoEm      DateTime    @default(now()) @map("criado_em")
+  pesquisador   Pesquisador @relation(fields: [pesquisadorId], references: [id])
+  producao      Producao    @relation(fields: [producaoId], references: [id])
+
+  @@id([producaoId, pesquisadorId])
+  @@map("producao_pesquisador")
+}
+
+model ProducaoPalavraChave {
+  producaoId     String       @map("producao_id")
+  palavraChaveId String       @map("palavra_chave_id")
+  criadoEm       DateTime     @default(now()) @map("criado_em")
+  palavraChave   PalavraChave @relation(fields: [palavraChaveId], references: [id])
+  producao       Producao     @relation(fields: [producaoId], references: [id])
+
+  @@id([producaoId, palavraChaveId])
+  @@map("producao_palavra_chave")
+}
+
+model RagDocument {
+  id           String        @id @default(uuid())
+  sourceType   RagSourceType @map("source_type")
+  sourceId     String        @map("source_id")
+  titulo       String?
+  conteudo     String?
+  metadata     Json?
+  criadoEm     DateTime      @default(now()) @map("criado_em")
+  atualizadoEm DateTime      @updatedAt @map("atualizado_em")
+  chunks       RagChunk[]
+
+  @@unique([sourceType, sourceId])
+  @@index([sourceType, sourceId])
+  @@map("rag_document")
+}
+
+model RagChunk {
+  id           String                 @id @default(uuid())
+  documentId   String                 @map("document_id")
+  conteudo     String
+  embedding Unsupported("vector(1536)")?
+  ordem        Int                    @default(0)
+  tokenCount   Int?                   @map("token_count")
+  metadata     Json?
+  criadoEm     DateTime               @default(now()) @map("criado_em")
+  atualizadoEm DateTime               @updatedAt @map("atualizado_em")
+  document     RagDocument            @relation(fields: [documentId], references: [id])
+
+  @@index([documentId])
+  @@map("rag_chunk")
+}
+
+model IndexingJob {
+  id           String            @id @default(uuid())
+  sourceType   RagSourceType     @map("source_type")
+  sourceId     String            @map("source_id")
+  status       IndexingJobStatus @default(PENDENTE)
+  erro         String?
+  tentativas   Int               @default(0)
+  criadoEm     DateTime          @default(now()) @map("criado_em")
+  atualizadoEm DateTime          @updatedAt @map("atualizado_em")
+
+  @@index([status])
+  @@index([sourceType, sourceId])
+  @@map("indexing_job")
+}
+
+model PipelineLog {
+  id                   String            @id @default(uuid())
+  modulo               ModuloSistema
+  dgpId                String?           @map("dgp_id")
+  modoExecucao         ModoExecucao      @default(COMPLETA) @map("modo_execucao")
+  status               StatusSessao      @default(EMANDAMENTO)
+  registrosProcessados Int               @default(0) @map("registros_processados")
+  quantidadeSucessos   Int               @default(0) @map("quantidade_sucessos")
+  quantidadeErros      Int               @default(0) @map("quantidade_erros")
+  dataInicio           DateTime          @default(now()) @map("data_inicio")
+  dataFim              DateTime?         @map("data_fim")
+  duracaoMs            Int?              @map("duracao_ms")
+  metadata             Json?             @map("metadata")
+  criadoEm             DateTime          @default(now()) @map("criado_em")
+  atualizadoEm         DateTime          @updatedAt @map("atualizado_em")
+  itens                PipelineLogItem[]
+
+  @@index([modulo, status])
+  @@index([dgpId])
+  @@map("pipeline_log")
+}
+
+model PipelineLogItem {
+  id                   String                    @id @default(uuid())
+  pipelineLogId        String                    @map("pipeline_log_id")
+  entidadeId           String?                   @map("entidade_id")
+  tipoEntidade         TipoEntidadeLog           @default(GRUPO) @map("tipo_entidade")
+  status               StatusItemLog
+  tipoErro             TipoErroColeta?           @map("tipo_erro")
+  mensagemErro         String?                   @map("mensagem_erro")
+  detalhesErro         String?                   @map("detalhes_erro")
+  tempoMs              Int?                      @map("tempo_ms")
+  criadoEm             DateTime                  @default(now()) @map("criado_em")
+  etapa                PipelineEtapa?
+  errosFilaGrupo       FilaExtracaoGrupo[]       @relation("FilaExtracaoGrupoUltimoErro")
+  errosFilaPesquisador FilaExtracaoPesquisador[] @relation("FilaExtracaoPesquisadorUltimoErro")
+  pipelineLog          PipelineLog               @relation(fields: [pipelineLogId], references: [id], onDelete: Cascade)
+
+  @@index([pipelineLogId])
+  @@index([entidadeId])
+  @@index([status])
+  @@map("pipeline_log_item")
+}
+
+model FilaExtracaoGrupo {
+  dgpId                   String             @id @unique @map("dgp_id")
+  nome                    String
+  area                    String
+  instituicao             String
+  status                  FilaExtracaoStatus @default(PENDENTE)
+  tentativas              Int                @default(0)
+  similares               Int                @default(1)
+  criadoEm                DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao       DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
+  processamentoIniciadoEm DateTime?          @map("processamento_iniciado_em")
+  ultimoErroEm            DateTime?          @map("ultimo_erro_em")
+  ultimoErroId            String?            @map("ultimo_erro_id")
+  ultimoErro              PipelineLogItem?   @relation("FilaExtracaoGrupoUltimoErro", fields: [ultimoErroId], references: [id])
+
+  @@index([status])
+  @@index([processamentoIniciadoEm])
+  @@index([ultimoErroId])
+  @@map("fila_extracao_grupo")
+}
+
+model FilaExtracaoPesquisador {
+  lattesId                String             @id @unique @map("lattes_id")
+  nome                    String
+  status                  FilaExtracaoStatus @default(PENDENTE)
+  tentativas              Int                @default(0)
+  criadoEm                DateTime           @default(now()) @map("criado_em")
+  ultimaAtualizacao       DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
+  processamentoIniciadoEm DateTime?          @map("processamento_iniciado_em")
+  ultimoErroEm            DateTime?          @map("ultimo_erro_em")
+  ultimoErroId            String?            @map("ultimo_erro_id")
+  ultimoErro              PipelineLogItem?   @relation("FilaExtracaoPesquisadorUltimoErro", fields: [ultimoErroId], references: [id])
+
+  @@index([status])
+  @@index([processamentoIniciadoEm])
+  @@index([ultimoErroId])
+  @@map("fila_extracao_pesquisador")
+}
+
+enum TipoRelacaoGrupoInstituicao {
+  SEDE     @map("sede")
+  PARCEIRA @map("parceira")
+
+  @@map("tipo_relacao_grupo_instituicao")
+}
+
+enum Situacao {
+  CERTIFICADO             @map("certificado")
+  INATIVO                 @map("inativo")
+  EM_ANALISE              @map("em_analise")
+  EM_PREENCHIMENTO        @map("em_preenchimento")
+  EXCLUIDO                @map("excluido")
+  AGUARDANDO_CERTIFICACAO @map("aguardando_certificacao")
+
+  @@map("situacao")
 }
 
 enum TipoPesquisador {
@@ -142,52 +493,6 @@ enum FormacaoAcademica {
   @@map("formacao_academica")
 }
 
-model Pesquisador {
-  id                   String                          @id @default(uuid())
-  lattesId             String?                         @unique @map("lattes_id")
-  nome                 String
-  tipo                 TipoPesquisador?
-  formacaoAcademica    FormacaoAcademica?              @map("formacao_academica")
-  membrosGrupo         MembroGrupo[]
-  membrosLinhaPesquisa MembroLinhaPesquisa[]
-  producoes            ProducaoPesquisador[]
-  areasConhecimento    PesquisadoresAreaConhecimento[]
-  openAlexId           String?                         @unique @map("open_alex_id")
-  orcidId              String?                         @unique @map("orcid_id")
-  imageUrl             String?                         @map("image_url")
-  indexH               Int?                            @map("index_h")
-  indexI10             Int?                            @map("index_i_10")
-  criadoEm             DateTime                        @default(now()) @map("criado_em")
-  atualizadoEm         DateTime                        @updatedAt @map("atualizado_em")
-
-  @@map("pesquisador")
-}
-
-model MembroGrupo {
-  pesquisador   Pesquisador   @relation(fields: [pesquisadorId], references: [id])
-  pesquisadorId String        @map("pesquisador_id")
-  grupoPesquisa GrupoPesquisa @relation(fields: [grupoId], references: [id])
-  grupoId       String        @map("grupo_id")
-  eLider        Boolean       @default(false) @map("e_lider")
-  dataEntrada   DateTime?     @map("data_entrada")
-  criadoEm      DateTime      @default(now()) @map("criado_em")
-  atualizadoEm  DateTime      @updatedAt @map("atualizado_em")
-
-  @@id([pesquisadorId, grupoId])
-  @@map("membro_grupo")
-}
-
-model MembroLinhaPesquisa {
-  linhaPesquisa   LinhaPesquisa @relation(fields: [linhaPesquisaId], references: [id])
-  linhaPesquisaId String        @map("linha_pesquisa_id")
-  pesquisador     Pesquisador   @relation(fields: [pesquisadorId], references: [id])
-  pesquisadorId   String        @map("pesquisador_id")
-  criadoEm        DateTime      @default(now()) @map("criado_em")
-
-  @@id([linhaPesquisaId, pesquisadorId])
-  @@map("membro_linha_pesquisa")
-}
-
 enum TipoAreaConhecimento {
   GRANDE_AREA
   AREA
@@ -197,24 +502,6 @@ enum TipoAreaConhecimento {
   @@map("tipo_area_conhecimento")
 }
 
-model AreaConhecimento {
-  id              String                          @id @default(uuid())
-  nome            String
-  nomeNormalizado String                          @unique
-  tipo            TipoAreaConhecimento?
-  areaPai         AreaConhecimento?               @relation("AreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
-  areaPaiId       String?                         @map("area_pai_id")
-  subareas        AreaConhecimento[]              @relation("AreaConhecimentoHierarquia")
-  gruposPesquisaPrincipal GrupoPesquisa[]         @relation("GrupoPesquisaAreaPrincipal")
-  gruposPesquisa  GrupoPesquisaAreaConhecimento[]
-  pesquisadores   PesquisadoresAreaConhecimento[]
-  mapeamentosOpenAlex MapeamentoAreaTaxonomia[]
-  criadoEm        DateTime                        @default(now()) @map("criado_em")
-  atualizadoEm    DateTime                        @updatedAt @map("atualizado_em")
-
-  @@map("area_conhecimento")
-}
-
 enum TipoOpenAlexAreaConhecimento {
   DOMAIN
   FIELD
@@ -222,30 +509,6 @@ enum TipoOpenAlexAreaConhecimento {
   TOPIC
 
   @@map("tipo_open_alex_area_conhecimento")
-}
-
-model OpenAlexAreaConhecimento {
-  id               String                         @id @default(uuid())
-  termo            String
-  termoNormalizado String                         @map("termo_normalizado")
-  termoEstrangeiro String?                        @map("termo_estrangeiro")
-  externalId       String                         @unique @map("external_id")
-  tipo             TipoOpenAlexAreaConhecimento
-  descricao        String?
-  nomesAlternativos String[]                      @default([]) @map("nomes_alternativos")
-  wikidataUrl      String?                         @map("wikidata_url")
-  wikipediaUrl     String?                         @map("wikipedia_url")
-  areaPai          OpenAlexAreaConhecimento?      @relation("OpenAlexAreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
-  areaPaiId        String?                        @map("area_pai_id")
-  subareas         OpenAlexAreaConhecimento[]     @relation("OpenAlexAreaConhecimentoHierarquia")
-  mapeamentosCnpq  MapeamentoAreaTaxonomia[]
-  criadoEm         DateTime                       @default(now()) @map("criado_em")
-  atualizadoEm     DateTime                       @updatedAt @map("atualizado_em")
-
-  @@index([termoNormalizado])
-  @@index([tipo])
-  @@index([areaPaiId])
-  @@map("open_alex_area_conhecimento")
 }
 
 enum TipoRelacaoAreaTaxonomia {
@@ -272,35 +535,6 @@ enum StatusMapeamentoAreaTaxonomia {
   @@map("status_mapeamento_area_taxonomia")
 }
 
-model MapeamentoAreaTaxonomia {
-  id                  String                        @id @default(uuid())
-  openAlexArea        OpenAlexAreaConhecimento       @relation(fields: [openAlexAreaId], references: [id], onDelete: Restrict)
-  openAlexAreaId      String                        @map("open_alex_area_id")
-  areaConhecimento    AreaConhecimento               @relation(fields: [areaConhecimentoId], references: [id], onDelete: Restrict)
-  areaConhecimentoId  String                        @map("area_conhecimento_id")
-  tipoRelacao         TipoRelacaoAreaTaxonomia?      @map("tipo_relacao")
-  metodo              MetodoMapeamentoAreaTaxonomia
-  status              StatusMapeamentoAreaTaxonomia  @default(PENDENTE)
-  observacao          String?
-  criadoEm            DateTime                       @default(now()) @map("criado_em")
-  atualizadoEm        DateTime                       @updatedAt @map("atualizado_em")
-
-  @@unique([openAlexAreaId, areaConhecimentoId])
-  @@index([areaConhecimentoId])
-  @@index([status])
-  @@map("mapeamento_area_taxonomia")
-}
-
-model PesquisadoresAreaConhecimento {
-  pesquisador   Pesquisador      @relation(fields: [pesquisadorId], references: [id])
-  pesquisadorId String           @map("pesquisador_id")
-  area          AreaConhecimento @relation(fields: [areaId], references: [id])
-  areaId        String           @map("area_conhecimento_id")
-
-  @@id([pesquisadorId, areaId])
-  @@map("pesquisador_area_conhecimento")
-}
-
 enum TipoRelacaoGrupoArea {
   PRINCIPAL
   ADICIONAL
@@ -314,71 +548,6 @@ enum MetodoInferenciaGrupoArea {
   MANUAL
 
   @@map("metodo_inferencia_grupo_area")
-}
-
-model GrupoPesquisaAreaConhecimento {
-  grupo             GrupoPesquisa              @relation(fields: [grupoId], references: [id])
-  grupoId           String                     @map("grupo_id")
-  area              AreaConhecimento           @relation(fields: [areaId], references: [id])
-  areaId            String                     @map("area_conhecimento_id")
-  relacao           TipoRelacaoGrupoArea       @default(ADICIONAL)
-  metodoInferencia  MetodoInferenciaGrupoArea  @default(MANUAL) @map("metodo_inferencia")
-  confianca         Float?
-  justificativa     String?
-  metadata          Json?
-  criadoEm          DateTime                   @default(now()) @map("criado_em")
-  atualizadoEm      DateTime?                   @updatedAt @map("atualizado_em")
-
-  @@id([grupoId, areaId])
-  @@index([areaId])
-  @@index([relacao])
-  @@index([metodoInferencia])
-  @@map("grupo_pesquisa_area_conhecimento")
-}
-
-model PalavraChave {
-  id               String                      @id @default(uuid())
-  termo            String                      @unique
-  termoNormalizado String                      @unique @map("termo_normalizado")
-  linhasPesquisa   LinhaPesquisaPalavraChave[]
-  producoes        ProducaoPalavraChave[]
-  criadoEm         DateTime                    @default(now()) @map("criado_em")
-  atualizadoEm     DateTime                    @updatedAt @map("atualizado_em")
-
-  @@map("palavra_chave")
-}
-
-model SetorAplicacao {
-  id              String                        @id @default(uuid())
-  nome            String                        @unique
-  nomeNormalizado String                        @unique @map("nome_normalizado")
-  linhasPesquisa  LinhaPesquisaSetorAplicacao[]
-  criadoEm        DateTime                      @default(now()) @map("criado_em")
-  atualizadoEm    DateTime                      @updatedAt @map("atualizado_em")
-
-  @@map("setor_aplicacao")
-}
-
-model LinhaPesquisaSetorAplicacao {
-  linhaPesquisa    LinhaPesquisa  @relation(fields: [linhaPesquisaId], references: [id])
-  linhaPesquisaId  String         @map("linha_pesquisa_id")
-  setorAplicacao   SetorAplicacao @relation(fields: [setorAplicacaoId], references: [id])
-  setorAplicacaoId String         @map("setor_aplicacao_id")
-  criadoEm         DateTime       @default(now()) @map("criado_em")
-
-  @@id([linhaPesquisaId, setorAplicacaoId])
-  @@map("linha_pesquisa_setor_aplicacao")
-}
-
-model LinhaPesquisaPalavraChave {
-  linhaPesquisa   LinhaPesquisa @relation(fields: [linhaPesquisaId], references: [id])
-  linhaPesquisaId String        @map("linha_pesquisa_id")
-  palavraChave    PalavraChave  @relation(fields: [palavraChaveId], references: [id])
-  palavraChaveId  String        @map("palavra_chave_id")
-  criadoEm        DateTime      @default(now()) @map("criado_em")
-
-  @@id([linhaPesquisaId, palavraChaveId])
-  @@map("linha_pesquisa_palavra_chave")
 }
 
 enum TipoProducao {
@@ -403,48 +572,6 @@ enum Qualis {
   @@map("qualis_estrato")
 }
 
-model Producao {
-  id            String                 @id @default(uuid())
-  titulo        String
-  ano           Int?
-  tipo          TipoProducao           @default(OUTRA)
-  doi           String?                @unique
-  url           String?
-  veiculo       String?
-  issn          String?
-  qualis        Qualis?
-  resumo        String?
-  autores       ProducaoPesquisador[]
-  palavrasChave ProducaoPalavraChave[]
-  criadoEm      DateTime               @default(now()) @map("criado_em")
-  atualizadoEm  DateTime               @updatedAt @map("atualizado_em")
-
-  @@map("producao")
-}
-
-model ProducaoPesquisador {
-  producao      Producao    @relation(fields: [producaoId], references: [id])
-  producaoId    String      @map("producao_id")
-  pesquisador   Pesquisador @relation(fields: [pesquisadorId], references: [id])
-  pesquisadorId String      @map("pesquisador_id")
-  ordemAutoria  Int?        @map("ordem_autoria")
-  criadoEm      DateTime    @default(now()) @map("criado_em")
-
-  @@id([producaoId, pesquisadorId])
-  @@map("producao_pesquisador")
-}
-
-model ProducaoPalavraChave {
-  producao       Producao     @relation(fields: [producaoId], references: [id])
-  producaoId     String       @map("producao_id")
-  palavraChave   PalavraChave @relation(fields: [palavraChaveId], references: [id])
-  palavraChaveId String       @map("palavra_chave_id")
-  criadoEm       DateTime     @default(now()) @map("criado_em")
-
-  @@id([producaoId, palavraChaveId])
-  @@map("producao_palavra_chave")
-}
-
 enum RagSourceType {
   GRUPO_PESQUISA    @map("grupo_pesquisa")
   LINHA_PESQUISA    @map("linha_pesquisa")
@@ -463,55 +590,6 @@ enum IndexingJobStatus {
 
   @@map("indexing_job_status")
 }
-
-model RagDocument {
-  id           String        @id @default(uuid())
-  sourceType   RagSourceType @map("source_type")
-  sourceId     String        @map("source_id")
-  titulo       String?
-  conteudo     String?
-  metadata     Json?
-  chunks       RagChunk[]
-  criadoEm     DateTime      @default(now()) @map("criado_em")
-  atualizadoEm DateTime      @updatedAt @map("atualizado_em")
-
-  @@unique([sourceType, sourceId])
-  @@index([sourceType, sourceId])
-  @@map("rag_document")
-}
-
-model RagChunk {
-  id           String                       @id @default(uuid())
-  document     RagDocument                  @relation(fields: [documentId], references: [id])
-  documentId   String                       @map("document_id")
-  conteudo     String
-  embedding    Unsupported("vector(1536)")?
-  ordem        Int                          @default(0)
-  tokenCount   Int?                         @map("token_count")
-  metadata     Json?
-  criadoEm     DateTime                     @default(now()) @map("criado_em")
-  atualizadoEm DateTime                     @updatedAt @map("atualizado_em")
-
-  @@index([documentId])
-  @@map("rag_chunk")
-}
-
-model IndexingJob {
-  id           String            @id @default(uuid())
-  sourceType   RagSourceType     @map("source_type")
-  sourceId     String            @map("source_id")
-  status       IndexingJobStatus @default(PENDENTE)
-  erro         String?
-  tentativas   Int               @default(0)
-  criadoEm     DateTime          @default(now()) @map("criado_em")
-  atualizadoEm DateTime          @updatedAt @map("atualizado_em")
-
-  @@index([status])
-  @@index([sourceType, sourceId])
-  @@map("indexing_job")
-}
-
-// Domínio do Scrapper
 
 enum StatusColeta {
   EMANDAMENTO @map("em_andamento")
@@ -555,7 +633,7 @@ enum PipelineEtapa {
   INSTITUICOES_PARCEIRAS
   LINHA_PESQUISA
   GRUPO_ESPELHO
-  SCRAPE_GROUP_PAGE @map("scrapeGroupPage")
+  SCRAPE_GROUP_PAGE      @map("scrapeGroupPage")
   PESQUISADOR_LATTES
   DGP_DISCOVERY
   DGP_DISCOVERY_PAGINA
@@ -580,50 +658,6 @@ enum TipoErroColeta {
   DESCONHECIDO
 }
 
-model PipelineLog {
-  id                   String            @id @default(uuid())
-  modulo               ModuloSistema
-  dgpId                String?           @map("dgp_id")
-  modoExecucao         ModoExecucao      @default(COMPLETA) @map("modo_execucao")
-  status               StatusSessao      @default(EMANDAMENTO)
-  registrosProcessados Int               @default(0) @map("registros_processados")
-  quantidadeSucessos   Int               @default(0) @map("quantidade_sucessos")
-  quantidadeErros      Int               @default(0) @map("quantidade_erros")
-  dataInicio           DateTime          @default(now()) @map("data_inicio")
-  dataFim              DateTime?         @map("data_fim")
-  duracaoMs            Int?              @map("duracao_ms")
-  metadata             Json?             @map("metadata")
-  itens                PipelineLogItem[]
-  criadoEm             DateTime          @default(now()) @map("criado_em")
-  atualizadoEm         DateTime          @updatedAt @map("atualizado_em")
-
-  @@index([modulo, status])
-  @@index([dgpId])
-  @@map("pipeline_log")
-}
-
-model PipelineLogItem {
-  id            String          @id @default(uuid())
-  pipelineLog   PipelineLog     @relation(fields: [pipelineLogId], references: [id], onDelete: Cascade)
-  pipelineLogId String          @map("pipeline_log_id")
-  entidadeId    String?         @map("entidade_id")
-  tipoEntidade  TipoEntidadeLog @default(GRUPO) @map("tipo_entidade")
-  etapa         PipelineEtapa?
-  status        StatusItemLog
-  tipoErro      TipoErroColeta? @map("tipo_erro")
-  mensagemErro  String?         @map("mensagem_erro")
-  detalhesErro  String?         @map("detalhes_erro")
-  tempoMs       Int?            @map("tempo_ms")
-  criadoEm      DateTime        @default(now()) @map("criado_em")
-  errosFilaGrupo FilaExtracaoGrupo[] @relation("FilaExtracaoGrupoUltimoErro")
-  errosFilaPesquisador FilaExtracaoPesquisador[] @relation("FilaExtracaoPesquisadorUltimoErro")
-
-  @@index([pipelineLogId])
-  @@index([entidadeId])
-  @@index([status])
-  @@map("pipeline_log_item")
-}
-
 enum FilaExtracaoStatus {
   PENDENTE
   CONCLUIDO
@@ -631,77 +665,12 @@ enum FilaExtracaoStatus {
   ERRO
 }
 
-model FilaExtracaoGrupo {
-  dgpId                    String             @id @unique @map("dgp_id")
-  nome                     String
-  area                     String
-  instituicao              String
-  status                   FilaExtracaoStatus @default(PENDENTE)
-  tentativas               Int                @default(0)
-  similares                Int                @default(1)
-  processamentoIniciadoEm  DateTime?          @map("processamento_iniciado_em")
-  ultimoErro               PipelineLogItem?   @relation("FilaExtracaoGrupoUltimoErro", fields: [ultimoErroId], references: [id])
-  ultimoErroId             String?            @map("ultimo_erro_id")
-  ultimoErroEm             DateTime?          @map("ultimo_erro_em")
-  criadoEm                 DateTime           @default(now()) @map("criado_em")
-  ultimaAtualizacao        DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
+view MvMetricasSistema {
+  entidade       String
+  dataRegistro   DateTime @map("data_registro") @db.Date
+  novosNoDia     Int      @map("novos_no_dia")
+  totalAcumulado Int      @map("total_acumulado")
 
-  @@index([status])
-  @@index([processamentoIniciadoEm])
-  @@index([ultimoErroId])
-  @@map("fila_extracao_grupo")
-}
-
-model FilaExtracaoPesquisador {
-  lattesId                 String             @id @unique @map("lattes_id")
-  nome                     String
-  status                   FilaExtracaoStatus @default(PENDENTE)
-  tentativas               Int                @default(0)
-  processamentoIniciadoEm  DateTime?          @map("processamento_iniciado_em")
-  ultimoErro               PipelineLogItem?   @relation("FilaExtracaoPesquisadorUltimoErro", fields: [ultimoErroId], references: [id])
-  ultimoErroId             String?            @map("ultimo_erro_id")
-  ultimoErroEm             DateTime?          @map("ultimo_erro_em")
-  criadoEm                 DateTime           @default(now()) @map("criado_em")
-  ultimaAtualizacao        DateTime           @default(now()) @updatedAt @map("ultima_atualizacao")
-
-  @@index([status])
-  @@index([processamentoIniciadoEm])
-  @@index([ultimoErroId])
-  @@map("fila_extracao_pesquisador")
-}
-
-model StgGrupoPesquisa {
-  id                Int     @id @default(autoincrement())
-  dgp_id            String?
-  nome              String?
-  ano_formacao      Int?
-  area_predominante String?
-  repercussao       String?
-  instituicao_nome  String?
-  estado            String?
-
-  @@map("stg_grupo_pesquisa")
-}
-
-model StgPesquisador {
-  id            Int     @id @default(autoincrement())
-  dgp_id        String?
-  nome          String?
-  lattes_id     String?
-  formacao      String?
-  categoria     String?
-  areas_atuacao String?
-
-  @@map("stg_pesquisador")
-}
-
-model StgLinhaPesquisa {
-  id              Int     @id @default(autoincrement())
-  dgp_id          String?
-  titulo          String?
-  objetivo        String?
-  setor_aplicacao String?
-  palavra_chave   String?
-
-  @@map("stg_linha_pesquisa")
+  @@unique([entidade, dataRegistro])
+  @@map("mv_metricas_sistema")
 }

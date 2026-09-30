@@ -6,8 +6,9 @@ import { UpdateProducoeDto } from './dto/update-producoe.dto';
 import { FindAllProducoesDto } from './dto/find-all-producoes.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
+import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
-const PRODUCOES_LIST_CACHE_KEY = 'producoes:list';
+const PRODUCOES_LIST_CACHE_KEY = 'producoes:list:v2';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -74,10 +75,17 @@ export class ProducoesService {
   async findAll(query?: FindAllProducoesDto) {
     const where: Prisma.ProducaoWhereInput = {};
     const pagination = getPagination(query);
+    const orderBy = [
+      { [query?.ordenarPor ?? 'titulo']: query?.ordem ?? 'asc' },
+      { id: 'asc' as const },
+    ] as Prisma.ProducaoOrderByWithRelationInput[];
+    const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
       if (query.titulo) {
-        where.titulo = { contains: query.titulo, mode: 'insensitive' };
+        where.id = {
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'producao', query.titulo),
+        };
       }
       if (query.ano) {
         where.ano = query.ano;
@@ -113,12 +121,13 @@ export class ProducoesService {
       }
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30) {
+    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.producao.findMany({
           where,
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.producao.count({ where }),
@@ -133,6 +142,7 @@ export class ProducoesService {
         this.prismaService.producao.findMany({
           skip: pagination.skip,
           take: pagination.take,
+          orderBy,
           omit: { criadoEm: true, atualizadoEm: true },
         }),
         this.prismaService.producao.count(),

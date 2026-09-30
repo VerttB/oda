@@ -1,5 +1,6 @@
 import { PrismaClient, prismaConfig, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { DATA_DIR, DGP_DIR, LATTES_DIR } from '../commom/config';
+import { mapDgpGroupSituation } from '../commom/groupSituation';
 const prisma = new PrismaClient(prismaConfig);
 
 function cleanOptional(value: any): string | null {
@@ -29,6 +30,7 @@ async function saveGroupToDb(data: any) {
     const dgpId = data.id_dgp;
     
     try {
+        const situacao = mapDgpGroupSituation(data.situacao);
         await prisma.$transaction(async (tx) => {
             // 1. Instituição
             let instName = data.instituicao || "Instituição Desconhecida";
@@ -59,6 +61,7 @@ async function saveGroupToDb(data: any) {
                     nome: data.nome,
                     anoFormacao: ano,
                     areaPredominante: data.area || 'N/A',
+                    situacao,
                     repercussao: data.repercussao || null,
                 },
                 create: {
@@ -66,6 +69,7 @@ async function saveGroupToDb(data: any) {
                     nome: data.nome,
                     anoFormacao: ano,
                     areaPredominante: data.area || 'N/A',
+                    situacao,
                     repercussao: data.repercussao || null,
                 }
             });

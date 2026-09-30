@@ -5,6 +5,8 @@ export const PaginationQuerySchema = z.object({
   size: z.coerce.number().int().min(0).default(30),
 });
 
+export const SortOrderSchema = z.enum(['asc', 'desc']);
+
 export const PaginationMetaResponseSchema = z.object({
   page: z.number().int().min(1),
   size: z.number().int().min(0),
@@ -21,4 +23,5 @@ export const createPaginatedResponseSchema = <TItem extends z.ZodTypeAny>(
   });
 
 export type PaginationQuery = z.infer<typeof PaginationQuerySchema>;
+export type SortOrder = z.infer<typeof SortOrderSchema>;
 export type PaginationMetaResponse = z.infer<typeof PaginationMetaResponseSchema>;

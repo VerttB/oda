@@ -14,6 +14,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY shared/database/package.json ./shared/database/
 COPY shared/cache/package.json ./shared/cache/
+COPY shared/queue/package.json ./shared/queue/
 COPY shared/shared-types/package.json ./shared/shared-types/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -33,6 +34,7 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY --from=build /app/deploy ./
+RUN mkdir -p /app/static
 
 EXPOSE 3000
 
