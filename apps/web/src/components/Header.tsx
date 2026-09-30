@@ -1,8 +1,8 @@
 import { Button } from '#/components/ui/button'
 import { DebouncedInput } from '#/components/ui/debounced-input'
 import { useRouterState } from '@tanstack/react-router'
-import React, { useState } from 'react'
-import { Search, X, ArrowRight } from 'lucide-react'
+import React from 'react'
+import { Search, X } from 'lucide-react'
 
 interface NavbarProps {
   activeTab?: string
@@ -19,7 +19,6 @@ export const Header: React.FC<NavbarProps> = ({
   onSearchChange = () => {},
   isDarkTheme = false,
 }) => {
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -140,82 +139,6 @@ export const Header: React.FC<NavbarProps> = ({
             )
           })}
         </nav>
-
-        {/* Ações à direita */}
-        <div className="flex items-center gap-3 md:gap-4 relative">
-          {/* Botão de notificações */}
-
-          {/* Botão de perfil */}
-          <div className="relative">
-            <Button
-              id="profile-btn"
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                setUserMenuOpen(!userMenuOpen)
-              }}
-              className={`size-auto rounded-full p-1.5 ${
-                isNavyNav
-                  ? 'text-white/80 hover:text-white hover:bg-white/10'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-slate-100'
-              }`}
-              title="Conta de pesquisador"
-            >
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7pIzfuk-eLdC6Nxn0ePVr_99DzfWdGIpClj5V6n4AnFHnvAMLY0s76dXJhh9N1nf-zzcKOm7aFpPmR9G4zSoOdp_VR3DN2B6PlTRJZrfMKOOgv2S3Zlbp5QyzGPEJ4J2MbuaolT4Sm8UccsUncpmh4zVNS2ANfUsZHkjTcEJoWO2DBMCVKaw4JYCOkqKV4RVAae6n38Fcq6hSX7mjOgeRsFAZIHpCs28O_BqqLc-w7G5ayrwdc48_"
-                alt="Avatar da conta"
-                className="w-8 h-8 rounded-full object-cover border border-accent"
-              />
-            </Button>
-
-            {userMenuOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-white text-foreground rounded-xl shadow-xl border border-border-subtle p-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                  <p className="font-semibold text-secondary">
-                    Dr. Elena Rostova
-                  </p>
-                  <p className="text-muted-foreground text-[11px]">
-                    elena.rostova@mit.edu
-                  </p>
-                </div>
-                <a
-                  href="/pesquisadores"
-                  onClick={() => {
-                    onTabChange('researchers')
-                    setUserMenuOpen(false)
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
-                >
-                  <span>Meu perfil de pesquisador</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </a>
-                <a
-                  href="/grupos"
-                  onClick={() => {
-                    onTabChange('groups')
-                    setUserMenuOpen(false)
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
-                >
-                  <span>Meus grupos DGP</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </a>
-                <a
-                  href="/docs/geral"
-                  onClick={() => {
-                    onTabChange('docs')
-                    setUserMenuOpen(false)
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-100 rounded-md font-medium text-slate-700 flex items-center justify-between"
-                >
-                  <span>Chaves e docs da API</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Subnavegação mobile */}
