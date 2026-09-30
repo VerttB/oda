@@ -1,21 +1,59 @@
+import {
+  getResearchGroups,
+  getResearchGroupsMetrics,
+  researchGroupsMetricsQueryKey,
+  researchGroupsQueryKey,
+  type ResearchGroupSortField,
+  type ResearchGroupsFilters,
+} from '#/api/grupos-pesquisa'
+import type { SortOrder } from '#/api/sorting'
+import { Button } from '#/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import {
-  getResearchGroupsMetrics,
-  getResearchGroups,
-  researchGroupsMetricsQueryKey,
-  researchGroupsQueryKey,
-} from '#/api/grupos-pesquisa'
-import { Button } from '#/components/ui/button'
 import { GroupMainPage } from './-components/GroupMainPage'
 
+type GroupsSearch = {
+  ordenarPor?: ResearchGroupSortField
+  ordem?: SortOrder
+}
+
+function isResearchGroupSortField(
+  value: unknown,
+): value is ResearchGroupSortField {
+  return value === 'nome' || value === 'anoFormacao' || value === 'situacao'
+}
+
+function isSortOrder(value: unknown): value is SortOrder {
+  return value === 'asc' || value === 'desc'
+}
+
+function parseGroupsSearch(search: Record<string, unknown>): GroupsSearch {
+  return {
+    ordenarPor: isResearchGroupSortField(search.ordenarPor)
+      ? search.ordenarPor
+      : 'nome',
+    ordem: isSortOrder(search.ordem) ? search.ordem : 'asc',
+  }
+}
+
+function getResearchGroupsFilters(search: GroupsSearch): ResearchGroupsFilters {
+  return {
+    ordenarPor: search.ordenarPor ?? 'nome',
+    ordem: search.ordem ?? 'asc',
+  }
+}
+
 export const Route = createFileRoute('/grupos/')({
-  loader: ({ context }) =>
-    Promise.all([
+  validateSearch: parseGroupsSearch,
+  loaderDeps: ({ search }) => search,
+  loader: ({ context, deps }) => {
+    const filters = getResearchGroupsFilters(deps)
+
+    return Promise.all([
       context.queryClient.query({
-        queryKey: researchGroupsQueryKey,
-        queryFn: getResearchGroups,
+        queryKey: researchGroupsQueryKey(filters),
+        queryFn: () => getResearchGroups(filters),
         staleTime: 'static',
       }),
       context.queryClient.query({
@@ -23,7 +61,8 @@ export const Route = createFileRoute('/grupos/')({
         queryFn: getResearchGroupsMetrics,
         staleTime: 'static',
       }),
-    ]),
+    ])
+  },
   component: GroupsRoute,
   pendingComponent: GroupsPendingState,
   errorComponent: ({ error, reset }) => (
@@ -83,8 +122,17 @@ function GroupsErrorState({
 
 function GroupsRoute() {
   const navigate = Route.useNavigate()
+  const search = Route.useSearch()
   const [groups, metrics] = Route.useLoaderData()
   const [searchQuery, setSearchQuery] = useState('')
+
+  const updateSearch = (nextSearch: Partial<GroupsSearch>) =>
+    void navigate({
+      search: (previous) => ({
+        ...previous,
+        ...nextSearch,
+      }),
+    })
 
   return (
     <GroupMainPage
@@ -98,6 +146,10 @@ function GroupsRoute() {
       }
       searchQuery={searchQuery}
       onSearchChange={setSearchQuery}
+      sortField={search.ordenarPor ?? 'nome'}
+      onSortFieldChange={(ordenarPor) => updateSearch({ ordenarPor })}
+      sortOrder={search.ordem ?? 'asc'}
+      onSortOrderChange={(ordem) => updateSearch({ ordem })}
     />
   )
 }

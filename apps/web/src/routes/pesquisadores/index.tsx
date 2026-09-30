@@ -4,9 +4,11 @@ import {
   researchersMetricsQueryKey,
   researchersQueryKey,
   type ResearcherDegreeFilter,
+  type ResearcherSortField,
   type ResearchersFilters,
   type ResearcherTypeFilter,
 } from '#/api/pesquisadores'
+import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import type { ResearcherItem } from '#/core/interfaces'
 import { createFileRoute } from '@tanstack/react-router'
@@ -19,6 +21,8 @@ type ResearchersSearch = {
   q?: string
   formacao?: ResearcherDegreeFilter
   tipo?: ResearcherTypeFilter
+  ordenarPor?: ResearcherSortField
+  ordem?: SortOrder
 }
 
 function isResearcherDegreeFilter(
@@ -42,6 +46,18 @@ function isResearcherTypeFilter(value: unknown): value is ResearcherTypeFilter {
   )
 }
 
+function isResearcherSortField(value: unknown): value is ResearcherSortField {
+  return (
+    value === 'nome' ||
+    value === 'tipo' ||
+    value === 'formacaoAcademica' ||
+    value === 'indexH'
+  )
+}
+
+function isSortOrder(value: unknown): value is SortOrder {
+  return value === 'asc' || value === 'desc'
+}
 function parseResearchersSearch(
   search: Record<string, unknown>,
 ): ResearchersSearch {
@@ -54,6 +70,10 @@ function parseResearchersSearch(
       ? search.formacao
       : undefined,
     tipo: isResearcherTypeFilter(search.tipo) ? search.tipo : undefined,
+    ordenarPor: isResearcherSortField(search.ordenarPor)
+      ? search.ordenarPor
+      : 'nome',
+    ordem: isSortOrder(search.ordem) ? search.ordem : 'asc',
   }
 }
 
@@ -64,6 +84,8 @@ function getResearchersFilters(search: ResearchersSearch): ResearchersFilters {
     nome: search.q,
     formacaoAcademica: search.formacao,
     tipo: search.tipo,
+    ordenarPor: search.ordenarPor ?? 'nome',
+    ordem: search.ordem ?? 'asc',
   }
 }
 
@@ -148,7 +170,7 @@ function ResearchersRoute() {
   const search = Route.useSearch()
   const [researchersPage, metrics] = Route.useLoaderData()
 
-  const updateSearch = (nextSearch: ResearchersSearch) =>
+  const updateSearch = (nextSearch: Partial<ResearchersSearch>) =>
     void navigate({
       search: (previous) => ({
         ...previous,
@@ -181,6 +203,10 @@ function ResearchersRoute() {
       onSelectedTypeChange={(tipo) =>
         updateSearch({ tipo: tipo || undefined, page: 1 })
       }
+      sortField={search.ordenarPor ?? 'nome'}
+      onSortFieldChange={(ordenarPor) => updateSearch({ ordenarPor, page: 1 })}
+      sortOrder={search.ordem ?? 'asc'}
+      onSortOrderChange={(ordem) => updateSearch({ ordem, page: 1 })}
       currentPage={search.page ?? 1}
       onPageChange={(page) => updateSearch({ page })}
     />

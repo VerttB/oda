@@ -1,9 +1,11 @@
 import {
   getProductions,
   productionsQueryKey,
+  type ProductionSortField,
   type ProductionTypeFilter,
   type ProductionsFilters,
 } from '#/api/producoes'
+import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import type { ProductionItem } from '#/core/interfaces'
 import { createFileRoute } from '@tanstack/react-router'
@@ -15,12 +17,26 @@ type ProductionsSearch = {
   page?: number
   q?: string
   tipo?: ProductionTypeFilter
+  ordenarPor?: ProductionSortField
+  ordem?: SortOrder
 }
 
 function isProductionTypeFilter(value: unknown): value is ProductionTypeFilter {
   return value === 'ARTIGO' || value === 'LIVROCAPITULO' || value === 'OUTRA'
 }
 
+function isProductionSortField(value: unknown): value is ProductionSortField {
+  return (
+    value === 'titulo' ||
+    value === 'ano' ||
+    value === 'tipo' ||
+    value === 'qualis'
+  )
+}
+
+function isSortOrder(value: unknown): value is SortOrder {
+  return value === 'asc' || value === 'desc'
+}
 function parseProductionsSearch(
   search: Record<string, unknown>,
 ): ProductionsSearch {
@@ -30,6 +46,10 @@ function parseProductionsSearch(
     page: Number.isFinite(page) && page > 0 ? page : 1,
     q: typeof search.q === 'string' ? search.q : '',
     tipo: isProductionTypeFilter(search.tipo) ? search.tipo : undefined,
+    ordenarPor: isProductionSortField(search.ordenarPor)
+      ? search.ordenarPor
+      : 'ano',
+    ordem: isSortOrder(search.ordem) ? search.ordem : 'desc',
   }
 }
 
@@ -39,6 +59,8 @@ function getProductionsFilters(search: ProductionsSearch): ProductionsFilters {
     size: PAGE_SIZE,
     titulo: search.q,
     tipo: search.tipo,
+    ordenarPor: search.ordenarPor ?? 'ano',
+    ordem: search.ordem ?? 'desc',
   }
 }
 
@@ -116,7 +138,7 @@ function ProductionsRoute() {
   const search = Route.useSearch()
   const productionsPage = Route.useLoaderData()
 
-  const updateSearch = (nextSearch: ProductionsSearch) =>
+  const updateSearch = (nextSearch: Partial<ProductionsSearch>) =>
     void navigate({
       search: (previous) => ({
         ...previous,
@@ -141,6 +163,10 @@ function ProductionsRoute() {
       onSelectedTypeChange={(tipo) =>
         updateSearch({ tipo: tipo || undefined, page: 1 })
       }
+      sortField={search.ordenarPor ?? 'ano'}
+      onSortFieldChange={(ordenarPor) => updateSearch({ ordenarPor, page: 1 })}
+      sortOrder={search.ordem ?? 'desc'}
+      onSortOrderChange={(ordem) => updateSearch({ ordem, page: 1 })}
       currentPage={search.page ?? 1}
       onPageChange={(page) => updateSearch({ page })}
     />

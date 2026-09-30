@@ -52,9 +52,6 @@ export const ResearcherListItem: FC<ResearcherListItemProps> = ({
                 {researcher.title}
               </span>
             )}
-            <span className="rounded bg-surface px-2 py-0.5 text-[10px] font-semibold tracking-wide text-secondary">
-              {researcher.isActive !== false ? 'Ativo' : 'Inativo'}
-            </span>
             {researcher.hIndex > 0 && (
               <span className="hidden text-[11px] font-medium text-secondary sm:inline">
                 h-index {researcher.hIndex}
@@ -65,12 +62,8 @@ export const ResearcherListItem: FC<ResearcherListItemProps> = ({
       </div>
 
       <div className="flex flex-shrink-0 flex-col items-end self-end text-right sm:self-center">
-        <span className="block text-[10px] font-bold uppercase tracking-wider text-secondary">
-          Produções i10
-        </span>
-        <span className="text-xs font-semibold text-foreground sm:text-sm">
-          {researcher.productionsCount ?? 0}
-        </span>
+       
+   
         <span className="mt-2 text-primary transition-colors hover:text-primary-hover">
           <ChevronRight className="h-5 w-5" />
         </span>

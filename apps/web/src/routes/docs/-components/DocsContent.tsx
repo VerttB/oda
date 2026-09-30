@@ -1,3 +1,4 @@
+import { PUBLIC_API_BASE_URL } from '#/api/config'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import {
@@ -14,7 +15,7 @@ import {
 import { useState, type FC, type ReactNode } from 'react'
 import { CodeSnippetBox } from './CodeSnippet'
 
-const BASE_URL = 'https://oda.vertb.com.br'
+const BASE_URL = PUBLIC_API_BASE_URL
 
 const CURL_CODE = `curl -X GET "${BASE_URL}/pesquisadores?size=5" \\
   -H "Authorization: Bearer SUA_CHAVE_DE_API" \\
@@ -248,6 +249,33 @@ const COMMON_FILTERS = [
       '/instituicao',
       '/linha-pesquisa',
       '/linha-pesquisa/busca-semantica',
+      '/area-conhecimento',
+    ],
+  },
+  {
+    name: 'ordenarPor',
+    type: 'string',
+    description:
+      'Campo de ordenação: grupos (nome, anoFormacao, situacao), pesquisadores (nome, tipo, formacaoAcademica, indexH), instituições (nome, sigla), linhas (titulo), produções (titulo, ano, tipo, qualis) e áreas (nome, tipo).',
+    routes: [
+      '/grupos-pesquisa',
+      '/pesquisadores',
+      '/producoes',
+      '/instituicao',
+      '/linha-pesquisa',
+      '/area-conhecimento',
+    ],
+  },
+  {
+    name: 'ordem',
+    type: 'string',
+    description: 'Direção da ordenação: asc (crescente) ou desc (decrescente).',
+    routes: [
+      '/grupos-pesquisa',
+      '/pesquisadores',
+      '/producoes',
+      '/instituicao',
+      '/linha-pesquisa',
       '/area-conhecimento',
     ],
   },

@@ -30,7 +30,7 @@ export const GroupHero: React.FC<GroupHeroProps> = ({ group }) => {
             {group.name}
           </h1>
 
-          <p className="max-w-2xl text-base leading-relaxed font-normal text-slate-300 md:text-lg">
+          <p className=" text-base leading-relaxed font-normal text-slate-300 md:text-lg">
             {group.description}
           </p>
 
@@ -95,22 +95,7 @@ export const GroupHero: React.FC<GroupHeroProps> = ({ group }) => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="relative h-[260px] w-full shrink-0 overflow-hidden rounded-lg border border-primary-300/30 bg-surface-dark shadow-2xl md:h-[300px] md:w-[360px] lg:w-[420px]">
-          {group.coverImage ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-85 transition-transform duration-700 hover:scale-105"
-              style={{ backgroundImage: `url("${group.coverImage}")` }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-secondary" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent opacity-60" />
-          <div className="absolute bottom-3 left-3 rounded border border-primary-300/20 bg-secondary/80 px-2.5 py-1 font-mono text-[11px] text-primary-200 backdrop-blur-xs">
-            {group.id}
-          </div>
-        </div>
+        </div>       
       </div>
     </section>
   )

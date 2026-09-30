@@ -2,12 +2,14 @@ import type {
   ResearcherDegreeFilter,
   ResearchersMetrics,
   ResearchersPage as ResearchersPageData,
+  ResearcherSortField,
   ResearcherTypeFilter,
 } from '#/api/pesquisadores'
+import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import type { ResearcherItem } from '#/core/interfaces'
 import { RotateCcw, UserCheck } from 'lucide-react'
-import { useMemo, useState, type FC } from 'react'
+import type { FC } from 'react'
 
 import { ResearcherListItem } from './ResearcherListItem'
 import { ResearchersFilterSidebar } from './ResearcherFilterSidebar'
@@ -25,6 +27,10 @@ interface ResearchersPageProps {
   onSelectedDegreeChange: (degree: ResearcherDegreeFilter | '') => void
   selectedType: ResearcherTypeFilter | ''
   onSelectedTypeChange: (type: ResearcherTypeFilter | '') => void
+  sortField: ResearcherSortField
+  onSortFieldChange: (field: ResearcherSortField) => void
+  sortOrder: SortOrder
+  onSortOrderChange: (order: SortOrder) => void
   currentPage: number
   onPageChange: (page: number) => void
 }
@@ -39,43 +45,19 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
   onSelectedDegreeChange,
   selectedType,
   onSelectedTypeChange,
+  sortField,
+  onSortFieldChange,
+  sortOrder,
+  onSortOrderChange,
   currentPage,
   onPageChange,
 }) => {
-  const [sortBy, setSortBy] = useState<
-    'relevancia' | 'alfabetica' | 'producoes' | 'citacoes'
-  >('relevancia')
-
-  const filteredResearchers = useMemo(() => {
-    return [...researchersPage.data].sort((a, b) => {
-      if (sortBy === 'relevancia') {
-        return (
-          b.hIndex * 100 +
-          b.citationsCount -
-          (a.hIndex * 100 + a.citationsCount)
-        )
-      }
-
-      if (sortBy === 'alfabetica') {
-        return a.name.localeCompare(b.name)
-      }
-
-      if (sortBy === 'producoes') {
-        return (b.productionsCount ?? 0) - (a.productionsCount ?? 0)
-      }
-
-      if (sortBy === 'citacoes') {
-        return (b.citationsCount ?? 0) - (a.citationsCount ?? 0)
-      }
-
-      return 0
-    })
-  }, [researchersPage.data, sortBy])
-
   const handleClearFilters = () => {
     onSearchChange('')
     onSelectedDegreeChange('')
     onSelectedTypeChange('')
+    onSortFieldChange('nome')
+    onSortOrderChange('asc')
     onPageChange(1)
   }
 
@@ -110,6 +92,10 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
           onSelectedDegreeChange={onSelectedDegreeChange}
           selectedType={selectedType}
           onSelectedTypeChange={onSelectedTypeChange}
+          sortField={sortField}
+          onSortFieldChange={onSortFieldChange}
+          sortOrder={sortOrder}
+          onSortOrderChange={onSortOrderChange}
           onClearFilters={handleClearFilters}
           metrics={metrics}
         />
@@ -124,22 +110,33 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-xs text-secondary">Ordenar por:</span>
               <select
-                value={sortBy}
+                value={sortField}
                 onChange={(event) =>
-                  setSortBy(event.target.value as typeof sortBy)
+                  onSortFieldChange(event.target.value as ResearcherSortField)
                 }
                 className="cursor-pointer rounded-lg border border-border-subtle bg-background px-3 py-1 text-xs font-medium text-foreground focus:outline-none"
               >
-                <option value="relevancia">Relevância</option>
-                <option value="alfabetica">Ordem alfabética</option>
-                <option value="producoes">Produções</option>
-                <option value="citacoes">Mais citados</option>
+                <option value="nome">Nome</option>
+                <option value="tipo">Tipo</option>
+                <option value="formacaoAcademica">Formação acadêmica</option>
+                <option value="indexH">Índice H</option>
+              </select>
+              <select
+                value={sortOrder}
+                onChange={(event) =>
+                  onSortOrderChange(event.target.value as SortOrder)
+                }
+                aria-label="Ordem"
+                className="cursor-pointer rounded-lg border border-border-subtle bg-background px-3 py-1 text-xs font-medium text-foreground focus:outline-none"
+              >
+                <option value="asc">Crescente</option>
+                <option value="desc">Decrescente</option>
               </select>
             </div>
           </div>
 
           <div className="flex flex-col divide-y divide-border-subtle overflow-hidden rounded-lg border border-border-subtle bg-surface">
-            {filteredResearchers.length === 0 ? (
+            {researchersPage.data.length === 0 ? (
               <div className="bg-surface p-6 py-16 text-center text-secondary">
                 <UserCheck className="mx-auto mb-3 h-10 w-10 text-secondary/40" />
                 <p className="text-sm font-semibold text-primary">
@@ -159,7 +156,7 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
                 </Button>
               </div>
             ) : (
-              filteredResearchers.map((researcher) => (
+              researchersPage.data.map((researcher) => (
                 <ResearcherListItem
                   key={researcher.id}
                   researcher={researcher}

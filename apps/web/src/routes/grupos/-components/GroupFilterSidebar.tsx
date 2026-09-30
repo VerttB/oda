@@ -1,14 +1,201 @@
+import type { ResearchGroupSortField } from '#/api/grupos-pesquisa'
+import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import { DebouncedInput } from '#/components/ui/debounced-input'
 import { FilterModal } from '#/components/ui/filter-modal'
+import { SortControls } from '#/components/ui/sort-controls'
 import { RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useState, type FC } from 'react'
 
-interface Props { searchQuery: string; onSearchChange: (query: string) => void; selectedUf: string; onUfChange: (value: string) => void; selectedArea: string; onAreaChange: (value: string) => void; selectedStatus: string; onStatusChange: (value: string) => void; onClearFilters: () => void; onApplyFilters?: () => void }
-const UF_OPTIONS = ['', 'BA', 'SP', 'RJ', 'MG', 'RS', 'PE']
-const AREAS = ['', 'Engenharia', 'Ciências Biológicas', 'Ciências da Computação', 'Física', 'Sociologia', 'Ciências da Saúde']
-export const DirectoryFilterSidebar: FC<Props> = (props) => {
+interface DirectoryFilterSidebarProps {
+  searchQuery: string
+  onSearchChange: (query: string) => void
+  selectedUf: string
+  onUfChange: (value: string) => void
+  selectedArea: string
+  onAreaChange: (value: string) => void
+  selectedStatus: string
+  onStatusChange: (value: string) => void
+  onClearFilters: () => void
+  onApplyFilters?: () => void
+  sortField: ResearchGroupSortField
+  onSortFieldChange: (field: ResearchGroupSortField) => void
+  sortOrder: SortOrder
+  onSortOrderChange: (order: SortOrder) => void
+}
+
+const UF_OPTIONS = ['BA', 'SP', 'RJ', 'MG', 'RS', 'PE']
+const AREAS = [
+  'Engenharia',
+  'Ciências Biológicas',
+  'Ciências da Computação',
+  'Física',
+  'Sociologia',
+  'Ciências da Saúde',
+]
+const SORT_FIELDS = [
+  { value: 'nome', label: 'Nome' },
+  { value: 'anoFormacao', label: 'Ano de formação' },
+  { value: 'situacao', label: 'Situação' },
+] satisfies { value: ResearchGroupSortField; label: string }[]
+
+export const DirectoryFilterSidebar: FC<DirectoryFilterSidebarProps> = (
+  props,
+) => {
   const [isOpen, setIsOpen] = useState(false)
-  const hasFilters = Boolean(props.searchQuery || props.selectedUf || props.selectedArea || props.selectedStatus !== 'Todos')
-  return <aside className="w-full shrink-0 lg:w-64 lg:border-r lg:border-border-subtle lg:pr-6"><div className="sticky top-24 space-y-5"><div className="flex items-center justify-between border-b border-border-subtle pb-3"><h3 className="flex items-center gap-1.5 text-sm font-semibold text-primary"><SlidersHorizontal className="size-4 text-secondary" />Filtros</h3>{hasFilters && <Button type="button" variant="ghost" size="xs" onClick={props.onClearFilters} className="h-auto px-0 text-secondary"><RotateCcw className="size-3" />Limpar</Button>}</div><div><label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-secondary">Nome do grupo</label><div className="relative"><DebouncedInput type="text" variant="default" size="sm" leftIcon={<Search />} value={props.searchQuery} onValueChange={props.onSearchChange} placeholder="Ex.: ciência de dados" className="pr-8" />{props.searchQuery && <Button type="button" variant="ghost" size="icon" onClick={() => props.onSearchChange('')} className="absolute right-1 top-1/2 size-7 -translate-y-1/2"><X className="size-3.5" /></Button>}</div></div><Button type="button" variant="outline" size="sm" fullWidth onClick={() => setIsOpen(true)}><SlidersHorizontal className="size-4" />Mais filtros</Button></div><FilterModal isOpen={isOpen} onClose={() => setIsOpen(false)} onApply={() => { props.onApplyFilters?.() }} onReset={props.onClearFilters}><label className="text-xs font-semibold text-primary">Estado / UF<select value={props.selectedUf} onChange={(e) => props.onUfChange(e.target.value)} className="mt-1 w-full rounded border border-border-subtle bg-background px-3 py-2 text-sm"><option value="">Todos os estados</option>{UF_OPTIONS.filter(Boolean).map((uf) => <option key={uf}>{uf}</option>)}</select></label><label className="text-xs font-semibold text-primary">Área de conhecimento<select value={props.selectedArea} onChange={(e) => props.onAreaChange(e.target.value)} className="mt-1 w-full rounded border border-border-subtle bg-background px-3 py-2 text-sm"><option value="">Todas as áreas</option>{AREAS.filter(Boolean).map((area) => <option key={area}>{area}</option>)}</select></label><label className="text-xs font-semibold text-primary">Cidade<input value="" readOnly placeholder="Filtro em preparação na API" className="mt-1 w-full rounded border border-border-subtle bg-surface px-3 py-2 text-sm" /></label><label className="text-xs font-semibold text-primary">Ano de formação<input type="number" placeholder="Ex.: 2020" className="mt-1 w-full rounded border border-border-subtle bg-surface px-3 py-2 text-sm" /></label><div className="text-xs font-semibold text-primary">Status do grupo<div className="mt-2 flex gap-2">{['Todos', 'Ativo', 'Arquivado'].map((status) => <Button key={status} type="button" size="xs" variant={props.selectedStatus === status ? 'secondary' : 'outline'} onClick={() => props.onStatusChange(status)}>{status}</Button>)}</div></div></FilterModal></aside>
+  const hasFilters =
+    Boolean(
+      props.searchQuery ||
+      props.selectedUf ||
+      props.selectedArea ||
+      props.selectedStatus !== 'Todos',
+    ) ||
+    props.sortField !== 'nome' ||
+    props.sortOrder !== 'asc'
+
+  return (
+    <aside className="w-full shrink-0 lg:w-64 lg:border-r lg:border-border-subtle lg:pr-6">
+      <div className="sticky top-24 space-y-5">
+        <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+          <h3 className="flex items-center gap-1.5 text-sm font-semibold text-primary">
+            <SlidersHorizontal className="size-4 text-secondary" />
+            Filtros
+          </h3>
+          {hasFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              onClick={props.onClearFilters}
+              className="h-auto px-0 text-secondary"
+            >
+              <RotateCcw className="size-3" />
+              Limpar
+            </Button>
+          )}
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-secondary">
+            Nome do grupo
+          </label>
+          <div className="relative">
+            <DebouncedInput
+              type="text"
+              variant="default"
+              size="sm"
+              leftIcon={<Search />}
+              value={props.searchQuery}
+              onValueChange={props.onSearchChange}
+              placeholder="Ex.: ciência de dados"
+              className="pr-8"
+            />
+            {props.searchQuery && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => props.onSearchChange('')}
+                className="absolute right-1 top-1/2 size-7 -translate-y-1/2"
+              >
+                <X className="size-3.5" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          fullWidth
+          onClick={() => setIsOpen(true)}
+        >
+          <SlidersHorizontal className="size-4" />
+          Mais filtros
+        </Button>
+      </div>
+
+      <FilterModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onApply={() => props.onApplyFilters?.()}
+        onReset={props.onClearFilters}
+      >
+        <label className="text-xs font-semibold text-primary">
+          Estado / UF
+          <select
+            value={props.selectedUf}
+            onChange={(event) => props.onUfChange(event.target.value)}
+            className="mt-1 w-full rounded border border-border-subtle bg-background px-3 py-2 text-sm"
+          >
+            <option value="">Todos os estados</option>
+            {UF_OPTIONS.map((uf) => (
+              <option key={uf}>{uf}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="text-xs font-semibold text-primary">
+          Área de conhecimento
+          <select
+            value={props.selectedArea}
+            onChange={(event) => props.onAreaChange(event.target.value)}
+            className="mt-1 w-full rounded border border-border-subtle bg-background px-3 py-2 text-sm"
+          >
+            <option value="">Todas as áreas</option>
+            {AREAS.map((area) => (
+              <option key={area}>{area}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="text-xs font-semibold text-primary">
+          Cidade
+          <input
+            value=""
+            readOnly
+            placeholder="Filtro em preparação na API"
+            className="mt-1 w-full rounded border border-border-subtle bg-surface px-3 py-2 text-sm"
+          />
+        </label>
+
+        <label className="text-xs font-semibold text-primary">
+          Ano de formação
+          <input
+            type="number"
+            placeholder="Ex.: 2020"
+            className="mt-1 w-full rounded border border-border-subtle bg-surface px-3 py-2 text-sm"
+          />
+        </label>
+
+        <div className="text-xs font-semibold text-primary">
+          Status do grupo
+          <div className="mt-2 flex gap-2">
+            {['Todos', 'Ativo', 'Arquivado'].map((status) => (
+              <Button
+                key={status}
+                type="button"
+                size="xs"
+                variant={
+                  props.selectedStatus === status ? 'secondary' : 'outline'
+                }
+                onClick={() => props.onStatusChange(status)}
+              >
+                {status}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <SortControls
+          field={props.sortField}
+          fields={SORT_FIELDS}
+          order={props.sortOrder}
+          onFieldChange={props.onSortFieldChange}
+          onOrderChange={props.onSortOrderChange}
+        />
+      </FilterModal>
+    </aside>
+  )
 }

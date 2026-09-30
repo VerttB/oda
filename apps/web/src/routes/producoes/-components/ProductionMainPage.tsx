@@ -1,8 +1,13 @@
-import type { ProductionsPage, ProductionTypeFilter } from '#/api/producoes'
+import type {
+  ProductionsPage,
+  ProductionSortField,
+  ProductionTypeFilter,
+} from '#/api/producoes'
+import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import type { ProductionItem } from '#/core/interfaces'
 import { FileText, RotateCcw } from 'lucide-react'
-import { useMemo, useState, type MouseEvent, type FC } from 'react'
+import { useMemo, useState, type FC, type MouseEvent } from 'react'
 
 import { ProductionsFilterSidebar } from './ProductionFilterSidebar'
 import { ProductionsListItem } from './ProductionListItem'
@@ -17,6 +22,10 @@ interface ProductionMainPageProps {
   onSearchChange: (q: string) => void
   selectedType: ProductionTypeFilter | ''
   onSelectedTypeChange: (type: ProductionTypeFilter | '') => void
+  sortField: ProductionSortField
+  onSortFieldChange: (field: ProductionSortField) => void
+  sortOrder: SortOrder
+  onSortOrderChange: (order: SortOrder) => void
   currentPage: number
   onPageChange: (page: number) => void
 }
@@ -24,7 +33,6 @@ interface ProductionMainPageProps {
 function parseProductionYear(value: ProductionItem['year']) {
   const year =
     typeof value === 'number' ? value : Number.parseInt(String(value), 10)
-
   return Number.isNaN(year) ? 0 : year
 }
 
@@ -35,17 +43,18 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
   onSearchChange,
   selectedType,
   onSelectedTypeChange,
+  sortField,
+  onSortFieldChange,
+  sortOrder,
+  onSortOrderChange,
   currentPage,
   onPageChange,
 }) => {
   const [selectedQualis, setSelectedQualis] = useState<string[]>([])
-  const [yearFrom, setYearFrom] = useState<string>('')
-  const [yearTo, setYearTo] = useState<string>('')
+  const [yearFrom, setYearFrom] = useState('')
+  const [yearTo, setYearTo] = useState('')
   const [selectedInstitution, setSelectedInstitution] = useState(
     'Todas as instituições',
-  )
-  const [sortBy, setSortBy] = useState<'recentes' | 'citacoes' | 'titulo'>(
-    'recentes',
   )
   const [copiedCitationId, setCopiedCitationId] = useState<string | null>(null)
 
@@ -81,19 +90,19 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
     setYearFrom('')
     setYearTo('')
     setSelectedInstitution('Todas as instituições')
+    onSortFieldChange('ano')
+    onSortOrderChange('desc')
     onPageChange(1)
   }
 
-  const filteredProductions = useMemo(() => {
-    return productionsPage.data
-      .filter((production) => {
-        if (selectedQualis.length > 0) {
-          if (
-            !production.qualis ||
-            !selectedQualis.includes(production.qualis)
-          ) {
-            return false
-          }
+  const filteredProductions = useMemo(
+    () =>
+      productionsPage.data.filter((production) => {
+        if (
+          selectedQualis.length > 0 &&
+          (!production.qualis || !selectedQualis.includes(production.qualis))
+        ) {
+          return false
         }
 
         const year = parseProductionYear(production.year)
@@ -106,31 +115,19 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
           return false
         }
 
-        if (selectedInstitution !== 'Todas as instituições') {
-          return production.institution === selectedInstitution
-        }
-
-        return true
-      })
-      .sort((a, b) => {
-        if (sortBy === 'recentes') {
-          return parseProductionYear(b.year) - parseProductionYear(a.year)
-        }
-
-        if (sortBy === 'citacoes') {
-          return (b.citations ?? 0) - (a.citations ?? 0)
-        }
-
-        return a.title.localeCompare(b.title)
-      })
-  }, [
-    productionsPage.data,
-    selectedQualis,
-    yearFrom,
-    yearTo,
-    selectedInstitution,
-    sortBy,
-  ])
+        return (
+          selectedInstitution === 'Todas as instituições' ||
+          production.institution === selectedInstitution
+        )
+      }),
+    [
+      productionsPage.data,
+      selectedInstitution,
+      selectedQualis,
+      yearFrom,
+      yearTo,
+    ],
+  )
 
   const pageStart =
     productionsPage.meta.totalItems === 0
@@ -167,6 +164,10 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
           selectedInstitution={selectedInstitution}
           onInstitutionChange={setSelectedInstitution}
           onResetFilters={handleResetFilters}
+          sortField={sortField}
+          onSortFieldChange={onSortFieldChange}
+          sortOrder={sortOrder}
+          onSortOrderChange={onSortOrderChange}
           onApplyFilters={() => onPageChange(1)}
         />
 
@@ -177,20 +178,32 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
               {productionsPage.meta.totalItems.toLocaleString('pt-BR')}{' '}
               resultados
             </span>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
                 Ordenar por:
               </span>
               <select
-                value={sortBy}
+                value={sortField}
                 onChange={(event) =>
-                  setSortBy(event.target.value as typeof sortBy)
+                  onSortFieldChange(event.target.value as ProductionSortField)
                 }
                 className="cursor-pointer border-none bg-transparent p-0 pr-4 text-xs font-semibold text-primary focus:ring-0"
               >
-                <option value="recentes">Mais recentes</option>
-                <option value="citacoes">Mais citadas</option>
                 <option value="titulo">Título</option>
+                <option value="ano">Ano</option>
+                <option value="tipo">Tipo</option>
+                <option value="qualis">Qualis</option>
+              </select>
+              <select
+                value={sortOrder}
+                onChange={(event) =>
+                  onSortOrderChange(event.target.value as SortOrder)
+                }
+                aria-label="Ordem"
+                className="cursor-pointer border-none bg-transparent p-0 pr-4 text-xs font-semibold text-primary focus:ring-0"
+              >
+                <option value="asc">Crescente</option>
+                <option value="desc">Decrescente</option>
               </select>
             </div>
           </div>
