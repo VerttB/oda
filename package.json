@@ -46,7 +46,14 @@
     "queue:etl:enqueue": "pnpm -F @oda/etl queue:etl enqueue",
     "queue:etl:worker": "pnpm -F @oda/etl queue:etl worker",
     "queue:etl:status": "pnpm -F @oda/etl queue:etl status",
-    "queue:etl:reconcile": "pnpm -F @oda/etl queue:etl reconcile"
+    "queue:etl:reconcile": "pnpm -F @oda/etl queue:etl reconcile",
+    "system:worker": "pnpm -F @oda/system-worker start:worker",
+    "system:cli": "pnpm -F @oda/system-worker start:cli",
+    "system:backup": "pnpm -F @oda/system-worker start:cli enqueue backup",
+    "system:refresh-mv": "pnpm -F @oda/system-worker start:cli enqueue refresh-mv",
+    "system:cleanup-logs": "pnpm -F @oda/system-worker start:cli enqueue cleanup-logs",
+    "system:reconcile-stuck": "pnpm -F @oda/system-worker start:cli enqueue reconcile-stuck",
+    "system:status": "pnpm -F @oda/system-worker start:cli status"
   },
   "engines": {
     "node": ">=20"

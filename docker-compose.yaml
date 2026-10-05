@@ -1,3 +1,25 @@
+x-system-worker: &system-worker
+  image: oda-system-worker:local
+  build:
+    context: .
+    dockerfile: apps/system-worker/Dockerfile
+  restart: unless-stopped
+  init: true
+  env_file:
+    - .env
+  environment:
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    REDIS_URL: redis://redis:6379/0
+  volumes:
+    - ./scripts:/app/scripts
+    - ./backups:/app/backups
+  stop_grace_period: 5m
+  depends_on:
+    postgres:
+      condition: service_started
+    redis:
+      condition: service_healthy
+
 x-scraper-worker: &scraper-worker
   image: oda-scraper:local
   build:
@@ -8,7 +30,7 @@ x-scraper-worker: &scraper-worker
   env_file:
     - .env
   environment:
-    DATABASE_URL: ${DATABASE_URL}
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     REDIS_URL: redis://redis:6379/0
   volumes:
     - ./apps/scraper/data:/app/apps/scraper/data
@@ -79,8 +101,8 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=${JWT_SECRET}
       - LANGCHAIN_HOST=langchain
       - LANGCHAIN_PORT=8002
@@ -99,7 +121,7 @@ services:
     container_name: oda_langchain_ts
     restart: always
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - OPEN_AI_KEY=${OPEN_AI_KEY}
       - LANGCHAIN_PORT=8002
     ports:
@@ -118,7 +140,7 @@ services:
     volumes:
       - ./apps/scraper/data:/data
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - REDIS_URL=redis://redis:6379/0
       - SCRAPER_DATA_DIR=/data
       - ETL_GROUP_WORKER_NAME=etl-grupos-docker
@@ -128,6 +150,12 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
+
+  system-worker:
+    <<: *system-worker
+    container_name: oda_system_worker
+    hostname: system-worker
+    command: ["node", "dist/queue/systemWorker.js"]
 
   scraper-dgp:
     <<: *scraper-worker
