@@ -14,12 +14,18 @@ RUN pnpm config set package-import-method copy
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/scraper/package.json ./apps/scraper/
+COPY apps/etl/package.json ./apps/etl/
+COPY apps/web/package.json ./apps/web/
+COPY apps/system-worker/package.json ./apps/system-worker/
+COPY apps/api/package.json ./apps/api/
+COPY apps/langchain-ts/package.json ./apps/langchain-ts/
 COPY shared/database/package.json ./shared/database/
 COPY shared/queue/package.json ./shared/queue/
 COPY shared/shared-types/package.json ./shared/shared-types/
+COPY shared/cache/package.json ./shared/cache/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+    pnpm install
 
 COPY shared/ ./shared/
 COPY apps/scraper/ ./apps/scraper/

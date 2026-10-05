@@ -4,6 +4,7 @@ import {
     prismaConfig,
     TipoAreaConhecimento,
     TipoRelacaoGrupoArea,
+    Pesquisador,
 } from '@oda/database';
 import { normalizeString } from './normalize';
 const prisma = new PrismaClient(prismaConfig);
@@ -150,7 +151,7 @@ export async function insertInstituicao(data: { nome: string; uf: string; sigla:
     });
 } 
 
-export async function createResearchers(data: { nome: string; lattesId: string; formacaoAcademica?: any; tipo?: any }) {
+export async function createResearchers(data: { nome: string; lattesId: string; formacaoAcademica?: any; tipo?: any }): Promise<Pesquisador> {
     return await prisma.$transaction(async (tx) => {
         await tx.filaExtracaoPesquisador.create({
             data: {

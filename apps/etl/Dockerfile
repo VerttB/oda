@@ -13,6 +13,7 @@ COPY apps/etl/package.json ./apps/etl/
 COPY shared/database/package.json ./shared/database/
 COPY shared/queue/package.json ./shared/queue/
 COPY shared/shared-types/package.json ./shared/shared-types/
+COPY shared/cache/package.json ./shared/cache/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
