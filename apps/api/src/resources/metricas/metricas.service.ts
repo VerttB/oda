@@ -417,7 +417,6 @@ export class MetricasService {
       if (key) {
         if (!acc[key]) acc[key] = []
         
-        // Passa o Date object direto - o Zod preprocess fará a formatação
         acc[key].push({
           dataRegistro: item.dataRegistro,
           novosNoDia: item.novosNoDia,

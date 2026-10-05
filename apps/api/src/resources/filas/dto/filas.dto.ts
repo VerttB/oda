@@ -24,6 +24,16 @@ import {
   LattesJobsAtivosResponseSchema,
   WorkerFilaResponseSchema,
   WorkersAtivosResponseSchema,
+  EnfileirarBackupDbRequestSchema,
+  EnfileirarBackupDbResponseSchema,
+  EnfileirarRefreshMvRequestSchema,
+  EnfileirarRefreshMvResponseSchema,
+  EnfileirarCleanupLogsRequestSchema,
+  EnfileirarCleanupLogsResponseSchema,
+  EnfileirarReconcileStuckQueuesRequestSchema,
+  EnfileirarReconcileStuckQueuesResponseSchema,
+  SystemMaintenanceJobStatusSchema,
+  SystemMaintenanceJobsAtivosResponseSchema,
 } from '@oda/shared-types';
 import { createZodDto } from 'nestjs-zod';
 
@@ -52,3 +62,14 @@ export class FilaParamDto extends createZodDto(FilaParamSchema) {}
 export class ConsultarFilaJobsDto extends createZodDto(ConsultarFilaJobsRequestSchema) {}
 export class FilaResumoResponseDto extends createZodDto(FilaResumoResponseSchema) {}
 export class FilaJobsResponseDto extends createZodDto(FilaJobsResponseSchema) {}
+
+export class EnfileirarBackupDbDto extends createZodDto(EnfileirarBackupDbRequestSchema) {}
+export class EnfileirarBackupDbResponseDto extends createZodDto(EnfileirarBackupDbResponseSchema) {}
+export class EnfileirarRefreshMvDto extends createZodDto(EnfileirarRefreshMvRequestSchema) {}
+export class EnfileirarRefreshMvResponseDto extends createZodDto(EnfileirarRefreshMvResponseSchema) {}
+export class EnfileirarCleanupLogsDto extends createZodDto(EnfileirarCleanupLogsRequestSchema) {}
+export class EnfileirarCleanupLogsResponseDto extends createZodDto(EnfileirarCleanupLogsResponseSchema) {}
+export class EnfileirarReconcileStuckQueuesDto extends createZodDto(EnfileirarReconcileStuckQueuesRequestSchema) {}
+export class EnfileirarReconcileStuckQueuesResponseDto extends createZodDto(EnfileirarReconcileStuckQueuesResponseSchema) {}
+export class SystemMaintenanceJobStatusDto extends createZodDto(SystemMaintenanceJobStatusSchema) {}
+export class SystemMaintenanceJobsAtivosResponseDto extends createZodDto(SystemMaintenanceJobsAtivosResponseSchema) {}

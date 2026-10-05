@@ -2,9 +2,10 @@ import {
   ConflictException, Inject, Injectable, NotFoundException, OnModuleDestroy, ServiceUnavailableException,
 } from '@nestjs/common';
 import {
-  createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue,
+  createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue, createSystemQueue,
   dgpJobId, discoveryJobId, DiscoverDgpGroupsJob,
-  enqueueDgpGroup, enqueueDiscoveryKey, enqueueEtlDispatch, enqueueLattesResearcher,
+  enqueueBackupDb, enqueueCleanupLogs, enqueueDgpGroup, enqueueDiscoveryKey, enqueueEtlDispatch, enqueueLattesResearcher,
+  enqueueRefreshMv, enqueueReconcileStuckQueues,
   getBrazilState, lattesJobId, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeLattesResearcherJob,
   validateDiscoverDgpGroupsJob, validateEtlDispatchJob, validateEtlGroupJob, validateEtlResearcherJob,
   validateScrapeDgpGroupJob, validateScrapeLattesResearcherJob,
@@ -21,12 +22,17 @@ import {
   ConsultarFilaJobsRequest, EnfileirarEtlRequest, EnfileirarEtlResponse,
   EtlDispatchJobProgress, EtlDispatchJobProgressSchema, EtlDispatchJobResponse,
   FilaJobsResponse, FilaNome, FilaResumoResponse,
+  EnfileirarBackupDbRequest, EnfileirarBackupDbResponse,
+  EnfileirarRefreshMvRequest, EnfileirarRefreshMvResponse,
+  EnfileirarCleanupLogsRequest, EnfileirarCleanupLogsResponse,
+  EnfileirarReconcileStuckQueuesRequest, EnfileirarReconcileStuckQueuesResponse,
+  SystemMaintenanceJobStatus, SystemMaintenanceJobsAtivosResponse,
 } from '@oda/shared-types';
 import { FilaExtracaoStatus, ModuloSistema, ModoExecucao, Prisma, StatusSessao } from '@oda/database';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE,
+  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE, SYSTEM_MAINTENANCE_QUEUE,
 } from './filas.constants';
 
 type DgpQueue = ReturnType<typeof createDgpScraperQueue>;
@@ -42,6 +48,7 @@ type DiscoveryQueueJob = NonNullable<Awaited<ReturnType<DiscoveryQueue['getJob']
 type EtlGroupQueueJob = NonNullable<Awaited<ReturnType<EtlGroupQueue['getJob']>>>;
 type EtlResearcherQueueJob = NonNullable<Awaited<ReturnType<EtlResearcherQueue['getJob']>>>;
 type EtlDispatchQueueJob = NonNullable<Awaited<ReturnType<EtlDispatchQueue['getJob']>>>;
+type SystemMaintenanceQueue = ReturnType<typeof createSystemQueue>;
 type QueueName = FilaNome;
 const JOB_STATES = ['waiting', 'active', 'delayed', 'failed', 'completed', 'paused', 'prioritized', 'waiting-children'] as const;
 
@@ -54,6 +61,7 @@ export class FilasService implements OnModuleDestroy {
     @Inject(ETL_GROUP_QUEUE) private readonly etlGroupQueue: EtlGroupQueue,
     @Inject(ETL_RESEARCHER_QUEUE) private readonly etlResearcherQueue: EtlResearcherQueue,
     @Inject(ETL_DISPATCH_QUEUE) private readonly etlDispatchQueue: EtlDispatchQueue,
+    @Inject(SYSTEM_MAINTENANCE_QUEUE) private readonly systemMaintenanceQueue: SystemMaintenanceQueue,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -61,6 +69,7 @@ export class FilasService implements OnModuleDestroy {
     await Promise.all([
       this.dgpQueue.close(), this.lattesQueue.close(), this.discoveryQueue.close(),
       this.etlGroupQueue.close(), this.etlResearcherQueue.close(), this.etlDispatchQueue.close(),
+      this.systemMaintenanceQueue.close(),
     ]);
   }
 
@@ -230,6 +239,21 @@ export class FilasService implements OnModuleDestroy {
     };
   }
 
+  private async mapSystemMaintenanceJob(job: any): Promise<SystemMaintenanceJobStatus> {
+    const state = await job.getState();
+    return {
+      fila: 'system-maintenance',
+      jobId: job.id!,
+      jobName: job.name,
+      status: await job.getState(),
+      progresso: job.progress,
+      iniciadoEm: job.timestamp ? new Date(job.timestamp).toISOString() : null,
+      finalizadoEm: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
+      ultimoErro: job.failedReason || null,
+      resultado: job.returnvalue,
+    };
+  }
+
   async findActiveDgpJobs(): Promise<DgpJobsAtivosResponse> {
     const jobs = await Promise.all((await this.dgpQueue.getJobs(['active'], 0, -1, true)).map(job => this.mapDgpJob(job)));
     return { total: jobs.length, jobs };
@@ -315,6 +339,7 @@ export class FilasService implements OnModuleDestroy {
       case 'etl-despacho': return this.etlDispatchQueue;
       case 'etl-grupos': return this.etlGroupQueue;
       case 'etl-pesquisadores': return this.etlResearcherQueue;
+      case 'system-maintenance': return this.systemMaintenanceQueue;
     }
   }
 
@@ -343,6 +368,7 @@ export class FilasService implements OnModuleDestroy {
       case 'etl-despacho': return this.mapEtlDispatchJob(job);
       case 'etl-grupos': return this.mapEtlGroupJob(job);
       case 'etl-pesquisadores': return this.mapEtlResearcherJob(job);
+      case 'system-maintenance': return this.mapSystemMaintenanceJob(job);
     }
   }
 
@@ -499,5 +525,74 @@ export class FilasService implements OnModuleDestroy {
   private publishError(error: unknown) {
     return new ServiceUnavailableException(error instanceof Error
       ? `Nao foi possivel publicar no Redis: ${error.message}` : 'Nao foi possivel publicar no Redis.');
+  }
+
+  // ==========================================
+  // SYSTEM MAINTENANCE JOBS
+  // ==========================================
+
+  async enqueueBackupDb(input: EnfileirarBackupDbRequest): Promise<EnfileirarBackupDbResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), format: input.format, retentionDays: input.retentionDays };
+    const stored = await enqueueBackupDb(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'backup-database', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueRefreshMv(input: EnfileirarRefreshMvRequest): Promise<EnfileirarRefreshMvResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), concurrently: input.concurrently ?? true };
+    const stored = await enqueueRefreshMv(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'refresh-materialized-view', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueCleanupLogs(input: EnfileirarCleanupLogsRequest): Promise<EnfileirarCleanupLogsResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), retentionDays: input.retentionDays ?? 30 };
+    const stored = await enqueueCleanupLogs(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'cleanup-old-logs', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueReconcileStuckQueues(input: EnfileirarReconcileStuckQueuesRequest): Promise<EnfileirarReconcileStuckQueuesResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), staleDays: input.staleDays ?? 14 };
+    const stored = await enqueueReconcileStuckQueues(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'reconcile-stuck-queues', status: await stored.getState(), duplicado: false };
+  }
+
+  async findActiveSystemMaintenanceJobs() {
+    const stored = await this.systemMaintenanceQueue.getJobs(['active', 'waiting', 'delayed'], 0, -1, true);
+    const jobs = await Promise.all(stored.map(async (job) => {
+      const state = await job.getState();
+      const progress = typeof job.progress === 'number' ? job.progress : null;
+      return {
+        fila: 'system-maintenance' as const,
+        jobId: job.id!,
+        jobName: job.name as 'backup-database' | 'refresh-materialized-view' | 'cleanup-old-logs' | 'reconcile-stuck-queues',
+        status: state,
+        progresso: progress,
+        iniciadoEm: job.timestamp ? new Date(job.timestamp).toISOString() : null,
+        finalizadoEm: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
+        ultimoErro: job.failedReason || null,
+        resultado: job.returnvalue as unknown,
+      };
+    }));
+    return {
+      total: stored.length,
+      jobs,
+    };
+  }
+
+  async findSystemMaintenanceJob(jobId: string) {
+    const job = await this.systemMaintenanceQueue.getJob(jobId);
+    if (!job) throw new NotFoundException(`Job ${jobId} nao encontrado na fila de manutencao.`);
+    const state = await job.getState();
+    const progress = typeof job.progress === 'number' ? job.progress : null;
+    return {
+      fila: 'system-maintenance' as const,
+      jobId: job.id!,
+      jobName: job.name as 'backup-database' | 'refresh-materialized-view' | 'cleanup-old-logs' | 'reconcile-stuck-queues',
+      status: state,
+      progresso: progress,
+      iniciadoEm: job.timestamp ? new Date(job.timestamp).toISOString() : null,
+      finalizadoEm: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
+      ultimoErro: job.failedReason || null,
+      resultado: job.returnvalue as unknown,
+    };
   }
 }

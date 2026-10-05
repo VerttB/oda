@@ -4,6 +4,7 @@ import {
   ApiBearerAuth,
   ApiConflictResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiServiceUnavailableResponse,
@@ -25,10 +26,6 @@ import {
   EtlGroupJobsAtivosResponseDto,
   EtlResearcherJobResponseDto,
   EtlResearcherJobsAtivosResponseDto,
-  LattesJobResponseDto,
-  LattesJobsAtivosResponseDto,
-  WorkerFilaResponseDto,
-  WorkersAtivosResponseDto,
   ConsultarFilaJobsDto,
   EnfileirarEtlDto,
   EnfileirarEtlResponseDto,
@@ -36,27 +33,47 @@ import {
   FilaJobsResponseDto,
   FilaParamDto,
   FilaResumoResponseDto,
+  LattesJobResponseDto,
+  LattesJobsAtivosResponseDto,
+  WorkerFilaResponseDto,
+  WorkersAtivosResponseDto,
+  EnfileirarBackupDbDto,
+  EnfileirarBackupDbResponseDto,
+  EnfileirarRefreshMvDto,
+  EnfileirarRefreshMvResponseDto,
+  EnfileirarCleanupLogsDto,
+  EnfileirarCleanupLogsResponseDto,
+  EnfileirarReconcileStuckQueuesDto,
+  EnfileirarReconcileStuckQueuesResponseDto,
+  SystemMaintenanceJobStatusDto,
+  SystemMaintenanceJobsAtivosResponseDto,
 } from './dto/filas.dto';
+import {
+  SystemMaintenanceJobStatus,
+  SystemMaintenanceJobsAtivosResponse,
+} from '@oda/shared-types';
 import { FilasService } from './filas.service';
 import { FilasJwtAuthGuard } from './filas-auth.guard';
 import { FilasRedisGuard } from './filas-redis.guard';
 
 @ApiTags('admin-filas')
-@ApiBearerAuth()
 @ApiServiceUnavailableResponse({ description: 'Filas temporariamente indisponiveis enquanto o Redis estiver fora do ar.' })
-@UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
 @Controller('admin/filas')
 export class FilasController {
   constructor(private readonly filasService: FilasService) {}
 
   @Get('workers')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os workers conectados às filas do pipeline' })
-  @ZodResponse({ status: 200, type: WorkersAtivosResponseDto })
+  @ApiOkResponse({ type: WorkersAtivosResponseDto })
   findActiveWorkers() {
     return this.filasService.findActiveWorkers();
   }
 
   @Get('workers/:workerId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta um worker conectado pelo ID da conexão Redis' })
   @ApiParam({ name: 'workerId', description: 'ID volátil da conexão; muda quando o worker reinicia.' })
   @ApiNotFoundResponse({ description: 'Worker não está ativo ou não existe.' })
@@ -66,6 +83,8 @@ export class FilasController {
   }
 
   @Get('dgp/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os jobs DGP atualmente em processamento' })
   @ZodResponse({ status: 200, type: DgpJobsAtivosResponseDto })
   findActiveDgpJobs() {
@@ -73,6 +92,8 @@ export class FilasController {
   }
 
   @Get('dgp/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o estado e o progresso de um job DGP' })
   @ApiParam({ name: 'jobId', example: 'dgp-1234567890123456' })
   @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
@@ -82,6 +103,8 @@ export class FilasController {
   }
 
   @Post('dgp/jobs')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Publica a coleta de um grupo na fila DGP' })
   @ApiBadRequestResponse({ description: 'O ID DGP deve conter exatamente 16 dígitos.' })
   @ApiConflictResponse({ description: 'Um job finalizado ainda aguarda reconciliação.' })
@@ -92,6 +115,8 @@ export class FilasController {
   }
 
   @Get('lattes/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os jobs Lattes atualmente em processamento' })
   @ZodResponse({ status: 200, type: LattesJobsAtivosResponseDto })
   findActiveLattesJobs() {
@@ -99,6 +124,8 @@ export class FilasController {
   }
 
   @Get('lattes/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o estado e o progresso de um job Lattes' })
   @ApiParam({ name: 'jobId', example: 'lattes-1234567890123456' })
   @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
@@ -108,6 +135,8 @@ export class FilasController {
   }
 
   @Post('lattes/jobs')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Publica a coleta de um pesquisador na fila Lattes' })
   @ApiBadRequestResponse({ description: 'O ID Lattes deve conter exatamente 16 dígitos.' })
   @ApiNotFoundResponse({ description: 'Pesquisador não encontrado na fila de extração.' })
@@ -119,6 +148,8 @@ export class FilasController {
   }
 
   @Get('discovery/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os jobs de descoberta DGP atualmente em processamento' })
   @ZodResponse({ status: 200, type: DiscoveryJobsAtivosResponseDto })
   findActiveDiscoveryJobs() {
@@ -126,6 +157,8 @@ export class FilasController {
   }
 
   @Get('discovery/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o estado e o progresso de um job de descoberta DGP' })
   @ApiParam({ name: 'jobId', description: 'ID determinístico da chave na fila BullMQ.' })
   @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
@@ -135,6 +168,8 @@ export class FilasController {
   }
 
   @Post('discovery/jobs')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Publica uma chave e UF na fila de descoberta DGP' })
   @ApiBadRequestResponse({ description: 'A chave ou a UF informada é inválida.' })
   @ApiConflictResponse({ description: 'Um job finalizado ainda aguarda reconciliação.' })
@@ -145,6 +180,8 @@ export class FilasController {
   }
 
   @Get('etl/grupos/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os jobs de ETL de grupos atualmente em processamento' })
   @ZodResponse({ status: 200, type: EtlGroupJobsAtivosResponseDto })
   findActiveEtlGroupJobs() {
@@ -152,6 +189,8 @@ export class FilasController {
   }
 
   @Get('etl/grupos/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o estado e o progresso de um job de ETL de grupo' })
   @ApiParam({ name: 'jobId', example: 'etl-grupo-1234567890123456' })
   @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
@@ -161,6 +200,8 @@ export class FilasController {
   }
 
   @Get('etl/pesquisadores/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista os jobs de ETL de pesquisadores atualmente em processamento' })
   @ZodResponse({ status: 200, type: EtlResearcherJobsAtivosResponseDto })
   findActiveEtlResearcherJobs() {
@@ -168,6 +209,8 @@ export class FilasController {
   }
 
   @Get('etl/pesquisadores/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o estado e o progresso de um job de ETL de pesquisador' })
   @ApiParam({ name: 'jobId', example: 'etl-pesquisador-1234567890123456' })
   @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
@@ -177,6 +220,8 @@ export class FilasController {
   }
 
   @Post('etl/lotes')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Solicita um lote ETL no servidor que possui os arquivos JSON' })
   @ApiBadRequestResponse({ description: 'Tipo, escopo ou IDs inválidos.' })
   @ZodResponse({ status: 201, type: EnfileirarEtlResponseDto })
@@ -185,6 +230,8 @@ export class FilasController {
   }
 
   @Get('etl/lotes/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta o despacho que prepara e publica um lote ETL' })
   @ApiNotFoundResponse({ description: 'Pedido de ETL não encontrado no Redis.' })
   @ZodResponse({ status: 200, type: EtlDispatchJobResponseDto })
@@ -192,7 +239,73 @@ export class FilasController {
     return this.filasService.findEtlDispatchJob(jobId);
   }
 
+  // ==========================================
+  // SYSTEM MAINTENANCE JOBS
+  // ==========================================
+
+  @Post('system/backup-db')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente o backup do banco de dados' })
+  @ApiBadRequestResponse({ description: 'Formato ou retenção inválidos.' })
+  @ZodResponse({ status: 201, type: EnfileirarBackupDbResponseDto })
+  enqueueBackupDb(@Body() input: EnfileirarBackupDbDto) {
+    return this.filasService.enqueueBackupDb(input);
+  }
+
+  @Post('system/refresh-mv')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente a atualização da view materializada' })
+  @ApiBadRequestResponse({ description: 'Parâmetros inválidos.' })
+  @ZodResponse({ status: 201, type: EnfileirarRefreshMvResponseDto })
+  enqueueRefreshMv(@Body() input: EnfileirarRefreshMvDto) {
+    return this.filasService.enqueueRefreshMv(input);
+  }
+
+  @Post('system/cleanup-logs')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente a limpeza de logs antigos' })
+  @ApiBadRequestResponse({ description: 'Retenção inválida.' })
+  @ZodResponse({ status: 201, type: EnfileirarCleanupLogsResponseDto })
+  enqueueCleanupLogs(@Body() input: EnfileirarCleanupLogsDto) {
+    return this.filasService.enqueueCleanupLogs(input);
+  }
+
+  @Post('system/reconcile-stuck')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente a reconciliação de filas presas' })
+  @ApiBadRequestResponse({ description: 'Dias de inatividade inválidos.' })
+  @ZodResponse({ status: 201, type: EnfileirarReconcileStuckQueuesResponseDto })
+  enqueueReconcileStuckQueues(@Body() input: EnfileirarReconcileStuckQueuesDto) {
+    return this.filasService.enqueueReconcileStuckQueues(input);
+  }
+
+  @Get('system/jobs/ativos')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lista os jobs de manutenção do sistema atualmente em processamento' })
+  @ZodResponse({ status: 200, type: SystemMaintenanceJobsAtivosResponseDto })
+  async findActiveSystemMaintenanceJobs(): Promise<SystemMaintenanceJobsAtivosResponse> {
+    return this.filasService.findActiveSystemMaintenanceJobs();
+  }
+
+  @Get('system/jobs/:jobId')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Consulta o estado e o progresso de um job de manutenção' })
+  @ApiParam({ name: 'jobId', example: 'backup-db-daily' })
+  @ApiNotFoundResponse({ description: 'Job não encontrado no Redis.' })
+  @ZodResponse({ status: 200, type: SystemMaintenanceJobStatusDto })
+  async findSystemMaintenanceJob(@Param('jobId') jobId: string): Promise<SystemMaintenanceJobStatus> {
+    return this.filasService.findSystemMaintenanceJob(jobId);
+  }
+
   @Get(':fila/jobs')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lista todos os jobs de uma fila com paginação e filtros' })
   @ZodResponse({ status: 200, type: FilaJobsResponseDto })
   findQueueJobs(@Param() params: FilaParamDto, @Query() query: ConsultarFilaJobsDto) {
@@ -200,6 +313,8 @@ export class FilasController {
   }
 
   @Get(':fila')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Consulta pausa, workers e contadores de uma fila' })
   @ZodResponse({ status: 200, type: FilaResumoResponseDto })
   findQueue(@Param() params: FilaParamDto) {
@@ -208,6 +323,8 @@ export class FilasController {
 
   @Post(':fila/pausar')
   @HttpCode(200)
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Pausa globalmente uma fila; jobs ativos terminam normalmente' })
   @ZodResponse({ status: 200, type: FilaResumoResponseDto })
   pauseQueue(@Param() params: FilaParamDto) {
@@ -216,6 +333,8 @@ export class FilasController {
 
   @Post(':fila/retomar')
   @HttpCode(200)
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Retoma globalmente o processamento de uma fila' })
   @ZodResponse({ status: 200, type: FilaResumoResponseDto })
   resumeQueue(@Param() params: FilaParamDto) {
