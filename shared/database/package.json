@@ -5,14 +5,20 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
       "require": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./prisma": {
+      "types": "./dist/prisma/index.d.ts",
+      "import": "./dist/prisma/index.js",
+      "require": "./dist/prisma/index.js",
+      "default": "./dist/prisma/index.js"
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node -e \"const fs=require('fs');const path=require('path');const src=path.join(__dirname,'generated/prisma');const dest=path.join(__dirname,'dist/prisma');fs.cpSync(src,dest,{recursive:true});console.log('Copied Prisma client to dist/prisma')\"",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
