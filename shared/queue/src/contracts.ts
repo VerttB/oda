@@ -304,7 +304,7 @@ export const DGP_QUEUE_SETTINGS = {
 } as const;
 
 export const LATTES_QUEUE_SETTINGS = {
-  concurrency: 1,
+  concurrency: 2,
   maxJobsPerProcess: 10,
   attempts: 4,
   retryDelayMs: 60_000,
