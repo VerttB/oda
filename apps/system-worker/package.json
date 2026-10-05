@@ -1,0 +1,46 @@
+{
+  "name": "@oda/system-worker",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:worker": "node dist/queue/systemWorker.js",
+    "start:cli": "node dist/queue/systemCli.js",
+    "dev": "ts-node src/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@oda/queue": "workspace:*",
+    "@oda/database": "workspace:*",
+    "@prisma/client": "^7.8.0",
+    "bullmq": "^5.79.0",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^24.13.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.7.3",
+    "ts-node": "^10.9.2"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js", "ts", "json"],
+    "rootDir": "src",
+    "testRegex": ".*\\.test\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@oda/queue$": "<rootDir>/../../../shared/queue/src/index",
+      "^@oda/database$": "<rootDir>/../../../shared/database/src/index",
+      "^@oda/shared-types$": "<rootDir>/../../../shared/shared-types/src/index"
+    },
+    "testEnvironment": "node"
+  }
+}
