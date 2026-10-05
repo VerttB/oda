@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const FilaNomeSchema = z.enum(['dgp', 'lattes', 'discovery', 'etl-despacho', 'etl-grupos', 'etl-pesquisadores']);
+export const FilaNomeSchema = z.enum(['dgp', 'lattes', 'discovery', 'etl-despacho', 'etl-grupos', 'etl-pesquisadores', 'system-maintenance']);
 export const WorkerStatusSchema = z.enum(['ATIVO']);
 export const CnpqIdSchema = z.string().trim().regex(/^\d{16}$/, 'O ID deve conter exatamente 16 digitos');
 
@@ -385,3 +385,93 @@ export type FilaNome = z.infer<typeof FilaNomeSchema>;
 export type ConsultarFilaJobsRequest = z.infer<typeof ConsultarFilaJobsRequestSchema>;
 export type FilaResumoResponse = z.infer<typeof FilaResumoResponseSchema>;
 export type FilaJobsResponse = z.infer<typeof FilaJobsResponseSchema>;
+
+// ==========================================
+// SYSTEM MAINTENANCE JOBS
+// ==========================================
+
+export const SystemMaintenanceJobNameSchema = z.enum([
+  'backup-database',
+  'refresh-materialized-view',
+  'cleanup-old-logs',
+  'reconcile-stuck-queues',
+]);
+
+export const EnfileirarBackupDbRequestSchema = z.object({
+  format: z.enum(['plain', 'custom']).default('custom'),
+  retentionDays: z.coerce.number().int().positive().default(7),
+});
+
+export const EnfileirarBackupDbResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('backup-database'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const EnfileirarRefreshMvRequestSchema = z.object({
+  concurrently: z.boolean().default(true),
+});
+
+export const EnfileirarRefreshMvResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('refresh-materialized-view'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const EnfileirarCleanupLogsRequestSchema = z.object({
+  retentionDays: z.coerce.number().int().positive().default(30),
+});
+
+export const EnfileirarCleanupLogsResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('cleanup-old-logs'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const EnfileirarReconcileStuckQueuesRequestSchema = z.object({
+  staleDays: z.coerce.number().int().positive().default(14),
+});
+
+export const EnfileirarReconcileStuckQueuesResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('reconcile-stuck-queues'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const SystemMaintenanceJobStatusSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: SystemMaintenanceJobNameSchema,
+  status: z.string(),
+  progresso: z.number().int().min(0).max(100).nullable(),
+  iniciadoEm: z.iso.datetime().nullable(),
+  finalizadoEm: z.iso.datetime().nullable(),
+  ultimoErro: z.string().nullable(),
+  resultado: z.unknown().nullable(),
+});
+
+export const SystemMaintenanceJobsAtivosResponseSchema = z.object({
+  total: z.number().int().nonnegative(),
+  jobs: z.array(z.any()), // Will be replaced with discriminated union later
+});
+
+// Types
+export type SystemMaintenanceJobName = z.infer<typeof SystemMaintenanceJobNameSchema>;
+export type EnfileirarBackupDbRequest = z.infer<typeof EnfileirarBackupDbRequestSchema>;
+export type EnfileirarBackupDbResponse = z.infer<typeof EnfileirarBackupDbResponseSchema>;
+export type EnfileirarRefreshMvRequest = z.infer<typeof EnfileirarRefreshMvRequestSchema>;
+export type EnfileirarRefreshMvResponse = z.infer<typeof EnfileirarRefreshMvResponseSchema>;
+export type EnfileirarCleanupLogsRequest = z.infer<typeof EnfileirarCleanupLogsRequestSchema>;
+export type EnfileirarCleanupLogsResponse = z.infer<typeof EnfileirarCleanupLogsResponseSchema>;
+export type EnfileirarReconcileStuckQueuesRequest = z.infer<typeof EnfileirarReconcileStuckQueuesRequestSchema>;
+export type EnfileirarReconcileStuckQueuesResponse = z.infer<typeof EnfileirarReconcileStuckQueuesResponseSchema>;
+export type SystemMaintenanceJobStatus = z.infer<typeof SystemMaintenanceJobStatusSchema>;
+export type SystemMaintenanceJobsAtivosResponse = z.infer<typeof SystemMaintenanceJobsAtivosResponseSchema>;

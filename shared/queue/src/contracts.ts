@@ -6,6 +6,7 @@ export const QUEUE_NAMES = {
   ETL_RESEARCHERS: 'oda-etl-pesquisadores',
   ETL_DISPATCH: 'oda-etl-despacho',
   ETL_PIPELINE: 'oda-etl-pipeline',
+  SYSTEM_MAINTENANCE: 'oda-system-maintenance',
   DEMO: 'oda-queue-demo',
 } as const;
 
@@ -16,6 +17,10 @@ export const JOB_NAMES = {
   ETL_GROUP: 'etl-group',
   ETL_RESEARCHER: 'etl-researcher',
   ETL_DISPATCH: 'etl-dispatch',
+  BACKUP_DB: 'backup-database',
+  REFRESH_MV: 'refresh-materialized-view',
+  CLEANUP_LOGS: 'cleanup-old-logs',
+  RECONCILE_STUCK_QUEUES: 'reconcile-stuck-queues',
 } as const;
 
 type QueueJobManifest = {
@@ -342,3 +347,59 @@ export function discoveryJobId(chave: string, uf?: BrazilStateCode) {
 export function etlGroupJobId(dgpId: string) { return `etl-grupo-${dgpId}`; }
 export function etlResearcherJobId(lattesId: string) { return `etl-pesquisador-${lattesId}`; }
 export function etlDispatchJobId(requestId: string) { return `etl-despacho-${requestId}`; }
+
+// ==========================================
+// SYSTEM MAINTENANCE QUEUE
+// ==========================================
+
+export const SYSTEM_QUEUE_SETTINGS = {
+  concurrency: 1,
+  attempts: 3,
+  retryDelayMs: 60_000,
+} as const;
+
+export type BackupDbJob = {
+  version: 1;
+  requestedAt: string;
+  format?: 'plain' | 'custom';
+  retentionDays?: number;
+};
+
+export type BackupDbResult = {
+  success: boolean;
+  filePath?: string;
+  error?: string;
+};
+
+export type RefreshMvJob = {
+  version: 1;
+  requestedAt: string;
+  concurrently?: boolean;
+};
+
+export type RefreshMvResult = {
+  success: boolean;
+  durationMs: number;
+  error?: string;
+};
+
+export type CleanupLogsJob = {
+  version: 1;
+  requestedAt: string;
+  retentionDays?: number;
+};
+
+export type CleanupLogsResult = {
+  pipelineLogDeleted: number;
+};
+
+export type ReconcileStuckQueuesJob = {
+  version: 1;
+  requestedAt: string;
+  staleDays?: number;
+};
+
+export type ReconcileStuckQueuesResult = {
+  gruposRevertidos: number;
+  pesquisadoresRevertidos: number;
+};

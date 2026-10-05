@@ -33,6 +33,15 @@ import {
   EtlDispatchResult,
   etlDispatchJobId,
   validateEtlDispatchJob,
+  SYSTEM_QUEUE_SETTINGS,
+  BackupDbJob,
+  BackupDbResult,
+  RefreshMvJob,
+  RefreshMvResult,
+  CleanupLogsJob,
+  CleanupLogsResult,
+  ReconcileStuckQueuesJob,
+  ReconcileStuckQueuesResult,
 } from './contracts';
 
 export function createDgpScraperQueue() {
@@ -145,6 +154,58 @@ export async function enqueueEtlDispatch(data: EtlDispatchJob, queue: ReturnType
   validateEtlDispatchJob(data);
   const id = etlDispatchJobId(data.requestId);
   await queue.add(JOB_NAMES.ETL_DISPATCH, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+// ==========================================
+// SYSTEM MAINTENANCE QUEUE
+// ==========================================
+
+function systemDefaultJobOptions() {
+  return {
+    attempts: SYSTEM_QUEUE_SETTINGS.attempts,
+    backoff: { type: 'exponential' as const, delay: SYSTEM_QUEUE_SETTINGS.retryDelayMs },
+    removeOnComplete: { age: 24 * 60 * 60, count: 100 },
+    removeOnFail: false,
+  };
+}
+
+export function createSystemQueue() {
+  return new Queue(QUEUE_NAMES.SYSTEM_MAINTENANCE, {
+    connection: createQueueConnection('producer'),
+    defaultJobOptions: systemDefaultJobOptions(),
+  });
+}
+
+export async function enqueueBackupDb(data: BackupDbJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `backup-db-${Date.now()}`;
+  await queue.add(JOB_NAMES.BACKUP_DB, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueRefreshMv(data: RefreshMvJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `refresh-mv-${Date.now()}`;
+  await queue.add(JOB_NAMES.REFRESH_MV, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueCleanupLogs(data: CleanupLogsJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `cleanup-logs-${Date.now()}`;
+  await queue.add(JOB_NAMES.CLEANUP_LOGS, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueReconcileStuckQueues(data: ReconcileStuckQueuesJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `reconcile-stuck-queues-${Date.now()}`;
+  await queue.add(JOB_NAMES.RECONCILE_STUCK_QUEUES, data, { jobId: id });
   const stored = await queue.getJob(id);
   if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
   return stored;
