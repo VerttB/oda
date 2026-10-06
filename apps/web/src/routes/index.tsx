@@ -102,6 +102,7 @@ function DiscoverRoute() {
   return (
     <>
       <HeroMetrics metrics={metrics} />
+
       <ApiBanner />
       <main className="bg-background">
         <div className="mx-auto max-w-[1280px] space-y-16 px-4 py-16 md:px-10">
