@@ -34,6 +34,12 @@ import {
   EnfileirarReconcileStuckQueuesResponseSchema,
   SystemMaintenanceJobStatusSchema,
   SystemMaintenanceJobsAtivosResponseSchema,
+  EnfileirarEnqueueEtlRequestSchema,
+  EnfileirarEnqueueEtlResponseSchema,
+  EnfileirarEnqueueDgpScraperRequestSchema,
+  EnfileirarEnqueueDgpScraperResponseSchema,
+  EnfileirarEnqueueLattesScraperRequestSchema,
+  EnfileirarEnqueueLattesScraperResponseSchema,
 } from '@oda/shared-types';
 import { createZodDto } from 'nestjs-zod';
 
@@ -73,3 +79,10 @@ export class EnfileirarReconcileStuckQueuesDto extends createZodDto(EnfileirarRe
 export class EnfileirarReconcileStuckQueuesResponseDto extends createZodDto(EnfileirarReconcileStuckQueuesResponseSchema) {}
 export class SystemMaintenanceJobStatusDto extends createZodDto(SystemMaintenanceJobStatusSchema) {}
 export class SystemMaintenanceJobsAtivosResponseDto extends createZodDto(SystemMaintenanceJobsAtivosResponseSchema) {}
+
+export class EnfileirarEnqueueEtlDto extends createZodDto(EnfileirarEnqueueEtlRequestSchema) {}
+export class EnfileirarEnqueueEtlResponseDto extends createZodDto(EnfileirarEnqueueEtlResponseSchema) {}
+export class EnfileirarEnqueueDgpScraperDto extends createZodDto(EnfileirarEnqueueDgpScraperRequestSchema) {}
+export class EnfileirarEnqueueDgpScraperResponseDto extends createZodDto(EnfileirarEnqueueDgpScraperResponseSchema) {}
+export class EnfileirarEnqueueLattesScraperDto extends createZodDto(EnfileirarEnqueueLattesScraperRequestSchema) {}
+export class EnfileirarEnqueueLattesScraperResponseDto extends createZodDto(EnfileirarEnqueueLattesScraperResponseSchema) {}

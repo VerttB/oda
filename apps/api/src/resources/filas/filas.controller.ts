@@ -47,6 +47,12 @@ import {
   EnfileirarReconcileStuckQueuesResponseDto,
   SystemMaintenanceJobStatusDto,
   SystemMaintenanceJobsAtivosResponseDto,
+  EnfileirarEnqueueEtlDto,
+  EnfileirarEnqueueEtlResponseDto,
+  EnfileirarEnqueueDgpScraperDto,
+  EnfileirarEnqueueDgpScraperResponseDto,
+  EnfileirarEnqueueLattesScraperDto,
+  EnfileirarEnqueueLattesScraperResponseDto,
 } from './dto/filas.dto';
 import {
   SystemMaintenanceJobStatus,
@@ -281,6 +287,36 @@ export class FilasController {
   @ZodResponse({ status: 201, type: EnfileirarReconcileStuckQueuesResponseDto })
   enqueueReconcileStuckQueues(@Body() input: EnfileirarReconcileStuckQueuesDto) {
     return this.filasService.enqueueReconcileStuckQueues(input);
+  }
+
+  @Post('system/enqueue-etl')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente o enqueue do ETL' })
+  @ApiBadRequestResponse({ description: 'Tipo ou escopo inválidos.' })
+  @ZodResponse({ status: 201, type: EnfileirarEnqueueEtlResponseDto })
+  enqueueEnqueueEtl(@Body() input: EnfileirarEnqueueEtlDto) {
+    return this.filasService.enqueueEnqueueEtl(input);
+  }
+
+  @Post('system/enqueue-dgp-scraper')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente o enqueue do scraper DGP' })
+  @ApiBadRequestResponse({ description: 'Escopo inválido.' })
+  @ZodResponse({ status: 201, type: EnfileirarEnqueueDgpScraperResponseDto })
+  enqueueEnqueueDgpScraper(@Body() input: EnfileirarEnqueueDgpScraperDto) {
+    return this.filasService.enqueueEnqueueDgpScraper(input);
+  }
+
+  @Post('system/enqueue-lattes-scraper')
+  @UseGuards(FilasJwtAuthGuard, FilasRedisGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Dispara manualmente o enqueue do scraper Lattes' })
+  @ApiBadRequestResponse({ description: 'ID Lattes inválido.' })
+  @ZodResponse({ status: 201, type: EnfileirarEnqueueLattesScraperResponseDto })
+  enqueueEnqueueLattesScraper(@Body() input: EnfileirarEnqueueLattesScraperDto) {
+    return this.filasService.enqueueEnqueueLattesScraper(input);
   }
 
   @Get('system/jobs/ativos')

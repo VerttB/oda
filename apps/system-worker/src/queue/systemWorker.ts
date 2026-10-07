@@ -4,6 +4,7 @@ import { createQueueConnection, QUEUE_NAMES, JOB_NAMES, SYSTEM_QUEUE_SETTINGS } 
 import { createSystemQueue } from './systemQueue';
 import { systemProcessor } from './systemProcessor';
 import { prisma } from '../common/database';
+import { randomUUID } from 'node:crypto';
 
 const TZ = 'America/Sao_Paulo';
 
@@ -25,7 +26,9 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
   await queue.add('enqueue-etl', {
     version: 1,
     requestedAt: new Date().toISOString(),
+    requestId: randomUUID(),
     tipo: 'TODOS',
+    ids: [],
     scope: 'default',
   }, {
     repeat: { pattern: '0 5,17 * * *', tz: TZ },
@@ -39,6 +42,7 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     version: 1,
     requestedAt: new Date().toISOString(),
     scope: 'default',
+    chave: 'todos',
   }, {
     repeat: { pattern: '0 5 * * *', tz: TZ },
     jobId: 'enqueue-dgp-scraper-daily',

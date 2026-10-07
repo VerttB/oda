@@ -5,7 +5,7 @@ import {
   createDgpScraperQueue, createDiscoveryQueue, createEtlDispatchQueue, createEtlGroupQueue, createEtlResearcherQueue, createLattesScraperQueue, createSystemQueue,
   dgpJobId, discoveryJobId, DiscoverDgpGroupsJob,
   enqueueBackupDb, enqueueCleanupLogs, enqueueDgpGroup, enqueueDiscoveryKey, enqueueEtlDispatch, enqueueLattesResearcher,
-  enqueueRefreshMv, enqueueReconcileStuckQueues,
+  enqueueRefreshMv, enqueueReconcileStuckQueues, enqueueEnqueueEtl, enqueueDgpScraper, enqueueLattesScraper,
   getBrazilState, lattesJobId, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeLattesResearcherJob,
   validateDiscoverDgpGroupsJob, validateEtlDispatchJob, validateEtlGroupJob, validateEtlResearcherJob,
   validateScrapeDgpGroupJob, validateScrapeLattesResearcherJob,
@@ -27,6 +27,9 @@ import {
   EnfileirarCleanupLogsRequest, EnfileirarCleanupLogsResponse,
   EnfileirarReconcileStuckQueuesRequest, EnfileirarReconcileStuckQueuesResponse,
   SystemMaintenanceJobStatus, SystemMaintenanceJobsAtivosResponse,
+  EnfileirarEnqueueEtlRequest, EnfileirarEnqueueEtlResponse,
+  EnfileirarEnqueueDgpScraperRequest, EnfileirarEnqueueDgpScraperResponse,
+  EnfileirarEnqueueLattesScraperRequest, EnfileirarEnqueueLattesScraperResponse,
 } from '@oda/shared-types';
 import { FilaExtracaoStatus, ModuloSistema, ModoExecucao, Prisma, StatusSessao } from '@oda/database';
 import { randomUUID } from 'node:crypto';
@@ -553,6 +556,24 @@ export class FilasService implements OnModuleDestroy {
     const data = { version: 1 as const, requestedAt: new Date().toISOString(), staleDays: input.staleDays ?? 14 };
     const stored = await enqueueReconcileStuckQueues(data, this.systemMaintenanceQueue);
     return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'reconcile-stuck-queues', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueEnqueueEtl(input: EnfileirarEnqueueEtlRequest): Promise<EnfileirarEnqueueEtlResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), tipo: input.tipo ?? 'TODOS', ids: [], scope: input.escopo ?? 'default' };
+    const stored = await enqueueEnqueueEtl(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'enqueue-etl', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueEnqueueDgpScraper(input: EnfileirarEnqueueDgpScraperRequest): Promise<EnfileirarEnqueueDgpScraperResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), scope: input.scope ?? 'default', chave: 'todos' };
+    const stored = await enqueueDgpScraper(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'enqueue-dgp-scraper', status: await stored.getState(), duplicado: false };
+  }
+
+  async enqueueEnqueueLattesScraper(input: EnfileirarEnqueueLattesScraperRequest): Promise<EnfileirarEnqueueLattesScraperResponse> {
+    const data = { version: 1 as const, requestedAt: new Date().toISOString(), lattesId: input.lattesId };
+    const stored = await enqueueLattesScraper(data, this.systemMaintenanceQueue);
+    return { fila: 'system-maintenance', jobId: stored.id!, jobName: 'enqueue-lattes-scraper', status: await stored.getState(), duplicado: false };
   }
 
   async findActiveSystemMaintenanceJobs() {

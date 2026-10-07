@@ -1,6 +1,7 @@
 import { Job } from 'bullmq';
 import { JOB_NAMES, QUEUE_NAMES, DataScope, EtlDispatchType } from '@oda/queue';
 import { createEtlDispatchQueue, enqueueEtlDispatch } from '@oda/queue';
+import { randomUUID } from 'node:crypto';
 
 export async function handleEnqueueEtlJob(job: any): Promise<any> {
   const data = job.data as {
@@ -12,8 +13,8 @@ export async function handleEnqueueEtlJob(job: any): Promise<any> {
 
   const etlDispatchQueue = createEtlDispatchQueue();
   
-  // Generate a request ID for this ETL dispatch
-  const requestId = `etl-scheduled-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  // Generate a proper UUID for the requestId
+  const requestId = randomUUID();
   
   // Enqueue the ETL dispatch job
   const storedJob = await enqueueEtlDispatch({

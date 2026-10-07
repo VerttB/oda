@@ -395,6 +395,9 @@ export const SystemMaintenanceJobNameSchema = z.enum([
   'refresh-materialized-view',
   'cleanup-old-logs',
   'reconcile-stuck-queues',
+  'enqueue-etl',
+  'enqueue-dgp-scraper',
+  'enqueue-lattes-scraper',
 ]);
 
 export const EnfileirarBackupDbRequestSchema = z.object({
@@ -446,6 +449,43 @@ export const EnfileirarReconcileStuckQueuesResponseSchema = z.object({
   duplicado: z.boolean(),
 });
 
+export const EnfileirarEnqueueEtlRequestSchema = z.object({
+  tipo: z.enum(['TODOS', 'GRUPOS', 'PESQUISADORES']).default('TODOS'),
+  escopo: z.enum(['default', 'simcc']).default('default'),
+});
+
+export const EnfileirarEnqueueEtlResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('enqueue-etl'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const EnfileirarEnqueueDgpScraperRequestSchema = z.object({
+  scope: z.enum(['default', 'simcc']).default('default'),
+});
+
+export const EnfileirarEnqueueDgpScraperResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('enqueue-dgp-scraper'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
+export const EnfileirarEnqueueLattesScraperRequestSchema = z.object({
+  lattesId: CnpqIdSchema.optional(),
+});
+
+export const EnfileirarEnqueueLattesScraperResponseSchema = z.object({
+  fila: z.literal('system-maintenance'),
+  jobId: z.string(),
+  jobName: z.literal('enqueue-lattes-scraper'),
+  status: z.string(),
+  duplicado: z.boolean(),
+});
+
 export const SystemMaintenanceJobStatusSchema = z.object({
   fila: z.literal('system-maintenance'),
   jobId: z.string(),
@@ -473,5 +513,11 @@ export type EnfileirarCleanupLogsRequest = z.infer<typeof EnfileirarCleanupLogsR
 export type EnfileirarCleanupLogsResponse = z.infer<typeof EnfileirarCleanupLogsResponseSchema>;
 export type EnfileirarReconcileStuckQueuesRequest = z.infer<typeof EnfileirarReconcileStuckQueuesRequestSchema>;
 export type EnfileirarReconcileStuckQueuesResponse = z.infer<typeof EnfileirarReconcileStuckQueuesResponseSchema>;
+export type EnfileirarEnqueueEtlRequest = z.infer<typeof EnfileirarEnqueueEtlRequestSchema>;
+export type EnfileirarEnqueueEtlResponse = z.infer<typeof EnfileirarEnqueueEtlResponseSchema>;
+export type EnfileirarEnqueueDgpScraperRequest = z.infer<typeof EnfileirarEnqueueDgpScraperRequestSchema>;
+export type EnfileirarEnqueueDgpScraperResponse = z.infer<typeof EnfileirarEnqueueDgpScraperResponseSchema>;
+export type EnfileirarEnqueueLattesScraperRequest = z.infer<typeof EnfileirarEnqueueLattesScraperRequestSchema>;
+export type EnfileirarEnqueueLattesScraperResponse = z.infer<typeof EnfileirarEnqueueLattesScraperResponseSchema>;
 export type SystemMaintenanceJobStatus = z.infer<typeof SystemMaintenanceJobStatusSchema>;
 export type SystemMaintenanceJobsAtivosResponse = z.infer<typeof SystemMaintenanceJobsAtivosResponseSchema>;

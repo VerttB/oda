@@ -14,11 +14,11 @@ export async function handleEnqueueDgpScraperJob(job: any): Promise<any> {
   const pipelineLogId = uuidv4();
   const pipelineItemId = uuidv4();
 
-  // Enqueue discovery job for all groups (chave vazia = todos)
+  // Enqueue discovery job for all groups (chave = "todos" para todos os grupos)
   const storedJob = await enqueueDiscoveryKey({
     version: 1,
     requestedAt: new Date().toISOString(),
-    chave: '',
+    chave: 'todos',
     uf: undefined,
     pipelineLogId,
     pipelineItemId,
