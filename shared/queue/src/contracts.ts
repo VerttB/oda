@@ -21,6 +21,9 @@ export const JOB_NAMES = {
   REFRESH_MV: 'refresh-materialized-view',
   CLEANUP_LOGS: 'cleanup-old-logs',
   RECONCILE_STUCK_QUEUES: 'reconcile-stuck-queues',
+  ENQUEUE_ETL: 'enqueue-etl',
+  ENQUEUE_DGP_SCRAPER: 'enqueue-dgp-scraper',
+  ENQUEUE_LATTES_SCRAPER: 'enqueue-lattes-scraper',
 } as const;
 
 type QueueJobManifest = {
@@ -402,4 +405,39 @@ export type ReconcileStuckQueuesJob = {
 export type ReconcileStuckQueuesResult = {
   gruposRevertidos: number;
   pesquisadoresRevertidos: number;
+};
+
+export type EnqueueEtlJob = {
+  version: 1;
+  requestedAt: string;
+  tipo: EtlDispatchType;
+  scope: DataScope;
+};
+
+export type EnqueueEtlResult = {
+  requestId: string;
+  gruposEnfileirados: number;
+  pesquisadoresEnfileirados: number;
+};
+
+export type EnqueueDgpScraperJob = {
+  version: 1;
+  requestedAt: string;
+  scope?: DataScope;
+};
+
+export type EnqueueDgpScraperResult = {
+  success: boolean;
+  jobId: string;
+};
+
+export type EnqueueLattesScraperJob = {
+  version: 1;
+  requestedAt: string;
+  lattesId?: string;
+};
+
+export type EnqueueLattesScraperResult = {
+  success: boolean;
+  jobId: string;
 };

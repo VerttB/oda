@@ -316,6 +316,9 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
+      uuid:
+        specifier: ^14.0.2
+        version: 14.0.2
     devDependencies:
       '@types/jest':
         specifier: ^29.5.0
@@ -323,6 +326,9 @@ importers:
       '@types/node':
         specifier: ^24.13.2
         version: 24.13.2
+      '@types/uuid':
+        specifier: ^11.0.0
+        version: 11.0.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@5.9.3))
@@ -358,34 +364,34 @@ importers:
         version: 4.3.3(vite@8.2.2(@types/node@24.13.2)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
       '@tanstack/ai':
         specifier: latest
-        version: 0.63.0(zod@4.5.4)
+        version: 0.64.1(zod@4.5.4)
       '@tanstack/ai-anthropic':
         specifier: latest
-        version: 0.19.3(@tanstack/ai@0.63.0(zod@4.5.4))(zod@4.5.4)
+        version: 0.19.4(@tanstack/ai@0.64.1(zod@4.5.4))(zod@4.5.4)
       '@tanstack/ai-client':
         specifier: latest
-        version: 0.36.0(zod@4.5.4)
+        version: 0.36.2(zod@4.5.4)
       '@tanstack/ai-gemini':
         specifier: latest
-        version: 0.34.1(@tanstack/ai@0.63.0(zod@4.5.4))
+        version: 0.34.2(@tanstack/ai@0.64.1(zod@4.5.4))
       '@tanstack/ai-ollama':
         specifier: latest
-        version: 0.11.11(@tanstack/ai@0.63.0(zod@4.5.4))
+        version: 0.11.12(@tanstack/ai@0.64.1(zod@4.5.4))
       '@tanstack/ai-openai':
         specifier: latest
-        version: 0.25.1(@tanstack/ai@0.63.0(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)
+        version: 0.26.0(@tanstack/ai@0.64.1(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)
       '@tanstack/ai-react':
         specifier: latest
-        version: 0.29.3(@tanstack/ai@0.63.0(zod@4.5.4))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.5.4)
+        version: 0.29.4(@tanstack/ai@0.64.1(zod@4.5.4))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.5.4)
       '@tanstack/react-devtools':
         specifier: latest
         version: 0.10.13(@types/react-dom@19.2.4(@types/react@19.2.17))(@types/react@19.2.17)(csstype@3.2.3)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(solid-js@1.9.15)
       '@tanstack/react-query':
         specifier: latest
-        version: 5.104.0(react@19.2.7)
+        version: 5.104.1(react@19.2.7)
       '@tanstack/react-query-devtools':
         specifier: latest
-        version: 5.104.0(@tanstack/react-query@5.104.0(react@19.2.7))(@types/react@19.2.17)(csstype@3.2.3)(react@19.2.7)
+        version: 5.104.1(@tanstack/react-query@5.104.1(react@19.2.7))(@types/react@19.2.17)(csstype@3.2.3)(react@19.2.7)
       '@tanstack/react-router':
         specifier: latest
         version: 1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -394,7 +400,7 @@ importers:
         version: 1.167.2(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(csstype@3.2.3)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-router-ssr-query':
         specifier: latest
-        version: 1.167.3(@tanstack/query-core@5.104.0)(@tanstack/react-query@5.104.0(react@19.2.7))(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 1.167.3(@tanstack/query-core@5.104.1)(@tanstack/react-query@5.104.1(react@19.2.7))(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start':
         specifier: latest
         version: 1.168.60(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.2.5)(vite@8.2.2(@types/node@24.13.2)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))(webpack@5.106.2)
@@ -3225,41 +3231,41 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@tanstack/ai-anthropic@0.19.3':
-    resolution: {integrity: sha512-XNcwwUwRMIQGDZggPHCZTqOT6ekNIppEFuQB0EPwRvuLkvKhPBg2AP7iP0oI5dTXjiKGxcbIYQ5jc39tj2ZbQg==}
+  '@tanstack/ai-anthropic@0.19.4':
+    resolution: {integrity: sha512-4D6+UWfHp3ER2qXXEYGp2T9oGShsewXYscZ0w73bVPEQbkOUqX54w+EiuPBNAlkA+qsx4QsTcB67N+YmwGoZCw==}
     peerDependencies:
       '@anthropic-ai/vertex-sdk': ^0.19.0
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.0
     peerDependenciesMeta:
       '@anthropic-ai/vertex-sdk':
         optional: true
 
-  '@tanstack/ai-client@0.36.0':
-    resolution: {integrity: sha512-fXqf2r+PeV79jZwY6ZJ3QwL5yKC56qB60nOSDbHYJfmCcW/sOkFN8/Z4SIrQdwsDpDYlAJNuXzSs4xx2M3s6VA==}
+  '@tanstack/ai-client@0.36.2':
+    resolution: {integrity: sha512-mixfIs85IaQkyfUidDVAhTr8UDxNdz8yM9wpMYvav5ySvdWrRMDX358F6wu0hXsAta/lkGLjJsodkBIHFF+R7g==}
 
   '@tanstack/ai-event-client@0.13.0':
     resolution: {integrity: sha512-qGN7saScQHqDd06DE5CNG+wl1O9v6anwsGCCeP4N7zFbZd5k9/2C1u4cdJ2+Qxl2aA8drusLFZMhY/ljhBJqLQ==}
 
-  '@tanstack/ai-gemini@0.34.1':
-    resolution: {integrity: sha512-zooDv/SI58r9Dc4WMIMYsPzSBTamVAfqK3+juxrldLZ3T57lcV0EeyQrYfviwONvR9lBh3aSmv+Or1mtSn60wA==}
+  '@tanstack/ai-gemini@0.34.2':
+    resolution: {integrity: sha512-AeSaYpxu+og6VKQWTitk0c1QVau+fw8VIbn4kbTWXcXul0obpM70ipIxcqyUdYUzQp+Z85kGY469kkF7Aem35w==}
     peerDependencies:
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.0
 
-  '@tanstack/ai-ollama@0.11.11':
-    resolution: {integrity: sha512-WOss6CdYAEUxSwhIkNU6RVD/DbFW8ox+6UHpLU16/ceAjqS48UGdoE+lAXNmAJohrOJjAhw+9LnzHXl5uBEcWw==}
+  '@tanstack/ai-ollama@0.11.12':
+    resolution: {integrity: sha512-ijvgF2LR9wZzpQuHncNUVGgX7xChzUdTPzgL+bwqwhCgbB/IJ+BVlHnQ2rzI1HUy9pgOkT5t0dYjfAVBGWFcMA==}
     peerDependencies:
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.0
 
-  '@tanstack/ai-openai@0.25.1':
-    resolution: {integrity: sha512-SmYpGbHS7Uor49STSqhT5RIK0x3nnOx51koc16xvclB+5+lN/33Psty2/hfhaeRBkHk2t7q1F4fSjUKr/E6Kig==}
+  '@tanstack/ai-openai@0.26.0':
+    resolution: {integrity: sha512-PBdaL8SGyIWTMyWCaRkLZaum+9N4wp3Sftm6hl75hHaoJEkDLLNZMtqAH/y1uBPzbhZbaKkYLSnyAne+QgHzJA==}
     peerDependencies:
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.0
 
-  '@tanstack/ai-react@0.29.3':
-    resolution: {integrity: sha512-JLU4Pp/Qi3r8pBquugDKyEwJ36W2irwKCH391Ln4k3tdtk4a0rI8jsz3xepdWXkgWr/DhJAlKDzZ6sYZPJWVNg==}
+  '@tanstack/ai-react@0.29.4':
+    resolution: {integrity: sha512-AnYvtHlObx4ZNpA5Q9YLMTklC5dEfOkbQ/U8Kiuxdl1j+jGJILvIIdDSlNekJ6X8b1Cc47rdHPJxCn93f9jVqA==}
     peerDependencies:
       '@mcp-ui/client': ^7
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.0
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -3272,8 +3278,8 @@ packages:
   '@tanstack/ai-utils@0.4.1':
     resolution: {integrity: sha512-B3PGn2WYiRtivZCt7MUN2iXeoK9fwZhgdbrPIz5hPqVR8r8sNDZMmMqtiOkp7sxzPvVlCBItFVHw7QpZ9g6e9w==}
 
-  '@tanstack/ai@0.63.0':
-    resolution: {integrity: sha512-4S4hOOc/2LvxNkMzwuBaECtchPQsxrlLNqnmi/WjcXmX8gyboy8UNPwwS/9XzFFJ4VwSEW2Md+h+OtTGmf6Y/g==}
+  '@tanstack/ai@0.64.1':
+    resolution: {integrity: sha512-ohCqVVd6mbD6KzFfgOBjAIl5ftIkehiTpWlg9uLfv6qGiXyf7vZhNVCJ5LNiwfNnj6Mz+TzK3IO0ztBrhV0Rgw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@opentelemetry/api': '>=1.9.0'
@@ -3352,16 +3358,16 @@ packages:
     resolution: {integrity: sha512-aPkUQctDzpXLSWhlx7jUDi3mInsI18xcnrK1hvIyIa88ab1ax88cACr7xU+BKMCGB4NZYNwh4SoNSEbv3RY2NA==}
     engines: {node: '>=20'}
 
-  '@tanstack/openai-base@0.12.1':
-    resolution: {integrity: sha512-mkt86u9kIW4oScA738ntrpTMXTqkTxZl5XU54lcUkdl5xT3Kx4fM4HT9x9x49twiUNHJEP7y44m7gK7FkZbiMA==}
+  '@tanstack/openai-base@0.12.3':
+    resolution: {integrity: sha512-nuyC1fFBscH4GuU4kqfUreH6CrkDif3Qj2aXUG6VO3HSfPc6rmXYfUkBoRNtSr7zL2QVa+vEZX19Hzyr0qtkiQ==}
     peerDependencies:
-      '@tanstack/ai': ^0.63.0
+      '@tanstack/ai': ^0.64.1
 
-  '@tanstack/query-core@5.104.0':
-    resolution: {integrity: sha512-JrC2r/JQlXt7khBSdUpsgxNvybzOg+aITa+ARRMlP2AFo93Y8vIqz077rp+e61mJetSZ0T6AJbwW1JHer1vrPQ==}
+  '@tanstack/query-core@5.104.1':
+    resolution: {integrity: sha512-TiRghcrGkUTE+M4JBxvpPSpBhxvIzQairw+cksrHYGr+2uwC77yW1SY9nYxnYRYOppvucf8rEg6b5byoz4rTpw==}
 
-  '@tanstack/query-devtools@5.104.0':
-    resolution: {integrity: sha512-snKyFLVFC5LuNoyUTpyqCD2Z8cRlCWrAeO3xub0nGi81IMz8YAUWq2Z+XdpGSGT7bCxqVdOHUjyiA3CtDuBjfQ==}
+  '@tanstack/query-devtools@5.104.1':
+    resolution: {integrity: sha512-wmXnQbnwEz+SctYMTrwsOWWNHKhCsVgtaliL9E+VI2vx2Xr773d/MpcrbIU1hEOUqC3p7x59swXFUPDLbplT3g==}
 
   '@tanstack/react-devtools@0.10.13':
     resolution: {integrity: sha512-r0cdB/14+st2Vxl/1Bodlyq4VC8pf9SykLQDYbGHDc1+V146WQo5B3KlYLkfyxD9Q/6+9NPRQHZyl8fvZVMdRA==}
@@ -3372,15 +3378,15 @@ packages:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  '@tanstack/react-query-devtools@5.104.0':
-    resolution: {integrity: sha512-E3AfuGqrdyaamuRV3u8RFWQlkZxk7OQa9MJ3XLF9SEHFRHyTUnlHcAQ0hEpDYxNsNFKYrheiRpDKlYaG4vkt7g==}
+  '@tanstack/react-query-devtools@5.104.1':
+    resolution: {integrity: sha512-0GoLxe08PVxnkbrHFwO+7fkgbc07xEcoBfdYvbTv63e6Fe7uz7PGyOxKeQTOXKGMmTfoniaISOqkjDzKC/66Ng==}
     peerDependencies:
-      '@tanstack/react-query': ^5.104.0
+      '@tanstack/react-query': ^5.104.1
       '@types/react': ^18 || ^19
       react: ^18 || ^19
 
-  '@tanstack/react-query@5.104.0':
-    resolution: {integrity: sha512-e1TZmDCQnWIfiDVryIHeA6Idj+Lfx1hORLOhXS/l5wcgvtVD4yYqbTDl378sGQKIi2cSgb0TEMC9cKK8GGoJEw==}
+  '@tanstack/react-query@5.104.1':
+    resolution: {integrity: sha512-Zz70EgjahNI7aCz8BZxM3vUGU44ycxEAzMuCUjLeA7SVhhOkg3ZgPjPJPvHjs6Rmky/dtmnu1WzjGHNHmhCoZQ==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -3874,6 +3880,10 @@ packages:
 
   '@types/uuid@10.0.0':
     resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
+
+  '@types/uuid@11.0.0':
+    resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
+    deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
 
   '@types/validator@13.15.10':
     resolution: {integrity: sha512-T8L6i7wCuyoK8A/ZeLYt1+q0ty3Zb9+qbSSvrIVitzT3YjZqkTZ40IbRsPanlB4h1QB3JVL1SYCdR6ngtFYcuA==}
@@ -5444,9 +5454,6 @@ packages:
   express@5.2.1:
     resolution: {integrity: sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==}
     engines: {node: '>= 18'}
-
-  exsolve@1.0.8:
-    resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
 
   exsolve@1.1.1:
     resolution: {integrity: sha512-9U/jZUgjnSGyntRr6y5Muu1MJcwFl6kPu7k8qLF0IMNfLqvw0NZ4nnVDq0RVoZ0RvCyumib4Ez3KYrVfilrw+g==}
@@ -8722,8 +8729,8 @@ packages:
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
-  uuid@14.0.0:
-    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
+  uuid@14.0.2:
+    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -11534,17 +11541,17 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.2.2(@types/node@24.13.2)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0)
 
-  '@tanstack/ai-anthropic@0.19.3(@tanstack/ai@0.63.0(zod@4.5.4))(zod@4.5.4)':
+  '@tanstack/ai-anthropic@0.19.4(@tanstack/ai@0.64.1(zod@4.5.4))(zod@4.5.4)':
     dependencies:
       '@anthropic-ai/sdk': 0.97.1(zod@4.5.4)
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-utils': 0.4.1
     transitivePeerDependencies:
       - zod
 
-  '@tanstack/ai-client@0.36.0(zod@4.5.4)':
+  '@tanstack/ai-client@0.36.2(zod@4.5.4)':
     dependencies:
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-event-client': 0.13.0
       '@tanstack/ai-utils': 0.4.1
     transitivePeerDependencies:
@@ -11555,10 +11562,10 @@ snapshots:
     dependencies:
       '@tanstack/devtools-event-client': 0.4.4
 
-  '@tanstack/ai-gemini@0.34.1(@tanstack/ai@0.63.0(zod@4.5.4))':
+  '@tanstack/ai-gemini@0.34.2(@tanstack/ai@0.64.1(zod@4.5.4))':
     dependencies:
       '@google/genai': 2.18.0
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-utils': 0.4.1
       partial-json: 0.1.7
     transitivePeerDependencies:
@@ -11567,17 +11574,17 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@tanstack/ai-ollama@0.11.11(@tanstack/ai@0.63.0(zod@4.5.4))':
+  '@tanstack/ai-ollama@0.11.12(@tanstack/ai@0.64.1(zod@4.5.4))':
     dependencies:
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-utils': 0.4.1
       ollama: 0.6.3
 
-  '@tanstack/ai-openai@0.25.1(@tanstack/ai@0.63.0(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)':
+  '@tanstack/ai-openai@0.26.0(@tanstack/ai@0.64.1(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)':
     dependencies:
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-utils': 0.4.1
-      '@tanstack/openai-base': 0.12.1(@tanstack/ai@0.63.0(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)
+      '@tanstack/openai-base': 0.12.3(@tanstack/ai@0.64.1(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)
       openai: 6.49.0(ws@8.21.0)(zod@4.5.4)
     transitivePeerDependencies:
       - '@aws-sdk/credential-provider-node'
@@ -11586,10 +11593,10 @@ snapshots:
       - ws
       - zod
 
-  '@tanstack/ai-react@0.29.3(@tanstack/ai@0.63.0(zod@4.5.4))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.5.4)':
+  '@tanstack/ai-react@0.29.4(@tanstack/ai@0.64.1(zod@4.5.4))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.5.4)':
     dependencies:
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
-      '@tanstack/ai-client': 0.36.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
+      '@tanstack/ai-client': 0.36.2(zod@4.5.4)
       '@tanstack/markdown': 0.0.13(react@19.2.7)
       '@types/react': 19.2.17
       react: 19.2.7
@@ -11602,7 +11609,7 @@ snapshots:
 
   '@tanstack/ai-utils@0.4.1': {}
 
-  '@tanstack/ai@0.63.0(zod@4.5.4)':
+  '@tanstack/ai@0.64.1(zod@4.5.4)':
     dependencies:
       '@ag-ui/core': 1.0.0(zod@4.5.4)
       '@standard-schema/spec': 1.1.0
@@ -11710,9 +11717,9 @@ snapshots:
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/openai-base@0.12.1(@tanstack/ai@0.63.0(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)':
+  '@tanstack/openai-base@0.12.3(@tanstack/ai@0.64.1(zod@4.5.4))(ws@8.21.0)(zod@4.5.4)':
     dependencies:
-      '@tanstack/ai': 0.63.0(zod@4.5.4)
+      '@tanstack/ai': 0.64.1(zod@4.5.4)
       '@tanstack/ai-utils': 0.4.1
       openai: 6.49.0(ws@8.21.0)(zod@4.5.4)
     transitivePeerDependencies:
@@ -11722,16 +11729,16 @@ snapshots:
       - ws
       - zod
 
-  '@tanstack/query-core@5.104.0': {}
+  '@tanstack/query-core@5.104.1': {}
 
-  '@tanstack/query-devtools@5.104.0(csstype@3.2.3)':
+  '@tanstack/query-devtools@5.104.1(csstype@3.2.3)':
     dependencies:
       '@kobalte/core': 0.13.14(solid-js@1.9.15)
       '@solid-primitives/keyed': 1.5.3(solid-js@1.9.15)
       '@solid-primitives/resize-observer': 2.2.0(solid-js@1.9.15)
       '@solid-primitives/storage': 1.3.11(solid-js@1.9.15)
       '@tanstack/match-sorter-utils': 9.1.2
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       clsx: 2.1.1
       goober: 2.1.19(csstype@3.2.3)
       solid-js: 1.9.15
@@ -11753,18 +11760,18 @@ snapshots:
       - solid-js
       - utf-8-validate
 
-  '@tanstack/react-query-devtools@5.104.0(@tanstack/react-query@5.104.0(react@19.2.7))(@types/react@19.2.17)(csstype@3.2.3)(react@19.2.7)':
+  '@tanstack/react-query-devtools@5.104.1(@tanstack/react-query@5.104.1(react@19.2.7))(@types/react@19.2.17)(csstype@3.2.3)(react@19.2.7)':
     dependencies:
-      '@tanstack/query-devtools': 5.104.0(csstype@3.2.3)
-      '@tanstack/react-query': 5.104.0(react@19.2.7)
+      '@tanstack/query-devtools': 5.104.1(csstype@3.2.3)
+      '@tanstack/react-query': 5.104.1(react@19.2.7)
       '@types/react': 19.2.17
       react: 19.2.7
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/react-query@5.104.0(react@19.2.7)':
+  '@tanstack/react-query@5.104.1(react@19.2.7)':
     dependencies:
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       react: 19.2.7
 
   '@tanstack/react-router-devtools@1.167.2(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(csstype@3.2.3)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
@@ -11778,12 +11785,12 @@ snapshots:
     transitivePeerDependencies:
       - csstype
 
-  '@tanstack/react-router-ssr-query@1.167.3(@tanstack/query-core@5.104.0)(@tanstack/react-query@5.104.0(react@19.2.7))(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@tanstack/react-router-ssr-query@1.167.3(@tanstack/query-core@5.104.1)(@tanstack/react-query@5.104.1(react@19.2.7))(@tanstack/react-router@1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@tanstack/router-core@1.171.34)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@tanstack/query-core': 5.104.0
-      '@tanstack/react-query': 5.104.0(react@19.2.7)
+      '@tanstack/query-core': 5.104.1
+      '@tanstack/react-query': 5.104.1(react@19.2.7)
       '@tanstack/react-router': 1.170.41(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@tanstack/router-ssr-query-core': 1.169.3(@tanstack/query-core@5.104.0)(@tanstack/router-core@1.171.34)
+      '@tanstack/router-ssr-query-core': 1.169.3(@tanstack/query-core@5.104.1)(@tanstack/router-core@1.171.34)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
     transitivePeerDependencies:
@@ -11959,9 +11966,9 @@ snapshots:
       - supports-color
       - unloader
 
-  '@tanstack/router-ssr-query-core@1.169.3(@tanstack/query-core@5.104.0)(@tanstack/router-core@1.171.34)':
+  '@tanstack/router-ssr-query-core@1.169.3(@tanstack/query-core@5.104.1)(@tanstack/router-core@1.171.34)':
     dependencies:
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       '@tanstack/router-core': 1.171.34
 
   '@tanstack/router-utils@1.162.2':
@@ -12442,6 +12449,10 @@ snapshots:
   '@types/unist@3.0.3': {}
 
   '@types/uuid@10.0.0': {}
+
+  '@types/uuid@11.0.0':
+    dependencies:
+      uuid: 14.0.2
 
   '@types/validator@13.15.10': {}
 
@@ -13075,7 +13086,7 @@ snapshots:
       confbox: 0.2.4
       defu: 6.1.7
       dotenv: 17.4.2
-      exsolve: 1.0.8
+      exsolve: 1.1.1
       giget: 3.3.0
       jiti: 2.7.0
       ohash: 2.0.11
@@ -14141,8 +14152,6 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
-
-  exsolve@1.0.8: {}
 
   exsolve@1.1.1: {}
 
@@ -16232,7 +16241,7 @@ snapshots:
       roughjs: 4.6.6
       stylis: 4.4.0
       ts-dedent: 2.3.0
-      uuid: 14.0.0
+      uuid: 14.0.2
 
   methods@1.1.2: {}
 
@@ -18076,7 +18085,7 @@ snapshots:
 
   uuid@10.0.0: {}
 
-  uuid@14.0.0: {}
+  uuid@14.0.2: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
@@ -18167,7 +18176,7 @@ snapshots:
       nice-grpc: 2.1.16
       nice-grpc-client-middleware-retry: 3.1.15
       nice-grpc-common: 2.0.3
-      uuid: 14.0.0
+      uuid: 14.0.2
     transitivePeerDependencies:
       - encoding
 

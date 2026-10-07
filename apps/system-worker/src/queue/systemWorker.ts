@@ -21,6 +21,42 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     removeOnFail: false,
   });
 
+  // Enqueue ETL antes do refresh MV (05:00 / 17:00)
+  await queue.add('enqueue-etl', {
+    version: 1,
+    requestedAt: new Date().toISOString(),
+    tipo: 'TODOS',
+    scope: 'default',
+  }, {
+    repeat: { pattern: '0 5,17 * * *', tz: TZ },
+    jobId: 'enqueue-etl-12h',
+    removeOnComplete: { age: 12 * 60 * 60, count: 100 },
+    removeOnFail: false,
+  });
+
+  // Scraper DGP - 05:00 (antes do refresh MV)
+  await queue.add('enqueue-dgp-scraper', {
+    version: 1,
+    requestedAt: new Date().toISOString(),
+    scope: 'default',
+  }, {
+    repeat: { pattern: '0 5 * * *', tz: TZ },
+    jobId: 'enqueue-dgp-scraper-daily',
+    removeOnComplete: { age: 24 * 60 * 60, count: 30 },
+    removeOnFail: false,
+  });
+
+  // Scraper Lattes - 05:00 e 17:00 (2x ao dia)
+  await queue.add('enqueue-lattes-scraper', {
+    version: 1,
+    requestedAt: new Date().toISOString(),
+  }, {
+    repeat: { pattern: '0 5,17 * * *', tz: TZ },
+    jobId: 'enqueue-lattes-scraper-12h',
+    removeOnComplete: { age: 12 * 60 * 60, count: 100 },
+    removeOnFail: false,
+  });
+
   // Refresh MV a cada 12h (06:00 / 18:00)
   await queue.add('refresh-materialized-view', {
     version: 1,

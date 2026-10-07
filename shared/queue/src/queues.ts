@@ -42,6 +42,12 @@ import {
   CleanupLogsResult,
   ReconcileStuckQueuesJob,
   ReconcileStuckQueuesResult,
+  EnqueueEtlJob,
+  EnqueueEtlResult,
+  EnqueueDgpScraperJob,
+  EnqueueDgpScraperResult,
+  EnqueueLattesScraperJob,
+  EnqueueLattesScraperResult,
 } from './contracts';
 
 export function createDgpScraperQueue() {
@@ -206,6 +212,30 @@ export async function enqueueCleanupLogs(data: CleanupLogsJob, queue: ReturnType
 export async function enqueueReconcileStuckQueues(data: ReconcileStuckQueuesJob, queue: ReturnType<typeof createSystemQueue>) {
   const id = `reconcile-stuck-queues-${Date.now()}`;
   await queue.add(JOB_NAMES.RECONCILE_STUCK_QUEUES, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueEnqueueEtl(data: EnqueueEtlJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `enqueue-etl-${Date.now()}`;
+  await queue.add(JOB_NAMES.ENQUEUE_ETL, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueDgpScraper(data: EnqueueDgpScraperJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `enqueue-dgp-scraper-${Date.now()}`;
+  await queue.add(JOB_NAMES.ENQUEUE_DGP_SCRAPER, data, { jobId: id });
+  const stored = await queue.getJob(id);
+  if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
+  return stored;
+}
+
+export async function enqueueLattesScraper(data: EnqueueLattesScraperJob, queue: ReturnType<typeof createSystemQueue>) {
+  const id = `enqueue-lattes-scraper-${Date.now()}`;
+  await queue.add(JOB_NAMES.ENQUEUE_LATTES_SCRAPER, data, { jobId: id });
   const stored = await queue.getJob(id);
   if (!stored) throw new Error(`Job ${id} nao encontrado apos publicacao.`);
   return stored;

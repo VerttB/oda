@@ -14,22 +14,28 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@oda/queue": "workspace:*",
     "@oda/database": "workspace:*",
+    "@oda/queue": "workspace:*",
     "@prisma/client": "^7.8.0",
     "bullmq": "^5.79.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "@types/node": "^24.13.2",
+    "@types/uuid": "^11.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.7.3",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "ts", "json"],
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "json"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.test\\.ts$",
     "transform": {
