@@ -5,6 +5,7 @@ import { createSystemQueue } from './systemQueue';
 import { systemProcessor } from './systemProcessor';
 import { prisma } from '../common/database';
 import { randomUUID } from 'node:crypto';
+import { registerLattesRepeatableSchedule } from './lattesRepeatableSchedule';
 
 const TZ = 'America/Sao_Paulo';
 
@@ -50,16 +51,7 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     removeOnFail: false,
   });
 
-  // Scraper Lattes - 05:00 e 17:00 (2x ao dia)
-  await queue.add('enqueue-lattes-scraper', {
-    version: 1,
-    requestedAt: new Date().toISOString(),
-  }, {
-    repeat: { pattern: '0 5,17 * * *', tz: TZ },
-    jobId: 'enqueue-lattes-scraper-12h',
-    removeOnComplete: { age: 12 * 60 * 60, count: 100 },
-    removeOnFail: false,
-  });
+  await registerLattesRepeatableSchedule(queue, TZ);
 
   // Refresh MV a cada 12h (06:00 / 18:00)
   await queue.add('refresh-materialized-view', {
