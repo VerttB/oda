@@ -847,3 +847,136 @@ flowchart LR
     style USER fill:#cce5ff
 
 ```
+
+## 11. Planejamento Atual de Prioridades
+
+Esta seção registra a ordem sugerida para fechar uma primeira versão funcional do sistema. A prioridade principal é reduzir operação manual, estabilizar a coleta e garantir que os dados gerados sejam confiáveis para as próximas camadas analíticas.
+
+### 11.1 Estabilizar o pipeline atual
+
+Prioridade máxima. Antes de novas funcionalidades inteligentes, o scraper e o ETL precisam rodar em lotes previsíveis, com recuperação clara em caso de falha.
+
+Pontos de atenção:
+- reduzir erros intermitentes no scraper;
+- manter controle de memória, especialmente no Lattes;
+- melhorar retry, timeout e fechamento de browser/context;
+- garantir status corretos nas filas de extração;
+- manter logs e metadados suficientes para diagnóstico;
+- permitir reprocessamento sem intervenção manual pesada.
+
+### 11.2 Implementar comunicação assíncrona com BullMQ
+
+BullMQ deve virar a base de execução dos processos demorados. A ideia é substituir comandos manuais e execuções longas soltas por jobs observáveis.
+
+Objetivos:
+- modelar jobs para discovery, scraper DGP, scraper Lattes, ETL e ingestão semântica;
+- controlar concorrência por tipo de job;
+- permitir retry por item ou por etapa;
+- expor progresso, erros e tempos de execução;
+- preparar a base para rotas administrativas.
+
+### 11.3 Criar rotas administrativas de execução e progresso
+
+Depois do BullMQ, criar rotas de administração para operar o pipeline pela API.
+
+Rotas esperadas:
+- iniciar descoberta;
+- iniciar scraper DGP;
+- iniciar scraper Lattes;
+- iniciar ETL;
+- consultar progresso de jobs;
+- consultar itens com erro;
+- reprocessar itens;
+- pausar e retomar filas.
+
+Evitar, nesta etapa, rotas que apenas executem `pnpm` diretamente sem controle de estado. O ideal é que a API dispare jobs, e não processos soltos.
+
+### 11.4 Mapear áreas de conhecimento CNPq e OpenAlex
+
+Manter as taxonomias separadas e criar relacionamento entre elas. A IA deve sugerir relações, mas não substituir revisão e aprovação.
+
+Diretrizes:
+- manter áreas CNPq em `area_conhecimento`;
+- manter áreas OpenAlex em tabela própria;
+- relacionar por tabela intermediária;
+- guardar método de mapeamento;
+- guardar status de revisão;
+- guardar justificativa e confiança quando houver inferência;
+- permitir aprovação, rejeição e ajuste manual.
+
+### 11.5 Atribuir áreas de conhecimento às produções
+
+Depois que a taxonomia estiver minimamente consistente, relacionar produções com áreas.
+
+Fontes possíveis:
+- `topics`, `subfields` e outros sinais do OpenAlex;
+- DOI/OpenAlex quando houver DOI;
+- IA usando título e resumo;
+- regra manual ou revisão posterior.
+
+Cada relação deve guardar método de inferência e, quando aplicável, confiança.
+
+### 11.6 Vincular produções a grupos de pesquisa
+
+O vínculo entre produção e grupo não deve depender apenas do fato de um autor pertencer ao grupo. Esse vínculo pode ter níveis de força.
+
+Critérios possíveis:
+- produção de pesquisador membro do grupo;
+- área da produção compatível com área do grupo;
+- tema da produção compatível com linha de pesquisa;
+- período da produção compatível com vínculo do pesquisador, quando houver dado suficiente.
+
+### 11.7 Reescrever o módulo de LangChain
+
+A reescrita deve acontecer quando estiver claro quais tarefas inteligentes o módulo precisa assumir.
+
+Responsabilidades candidatas:
+- busca semântica;
+- RAG;
+- sugestão de mapeamento entre áreas;
+- classificação de produções por área;
+- geração de justificativas de mapeamento;
+- versionamento de embeddings;
+- reindexação assíncrona via fila.
+
+### 11.8 Validar tempo de resposta e resistência da API
+
+Realizar testes simples de carga depois que os contratos e rotas principais estiverem estáveis.
+
+Avaliar:
+- tempo de resposta de listagens;
+- tempo de resposta de detalhes;
+- custo das rotas de métricas;
+- comportamento com múltiplas requisições simultâneas;
+- necessidade de índices, cache ou ajustes de paginação.
+
+### 11.9 Expandir descoberta para outras regiões e estados
+
+Depois da fila assíncrona e do scraper estável, parametrizar discovery para outras regiões e estados.
+
+Cuidados:
+- evitar duplicidade de grupos;
+- registrar parâmetros usados na descoberta;
+- medir volume por região/estado;
+- manter controle de progresso por lote.
+
+### 11.10 Simplificar comandos e scripts da CLI
+
+Deixar para uma etapa posterior, quando a operação via BullMQ/API estiver funcionando.
+
+Objetivos:
+- remover scripts temporários já usados;
+- manter comandos canônicos;
+- documentar o fluxo oficial de execução;
+- reduzir comandos duplicados ou experimentais.
+
+## 12. Critério de Primeira Versão
+
+Uma primeira versão boa do sistema deve ter:
+- coleta DGP e Lattes reprocessável;
+- ETL confiável e observável;
+- filas com status e erro rastreáveis;
+- API documentada no Swagger;
+- métricas básicas;
+- dados principais navegáveis por grupo, pesquisador, instituição, linha e produção;
+- base pronta para enriquecimento por IA sem depender de operação manual constante.

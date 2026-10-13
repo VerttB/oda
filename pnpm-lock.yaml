@@ -307,6 +307,9 @@ importers:
       '@oda/queue':
         specifier: workspace:*
         version: link:../../shared/queue
+      '@oda/shared-types':
+        specifier: workspace:*
+        version: link:../../shared/shared-types
       '@prisma/client':
         specifier: ^7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.4(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3))(typescript@5.9.3)
@@ -316,9 +319,6 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.2
     devDependencies:
       '@types/jest':
         specifier: ^29.5.0
@@ -326,9 +326,6 @@ importers:
       '@types/node':
         specifier: ^24.13.2
         version: 24.13.2
-      '@types/uuid':
-        specifier: ^11.0.0
-        version: 11.0.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@24.13.2)(ts-node@10.9.2(@types/node@24.13.2)(typescript@5.9.3))

@@ -10,6 +10,7 @@ generated
 storage
 storage-*
 data
+docs/
 # Apache Hop Local
 .hop/
 hop-config.json

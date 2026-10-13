@@ -3,12 +3,12 @@ import * as fs from 'fs';
 import { Configuration, purgeDefaultStorages } from 'crawlee';
 import type { PlaywrightCrawlerOptions } from 'crawlee';
 import type { BrowserContext } from 'playwright';
-import type { DataScope } from '@oda/queue';
+import { SCRAPER_ENQUEUE_LIMITS, type DataScope } from '@oda/queue';
 
 // Limites operacionais ficam em codigo ate termos medidas de uma coleta prolongada.
 export const SCRAPER_SETTINGS = {
     lattes: {
-        take: 500,
+        take: SCRAPER_ENQUEUE_LIMITS.lattes,
         batchSize: 15,
         maxConcurrency: 1,
         requestHandlerTimeoutSecs: 1200,
@@ -17,7 +17,7 @@ export const SCRAPER_SETTINGS = {
         staleResultRetryDelayMs: 60000,
     },
     dgp: {
-        take: 200,
+        take: SCRAPER_ENQUEUE_LIMITS.dgp,
         maxConcurrency: 1,
         requestHandlerTimeoutSecs: 3600,
         maxRequestRetries: 3,

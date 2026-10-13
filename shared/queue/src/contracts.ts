@@ -306,6 +306,8 @@ export const DGP_QUEUE_SETTINGS = {
   reconcileIntervalMs: 30_000,
 } as const;
 
+export const SCRAPER_ENQUEUE_LIMITS = { dgp: 200, lattes: 500 } as const;
+
 export const LATTES_QUEUE_SETTINGS = {
   concurrency: 2,
   maxJobsPerProcess: 10,
@@ -428,7 +430,9 @@ export type EnqueueDgpScraperJob = {
 
 export type EnqueueDgpScraperResult = {
   success: boolean;
-  jobId: string;
+  pipelineLogId: string | null;
+  enqueued: number;
+  duplicates: number;
 };
 
 export type EnqueueLattesScraperJob = {
@@ -439,5 +443,7 @@ export type EnqueueLattesScraperJob = {
 
 export type EnqueueLattesScraperResult = {
   success: boolean;
-  jobId: string;
+  pipelineLogId: string | null;
+  enqueued: number;
+  duplicates: number;
 };

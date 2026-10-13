@@ -1,6 +1,6 @@
 import { hostname } from 'node:os';
 import { Worker } from 'bullmq';
-import { createQueueConnection, QUEUE_NAMES, JOB_NAMES, SYSTEM_QUEUE_SETTINGS } from '@oda/queue';
+import { createQueueConnection, SYSTEM_QUEUE_SETTINGS } from '@oda/queue';
 import { createSystemQueue } from './systemQueue';
 import { systemProcessor } from './systemProcessor';
 import { prisma } from '../common/database';
@@ -43,7 +43,6 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     version: 1,
     requestedAt: new Date().toISOString(),
     scope: 'default',
-    chave: 'todos',
   }, {
     repeat: { pattern: '0 5 * * *', tz: TZ },
     jobId: 'enqueue-dgp-scraper-daily',
