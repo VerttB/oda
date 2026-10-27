@@ -1,8 +1,13 @@
 
-import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
+import { RunnableSequence } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { ANSWER_PROMPT, embeddings, model, SUMMARIZE_PROMPT } from "../core/config";
+import { embeddings, model, SUMMARIZE_PROMPT } from "../core/config";
 import { prisma } from "../core/db";
+import { RagSourceType } from '@oda/database';
+import { randomUUID } from 'node:crypto';
+import { indexRagDocument } from './ragIndexer';
+import { answerWithSelfRag } from './selfRag';
+import { buildSemanticFilterConditions } from './semanticFilters';
 
 
 function formatUnidade(value: any): string {
@@ -35,58 +40,25 @@ function formatResearchGroupInstitutions(data: any): string {
 
 
 export async function askQuestion(question: string, chatHistory: string = "") {
-  const [questionVector] = await embeddings.embedDocuments([question]);
-  const vectorStr = `[${questionVector.join(',')}]`;
-  const matchedChunks: any[] = await prisma.$queryRawUnsafe(
-    `SELECT rc.conteudo 
-     FROM rag_chunk rc 
-     ORDER BY rc.embedding <-> $1::vector ASC 
-     LIMIT 5`,
-    vectorStr
-  );
-
-  const context = matchedChunks.map(c => c.conteudo).join('\n\n');
-  const chain = RunnableSequence.from([
-    {
-      context: () => context,
-      question: new RunnablePassthrough(),
-    },
-    ANSWER_PROMPT,
-    model,
-    new StringOutputParser(),
-  ]);
-
-  return await chain.invoke(question);
+  return answerWithSelfRag(question, chatHistory);
 }
 
 export async function ingestDocument(content: string, metadata: any = {}) {
-  const docId = crypto.randomUUID ? crypto.randomUUID() : require('crypto').randomUUID();
-  const doc = await prisma.ragDocument.create({
-    data: {
-      sourceType: 'PRODUCAO',
-      sourceId: docId,
-      titulo: metadata.titulo || "Documento Ingerido",
-      conteudo: content,
-      metadata
-    }
+  const sourceId = randomUUID();
+  await indexRagDocument(prisma, {
+    sourceType: RagSourceType.PRODUCAO,
+    sourceId,
+    title: metadata.titulo || 'Documento Ingerido',
+    content,
+    metadata,
   });
-
-  const [vector] = await embeddings.embedDocuments([content]);
-  const vectorStr = `[${vector.join(',')}]`;
-  const chunkId = require('crypto').randomUUID();
-
-  await prisma.$executeRawUnsafe(
-    `INSERT INTO "rag_chunk" ("id", "document_id", "conteudo", "embedding", "ordem", "metadata", "atualizado_em") 
-     VALUES ($1, $2, $3, $4::vector, $5, $6, NOW())`,
-    chunkId, doc.id, content, vectorStr, 0, JSON.stringify(metadata)
-  );
-
   return { success: true };
 }
 
 export async function ingestResearchGroup(data: any) {
   const nome = data.nome || "Desconhecido";
-  const dgpId = data.id_dgp || data.idDgp || "";
+  const dgpId = String(data.id_dgp || data.idDgp || '').trim();
+  if (!dgpId) throw new Error('O grupo deve possuir id_dgp ou idDgp.');
 
   let content = `Grupo de Pesquisa: ${nome}\n`;
   content += `DGP ID: ${dgpId}\n`;
@@ -95,40 +67,14 @@ export async function ingestResearchGroup(data: any) {
   content += `Ano de Formação: ${data.ano_formacao || ""}\n`;
   content += `Repercussão: ${data.repercussao || ""}\n`;
 
-  const doc = await prisma.ragDocument.upsert({
-    where: {
-      sourceType_sourceId: {
-        sourceType: 'GRUPO_PESQUISA',
-        sourceId: dgpId,
-      }
-    },
-    update: {
-      titulo: nome,
-      conteudo: content,
-      metadata: data
-    },
-    create: {
-      sourceType: 'GRUPO_PESQUISA',
-      sourceId: dgpId,
-      titulo: nome,
-      conteudo: content,
-      metadata: data
-    }
+  const group = await prisma.grupoPesquisa.findUnique({ where: { dgpId }, select: { id: true } });
+  await indexRagDocument(prisma, {
+    sourceType: RagSourceType.GRUPO_PESQUISA,
+    sourceId: group?.id ?? dgpId,
+    title: nome,
+    content,
+    metadata: data,
   });
-
-  await prisma.ragChunk.deleteMany({
-    where: { documentId: doc.id }
-  });
-
-  const [vector] = await embeddings.embedDocuments([content]);
-  const vectorStr = `[${vector.join(',')}]`;
-  const chunkId = require('crypto').randomUUID();
-
-  await prisma.$executeRawUnsafe(
-    `INSERT INTO "rag_chunk" ("id", "document_id", "conteudo", "embedding", "ordem", "metadata", "atualizado_em") 
-     VALUES ($1, $2, $3, $4::vector, $5, $6, NOW())`,
-    chunkId, doc.id, content, vectorStr, 0, JSON.stringify(data)
-  );
 
   return { success: true };
 }
@@ -148,8 +94,17 @@ export async function summarizeText(text: string, instructions?: string) {
   });
 }
 
-export async function performSemanticSearch(query: string, type?: string, limit = 10, offset = 0) {
-  const [queryVector] = await embeddings.embedDocuments([query]);
+export async function performSemanticSearch(
+  query: string,
+  type?: string,
+  limit = 10,
+  offset = 0,
+  filters: Record<string, unknown> = {},
+) {
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isInteger(offset) || offset < 0) {
+    throw new Error('Paginacao invalida para busca semantica.');
+  }
+  const queryVector = await embeddings.embedQuery(query);
   const vectorStr = `[${queryVector.join(',')}]`;
 
   const enumMapping: Record<string, string> = {
@@ -157,24 +112,37 @@ export async function performSemanticSearch(query: string, type?: string, limit 
     'LINHA_PESQUISA': 'linha_pesquisa',
     'PESQUISADOR': 'pesquisador',
     'PRODUCAO': 'producao',
-    'AREA_CONHECIMENTO': 'area_conhecimento'
   };
 
-  const dbType = type ? (enumMapping[type] || type.toLowerCase()) : undefined;
+  const dbType = type ? enumMapping[type] : undefined;
+  if (!dbType) throw new Error('Tipo de entidade invalido para busca semantica.');
 
+  const entityAliases: Record<string, string> = {
+    grupo_pesquisa: 'g',
+    pesquisador: 'p',
+    producao: 'pr',
+    linha_pesquisa: 'lp',
+  };
+  const alias = entityAliases[dbType];
+  if (!alias) throw new Error('Tipo de entidade invalido para busca semantica.');
   let sql = `
     SELECT rd.source_id as "sourceId", MIN(rc.embedding <-> $1::vector) as score
     FROM rag_chunk rc
     JOIN rag_document rd ON rc.document_id = rd.id
+    JOIN ${dbType} ${entityAliases[dbType as keyof typeof entityAliases]}
+      ON ${entityAliases[dbType as keyof typeof entityAliases]}.id = rd.source_id
   `;
-  const params: any[] = [vectorStr];
+  const params: unknown[] = [vectorStr, dbType];
+  const conditions = [
+    'rd.source_type = $2::rag_source_type',
+    'rc.embedding IS NOT NULL',
+    ...buildSemanticFilterConditions(type as 'GRUPO_PESQUISA' | 'PESQUISADOR' | 'PRODUCAO' | 'LINHA_PESQUISA', filters, value => {
+      params.push(value);
+      return `$${params.length}`;
+    }),
+  ];
 
-  if (dbType) {
-    sql += ` WHERE rd.source_type = $2::rag_source_type`;
-    params.push(dbType);
-  }
-
-  sql += `
+  sql += ` WHERE ${conditions.join(' AND ')}
     GROUP BY rd.source_id
     ORDER BY score ASC
     LIMIT $${params.length + 1} OFFSET $${params.length + 2}
@@ -182,12 +150,23 @@ export async function performSemanticSearch(query: string, type?: string, limit 
   params.push(limit);
   params.push(offset);
 
-  let countSql = `SELECT COUNT(DISTINCT source_id)::int as count FROM rag_document`;
-  const countParams: any[] = [];
-  if (dbType) {
-    countSql += ` WHERE source_type = $1::rag_source_type`;
-    countParams.push(dbType);
-  }
+  const countParams: unknown[] = [dbType];
+  const countAlias = alias;
+  const countConditions = [
+    'rd.source_type = $1::rag_source_type',
+    'rc.embedding IS NOT NULL',
+    ...buildSemanticFilterConditions(type as 'GRUPO_PESQUISA' | 'PESQUISADOR' | 'PRODUCAO' | 'LINHA_PESQUISA', filters, value => {
+      countParams.push(value);
+      return `$${countParams.length}`;
+    }),
+  ];
+  const countSql = `
+    SELECT COUNT(DISTINCT rd.source_id)::int as count
+    FROM rag_document rd
+    JOIN ${dbType} ${countAlias} ON ${countAlias}.id = rd.source_id
+    JOIN rag_chunk rc ON rc.document_id = rd.id
+    WHERE ${countConditions.join(' AND ')}
+  `;
 
   const [results, countRes] = await Promise.all([
     prisma.$queryRawUnsafe<any[]>(sql, ...params),

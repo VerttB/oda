@@ -150,8 +150,8 @@ describe('Contratos publicos de grupos e pesquisadores', () => {
 
   it('busca semantica, criacao e atualizacao usam os mesmos contratos', async () => {
     const { grupos, pesquisadores } = setup();
-    expectClean(await grupos.buscaSemantica('computacao'));
-    expectClean(await pesquisadores.buscaSemantica('computacao'));
+    expectClean(await grupos.findAll({ q: 'computacao', modoBusca: 'semantica' } as never));
+    expectClean(await pesquisadores.findAll({ q: 'computacao', modoBusca: 'semantica' } as never));
     const input = { nome: 'Grupo', areaPredominante: 'Computacao', instituicoes: [{ instituicaoId: 'instituicao-1', tipoRelacao: 'SEDE' as const }] };
     expectClean(await grupos.create(input));
     expectClean(await grupos.update('grupo-1', input));

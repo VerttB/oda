@@ -13,6 +13,7 @@ function fixture() {
     const batch = { id, jobs: [data], published: false };
     const state = { batch, data, stored: new Map(), items: new Map(), additions: 0, settlements: [], sealed: [] };
     state.queue = {
+        name: 'oda-dgp-scraper',
         async add(_name, jobData, opts) {
             state.additions++;
             if (!state.stored.has(opts.jobId)) state.stored.set(opts.jobId, { data: jobData, getState: async () => 'waiting' });

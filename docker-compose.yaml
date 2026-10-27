@@ -1,3 +1,7 @@
+x-worker-environment: &worker-environment
+  DATABASE_URL: ${DOCKER_DATABASE_URL:-postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}}
+  REDIS_URL: ${DOCKER_REDIS_URL:-redis://redis:6379/0}
+
 x-system-worker: &system-worker
   image: oda-system-worker:local
   build:
@@ -29,22 +33,32 @@ x-scraper-worker: &scraper-worker
   init: true
   env_file:
     - .env
-  environment:
-    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-    REDIS_URL: redis://redis:6379/0
+  environment: *worker-environment
   volumes:
     - ./apps/scraper/data:/app/apps/scraper/data
     - ./apps/api/static:/app/apps/api/static
   shm_size: 1gb
   stop_grace_period: 5m
-  depends_on:
-    postgres:
-      condition: service_started
-    redis:
-      condition: service_healthy
+
+x-etl-worker: &etl-worker
+  image: oda-etl:local
+  build:
+    context: .
+    dockerfile: apps/etl/Dockerfile
+  restart: unless-stopped
+  init: true
+  env_file:
+    - .env
+  volumes:
+    - ./apps/scraper/data:/data
+  environment:
+    <<: *worker-environment
+    SCRAPER_DATA_DIR: /data
+  stop_grace_period: 5m
 
 services:
   postgres:
+    profiles: ["core"]
     image: pgvector/pgvector:pg18-trixie
     container_name: oda_postgres
     restart: always
@@ -55,11 +69,12 @@ services:
       TZ: America/Sao_Paulo
       PGTZ: America/Sao_Paulo
     ports:
-      - "5433:5432"
+      - "${POSTGRES_BIND_IP:-127.0.0.1}:5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
 
   redis:
+    profiles: ["core"]
     image: redis:7-alpine
     container_name: oda_redis
     restart: always
@@ -90,9 +105,10 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "127.0.0.1:6379:6379"
+      - "${REDIS_BIND_IP:-127.0.0.1}:6379:6379"
 
   api:
+    profiles: ["core"]
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -115,6 +131,7 @@ services:
         condition: service_started
 
   langchain:
+    profiles: ["core"]
     build:
       context: .
       dockerfile: apps/langchain-ts/Dockerfile
@@ -124,44 +141,43 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - OPEN_AI_KEY=${OPEN_AI_KEY}
       - LANGCHAIN_PORT=8002
-    ports:
-      - "8002:8002"
     depends_on:
       - postgres
 
   etl:
-    build:
-      context: .
-      dockerfile: apps/etl/Dockerfile
+    <<: *etl-worker
+    profiles: ["scraper"]
     container_name: oda_etl
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - ./apps/scraper/data:/data
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - REDIS_URL=redis://redis:6379/0
-      - SCRAPER_DATA_DIR=/data
-      - ETL_GROUP_WORKER_NAME=etl-grupos-docker
-      - ETL_RESEARCHER_WORKER_NAME=etl-pesquisadores-docker
-    depends_on:
-      postgres:
-        condition: service_started
-      redis:
-        condition: service_healthy
+    hostname: etl
+    command: ["node", "dist/queue/etlCli.js", "worker", "--scope", "default"]
+
+  etl-simcc:
+    <<: *etl-worker
+    profiles: ["simcc"]
+    container_name: oda_etl_simcc
+    hostname: etl-simcc
+    command: ["node", "dist/queue/etlCli.js", "worker", "--scope", "simcc"]
 
   system-worker:
     <<: *system-worker
+    profiles: ["core"]
     container_name: oda_system_worker
     hostname: system-worker
     command: ["node", "dist/queue/systemWorker.js"]
 
   scraper-dgp:
     <<: *scraper-worker
+    profiles: ["scraper"]
     container_name: oda_scraper_dgp
     hostname: scraper-dgp
     command: ["node", "dist/queue/dgp/dgpCli.js", "worker"]
+
+  scraper-simcc:
+    <<: *scraper-worker
+    profiles: ["simcc"]
+    container_name: oda_scraper_simcc
+    hostname: scraper-simcc
+    command: ["node", "dist/queue/dgp/dgpCli.js", "worker", "--scope", "simcc"]
 
   scraper-simcc-enqueue:
     <<: *scraper-worker
@@ -171,12 +187,14 @@ services:
 
   scraper-lattes:
     <<: *scraper-worker
+    profiles: ["scraper"]
     container_name: oda_scraper_lattes
     hostname: scraper-lattes
     command: ["node", "dist/queue/lattes/lattesCli.js", "worker"]
 
   scraper-discovery:
     <<: *scraper-worker
+    profiles: ["scraper"]
     container_name: oda_scraper_discovery
     hostname: scraper-discovery
     command: ["node", "dist/queue/discovery/discoveryCli.js", "worker"]

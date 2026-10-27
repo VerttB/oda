@@ -8,8 +8,8 @@ export const ask = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Question is required" });
     }
 
-    const answer = await ragService.askQuestion(question, chatHistory);
-    res.json({ answer });
+    const result = await ragService.askQuestion(question, chatHistory);
+    res.json(result);
   } catch (error) {
     console.error("Error in ask controller:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -60,12 +60,12 @@ export const summarize = async (req: Request, res: Response) => {
 
 export const semanticSearch = async (req: Request, res: Response) => {
   try {
-    const { query, type, limit, offset } = req.body;
+    const { query, type, limit, offset, filters } = req.body;
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
 
-    const data = await ragService.performSemanticSearch(query, type, limit, offset);
+    const data = await ragService.performSemanticSearch(query, type, limit, offset, filters);
     res.json(data);
   } catch (error) {
     console.error("Error in semanticSearch controller:", error);

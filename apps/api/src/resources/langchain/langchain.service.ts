@@ -37,7 +37,7 @@ export class LangchainGatewayService {
       const res = await fetch(`${this.baseUrl}/question`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: payload.prompt }),
+        body: JSON.stringify({ question: payload.prompt, chatHistory: payload.chatHistory }),
       });
       if (!res.ok) throw new Error('Failed to fetch generation');
       const data = await res.json();
@@ -46,6 +46,9 @@ export class LangchainGatewayService {
         model: 'gpt-4o-mini',
         provider: 'openai',
         createdAt: new Date().toISOString(),
+        ...(Array.isArray(data.sources) ? { sources: data.sources } : {}),
+        ...(typeof data.grounded === 'boolean' ? { grounded: data.grounded } : {}),
+        ...(typeof data.retrievalAttempts === 'number' ? { retrievalAttempts: data.retrievalAttempts } : {}),
       };
     } catch (e: any) {
       throw new Error(`Langchain generate failed: ${e.message}`);
@@ -70,13 +73,14 @@ export class LangchainGatewayService {
     query: string, 
     type: 'GRUPO_PESQUISA' | 'PESQUISADOR' | 'PRODUCAO' | 'LINHA_PESQUISA', 
     limit = 10,
-    offset = 0
+    offset = 0,
+    filters: Record<string, unknown> = {},
   ): Promise<{ results: { sourceId: string; score: number }[], totalItems: number }> {
     try {
       const res = await fetch(`${this.baseUrl}/semantic-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, type, limit, offset }),
+        body: JSON.stringify({ query, type, limit, offset, filters }),
       });
       if (!res.ok) throw new Error('Failed to fetch semantic search');
       return await res.json();

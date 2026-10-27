@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { hostname } from 'node:os';
-import { createDgpScraperQueue, createQueueConnection, DGP_QUEUE_SETTINGS, QUEUE_NAMES, Worker } from '@oda/queue';
+import { createDgpScraperQueue, createQueueConnection, DGP_QUEUE_SETTINGS, Worker } from '@oda/queue';
 import { DgpQueueRepository } from './dgpRepository';
 import { reconcileDgpQueue } from './dgpDispatch';
 
@@ -9,7 +9,7 @@ export async function runDgpWorker(queue: ReturnType<typeof createDgpScraperQueu
     await queue.setGlobalConcurrency(DGP_QUEUE_SETTINGS.concurrency);
     await reconcileDgpQueue(queue, repository);
     const workerName = process.env.DGP_WORKER_NAME || `dgp-${hostname()}-${process.pid}`;
-    const worker = new Worker(QUEUE_NAMES.DGP_SCRAPER, pathToFileURL(path.join(__dirname, 'dgpProcessor.js')), {
+    const worker = new Worker(queue.name, pathToFileURL(path.join(__dirname, 'dgpProcessor.js')), {
         connection: createQueueConnection('worker'), concurrency: DGP_QUEUE_SETTINGS.concurrency,
         name: workerName, maxStalledCount: 1, maxStartedAttempts: 8, autorun: false,
     });
@@ -45,7 +45,7 @@ export async function runDgpWorker(queue: ReturnType<typeof createDgpScraperQueu
     process.once('SIGINT', shutdown);
     process.once('SIGTERM', shutdown);
     try {
-        console.log(`[DGP Worker] ${workerName} aguardando jobs em ${QUEUE_NAMES.DGP_SCRAPER}.`);
+        console.log(`[DGP Worker] ${workerName} aguardando jobs em ${queue.name}.`);
         await worker.run();
     } finally {
         clearInterval(interval);

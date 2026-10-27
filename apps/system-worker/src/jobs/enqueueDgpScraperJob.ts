@@ -2,7 +2,7 @@ import type { Job } from 'bullmq';
 import { FilaExtracaoStatus, ModoExecucao } from '@oda/database';
 import {
   createDgpScraperQueue, dgpJobId, enqueueDgpGroup, parseDataScope,
-  QUEUE_NAMES, SCRAPER_ENQUEUE_LIMITS, validateScrapeDgpGroupJob,
+  SCRAPER_ENQUEUE_LIMITS, validateScrapeDgpGroupJob,
   type EnqueueDgpScraperJob, type ScrapeDgpGroupJob,
 } from '@oda/queue';
 import { isSimccInstitution } from '@oda/shared-types';
@@ -11,7 +11,7 @@ import { publishScraperBatch, selectAvailable } from './scraperBatchPublisher';
 
 export async function handleEnqueueDgpScraperJob(job: Job<EnqueueDgpScraperJob>) {
   const scope = parseDataScope(job.data.scope ?? 'default');
-  const queue = createDgpScraperQueue();
+  const queue = createDgpScraperQueue(scope);
   try {
     const targets = await selectAvailable({
       queue,
@@ -35,7 +35,7 @@ export async function handleEnqueueDgpScraperJob(job: Job<EnqueueDgpScraperJob>)
     });
     const result = await publishScraperBatch({
       prisma,
-      queueName: QUEUE_NAMES.DGP_SCRAPER,
+      queueName: queue.name,
       mode: ModoExecucao.APENAS_DGP,
       scope,
       targets,

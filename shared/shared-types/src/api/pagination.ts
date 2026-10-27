@@ -6,6 +6,11 @@ export const PaginationQuerySchema = z.object({
 });
 
 export const SortOrderSchema = z.enum(['asc', 'desc']);
+export const SearchModeSchema = z.enum(['textual', 'semantica']);
+export const SemanticSearchQueryFields = {
+  q: z.string().trim().min(1).max(500).optional(),
+  modoBusca: SearchModeSchema.optional(),
+};
 
 export const PaginationMetaResponseSchema = z.object({
   page: z.number().int().min(1),

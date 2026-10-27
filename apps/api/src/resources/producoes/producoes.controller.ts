@@ -8,6 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -27,6 +28,7 @@ import {
   PaginatedProducaoResponseDto,
   ProducaoResponseDto,
 } from './dto/response-producoes.dto';
+import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
 
 @ApiTags('producoes')
 @Controller('producoes')
@@ -43,24 +45,13 @@ export class ProducoesController {
   }
 
   @Get()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista produções' })
+  @ApiQuery({ name: 'q', required: false, type: String, example: 'estudos recentes sobre vacinas' })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedProducaoResponseDto })
   findAll(@Query() query: FindAllProducoesDto) {
     return this.producoesService.findAll(query);
-  }
-
-  @Get('busca-semantica')
-  @ApiOperation({ summary: 'Busca produções por similaridade semântica' })
-  @ApiQuery({ name: 'q', type: String, required: true })
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'size', type: Number, required: false })
-  @ZodResponse({ status: 200, type: PaginatedProducaoResponseDto })
-  buscaSemantica(
-    @Query('q') query: string, 
-    @Query('page') page?: number, 
-    @Query('size') size?: number
-  ) {
-    return this.producoesService.buscaSemantica(query, page, size);
   }
 
   @Get(':id')

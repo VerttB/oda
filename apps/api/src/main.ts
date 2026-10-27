@@ -11,6 +11,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log', 'verbose'],
   });
+  const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS ?? 0);
+  if (Number.isInteger(trustProxyHops) && trustProxyHops >= 0) {
+    app.set('trust proxy', trustProxyHops);
+  }
   app.enableCors({ origin: '*' });
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/static/',
@@ -40,15 +44,28 @@ async function bootstrap() {
     deepScanRoutes: true,
   });
 
+  const publicAiPaths = new Set(['/langchain/generate', '/langchain/summarize']);
+  const publicPostPaths = new Set(['/auth/login', ...publicAiPaths]);
+  const semanticSearchPaths = new Set([
+    '/grupos-pesquisa',
+    '/grupos-pesquisa/simcc',
+    '/grupos-pesquisa/{id}/pesquisadores',
+    '/pesquisadores',
+    '/pesquisadores/{id}/producoes',
+    '/linha-pesquisa',
+    '/producoes',
+  ]);
+
   if (isProduction()) {
     if (document.paths) {
       Object.keys(document.paths).forEach((pathKey) => {
-        if (pathKey.startsWith('/admin/filas') || pathKey.startsWith('/auth')) {
+        if (pathKey.startsWith('/admin/filas')) {
           delete document.paths[pathKey];
         } else {
           const pathItem = document.paths[pathKey];
           Object.keys(pathItem).forEach((method) => {
-            if (method !== 'get' && method !== 'parameters') {
+            const isPublicPost = method === 'post' && publicPostPaths.has(pathKey);
+            if (method !== 'get' && method !== 'parameters' && !isPublicPost) {
               delete pathItem[method];
             }
           });
@@ -56,8 +73,30 @@ async function bootstrap() {
       });
     }
     if (document.tags) {
-      document.tags = document.tags.filter((tag) => tag.name !== 'admin-filas' && tag.name !== 'auth');
+      document.tags = document.tags.filter((tag) => tag.name !== 'admin-filas');
     }
+  }
+
+  if (document.paths) {
+    Object.entries(document.paths).forEach(([pathKey, pathItem]) => {
+      Object.entries(pathItem).forEach(([method, operation]) => {
+        if (!operation || typeof operation !== 'object' || method === 'parameters') return;
+        const isPublicPost = method === 'post' && publicPostPaths.has(pathKey);
+        const isLogin = pathKey === '/auth/login' && method === 'post';
+        const supportsOptionalAiAuth = publicAiPaths.has(pathKey)
+          || (method === 'get' && semanticSearchPaths.has(pathKey));
+        const requiresJwt = pathKey.startsWith('/admin/filas')
+          || (['post', 'patch', 'put', 'delete'].includes(method) && !isPublicPost);
+
+        if (requiresJwt) {
+          (operation as any).security = [{ bearer: [] }];
+        } else if (supportsOptionalAiAuth) {
+          (operation as any).security = [{ bearer: [] }, {}];
+        } else if (isLogin) {
+          delete (operation as any).security;
+        }
+      });
+    });
   }
 
   SwaggerModule.setup('api', app, document);

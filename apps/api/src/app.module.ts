@@ -20,6 +20,7 @@ import { MetricasModule } from './resources/metricas/metricas.module';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { FilasModule } from './resources/filas/filas.module';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
+import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoggerMiddleware } from './common/logger/logger.middleware';
     },
     CacheModule,
     AuthModule,
+    RateLimitModule,
     GruposPesquisaModule,
     InstituicaoModule,
     LangchainGatewayModule,
@@ -50,10 +52,7 @@ import { LoggerMiddleware } from './common/logger/logger.middleware';
     { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
     { provide: APP_INTERCEPTOR, useClass: OmitAuditFieldsInterceptor },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
 export class AppModule implements NestModule{

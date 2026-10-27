@@ -11,6 +11,7 @@ import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
 
 const SIMCC_INSTITUICOES: Prisma.InstituicaoWhereInput = {
@@ -83,6 +84,7 @@ export class GruposPesquisaService {
   }
 
   private async list(query?: FindAllGruposPesquisaDto, simcc = false) {
+    validateSearchQuery(query);
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
     const pagination = getPagination(query);
@@ -96,9 +98,10 @@ export class GruposPesquisaService {
       if (query.situacao) {
         where.situacao = query.situacao;
       }
-      if (query.nome) {
+      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
+      if (nameQuery) {
         where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'grupoPesquisa', query.nome),
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'grupoPesquisa', nameQuery),
         };
       }
       if (query.anoFormacao) {
@@ -129,6 +132,35 @@ export class GruposPesquisaService {
     }
     if (andConditions.length > 0) {
       where.AND = andConditions;
+    }
+
+    if (query?.modoBusca === 'semantica') {
+      const filters = withoutSearchControls(query as unknown as Record<string, unknown>);
+      if (simcc) {
+        filters.simcc = true;
+        filters.simccSiglas = SIMCC_INSTITUTIONS
+          .filter(item => item.sigla !== 'FIOCRUZ')
+          .map(item => item.sigla);
+      }
+      const { results, totalItems } = await this.langchainService.semanticSearch(
+        query.q!, 'GRUPO_PESQUISA', pagination.size, pagination.skip, filters,
+      );
+      const ids = results.map(result => result.sourceId);
+      const grupos = ids.length === 0 ? [] : await this.prismaService.grupoPesquisa.findMany({
+        where: { id: { in: ids } },
+        include: grupoPesquisaInclude,
+        omit: { criadoEm: true, atualizadoEm: true },
+      });
+      const gruposPorId = new Map(grupos.map(grupo => [grupo.id, grupo]));
+      const totalPages = Math.ceil(totalItems / pagination.size);
+
+      return {
+        data: ids.flatMap(id => {
+          const grupo = gruposPorId.get(id);
+          return grupo ? [toGrupoPesquisaResponse(grupo)] : [];
+        }),
+        meta: { page: pagination.page, size: pagination.size, totalItems, totalPages },
+      };
     }
 
     if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
@@ -179,32 +211,6 @@ export class GruposPesquisaService {
         },
       };
     });
-  }
-
-  async buscaSemantica(query: string, page?: number, size?: number) {
-    const pageNum = page ? Number(page) : 1;
-    const sizeNum = size ? Number(size) : 30;
-    const offset = (pageNum - 1) * sizeNum;
-
-    const { results, totalItems } = await this.langchainService.semanticSearch(query, 'GRUPO_PESQUISA', sizeNum, offset);
-    const ids = results.map(r => r.sourceId);
-
-    if (ids.length === 0) {
-      return { data: [], meta: { page: pageNum, size: sizeNum, totalItems: 0, totalPages: 0 } };
-    }
-
-    const grupos = await this.prismaService.grupoPesquisa.findMany({
-      where: { id: { in: ids } },
-      include: grupoPesquisaInclude,
-    });
-
-    const data = ids.flatMap(id => {
-      const grupo = grupos.find(g => g.id === id);
-      return grupo ? [toGrupoPesquisaResponse(grupo)] : [];
-    });
-    const totalPages = Math.ceil(totalItems / sizeNum);
-
-    return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
   async findOne(id: string) {

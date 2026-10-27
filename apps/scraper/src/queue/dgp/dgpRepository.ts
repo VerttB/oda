@@ -3,7 +3,7 @@ import {
     FilaExtracaoStatus, ModuloSistema, ModoExecucao, PipelineEtapa, Prisma,
     PrismaClient, StatusItemLog, StatusSessao, TipoEntidadeLog, TipoErroColeta,
 } from '@oda/database';
-import { DataScope, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeDgpGroupResult, validateScrapeDgpGroupJob } from '@oda/queue';
+import { DataScope, normalizeDataScope, scopedQueueName, QUEUE_NAMES, ScrapeDgpGroupJob, ScrapeDgpGroupResult, validateScrapeDgpGroupJob } from '@oda/queue';
 
 export type DgpBatch = { id: string; jobs: ScrapeDgpGroupJob[]; published: boolean };
 type BatchMetadata = {
@@ -16,7 +16,7 @@ type BatchMetadata = {
 
 function metadata(value: Prisma.JsonValue): BatchMetadata {
     const data = value as unknown as BatchMetadata;
-    if (!data || data.queue !== QUEUE_NAMES.DGP_SCRAPER || !Array.isArray(data.jobs)) {
+    if (!data || (data.queue !== QUEUE_NAMES.DGP_SCRAPER && data.queue !== QUEUE_NAMES.DGP_SCRAPER_SIMCC) || !Array.isArray(data.jobs)) {
         throw new Error('Pipeline nao pertence a fila BullMQ DGP.');
     }
     data.jobs.forEach(validateScrapeDgpGroupJob);
@@ -24,9 +24,9 @@ function metadata(value: Prisma.JsonValue): BatchMetadata {
 }
 
 export class DgpQueueRepository {
-    constructor(private readonly prisma: PrismaClient) {}
+    constructor(private readonly prisma: PrismaClient, readonly scope: DataScope = 'default') {}
 
-    async createBatch(dgpIds: string[], scope: DataScope = 'default'): Promise<DgpBatch> {
+    async createBatch(dgpIds: string[], scope: DataScope = this.scope): Promise<DgpBatch> {
         const id = randomUUID();
         const jobs = [...new Set(dgpIds)].map(dgpId => ({
             version: 1 as const, dgpId, requestedAt: new Date().toISOString(),
@@ -36,7 +36,7 @@ export class DgpQueueRepository {
         await this.prisma.pipelineLog.create({ data: {
             id, modulo: ModuloSistema.SCRAPER, modoExecucao: ModoExecucao.APENAS_DGP,
             dgpId: jobs.length === 1 ? jobs[0].dgpId : null,
-            metadata: { queue: QUEUE_NAMES.DGP_SCRAPER, scope, jobs, published: false, resultados: {}, itensFila: jobs.length },
+            metadata: { queue: scopedQueueName(QUEUE_NAMES.DGP_SCRAPER, scope), scope, jobs, published: false, resultados: {}, itensFila: jobs.length },
         } });
         return { id, jobs, published: false };
     }
@@ -45,13 +45,15 @@ export class DgpQueueRepository {
         let cursor: string | undefined;
         for (;;) {
             const rows = await this.prisma.pipelineLog.findMany({
-                where: { status: StatusSessao.EMANDAMENTO, metadata: { path: ['queue'], equals: QUEUE_NAMES.DGP_SCRAPER } },
+                where: { status: StatusSessao.EMANDAMENTO, OR: [QUEUE_NAMES.DGP_SCRAPER, QUEUE_NAMES.DGP_SCRAPER_SIMCC]
+                    .map(queue => ({ metadata: { path: ['queue'], equals: queue } })) },
                 orderBy: { id: 'asc' }, take: 50,
                 ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
             });
             if (!rows.length) return;
             for (const row of rows) {
                 const data = metadata(row.metadata!);
+                if (normalizeDataScope((data.scope as DataScope | undefined) ?? data.jobs[0]?.scope) !== this.scope) continue;
                 yield { id: row.id, jobs: data.jobs, published: data.published };
             }
             cursor = rows[rows.length - 1].id;

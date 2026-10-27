@@ -1,4 +1,5 @@
 import { Queue } from 'bullmq';
+import { DataScope, scopedQueueName, assertQueueScope } from './contracts';
 import { createQueueConnection } from './connection';
 import {
   DGP_QUEUE_SETTINGS,
@@ -50,8 +51,8 @@ import {
   EnqueueLattesScraperResult,
 } from './contracts';
 
-export function createDgpScraperQueue() {
-  return new Queue<ScrapeDgpGroupJob, ScrapeDgpGroupResult>(QUEUE_NAMES.DGP_SCRAPER, {
+export function createDgpScraperQueue(scope: DataScope = 'default') {
+  return new Queue<ScrapeDgpGroupJob, ScrapeDgpGroupResult>(scopedQueueName(QUEUE_NAMES.DGP_SCRAPER, scope), {
     connection: createQueueConnection('producer'),
     defaultJobOptions: {
       attempts: DGP_QUEUE_SETTINGS.attempts,
@@ -65,6 +66,7 @@ export function createDgpScraperQueue() {
 
 export async function enqueueDgpGroup(data: ScrapeDgpGroupJob, queue: ReturnType<typeof createDgpScraperQueue>) {
   validateScrapeDgpGroupJob(data);
+  assertQueueScope(queue.name, QUEUE_NAMES.DGP_SCRAPER, data.scope);
   const id = dgpJobId(data.dgpId);
   await queue.add(JOB_NAMES.SCRAPE_DGP_GROUP, data, { jobId: id });
   // Em duplicatas, o objeto retornado por add pode conter os dados enviados agora.
@@ -117,8 +119,8 @@ export async function enqueueDiscoveryKey(data: DiscoverDgpGroupsJob, queue: Ret
   return stored;
 }
 
-export function createEtlGroupQueue() {
-  return new Queue<EtlGroupJob, EtlGroupResult>(QUEUE_NAMES.ETL_GROUPS, {
+export function createEtlGroupQueue(scope: DataScope = 'default') {
+  return new Queue<EtlGroupJob, EtlGroupResult>(scopedQueueName(QUEUE_NAMES.ETL_GROUPS, scope), {
     connection: createQueueConnection('producer'),
     defaultJobOptions: defaultJobOptions(ETL_GROUP_QUEUE_SETTINGS.attempts, ETL_GROUP_QUEUE_SETTINGS.retryDelayMs),
   });
@@ -126,6 +128,7 @@ export function createEtlGroupQueue() {
 
 export async function enqueueEtlGroup(data: EtlGroupJob, queue: ReturnType<typeof createEtlGroupQueue>) {
   validateEtlGroupJob(data);
+  assertQueueScope(queue.name, QUEUE_NAMES.ETL_GROUPS, data.scope);
   const id = etlGroupJobId(data.dgpId);
   await queue.add(JOB_NAMES.ETL_GROUP, data, { jobId: id });
   const stored = await queue.getJob(id);
@@ -149,8 +152,8 @@ export async function enqueueEtlResearcher(data: EtlResearcherJob, queue: Return
   return stored;
 }
 
-export function createEtlDispatchQueue() {
-  return new Queue<EtlDispatchJob, EtlDispatchResult>(QUEUE_NAMES.ETL_DISPATCH, {
+export function createEtlDispatchQueue(scope: DataScope = 'default') {
+  return new Queue<EtlDispatchJob, EtlDispatchResult>(scopedQueueName(QUEUE_NAMES.ETL_DISPATCH, scope), {
     connection: createQueueConnection('producer'),
     defaultJobOptions: defaultJobOptions(ETL_DISPATCH_QUEUE_SETTINGS.attempts, ETL_DISPATCH_QUEUE_SETTINGS.retryDelayMs),
   });
@@ -158,6 +161,7 @@ export function createEtlDispatchQueue() {
 
 export async function enqueueEtlDispatch(data: EtlDispatchJob, queue: ReturnType<typeof createEtlDispatchQueue>) {
   validateEtlDispatchJob(data);
+  assertQueueScope(queue.name, QUEUE_NAMES.ETL_DISPATCH, data.scope);
   const id = etlDispatchJobId(data.requestId);
   await queue.add(JOB_NAMES.ETL_DISPATCH, data, { jobId: id });
   const stored = await queue.getJob(id);

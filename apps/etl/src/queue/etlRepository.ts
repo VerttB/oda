@@ -5,7 +5,7 @@ import {
 } from '@oda/database';
 import {
     DataScope, EtlGroupJob, EtlGroupResult, EtlResearcherJob, EtlResearcherResult,
-    QUEUE_NAMES, validateEtlGroupJob, validateEtlResearcherJob,
+    QUEUE_NAMES, normalizeDataScope, validateEtlGroupJob, validateEtlResearcherJob,
 } from '@oda/queue';
 
 export type EtlFileDescriptor = {
@@ -70,9 +70,14 @@ function sameJob(left: EtlJob, right: EtlJob) {
 }
 
 export class EtlQueueRepository {
-    constructor(private readonly prisma: PrismaClient) {}
+    constructor(private readonly prisma: PrismaClient, readonly scope: DataScope = 'default') {}
 
     async createBatch(groups: EtlFileDescriptor[], researchers: EtlFileDescriptor[], id: string = randomUUID()): Promise<EtlBatch> {
+        if (groups.some(file => file.scope !== this.scope)
+            || researchers.some(file => file.scope !== 'default')
+            || (this.scope === 'simcc' && researchers.length)) {
+            throw new Error('Arquivos ETL pertencem a outro escopo.');
+        }
         const requestedAt = new Date().toISOString();
         const groupJobs = groups.map(file => ({
             version: 1 as const, dgpId: file.id, requestedAt, pipelineLogId: id,
@@ -120,7 +125,11 @@ export class EtlQueueRepository {
                 ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
             });
             if (!rows.length) return;
-            for (const row of rows) yield toBatch(row.id, parseMetadata(row.metadata!));
+            for (const row of rows) {
+                const data = parseMetadata(row.metadata!);
+                if (normalizeDataScope((data.scope as DataScope | undefined) ?? data.groupJobs[0]?.scope) !== this.scope) continue;
+                yield toBatch(row.id, data);
+            }
             cursor = rows[rows.length - 1].id;
         }
     }
@@ -128,12 +137,20 @@ export class EtlQueueRepository {
     async getOpenBatch(id: string): Promise<EtlBatch | null> {
         const row = await this.prisma.pipelineLog.findUnique({ where: { id } });
         if (!row || row.status !== StatusSessao.EMANDAMENTO) return null;
-        return toBatch(row.id, parseMetadata(row.metadata!));
+        return this.scopedBatch(row.id, row.metadata!);
     }
 
     async getBatch(id: string): Promise<EtlBatch | null> {
         const row = await this.prisma.pipelineLog.findUnique({ where: { id } });
-        return row ? toBatch(row.id, parseMetadata(row.metadata!)) : null;
+        return row ? this.scopedBatch(row.id, row.metadata!) : null;
+    }
+
+    private scopedBatch(id: string, value: Prisma.JsonValue): EtlBatch {
+        const data = parseMetadata(value);
+        if (normalizeDataScope((data.scope as DataScope | undefined) ?? data.groupJobs[0]?.scope) !== this.scope) {
+            throw new Error('Lote ETL pertence a outro escopo.');
+        }
+        return toBatch(id, data);
     }
 
     async result(data: EtlJob): Promise<{ status: StatusItemLog } | null> {

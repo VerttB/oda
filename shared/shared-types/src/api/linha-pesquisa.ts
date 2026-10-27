@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } from './pagination';
 import { createPaginatedResponseSchema } from './pagination';
 
 const uniqueUuidArray = z.array(z.string().uuid()).refine(
@@ -20,6 +20,7 @@ export const UpdateLinhaPesquisaRequestSchema =
   CreateLinhaPesquisaRequestSchema.partial();
 
 export const FindAllLinhaPesquisaQuerySchema = PaginationQuerySchema.extend({
+  ...SemanticSearchQueryFields,
   grupo: z.string().uuid().optional(),
   nome: z.string().optional(),
   ordenarPor: z.enum(['titulo']).optional(),

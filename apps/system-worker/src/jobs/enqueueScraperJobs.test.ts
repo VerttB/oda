@@ -24,10 +24,11 @@ jest.mock('./scraperBatchPublisher', () => ({
 }));
 
 describe('system worker scraper enqueue', () => {
-  const queue = { getJob: jest.fn(async () => null), close: jest.fn(async () => {}) };
+  const queue = { name: QUEUE_NAMES.DGP_SCRAPER as string, getJob: jest.fn(async () => null), close: jest.fn(async () => {}) };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    queue.name = QUEUE_NAMES.DGP_SCRAPER;
     (createDgpScraperQueue as jest.Mock).mockReturnValue(queue);
     (createLattesScraperQueue as jest.Mock).mockReturnValue(queue);
     (prisma.pipelineLog.findFirst as jest.Mock).mockResolvedValue(null);
@@ -50,6 +51,20 @@ describe('system worker scraper enqueue', () => {
       targets: [expect.objectContaining({ dgpId: '1234567890123456' })],
     }));
     expect(queue.close).toHaveBeenCalled();
+  });
+
+  it('publica SIMCC na fila exclusiva do servidor SIMCC', async () => {
+    queue.name = QUEUE_NAMES.DGP_SCRAPER_SIMCC;
+    (prisma.filaExtracaoGrupo.findMany as jest.Mock).mockResolvedValue([
+      { dgpId: '1234567890123456', instituicao: 'Universidade do Estado da Bahia' },
+    ]);
+    await handleEnqueueDgpScraperJob({ data: {
+      version: 1, requestedAt: new Date().toISOString(), scope: 'simcc',
+    } } as Job<EnqueueDgpScraperJob>);
+    expect(createDgpScraperQueue).toHaveBeenCalledWith('simcc');
+    expect(publishScraperBatch).toHaveBeenCalledWith(expect.objectContaining({
+      queueName: QUEUE_NAMES.DGP_SCRAPER_SIMCC, scope: 'simcc',
+    }));
   });
 
   it('enfileira pesquisadores pendentes sem exigir ID e preserva o nome do banco', async () => {

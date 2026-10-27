@@ -5,3 +5,4 @@ export const ETL_GROUP_QUEUE = Symbol('ETL_GROUP_QUEUE');
 export const ETL_RESEARCHER_QUEUE = Symbol('ETL_RESEARCHER_QUEUE');
 export const ETL_DISPATCH_QUEUE = Symbol('ETL_DISPATCH_QUEUE');
 export const SYSTEM_MAINTENANCE_QUEUE = Symbol('SYSTEM_MAINTENANCE_QUEUE');
+export const SIMCC_QUEUES = Symbol('SIMCC_QUEUES');

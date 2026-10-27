@@ -1,62 +1,19 @@
-import { randomUUID } from 'crypto';
-import { embeddings } from '../core/config';
+import { RagSourceType } from '@oda/database';
 import { prisma } from '../core/db';
+import { indexRagDocument } from '../services/ragIndexer';
 
+const PAGE_SIZE = 25;
 
-
-function splitText(text: string, chunkSize = 1000, chunkOverlap = 200): string[] {
-  if (text.length <= chunkSize) return [text];
-  const chunks: string[] = [];
-  let startIndex = 0;
-  while (startIndex < text.length) {
-    let endIndex = startIndex + chunkSize;
-    if (endIndex >= text.length) {
-      chunks.push(text.slice(startIndex));
-      break;
-    }
-    let splitIndex = endIndex;
-    const overlapZone = text.slice(endIndex - chunkOverlap, endIndex);
-    const lastNewline = overlapZone.lastIndexOf('\n');
-    if (lastNewline !== -1) {
-      splitIndex = endIndex - chunkOverlap + lastNewline + 1;
-    } else {
-      const lastSpace = overlapZone.lastIndexOf(' ');
-      if (lastSpace !== -1) {
-        splitIndex = endIndex - chunkOverlap + lastSpace + 1;
-      }
-    }
-    chunks.push(text.slice(startIndex, splitIndex));
-    const nextStartIndex = splitIndex - chunkOverlap;
-    if (nextStartIndex <= startIndex) {
-      startIndex = endIndex - chunkOverlap;
-    } else {
-      startIndex = nextStartIndex;
-    }
+async function* paginate<T extends { id: string }>(loadPage: (after?: string) => Promise<T[]>) {
+  let after: string | undefined;
+  while (true) {
+    const rows = await loadPage(after);
+    if (rows.length === 0) return;
+    for (const row of rows) yield row;
+    if (rows.length < PAGE_SIZE) return;
+    after = rows[rows.length - 1].id;
   }
-  return chunks;
 }
-
-// Verifica se uma entidade precisa de vetorização (se é nova ou foi atualizada)
-async function needVectorization(sourceType: any, sourceId: string, dbUpdatedAt: Date): Promise<boolean> {
-  const existingDoc = await prisma.ragDocument.findUnique({
-    where: {
-      sourceType_sourceId: {
-        sourceType,
-        sourceId
-      }
-    },
-    select: {
-      atualizadoEm: true
-    }
-  });
-
-  if (!existingDoc) return true; // Novo registro
-
-  // Se foi atualizado no banco depois da última vetorização
-  return dbUpdatedAt.getTime() > existingDoc.atualizadoEm.getTime();
-}
-
-const textSplitter = { splitText };
 
 function formatUnidadeVinculo(vinculo: any): string {
   const nome = vinculo.unidade;
@@ -96,19 +53,18 @@ async function main() {
   // A. Sincronização de Grupos de Pesquisa
   // ==========================================
   console.log('📦 Analisando Grupos de Pesquisa...');
-  const grupos = await prisma.grupoPesquisa.findMany({
+  let gruposSincronizados = 0;
+  for await (const g of paginate(after => prisma.grupoPesquisa.findMany({
+    take: PAGE_SIZE,
+    ...(after ? { cursor: { id: after }, skip: 1 } : {}),
+    orderBy: { id: 'asc' },
     include: {
       instituicoes: { include: { instituicao: { include: { estado: true } } } },
       linhasPesquisa: true,
       membros: { include: { pesquisador: true } },
       areasConhecimento: { include: { area: true } }
     }
-  });
-
-  let gruposSincronizados = 0;
-  for (const g of grupos) {
-    const sync = await needVectorization('GRUPO_PESQUISA', g.id, g.atualizadoEm);
-    if (!sync) continue;
+  }))) {
 
     let content = `Grupo de Pesquisa: ${g.nome}\n`;
     content += `DGP ID: ${g.dgpId || 'N/A'}\n`;
@@ -143,8 +99,8 @@ async function main() {
       }
     }
 
-    await saveRagDocument('GRUPO_PESQUISA', g.id, g.nome, content, { dgpId: g.dgpId || '' });
-    gruposSincronizados++;
+    const result = await saveRagDocument(RagSourceType.GRUPO_PESQUISA, g.id, g.nome, content, { dgpId: g.dgpId || '' });
+    if (result.indexed) gruposSincronizados++;
   }
   console.log(`[ETL-IA] Grupos de Pesquisa processados: ${gruposSincronizados} sincronizados.`);
 
@@ -152,7 +108,11 @@ async function main() {
   // B. Sincronização de Pesquisadores
   // ==========================================
   console.log('👥 Analisando Pesquisadores...');
-  const pesquisadores = await prisma.pesquisador.findMany({
+  let pesquisadoresSincronizados = 0;
+  for await (const p of paginate(after => prisma.pesquisador.findMany({
+    take: PAGE_SIZE,
+    ...(after ? { cursor: { id: after }, skip: 1 } : {}),
+    orderBy: { id: 'asc' },
     include: {
       membrosGrupo: {
         include: {
@@ -163,15 +123,10 @@ async function main() {
           },
         },
       },
-      producoes: { include: { producao: true } },
+      _count: { select: { producoes: true } },
       areasConhecimento: { include: { area: true } }
     }
-  });
-
-  let pesquisadoresSincronizados = 0;
-  for (const p of pesquisadores) {
-    const sync = await needVectorization('PESQUISADOR', p.id, p.atualizadoEm);
-    if (!sync) continue;
+  }))) {
 
     let content = `Pesquisador: ${p.nome}\n`;
     content += `Lattes ID: ${p.lattesId || 'N/A'}\n`;
@@ -190,15 +145,10 @@ async function main() {
       content += `Grupos de Pesquisa Associados: ${gruposAssoc.join(', ')}\n`;
     }
 
-    const artigos = p.producoes
-      .filter(pr => pr.producao.tipo === 'ARTIGO')
-      .map(pr => `"${pr.producao.titulo}" (${pr.producao.ano || ''})`);
-    if (artigos.length > 0) {
-      content += `Artigos Publicados:\n` + artigos.map(a => `- ${a}`).join('\n') + '\n';
-    }
+    content += `Produções acadêmicas associadas: ${p._count.producoes}.\n`;
 
-    await saveRagDocument('PESQUISADOR', p.id, p.nome, content, { lattesId: p.lattesId || '' });
-    pesquisadoresSincronizados++;
+    const result = await saveRagDocument(RagSourceType.PESQUISADOR, p.id, p.nome, content, { lattesId: p.lattesId || '' });
+    if (result.indexed) pesquisadoresSincronizados++;
   }
   console.log(`[ETL-IA] Pesquisadores processados: ${pesquisadoresSincronizados} sincronizados.`);
 
@@ -206,14 +156,13 @@ async function main() {
   // C. Sincronização de Produções
   // ==========================================
   console.log('📚 Analisando Produções...');
-  const producoes = await prisma.producao.findMany({
-    include: { autores: { include: { pesquisador: true } } }
-  });
-
   let producoesSincronizadas = 0;
-  for (const pr of producoes) {
-    const sync = await needVectorization('PRODUCAO', pr.id, pr.atualizadoEm);
-    if (!sync) continue;
+  for await (const pr of paginate(after => prisma.producao.findMany({
+    take: PAGE_SIZE,
+    ...(after ? { cursor: { id: after }, skip: 1 } : {}),
+    orderBy: { id: 'asc' },
+    include: { autores: { include: { pesquisador: true } } }
+  }))) {
 
     let content = `Produção Acadêmica: ${pr.titulo}\n`;
     content += `Tipo: ${pr.tipo}\n`;
@@ -229,8 +178,8 @@ async function main() {
       content += `Resumo:\n${pr.resumo}\n`;
     }
 
-    await saveRagDocument('PRODUCAO', pr.id, pr.titulo, content, { doi: pr.doi || '' });
-    producoesSincronizadas++;
+    const result = await saveRagDocument(RagSourceType.PRODUCAO, pr.id, pr.titulo, content, { doi: pr.doi || '' });
+    if (result.indexed) producoesSincronizadas++;
   }
   console.log(`[ETL-IA] Produções processadas: ${producoesSincronizadas} sincronizadas.`);
 
@@ -238,7 +187,11 @@ async function main() {
   // D. Sincronização de Linhas de Pesquisa
   // ==========================================
   console.log('🔬 Analisando Linhas de Pesquisa...');
-  const linhas = await prisma.linhaPesquisa.findMany({
+  let linhasSincronizadas = 0;
+  for await (const lp of paginate(after => prisma.linhaPesquisa.findMany({
+    take: PAGE_SIZE,
+    ...(after ? { cursor: { id: after }, skip: 1 } : {}),
+    orderBy: { id: 'asc' },
     include: {
       grupo: {
         include: {
@@ -248,12 +201,7 @@ async function main() {
       palavrasChave: { include: { palavraChave: true } },
       setoresAplicacao: { include: { setorAplicacao: true } }
     }
-  });
-
-  let linhasSincronizadas = 0;
-  for (const lp of linhas) {
-    const sync = await needVectorization('LINHA_PESQUISA', lp.id, lp.atualizadoEm);
-    if (!sync) continue;
+  }))) {
 
     let content = `Linha de Pesquisa: ${lp.titulo}\n`;
     content += `Objetivo: ${lp.objetivo || 'Sem objetivo cadastrado'}\n`;
@@ -270,65 +218,23 @@ async function main() {
 
     content += `Grupo de Pesquisa Associado: ${lp.grupo?.nome || 'N/A'} (${getInstituicaoResumoGrupo(lp.grupo)})\n`;
 
-    await saveRagDocument('LINHA_PESQUISA', lp.id, lp.titulo, content, { grupoId: lp.grupoId });
-    linhasSincronizadas++;
+    const result = await saveRagDocument(RagSourceType.LINHA_PESQUISA, lp.id, lp.titulo, content, { grupoId: lp.grupoId });
+    if (result.indexed) linhasSincronizadas++;
   }
   console.log(`[ETL-IA] Linhas de Pesquisa processadas: ${linhasSincronizadas} sincronizadas.`);
 
   console.log('🎉 Sincronização incremental concluída com sucesso!');
-  process.exit(0);
 }
 
-async function saveRagDocument(sourceType: any, sourceId: string, titulo: string, content: string, metadata: any) {
-  try {
-    const doc = await prisma.ragDocument.upsert({
-      where: {
-        sourceType_sourceId: {
-          sourceType,
-          sourceId,
-        },
-      },
-      update: {
-        titulo,
-        conteudo: content,
-        metadata,
-      },
-      create: {
-        sourceType,
-        sourceId,
-        titulo,
-        conteudo: content,
-        metadata,
-      },
-    });
-
-    await prisma.ragChunk.deleteMany({
-      where: { documentId: doc.id }
-    });
-
-    const chunks = textSplitter.splitText(content);
-    const vectors = await embeddings.embedDocuments(chunks);
-
-    for (let i = 0; i < chunks.length; i++) {
-      const chunkText = chunks[i];
-      const vector = vectors[i];
-      const vectorStr = `[${vector.join(',')}]`;
-      const chunkId = randomUUID();
-
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO "rag_chunk" ("id", "document_id", "conteudo", "embedding", "ordem", "metadata", "atualizado_em") 
-         VALUES ($1, $2, $3, $4::vector, $5, $6, NOW())`,
-        chunkId, doc.id, chunkText, vectorStr, i, JSON.stringify(metadata)
-      );
-    }
-
-    console.log(`[VETORIZAÇÃO] ✅ ${sourceType} "${titulo}" vetorizado com ${chunks.length} chunks.`);
-  } catch (error: any) {
-    console.error(`❌ Erro ao vetorizar ${sourceType} "${titulo}":`, error.message);
+async function saveRagDocument(sourceType: RagSourceType, sourceId: string, title: string, content: string, metadata: Record<string, unknown>) {
+  const result = await indexRagDocument(prisma, { sourceType, sourceId, title, content, metadata });
+  if (result.indexed) {
+    console.log(`[VETORIZACAO] ${sourceType} "${title}" atualizado com ${result.chunks} chunks.`);
   }
+  return result;
 }
 
 main().catch(error => {
   console.error('❌ Erro fatal no script de ingestão:', error);
   process.exit(1);
-});
+}).finally(() => prisma.$disconnect());

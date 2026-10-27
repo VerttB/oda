@@ -9,16 +9,12 @@ export const LANGCHAIN_PATTERNS = {
 
 export interface LangchainGenerateRequest {
   prompt: string;
-  system?: string;
-  model?: string;
-  temperature?: number;
+  chatHistory?: string;
 }
 
 export interface LangchainSummarizeRequest {
   text: string;
   instructions?: string;
-  model?: string;
-  temperature?: number;
 }
 
 export interface LangchainResponse {
@@ -26,6 +22,15 @@ export interface LangchainResponse {
   model: string;
   provider: 'openai' | 'local';
   createdAt: string;
+  sources?: {
+    ref: string;
+    sourceType: 'grupo_pesquisa' | 'linha_pesquisa' | 'pesquisador' | 'producao' | 'area_conhecimento';
+    sourceId: string;
+    title: string;
+    excerpt: string;
+  }[];
+  grounded?: boolean;
+  retrievalAttempts?: number;
 }
 
 export interface LangchainHealthResponse {

@@ -6,13 +6,23 @@ describe('AuthService', () => {
 
   it('gera token com as credenciais administrativas configuradas', async () => {
     const config = { get: jest.fn((key: string, fallback?: string) => ({
-      ADMIN_USERNAME: 'gestor', ADMIN_PASSWORD: 'senha-segura',
+      ADMIN_USER: 'gestor', ADMIN_PASSWORD: 'senha-segura',
     })[key] ?? fallback) };
     const service = new AuthService(jwt as any, config as any);
 
     await expect(service.login({ username: 'gestor', password: 'senha-segura' }))
       .resolves.toEqual({ access_token: 'token-assinado' });
-    expect(jwt.sign).toHaveBeenCalledWith({ username: 'gestor', sub: 'admin-id' });
+    expect(jwt.sign).toHaveBeenCalledWith({ username: 'gestor', sub: 'admin-id', role: 'ADMIN' });
+  });
+
+  it('mantem compatibilidade com ADMIN_USERNAME', async () => {
+    const config = { get: (key: string, fallback?: string) => ({
+      ADMIN_USERNAME: 'gestor-antigo', ADMIN_PASSWORD: 'senha-segura',
+    })[key] ?? fallback };
+    const service = new AuthService(jwt as any, config as any);
+
+    await expect(service.login({ username: 'gestor-antigo', password: 'senha-segura' }))
+      .resolves.toEqual({ access_token: 'token-assinado' });
   });
 
   it('recusa credenciais erradas ou senha administrativa não configurada', async () => {

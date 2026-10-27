@@ -27,7 +27,7 @@ replace('../src/queue/dgp/dgpSingleGroup', { collectDgpJob: async (_dgpId, repor
 } });
 const processor = require('../src/queue/dgp/dgpProcessor').default;
 const { DGP_QUEUE_SETTINGS, JOB_NAMES } = require('@oda/queue');
-const job = () => ({ name: JOB_NAMES.SCRAPE_DGP_GROUP,
+const job = () => ({ name: JOB_NAMES.SCRAPE_DGP_GROUP, queueName: 'oda-dgp-scraper',
     data: { version: 1, dgpId: '1234567890123456', requestedAt: new Date().toISOString(),
         pipelineLogId: randomUUID(), pipelineItemId: randomUUID() },
     async updateProgress(progress) { state.progress.push(progress); }, log() {},
@@ -69,6 +69,7 @@ test('processor publica progresso completo somente depois de persistir o resulta
 });
 test('processor repassa o escopo SIMCC para a coleta', async () => {
     const input = job();
+    input.queueName = 'oda-dgp-scraper-simcc';
     input.data.scope = 'simcc';
     await processor(input);
     assert.equal(state.scope, 'simcc');

@@ -4,6 +4,19 @@ const path = require('node:path');
 require('ts-node').register({ transpileOnly: true, project: path.join(__dirname, '../tsconfig.json') });
 const { DgpQueueRepository } = require('../src/queue/dgp/dgpRepository');
 
+test('reconciliacao DGP separa lotes gerais, SIMCC e legados', async () => {
+    const rows = [undefined, 'default', 'simcc'].map((scope, index) => ({
+        id: String(index), metadata: { queue: 'oda-dgp-scraper', scope, jobs: [], published: true },
+    }));
+    rows.push({ id: '3', metadata: { queue: 'oda-dgp-scraper-simcc', scope: 'simcc', jobs: [], published: true } });
+    const prisma = { pipelineLog: { findMany: async ({ cursor }) => cursor ? [] : rows } };
+    for (const [scope, expected] of [['default', ['0', '1']], ['simcc', ['2', '3']]]) {
+        const ids = [];
+        for await (const batch of new DgpQueueRepository(prisma, scope).openBatches()) ids.push(batch.id);
+        assert.deepEqual(ids, expected);
+    }
+});
+
 function database() {
     let state = { pipelines: {}, items: {}, groups: {} };
     let failCommit = false;

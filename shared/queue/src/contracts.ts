@@ -1,4 +1,7 @@
 export const QUEUE_NAMES = {
+  DGP_SCRAPER_SIMCC: 'oda-dgp-scraper-simcc',
+  ETL_GROUPS_SIMCC: 'oda-etl-grupos-simcc',
+  ETL_DISPATCH_SIMCC: 'oda-etl-despacho-simcc',
   DGP_SCRAPER: 'oda-dgp-scraper',
   LATTES_SCRAPER: 'oda-lattes-scraper',
   DGP_DISCOVERY: 'oda-dgp-discovery',
@@ -38,6 +41,23 @@ export type DataScope = typeof DATA_SCOPES[number];
 
 export function normalizeDataScope(scope?: DataScope): DataScope {
   return scope ?? 'default';
+}
+
+type ScopedQueue = typeof QUEUE_NAMES.DGP_SCRAPER | typeof QUEUE_NAMES.ETL_GROUPS | typeof QUEUE_NAMES.ETL_DISPATCH;
+
+export function scopedQueueName(queue: ScopedQueue, scope: DataScope = 'default'): string {
+  const simcc = {
+    [QUEUE_NAMES.DGP_SCRAPER]: QUEUE_NAMES.DGP_SCRAPER_SIMCC,
+    [QUEUE_NAMES.ETL_GROUPS]: QUEUE_NAMES.ETL_GROUPS_SIMCC,
+    [QUEUE_NAMES.ETL_DISPATCH]: QUEUE_NAMES.ETL_DISPATCH_SIMCC,
+  };
+  return scope === 'simcc' ? simcc[queue] : queue;
+}
+
+export function assertQueueScope(name: string, queue: ScopedQueue, scope?: DataScope): void {
+  if (name !== scopedQueueName(queue, normalizeDataScope(scope))) {
+    throw new Error(`Escopo ${normalizeDataScope(scope)} incompativel com a fila ${name}.`);
+  }
 }
 
 export const BRAZIL_REGIONS = ['NORTE', 'NORDESTE', 'CENTRO_OESTE', 'SUDESTE', 'SUL'] as const;

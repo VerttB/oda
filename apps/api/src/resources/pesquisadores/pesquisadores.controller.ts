@@ -8,6 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -27,6 +28,7 @@ import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 import { ProducoesService } from '../producoes/producoes.service';
 import { FindAllProducoesDto } from '../producoes/dto/find-all-producoes.dto';
 import { MetricasService } from '../metricas/metricas.service';
+import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
 
 import { FindProducoesByPesquisadorQueryDto } from './dto/find-producoes-by-pesquisador-query.dto';
 import { CreatePesquisadoreDto } from './dto/create-pesquisadore.dto';
@@ -57,24 +59,13 @@ export class PesquisadoresController {
   }
 
   @Get()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista pesquisadores' })
+  @ApiQuery({ name: 'q', required: false, type: String, example: 'pesquisa sobre educação inclusiva' })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedPesquisadorResponseDto })
   findAll(@Query() query: FindAllPesquisadoresDto) {
     return this.pesquisadoresService.findAll(query);
-  }
-
-  @Get('busca-semantica')
-  @ApiOperation({ summary: 'Busca pesquisadores por similaridade semântica' })
-  @ApiQuery({ name: 'q', type: String, required: true })
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'size', type: Number, required: false })
-  @ZodResponse({ status: 200, type: PaginatedPesquisadorResponseDto })
-  buscaSemantica(
-    @Query('q') query: string, 
-    @Query('page') page?: number, 
-    @Query('size') size?: number
-  ) {
-    return this.pesquisadoresService.buscaSemantica(query, page, size);
   }
 
   @Get(':id')
@@ -103,7 +94,10 @@ export class PesquisadoresController {
   }
 
   @Get(':id/producoes')
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista produções vinculadas a um pesquisador' })
+  @ApiQuery({ name: 'q', required: false, type: String })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ZodResponse({ status: 200, type: PaginatedProducoesPesquisadorResponseDto })
   @ApiBadRequestResponse({ description: 'ID do pesquisador inválido.' })

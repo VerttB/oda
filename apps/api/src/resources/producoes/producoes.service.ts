@@ -7,6 +7,7 @@ import { FindAllProducoesDto } from './dto/find-all-producoes.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 
 const PRODUCOES_LIST_CACHE_KEY = 'producoes:list:v2';
 
@@ -73,6 +74,7 @@ export class ProducoesService {
   }
 
   async findAll(query?: FindAllProducoesDto) {
+    validateSearchQuery(query);
     const where: Prisma.ProducaoWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -82,9 +84,10 @@ export class ProducoesService {
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
-      if (query.titulo) {
+      const titleQuery = query.titulo ?? (query.modoBusca === 'textual' ? query.q : undefined);
+      if (titleQuery) {
         where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'producao', query.titulo),
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'producao', titleQuery),
         };
       }
       if (query.ano) {
@@ -121,6 +124,32 @@ export class ProducoesService {
       }
     }
 
+    if (query?.modoBusca === 'semantica') {
+      const { results, totalItems } = await this.langchainService.semanticSearch(
+        query.q!, 'PRODUCAO', pagination.size, pagination.skip,
+        withoutSearchControls(query as unknown as Record<string, unknown>),
+      );
+      const ids = results.map(result => result.sourceId);
+      const producoes = ids.length === 0 ? [] : await this.prismaService.producao.findMany({
+        where: { id: { in: ids } },
+        omit: { criadoEm: true, atualizadoEm: true },
+      });
+      const producoesPorId = new Map(producoes.map(producao => [producao.id, producao]));
+
+      return {
+        data: ids.flatMap(id => {
+          const producao = producoesPorId.get(id);
+          return producao ? [producao] : [];
+        }),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages: Math.ceil(totalItems / pagination.size),
+        },
+      };
+    }
+
     if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.producao.findMany({
@@ -151,34 +180,6 @@ export class ProducoesService {
 
       return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
     });
-  }
-
-  async buscaSemantica(query: string, page?: number, size?: number) {
-    const pageNum = page ? Number(page) : 1;
-    const sizeNum = size ? Number(size) : 30;
-    const offset = (pageNum - 1) * sizeNum;
-
-    const { results, totalItems } = await this.langchainService.semanticSearch(query, 'PRODUCAO', sizeNum, offset);
-    const ids = results.map(r => r.sourceId);
-
-    if (ids.length === 0) {
-      return { data: [], meta: { page: pageNum, size: sizeNum, totalItems: 0, totalPages: 0 } };
-    }
-
-    const artigos = await this.prismaService.producao.findMany({
-      where: { id: { in: ids } },
-      include: {
-        autores: { include: { pesquisador: true } }
-      }
-    });
-
-    const data = ids.flatMap(id => {
-      const artigo = artigos.find(a => a.id === id);
-      return artigo ? [artigo] : [];
-    });
-    const totalPages = Math.ceil(totalItems / sizeNum);
-
-    return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
   async findOne(id: string) {

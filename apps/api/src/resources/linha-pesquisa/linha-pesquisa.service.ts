@@ -9,6 +9,7 @@ import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list:v2';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
@@ -88,7 +89,7 @@ export class LinhaPesquisaService {
   }
 
   async findAll(query?: FindAllLinhaPesquisaDto) {
-
+    validateSearchQuery(query);
     const where: Prisma.LinhaPesquisaWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -101,11 +102,38 @@ export class LinhaPesquisaService {
       if (query.grupo) {
         where.grupoId = query.grupo;
       }
-      if (query.nome) {
+      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
+      if (nameQuery) {
         where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'linhaPesquisa', query.nome),
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'linhaPesquisa', nameQuery),
         };
       }
+    }
+
+    if (query?.modoBusca === 'semantica') {
+      const { results, totalItems } = await this.langchainService.semanticSearch(
+        query.q!, 'LINHA_PESQUISA', pagination.size, pagination.skip,
+        withoutSearchControls(query as unknown as Record<string, unknown>),
+      );
+      const ids = results.map(result => result.sourceId);
+      const linhas = ids.length === 0 ? [] : await this.prismaService.linhaPesquisa.findMany({
+        where: { id: { in: ids } },
+        omit: { criadoEm: true, atualizadoEm: true },
+      });
+      const linhasPorId = new Map(linhas.map(linha => [linha.id, linha]));
+
+      return {
+        data: ids.flatMap(id => {
+          const linha = linhasPorId.get(id);
+          return linha ? [linha] : [];
+        }),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages: Math.ceil(totalItems / pagination.size),
+        },
+      };
     }
 
     // Bypass cache if filters or pagination are present (except default pagination)
@@ -142,34 +170,6 @@ export class LinhaPesquisaService {
         return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
       },
     );
-  }
-
-  async buscaSemantica(query: string, page?: number, size?: number) {
-    const pageNum = page ? Number(page) : 1;
-    const sizeNum = size ? Number(size) : 30;
-    const offset = (pageNum - 1) * sizeNum;
-
-    const { results, totalItems } = await this.langchainService.semanticSearch(query, 'LINHA_PESQUISA', sizeNum, offset);
-    const ids = results.map(r => r.sourceId);
-
-    if (ids.length === 0) {
-      return { data: [], meta: { page: pageNum, size: sizeNum, totalItems: 0, totalPages: 0 } };
-    }
-
-    const linhas = await this.prismaService.linhaPesquisa.findMany({
-      where: { id: { in: ids } },
-      include: {
-        grupo: { include: { instituicoes: { include: { instituicao: true } } } }
-      }
-    });
-
-    const data = ids.flatMap(id => {
-      const linha = linhas.find(lp => lp.id === id);
-      return linha ? [linha] : [];
-    });
-    const totalPages = Math.ceil(totalItems / sizeNum);
-
-    return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
   async findOne(id: string) {

@@ -8,6 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -27,6 +28,7 @@ import {
   LinhaPesquisaResponseDto,
   PaginatedLinhaPesquisaResponseDto,
 } from './dto/response-linha-pesquisa.dto';
+import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
 
 @ApiTags('linha-pesquisa')
 @Controller('linha-pesquisa')
@@ -43,24 +45,13 @@ export class LinhaPesquisaController {
   }
 
   @Get()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista linhas de pesquisa' })
+  @ApiQuery({ name: 'q', required: false, type: String, example: 'bioinformática aplicada a doenças tropicais' })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedLinhaPesquisaResponseDto })
   findAll(@Query() query: FindAllLinhaPesquisaDto) {
     return this.linhaPesquisaService.findAll(query);
-  }
-
-  @Get('busca-semantica')
-  @ApiOperation({ summary: 'Busca linhas de pesquisa por similaridade semântica' })
-  @ApiQuery({ name: 'q', type: String, required: true })
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'size', type: Number, required: false })
-  @ZodResponse({ status: 200, type: PaginatedLinhaPesquisaResponseDto })
-  buscaSemantica(
-    @Query('q') query: string, 
-    @Query('page') page?: number, 
-    @Query('size') size?: number
-  ) {
-    return this.linhaPesquisaService.buscaSemantica(query, page, size);
   }
 
   @Get(':id')

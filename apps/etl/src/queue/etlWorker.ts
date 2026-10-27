@@ -19,13 +19,13 @@ export async function runEtlWorkers(
 ) {
     await Promise.all([
         groupQueue.setGlobalConcurrency(ETL_GROUP_QUEUE_SETTINGS.concurrency),
-        researcherQueue.setGlobalConcurrency(ETL_RESEARCHER_QUEUE_SETTINGS.concurrency),
+        ...(repository.scope === 'default' ? [researcherQueue.setGlobalConcurrency(ETL_RESEARCHER_QUEUE_SETTINGS.concurrency)] : []),
         dispatchQueue.setGlobalConcurrency(ETL_DISPATCH_QUEUE_SETTINGS.concurrency),
     ]);
     await reconcileEtlQueues(groupQueue, researcherQueue, repository);
 
     const groupWorker = new Worker(
-        QUEUE_NAMES.ETL_GROUPS,
+        groupQueue.name,
         pathToFileURL(path.join(__dirname, 'groups/groupProcessor.js')),
         {
             connection: createQueueConnection('worker'), concurrency: ETL_GROUP_QUEUE_SETTINGS.concurrency,
@@ -33,7 +33,7 @@ export async function runEtlWorkers(
             maxStalledCount: 1, maxStartedAttempts: 8, autorun: false,
         },
     );
-    const researcherWorker = new Worker(
+    const researcherWorker = repository.scope === 'default' ? new Worker(
         QUEUE_NAMES.ETL_RESEARCHERS,
         pathToFileURL(path.join(__dirname, 'researchers/researcherProcessor.js')),
         {
@@ -41,12 +41,13 @@ export async function runEtlWorkers(
             name: process.env.ETL_RESEARCHER_WORKER_NAME || `etl-pesquisadores-${hostname()}-${process.pid}`,
             maxStalledCount: 1, maxStartedAttempts: 8, autorun: false,
         },
-    );
+    ) : null;
     const dispatchWorker = new Worker(
-        QUEUE_NAMES.ETL_DISPATCH,
+        dispatchQueue.name,
         async job => {
             if (job.name !== JOB_NAMES.ETL_DISPATCH) throw new Error('Tipo de job de despacho ETL desconhecido.');
             validateEtlDispatchJob(job.data);
+            if (job.data.scope !== repository.scope) throw new Error('Despacho ETL pertence a outro escopo.');
             const update = (etapa: string, percentual: number) => job.updateProgress({
                 etapa, percentual, progressoEm: new Date().toISOString(),
             });
@@ -62,7 +63,7 @@ export async function runEtlWorkers(
         },
     );
 
-    const workers = [dispatchWorker, groupWorker, researcherWorker];
+    const workers = [dispatchWorker, groupWorker, ...(researcherWorker ? [researcherWorker] : [])];
     let reconciliation: Promise<void> | undefined;
     let stopping = false;
     const sync = () => {
@@ -93,7 +94,7 @@ export async function runEtlWorkers(
     process.once('SIGINT', shutdown);
     process.once('SIGTERM', shutdown);
     try {
-        console.log(`[ETL Worker] Aguardando despachos, grupos e pesquisadores nas filas ETL.`);
+        console.log(`[ETL Worker] Escopo ${repository.scope}: aguardando jobs em ${workers.map(worker => worker.name).join(', ')}.`);
         await Promise.all(workers.map(worker => worker.run()));
     } finally {
         clearInterval(interval);

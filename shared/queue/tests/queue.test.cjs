@@ -1,5 +1,22 @@
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
+const { scopedQueueName, assertQueueScope, QUEUE_NAMES, enqueueDgpGroup } = require('../dist');
+
+test('filas SIMCC sao isoladas e publicacao cruzada e rejeitada antes de tocar no Redis', async () => {
+  for (const queue of [QUEUE_NAMES.DGP_SCRAPER, QUEUE_NAMES.ETL_GROUPS, QUEUE_NAMES.ETL_DISPATCH]) {
+    assert.equal(scopedQueueName(queue), queue);
+    assert.equal(scopedQueueName(queue, 'simcc'), `${queue}-simcc`);
+    assert.throws(() => assertQueueScope(queue, queue, 'simcc'), /incompativel/);
+  }
+  const data = { version: 1, scope: 'simcc', dgpId: '0000000000000001',
+    requestedAt: new Date().toISOString(),
+    pipelineLogId: '12345678-1234-1234-1234-123456789012',
+    pipelineItemId: '12345678-1234-1234-1234-123456789013' };
+  await assert.rejects(enqueueDgpGroup(data, {
+    name: QUEUE_NAMES.DGP_SCRAPER,
+    add() { assert.fail('Nao deve publicar no Redis'); },
+  }), /incompativel/);
+});
 const {
   createQueueConnection, discoveryJobId, validateDiscoverDgpGroupsJob,
   validateScrapeDgpGroupJob, validateScrapeLattesResearcherJob,

@@ -19,10 +19,11 @@ export class AuthService {
   ) {}
 
   async login(body: LoginRequest): Promise<LoginResponse> {
-    const username = this.configService.get<string>('ADMIN_USERNAME', 'admin');
+    const username = this.configService.get<string>('ADMIN_USER')
+      ?? this.configService.get<string>('ADMIN_USERNAME', 'admin');
     const password = this.configService.get<string>('ADMIN_PASSWORD');
     if (password && equalsSecret(body.username, username) && equalsSecret(body.password, password)) {
-      const payload = { username: body.username, sub: 'admin-id' };
+      const payload = { username: body.username, sub: 'admin-id', role: 'ADMIN' };
       return { access_token: this.jwtService.sign(payload) };
     }
     throw new UnauthorizedException('Credenciais inválidas');

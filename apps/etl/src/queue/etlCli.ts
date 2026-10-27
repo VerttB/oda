@@ -23,6 +23,7 @@ function printHelp() {
     console.log('pnpm queue:etl:status [grupos|pesquisadores] [id]');
     console.log('pnpm queue:etl:reconcile');
     console.log('Sem IDs, enqueue le todos os JSONs ainda presentes em raw-data.');
+    console.log('Todos os comandos aceitam --scope default|simcc; padrao: default.');
 }
 
 function parseArgs(args: string[]) {
@@ -131,12 +132,11 @@ async function main() {
     const [firstArg, ...remaining] = positional;
     if (!command || process.argv.includes('--help') || process.argv.includes('-h')) { printHelp(); return; }
     if (!['enqueue', 'worker', 'status', 'reconcile'].includes(command)) throw new Error('Comando de fila ETL desconhecido. Use --help.');
-    if (command !== 'enqueue' && dataScope !== 'default') throw new Error('--scope so pode ser usado ao enfileirar o ETL.');
 
-    const groupQueue = createEtlGroupQueue();
+    const groupQueue = createEtlGroupQueue(dataScope);
     const researcherQueue = createEtlResearcherQueue();
-    const dispatchQueue = createEtlDispatchQueue();
-    const repository = new EtlQueueRepository(prisma);
+    const dispatchQueue = createEtlDispatchQueue(dataScope);
+    const repository = new EtlQueueRepository(prisma, dataScope);
     try {
         if (command === 'worker') {
             if (firstArg) throw new Error('O comando worker nao recebe argumentos.');
@@ -151,9 +151,10 @@ async function main() {
         }
         if (command === 'status') {
             const kind = firstArg as EtlKind | undefined;
+            if (dataScope === 'simcc' && kind === 'pesquisadores') throw new Error('SIMCC processa apenas grupos.');
             if (kind && kind !== 'grupos' && kind !== 'pesquisadores') throw new Error('Use status grupos ou status pesquisadores.');
             if (remaining.length > 1) throw new Error('Consulte apenas um job por vez.');
-            await printStatus(kind, remaining[0], groupQueue, researcherQueue);
+            await printStatus(dataScope === 'simcc' ? 'grupos' : kind, remaining[0], groupQueue, researcherQueue);
             return;
         }
 

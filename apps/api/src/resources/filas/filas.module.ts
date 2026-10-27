@@ -4,7 +4,7 @@ import {
   createEtlResearcherQueue, createLattesScraperQueue, createSystemQueue,
 } from '@oda/queue';
 import {
-  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE, SYSTEM_MAINTENANCE_QUEUE,
+  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE, SYSTEM_MAINTENANCE_QUEUE, SIMCC_QUEUES,
 } from './filas.constants';
 import { FilasJwtAuthGuard } from './filas-auth.guard';
 import { FilasRedisGuard } from './filas-redis.guard';
@@ -24,6 +24,11 @@ import { FilasService } from './filas.service';
     { provide: ETL_RESEARCHER_QUEUE, useFactory: () => withErrorHandler(createEtlResearcherQueue()) },
     { provide: ETL_DISPATCH_QUEUE, useFactory: () => withErrorHandler(createEtlDispatchQueue()) },
     { provide: SYSTEM_MAINTENANCE_QUEUE, useFactory: () => withErrorHandler(createSystemQueue()) },
+    { provide: SIMCC_QUEUES, useFactory: () => ({
+      dgp: withErrorHandler(createDgpScraperQueue('simcc')),
+      etlGroups: withErrorHandler(createEtlGroupQueue('simcc')),
+      etlDispatch: withErrorHandler(createEtlDispatchQueue('simcc')),
+    }) },
   ],
 })
 export class FilasModule {}

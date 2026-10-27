@@ -7,7 +7,8 @@
     "start": "ts-node src/main.ts",
     "dev": "ts-node-dev --respawn src/main.ts",
     "build": "tsc",
-    "ingest-db": "ts-node src/scripts/ingestDb.ts"
+    "ingest-db": "ts-node src/scripts/ingestDb.ts",
+    "reindex-groups-batch": "ts-node src/scripts/reindexGroupsBatch.ts"
   },
   "dependencies": {
     "@langchain/community": "^0.3.33",

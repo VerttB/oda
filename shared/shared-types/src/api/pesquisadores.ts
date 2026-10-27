@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } from './pagination';
 import { createPaginatedResponseSchema } from './pagination';
 import { TipoProducaoSchema, QualisSchema } from './producoes';
 import { AreaConhecimentoResponseSchema } from './area-conhecimento';
@@ -38,6 +38,7 @@ const booleanQuerySchema = z.preprocess((value) => {
 }, z.boolean());
 
 export const FindAllPesquisadoresQuerySchema = PaginationQuerySchema.extend({
+  ...SemanticSearchQueryFields,
   nome: z.string().optional(),
   formacaoAcademica: FormacaoAcademicaSchema.optional(),
   tipo: TipoPesquisadorSchema.optional(),

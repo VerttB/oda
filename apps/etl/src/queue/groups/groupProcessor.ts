@@ -1,6 +1,6 @@
 import '../env';
 import {
-    EtlGroupJob, JOB_NAMES, normalizeDataScope, SandboxedJob, UnrecoverableError, validateEtlGroupJob,
+    assertQueueScope, QUEUE_NAMES, EtlGroupJob, JOB_NAMES, normalizeDataScope, SandboxedJob, UnrecoverableError, validateEtlGroupJob,
 } from '@oda/queue';
 import { assertFileHash, EtlInputError, resolveEtlFile } from '../../commom/etlFile';
 import { processGroupEtlFile, GroupEtlProgressUpdate } from '../../dgpEtl';
@@ -12,6 +12,7 @@ const repository = new EtlQueueRepository(prisma);
 export default async function processGroupJob(job: SandboxedJob<EtlGroupJob>) {
     try {
         validateEtlGroupJob(job.data);
+        assertQueueScope(job.queueName, QUEUE_NAMES.ETL_GROUPS, job.data.scope);
         if (job.name !== JOB_NAMES.ETL_GROUP) throw new Error('Tipo de job ETL de grupo desconhecido.');
     } catch (error) {
         throw new UnrecoverableError(error instanceof Error ? error.message : String(error));

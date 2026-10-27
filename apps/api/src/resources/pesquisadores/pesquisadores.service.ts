@@ -10,6 +10,7 @@ import { FormacaoAcademica, Prisma, TipoPesquisador } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toPesquisadorResponse } from './pesquisadores.response';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v3';
 
 const getPagination = (query?: { page?: number; size?: number }) => {
@@ -48,6 +49,7 @@ export class PesquisadoresService {
   }
 
   async findAll(query?: FindAllPesquisadoresDto) {
+    validateSearchQuery(query);
     const where: Prisma.PesquisadorWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -57,9 +59,10 @@ export class PesquisadoresService {
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
-      if (query.nome) {
+      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
+      if (nameQuery) {
         where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'pesquisador', query.nome),
+          in: await findIdsByAccentInsensitiveText(this.prismaService, 'pesquisador', nameQuery),
         };
       }
       if (query.formacaoAcademica) {
@@ -82,6 +85,33 @@ export class PesquisadoresService {
           }
         };
       }
+    }
+
+    if (query?.modoBusca === 'semantica') {
+      const pagination = getPagination(query);
+      const filters = withoutSearchControls(query as unknown as Record<string, unknown>);
+      const { results, totalItems } = await this.langchainService.semanticSearch(
+        query.q!, 'PESQUISADOR', pagination.size, pagination.skip, filters,
+      );
+      const ids = results.map(result => result.sourceId);
+      const pesquisadores = ids.length === 0 ? [] : await this.prismaService.pesquisador.findMany({
+        where: { id: { in: ids } },
+        omit: { criadoEm: true, atualizadoEm: true },
+      });
+      const pesquisadoresPorId = new Map(pesquisadores.map(pesquisador => [pesquisador.id, pesquisador]));
+
+      return {
+        data: ids.flatMap(id => {
+          const pesquisador = pesquisadoresPorId.get(id);
+          return pesquisador ? [toPesquisadorResponse(pesquisador)] : [];
+        }),
+        meta: {
+          page: pagination.page,
+          size: pagination.size,
+          totalItems,
+          totalPages: Math.ceil(totalItems / pagination.size),
+        },
+      };
     }
 
     if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
@@ -130,34 +160,6 @@ export class PesquisadoresService {
         },
       };
     });
-  }
-
-  async buscaSemantica(query: string, page?: number, size?: number) {
-    const pageNum = page ? Number(page) : 1;
-    const sizeNum = size ? Number(size) : 30;
-    const offset = (pageNum - 1) * sizeNum;
-
-    const { results, totalItems } = await this.langchainService.semanticSearch(query, 'PESQUISADOR', sizeNum, offset);
-    const ids = results.map(r => r.sourceId);
-
-    if (ids.length === 0) {
-      return { data: [], meta: { page: pageNum, size: sizeNum, totalItems: 0, totalPages: 0 } };
-    }
-
-    const pesquisadores = await this.prismaService.pesquisador.findMany({
-      where: { id: { in: ids } },
-      include: {
-        areasConhecimento: { include: { area: true } }
-      }
-    });
-
-    const data = ids.flatMap(id => {
-      const pesquisador = pesquisadores.find(p => p.id === id);
-      return pesquisador ? [toPesquisadorResponse(pesquisador)] : [];
-    });
-    const totalPages = Math.ceil(totalItems / sizeNum);
-
-    return { data, meta: { page: pageNum, size: sizeNum, totalItems, totalPages } };
   }
 
   async findOne(id: string) {

@@ -35,7 +35,7 @@ import { FilaExtracaoStatus, ModuloSistema, ModoExecucao, Prisma, StatusSessao }
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE, SYSTEM_MAINTENANCE_QUEUE,
+  DGP_QUEUE, DISCOVERY_QUEUE, ETL_DISPATCH_QUEUE, ETL_GROUP_QUEUE, ETL_RESEARCHER_QUEUE, LATTES_QUEUE, SYSTEM_MAINTENANCE_QUEUE, SIMCC_QUEUES,
 } from './filas.constants';
 
 type DgpQueue = ReturnType<typeof createDgpScraperQueue>;
@@ -66,6 +66,9 @@ export class FilasService implements OnModuleDestroy {
     @Inject(ETL_DISPATCH_QUEUE) private readonly etlDispatchQueue: EtlDispatchQueue,
     @Inject(SYSTEM_MAINTENANCE_QUEUE) private readonly systemMaintenanceQueue: SystemMaintenanceQueue,
     private readonly prisma: PrismaService,
+    @Inject(SIMCC_QUEUES) private readonly simccQueues: {
+      dgp: DgpQueue; etlGroups: EtlGroupQueue; etlDispatch: EtlDispatchQueue;
+    },
   ) {}
 
   async onModuleDestroy() {
@@ -73,6 +76,7 @@ export class FilasService implements OnModuleDestroy {
       this.dgpQueue.close(), this.lattesQueue.close(), this.discoveryQueue.close(),
       this.etlGroupQueue.close(), this.etlResearcherQueue.close(), this.etlDispatchQueue.close(),
       this.systemMaintenanceQueue.close(),
+      ...Object.values(this.simccQueues).map(queue => queue.close()),
     ]);
   }
 
@@ -103,6 +107,12 @@ export class FilasService implements OnModuleDestroy {
       ...etlResearchers.map(worker => this.mapWorker(worker, 'etl-pesquisadores')),
       ...etlDispatch.map(worker => this.mapWorker(worker, 'etl-despacho')),
     ];
+    const simccWorkers = await Promise.all([
+      this.simccQueues.dgp.getWorkers().then(items => items.map(worker => this.mapWorker(worker, 'dgp-simcc'))),
+      this.simccQueues.etlGroups.getWorkers().then(items => items.map(worker => this.mapWorker(worker, 'etl-grupos-simcc'))),
+      this.simccQueues.etlDispatch.getWorkers().then(items => items.map(worker => this.mapWorker(worker, 'etl-despacho-simcc'))),
+    ]);
+    workers.push(...simccWorkers.flat());
     return { total: workers.length, workers };
   }
 
@@ -190,7 +200,7 @@ export class FilasService implements OnModuleDestroy {
   private async mapDgpJob(job: DgpQueueJob): Promise<DgpJobResponse> {
     const state = await job.getState();
     validateScrapeDgpGroupJob(job.data);
-    return { fila: 'dgp', jobId: job.id!, dgpId: job.data.dgpId, pipelineLogId: job.data.pipelineLogId,
+    return { fila: job.data.scope === 'simcc' ? 'dgp-simcc' : 'dgp', jobId: job.id!, dgpId: job.data.dgpId, pipelineLogId: job.data.pipelineLogId,
       estado: state, ...this.jobRuntime(job), progresso: this.normalizeDgpProgress(job, state) };
   }
 
@@ -215,7 +225,7 @@ export class FilasService implements OnModuleDestroy {
     const state = await job.getState();
     validateEtlGroupJob(job.data);
     return {
-      fila: 'etl-grupos', jobId: job.id!, dgpId: job.data.dgpId,
+      fila: job.data.scope === 'simcc' ? 'etl-grupos-simcc' : 'etl-grupos', jobId: job.id!, dgpId: job.data.dgpId,
       arquivoJson: job.data.arquivoJson, pipelineLogId: job.data.pipelineLogId,
       estado: state, ...this.jobRuntime(job), progresso: this.normalizeEtlGroupProgress(job, state),
     };
@@ -236,7 +246,7 @@ export class FilasService implements OnModuleDestroy {
     validateEtlDispatchJob(job.data);
     const result = job.returnvalue && typeof job.returnvalue === 'object' ? job.returnvalue : null;
     return {
-      fila: 'etl-despacho', jobId: job.id!, requestId: job.data.requestId, tipo: job.data.tipo,
+      fila: job.data.scope === 'simcc' ? 'etl-despacho-simcc' : 'etl-despacho', jobId: job.id!, requestId: job.data.requestId, tipo: job.data.tipo,
       ids: job.data.ids, escopo: job.data.scope, pipelineLogId: result?.pipelineLogId ?? null,
       estado: state, ...this.jobRuntime(job), progresso: this.normalizeEtlDispatchProgress(job, state),
     };
@@ -315,7 +325,7 @@ export class FilasService implements OnModuleDestroy {
   }
 
   async findEtlDispatchJob(jobId: string): Promise<EtlDispatchJobResponse> {
-    const job = await this.etlDispatchQueue.getJob(jobId);
+    const job = await this.etlDispatchQueue.getJob(jobId) ?? await this.simccQueues.etlDispatch.getJob(jobId);
     if (!job) throw new NotFoundException(`Pedido ${jobId} nao foi encontrado na fila de despacho ETL.`);
     return this.mapEtlDispatchJob(job);
   }
@@ -327,15 +337,18 @@ export class FilasService implements OnModuleDestroy {
       tipo: input.tipo, ids: input.ids, scope: input.escopo,
     };
     let stored: Awaited<ReturnType<typeof enqueueEtlDispatch>>;
-    try { stored = await enqueueEtlDispatch(data, this.etlDispatchQueue); }
+    try { stored = await enqueueEtlDispatch(data, input.escopo === 'simcc' ? this.simccQueues.etlDispatch : this.etlDispatchQueue); }
     catch (error) { throw this.publishError(error); }
     return {
-      fila: 'etl-despacho', jobId: stored.id!, requestId, estado: await stored.getState(), duplicado: false,
+      fila: input.escopo === 'simcc' ? 'etl-despacho-simcc' : 'etl-despacho', jobId: stored.id!, requestId, estado: await stored.getState(), duplicado: false,
     };
   }
 
   private queue(fila: QueueName): any {
     switch (fila) {
+      case 'dgp-simcc': return this.simccQueues.dgp;
+      case 'etl-grupos-simcc': return this.simccQueues.etlGroups;
+      case 'etl-despacho-simcc': return this.simccQueues.etlDispatch;
       case 'dgp': return this.dgpQueue;
       case 'lattes': return this.lattesQueue;
       case 'discovery': return this.discoveryQueue;
@@ -365,6 +378,9 @@ export class FilasService implements OnModuleDestroy {
 
   private mapQueueJob(fila: QueueName, job: any) {
     switch (fila) {
+      case 'dgp-simcc': return this.mapDgpJob(job);
+      case 'etl-grupos-simcc': return this.mapEtlGroupJob(job);
+      case 'etl-despacho-simcc': return this.mapEtlDispatchJob(job);
       case 'dgp': return this.mapDgpJob(job);
       case 'lattes': return this.mapLattesJob(job);
       case 'discovery': return this.mapDiscoveryJob(job);

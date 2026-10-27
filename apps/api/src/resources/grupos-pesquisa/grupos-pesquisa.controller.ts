@@ -8,6 +8,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -25,6 +26,7 @@ import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 import { FindAllPesquisadoresDto } from '../pesquisadores/dto/find-all-pesquisadores.dto';
 import { PesquisadoresService } from '../pesquisadores/pesquisadores.service';
 import { MetricasService } from '../metricas/metricas.service';
+import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
 
 import { FindPesquisadoresByGrupoQueryDto } from './dto/find-pesquisadores-by-grupo-query.dto';
 import { CreateGruposPesquisaDto } from './dto/create-grupos-pesquisa.dto';
@@ -57,35 +59,30 @@ export class GruposPesquisaController {
   }
 
   @Get()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista grupos de pesquisa' })
+  @ApiQuery({ name: 'q', required: false, type: String, example: 'inteligência artificial na educação' })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
   async findAll(@Query() query: FindAllGruposPesquisaDto) {
     return  await this.gruposPesquisaService.findAll(query);
   }
 
   @Get('simcc')
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista grupos com sede nas instituições do SIMCC' })
+  @ApiQuery({ name: 'q', required: false, type: String })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
   findSimcc(@Query() query: FindAllGruposPesquisaDto) {
     return this.gruposPesquisaService.findSimcc(query);
   }
 
-  @Get('busca-semantica')
-  @ApiOperation({ summary: 'Busca grupos de pesquisa por similaridade semântica' })
-  @ApiQuery({ name: 'q', type: String, required: true, example: 'inteligência artificial na educação' })
-  @ApiQuery({ name: 'page', type: Number, required: false, example: 1 })
-  @ApiQuery({ name: 'size', type: Number, required: false, example: 30 })
-  @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
-  buscaSemantica(
-    @Query('q') query: string, 
-    @Query('page') page?: number, 
-    @Query('size') size?: number
-  ) {
-    return this.gruposPesquisaService.buscaSemantica(query, page, size);
-  }
-
   @Get(':id/pesquisadores')
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista pesquisadores vinculados a um grupo de pesquisa' })
+  @ApiQuery({ name: 'q', required: false, type: String })
+  @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ZodResponse({ status: 200, type: PaginatedPesquisadoresGrupoResponseDto })
   @ApiBadRequestResponse({ description: 'ID do grupo inválido.' })

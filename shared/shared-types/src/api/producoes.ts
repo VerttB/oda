@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } from './pagination';
 import { createPaginatedResponseSchema } from './pagination';
 
 export const TipoProducaoSchema = z.enum(['ARTIGO', 'LIVROCAPITULO', 'OUTRA']);
@@ -26,6 +26,7 @@ export const UpdateProducaoRequestSchema =
   CreateProducaoRequestSchema.partial();
 
 export const FindAllProducoesQuerySchema = PaginationQuerySchema.extend({
+  ...SemanticSearchQueryFields,
   titulo: z.string().optional(),
   ano: z.coerce.number().int().optional(),
   tipo: TipoProducaoSchema.optional(),

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const FilaNomeSchema = z.enum(['dgp', 'lattes', 'discovery', 'etl-despacho', 'etl-grupos', 'etl-pesquisadores', 'system-maintenance']);
+export const FilaNomeSchema = z.enum(['dgp', 'dgp-simcc', 'lattes', 'discovery', 'etl-despacho', 'etl-despacho-simcc', 'etl-grupos', 'etl-grupos-simcc', 'etl-pesquisadores', 'system-maintenance']);
 export const WorkerStatusSchema = z.enum(['ATIVO']);
 export const CnpqIdSchema = z.string().trim().regex(/^\d{16}$/, 'O ID deve conter exatamente 16 digitos');
 
@@ -52,7 +52,7 @@ export const DgpJobProgressSchema = z.object({
 });
 
 export const DgpJobResponseSchema = z.object({
-  fila: z.literal('dgp'),
+  fila: z.enum(['dgp', 'dgp-simcc']),
   jobId: z.string(),
   dgpId: z.string(),
   pipelineLogId: z.string().uuid(),
@@ -195,7 +195,7 @@ export const EtlGroupJobProgressSchema = z.object({
 });
 
 export const EtlGroupJobResponseSchema = z.object({
-  fila: z.literal('etl-grupos'),
+  fila: z.enum(['etl-grupos', 'etl-grupos-simcc']),
   jobId: z.string(),
   dgpId: z.string(),
   arquivoJson: z.string(),
@@ -271,7 +271,7 @@ export const EnfileirarEtlRequestSchema = z.object({
 });
 
 export const EnfileirarEtlResponseSchema = z.object({
-  fila: z.literal('etl-despacho'),
+  fila: z.enum(['etl-despacho', 'etl-despacho-simcc']),
   jobId: z.string(),
   requestId: z.string().uuid(),
   estado: z.string(),
@@ -285,7 +285,7 @@ export const EtlDispatchJobProgressSchema = z.object({
 });
 
 export const EtlDispatchJobResponseSchema = z.object({
-  fila: z.literal('etl-despacho'),
+  fila: z.enum(['etl-despacho', 'etl-despacho-simcc']),
   jobId: z.string(),
   requestId: z.string().uuid(),
   tipo: z.enum(['TODOS', 'GRUPOS', 'PESQUISADORES']),

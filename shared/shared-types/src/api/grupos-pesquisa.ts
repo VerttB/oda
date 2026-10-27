@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PaginationQuerySchema, SortOrderSchema } from './pagination';
+import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } from './pagination';
 import { createPaginatedResponseSchema } from './pagination';
 import { TipoAreaConhecimentoSchema } from './area-conhecimento';
 import { TipoPesquisadorSchema, FormacaoAcademicaSchema, PesquisadorResumoResponseSchema } from './pesquisadores';
@@ -38,6 +38,7 @@ export const UpdateGruposPesquisaRequestSchema =
   CreateGruposPesquisaRequestSchema.partial();
 
 export const FindAllGruposPesquisaQuerySchema = PaginationQuerySchema.extend({
+  ...SemanticSearchQueryFields,
   situacao: SituacaoGrupoPesquisaSchema.optional(),
   nome: z.string().optional(),
   anoFormacao: z.coerce.number().int().optional(),

@@ -31,17 +31,17 @@ async function main() {
         console.log('pnpm queue:dgp:worker              Inicia o consumidor DGP');
         console.log('pnpm queue:dgp:status [idDgp]       Consulta contadores ou um job');
         console.log('pnpm queue:dgp:reconcile           Retoma publicacoes e sincroniza falhas');
+        console.log('Todos os comandos aceitam --scope default|simcc; padrao: default.');
         return;
     }
     if (!['enqueue', 'worker', 'status', 'reconcile'].includes(command)) throw new Error('Comando de fila desconhecido. Use --help.');
     assertValidDgpIds(ids);
-    if (command !== 'enqueue' && scope !== 'default') throw new Error('--scope so pode ser usado ao enfileirar grupos.');
-    if ((command === 'worker' || command === 'reconcile') && (ids.length || scope !== 'default')) throw new Error('Este comando nao recebe IDs nem escopo.');
+    if ((command === 'worker' || command === 'reconcile') && ids.length) throw new Error('Este comando nao recebe IDs.');
     if (command === 'status' && ids.length > 1) throw new Error('Consulte apenas um ID por vez.');
 
-    const queue = createDgpScraperQueue();
+    const queue = createDgpScraperQueue(scope);
     queue.on('error', error => console.error('[DGP Queue] Redis:', error.message));
-    const repository = new DgpQueueRepository(prisma);
+    const repository = new DgpQueueRepository(prisma, scope);
     try {
         if (command === 'worker') { await runDgpWorker(queue, repository); return; }
         if (command === 'status') {

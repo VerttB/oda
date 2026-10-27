@@ -1,5 +1,5 @@
 import '../env';
-import { DGP_QUEUE_SETTINGS, JOB_NAMES, normalizeDataScope, SandboxedJob, ScrapeDgpGroupJob, UnrecoverableError, validateScrapeDgpGroupJob } from '@oda/queue';
+import { assertQueueScope, QUEUE_NAMES, DGP_QUEUE_SETTINGS, JOB_NAMES, normalizeDataScope, SandboxedJob, ScrapeDgpGroupJob, UnrecoverableError, validateScrapeDgpGroupJob } from '@oda/queue';
 import { prisma } from '../../common/database';
 import { DgpQueueRepository } from './dgpRepository';
 import { collectDgpJob } from './dgpSingleGroup';
@@ -13,6 +13,7 @@ const repository = new DgpQueueRepository(prisma);
 export default async function processDgpJob(job: SandboxedJob<ScrapeDgpGroupJob>) {
     try {
         validateScrapeDgpGroupJob(job.data);
+        assertQueueScope(job.queueName, QUEUE_NAMES.DGP_SCRAPER, job.data.scope);
         if (job.name !== JOB_NAMES.SCRAPE_DGP_GROUP) throw new Error('Tipo de job DGP desconhecido.');
     } catch (error) {
         throw new UnrecoverableError(error instanceof Error ? error.message : String(error));

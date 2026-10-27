@@ -1,12 +1,13 @@
 import { ConflictException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { JOB_NAMES } from '@oda/queue';
+import { JOB_NAMES, QUEUE_NAMES } from '@oda/queue';
 import {
   DgpJobsAtivosResponseSchema, DiscoveryJobsAtivosResponseSchema,
   ConsultarFilaJobsRequestSchema, EnfileirarDgpRequestSchema, EnfileirarEtlRequestSchema,
   EnfileirarLattesRequestSchema, FilaParamSchema,
   EtlGroupJobsAtivosResponseSchema, EtlResearcherJobsAtivosResponseSchema,
   LattesJobsAtivosResponseSchema,
+  EtlDispatchJobResponseSchema,
 } from '@oda/shared-types';
 import { omitAuditFields } from '../../common/interceptors/omit-audit-fields.interceptor';
 import { FilasService } from './filas.service';
@@ -61,6 +62,11 @@ function validEtlResearcherJob(lattesId = '1234567890123456') {
 function queueMock(expectedJobName: string) {
   let storedJob: any = null;
   const queue = {
+    name: ({
+      [JOB_NAMES.SCRAPE_DGP_GROUP]: QUEUE_NAMES.DGP_SCRAPER,
+      [JOB_NAMES.ETL_GROUP]: QUEUE_NAMES.ETL_GROUPS,
+      [JOB_NAMES.ETL_DISPATCH]: QUEUE_NAMES.ETL_DISPATCH,
+    } as Record<string, string>)[expectedJobName],
     getWorkers: jest.fn().mockResolvedValue([]),
     getJobs: jest.fn().mockResolvedValue([]),
     getJobCounts: jest.fn().mockResolvedValue({}),
@@ -73,6 +79,7 @@ function queueMock(expectedJobName: string) {
       storedJob = {
         id: options.jobId,
         data,
+        timestamp: Date.now(), opts: {},
         getState: jest.fn().mockResolvedValue('waiting'),
         remove: jest.fn(),
       };
@@ -90,6 +97,12 @@ function setup() {
   const etlGroups = queueMock(JOB_NAMES.ETL_GROUP);
   const etlResearchers = queueMock(JOB_NAMES.ETL_RESEARCHER);
   const etlDispatch = queueMock(JOB_NAMES.ETL_DISPATCH);
+  const system = queueMock(JOB_NAMES.ENQUEUE_ETL);
+  const simcc = {
+    dgp: { ...queueMock(JOB_NAMES.SCRAPE_DGP_GROUP).queue, name: QUEUE_NAMES.DGP_SCRAPER_SIMCC },
+    etlGroups: { ...queueMock(JOB_NAMES.ETL_GROUP).queue, name: QUEUE_NAMES.ETL_GROUPS_SIMCC },
+    etlDispatch: { ...queueMock(JOB_NAMES.ETL_DISPATCH).queue, name: QUEUE_NAMES.ETL_DISPATCH_SIMCC },
+  };
   const prisma = {
     filaExtracaoGrupo: { upsert: jest.fn().mockResolvedValue({}) },
     filaExtracaoPesquisador: {
@@ -102,6 +115,7 @@ function setup() {
     },
   };
   return {
+    simcc,
     queue: dgp.queue,
     lattesQueue: lattes.queue,
     discoveryQueue: discovery.queue,
@@ -111,7 +125,7 @@ function setup() {
     etlDispatchQueue: etlDispatch.queue,
     service: new FilasService(
       dgp.queue as any, lattes.queue as any, discovery.queue as any,
-      etlGroups.queue as any, etlResearchers.queue as any, etlDispatch.queue as any, prisma as any,
+      etlGroups.queue as any, etlResearchers.queue as any, etlDispatch.queue as any, system.queue as any, prisma as any, simcc as any,
     ),
     setStoredJob: dgp.setStoredJob,
     setStoredLattesJob: lattes.setStoredJob,
@@ -123,6 +137,27 @@ function setup() {
 }
 
 describe('FilasService', () => {
+  it('encaminha despacho SIMCC para a fila propria e permite consultar e pausar essa fila', async () => {
+    const { service, simcc, etlDispatchQueue } = setup();
+    const result = await service.enqueueEtl({ tipo: 'GRUPOS', ids: [], escopo: 'simcc' });
+    expect(result.fila).toBe('etl-despacho-simcc');
+    expect(simcc.etlDispatch.add).toHaveBeenCalled();
+    expect(etlDispatchQueue.add).not.toHaveBeenCalled();
+    const job = await service.findEtlDispatchJob(result.jobId);
+    expect(EtlDispatchJobResponseSchema.parse(job).fila).toBe('etl-despacho-simcc');
+    await service.findQueueJobs('etl-grupos-simcc', { pagina: 1, limite: 20 });
+    expect(simcc.etlGroups.getJobs).toHaveBeenCalled();
+    await service.pauseQueue('dgp-simcc');
+    expect(simcc.dgp.pause).toHaveBeenCalled();
+  });
+
+  it('inclui workers SIMCC na consulta administrativa', async () => {
+    const { service, simcc } = setup();
+    simcc.dgp.getWorkers.mockResolvedValue([{ id: 'simcc-1', name: 'worker:w:simcc' }]);
+    expect((await service.findActiveWorkers()).workers).toEqual([
+      expect.objectContaining({ id: 'simcc-1', fila: 'dgp-simcc' }),
+    ]);
+  });
   it('rejeita IDs ausentes, vazios, com espaços ou tamanho incorreto', () => {
     for (const value of [undefined, '', '   ', '123']) {
       expect(EnfileirarDgpRequestSchema.safeParse({ dgpId: value }).success).toBe(false);

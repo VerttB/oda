@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { GenerateLangchainDto } from './dto/generate-langchain.dto';
@@ -8,6 +8,8 @@ import {
   LangchainHealthResponseDto,
   LangchainResponseDto,
 } from './dto/response-langchain.dto';
+import { Public } from '@/common/auth/public.decorator';
+import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
 
 @ApiTags('langchain')
 @Controller('langchain')
@@ -22,6 +24,8 @@ export class LangchainController {
   }
 
   @Post('generate')
+  @Public()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Gera uma resposta via LangChain' })
   @ApiBody({ type: GenerateLangchainDto })
   @ZodResponse({ status: 201, type: LangchainResponseDto })
@@ -31,6 +35,8 @@ export class LangchainController {
   }
 
   @Post('summarize')
+  @Public()
+  @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Resume um texto via LangChain' })
   @ApiBody({ type: SummarizeLangchainDto })
   @ZodResponse({ status: 201, type: LangchainResponseDto })
