@@ -54,6 +54,17 @@ export class ProducoesController {
     return this.producoesService.findAll(query);
   }
 
+  @Get('busca-semantica')
+  @UseGuards(AiAccessGuard)
+  @ApiOperation({ summary: 'Busca produções semanticamente (compatibilidade)', deprecated: true })
+  @ApiQuery({ name: 'q', required: true, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'size', required: false, type: Number })
+  @ZodResponse({ status: 200, type: PaginatedProducaoResponseDto })
+  buscaSemantica(@Query() query: FindAllProducoesDto) {
+    return this.producoesService.findAll({ ...query, modoBusca: 'semantica' });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Busca uma produção pelo ID' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })

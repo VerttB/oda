@@ -54,6 +54,17 @@ export class LinhaPesquisaController {
     return this.linhaPesquisaService.findAll(query);
   }
 
+  @Get('busca-semantica')
+  @UseGuards(AiAccessGuard)
+  @ApiOperation({ summary: 'Busca linhas de pesquisa semanticamente (compatibilidade)', deprecated: true })
+  @ApiQuery({ name: 'q', required: true, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'size', required: false, type: Number })
+  @ZodResponse({ status: 200, type: PaginatedLinhaPesquisaResponseDto })
+  buscaSemantica(@Query() query: FindAllLinhaPesquisaDto) {
+    return this.linhaPesquisaService.findAll({ ...query, modoBusca: 'semantica' });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Busca uma linha de pesquisa pelo ID' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })

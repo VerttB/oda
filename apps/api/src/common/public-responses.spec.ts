@@ -62,7 +62,8 @@ function setup() {
     create: jest.fn().mockResolvedValue(record), update: jest.fn().mockResolvedValue(record),
   });
   const prisma = { grupoPesquisa: delegate(grupo), pesquisador: delegate(pesquisador),
-    grupoPesquisaInstituicao: { upsert: jest.fn(), deleteMany: jest.fn() }, $transaction: jest.fn() };
+    grupoPesquisaInstituicao: { upsert: jest.fn(), deleteMany: jest.fn() },
+    $queryRaw: jest.fn().mockResolvedValue([{ id: pesquisador.id }]), $transaction: jest.fn() };
   prisma.$transaction.mockImplementation(callback => callback(prisma));
   const entries = new Map<string, unknown>([['grupos-pesquisa:list', { antigo: true }], ['pesquisadores:list', { antigo: true }]]);
   const cache = { del: jest.fn(async (key: string) => entries.delete(key)),
@@ -130,8 +131,8 @@ describe('Contratos publicos de grupos e pesquisadores', () => {
     expect(await grupos.findAll()).toEqual(result);
     expect(prisma.grupoPesquisa.findMany).toHaveBeenCalledTimes(1);
     expectClean(await pesquisadores.findAll());
-    expect(cache.wrap).toHaveBeenCalledWith('grupos-pesquisa:list:v2', expect.any(Function));
-    expect(cache.wrap).toHaveBeenCalledWith('pesquisadores:list:v2', expect.any(Function));
+    expect(cache.wrap).toHaveBeenCalledWith('grupos-pesquisa:list:v3', expect.any(Function));
+    expect(cache.wrap).toHaveBeenCalledWith('pesquisadores:list:v3', expect.any(Function));
     expectClean(await grupos.findAll({ instituicaoId: 'instituicao-1', page: 1, size: 10 } as never));
     expect(prisma.grupoPesquisa.findMany.mock.calls[1][0].where.AND[0]).toEqual({ instituicoes: {
       some: { instituicaoId: 'instituicao-1', tipoRelacao: 'SEDE' },

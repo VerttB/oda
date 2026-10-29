@@ -1,15 +1,16 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { prismaConfig, PrismaClient, Prisma, TipoProducao, Qualis, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PipelineEtapa, TipoPesquisador } from '@oda/database';
-import { OPEN_ALEX_URL, DOI_URL } from './commom/config';
+import { prismaConfig, PrismaClient, SharedPipelineLogger, ModuloSistema, ModoExecucao, StatusSessao, StatusItemLog, TipoErroColeta, TipoEntidadeLog, PipelineEtapa, TipoPesquisador } from '@oda/database';
 import { stripHtml } from './commom/normalize';
 import { getOrCreateAreaConhecimentoHierarchy } from './commom/database';
-import { DefaultArgs } from '../../../shared/database/generated/prisma/runtime/client';
 import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
+import { getOpenAlexData, isValidPublicationYear, linkProductionDoi, linkProductionOpenAlex, linkProductionQualis, parsePublicationYear } from './lattes/enrichment';
+import { buildResearcherProductions, chunkArray, saveResearcherProductionsBatch } from './lattes/productions';
+
+export { getOpenAlexData, isValidPublicationYear, linkProductionDoi, linkProductionOpenAlex, linkProductionQualis };
 
 const prisma = new PrismaClient(prismaConfig);
 const pipelineLogger = new SharedPipelineLogger(prisma);
-type TransactionClient = Omit<PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel, DefaultArgs>, "$connect" | "$disconnect" | "$on" | "$use" | "$extends">;
 
 export type ResearcherEtlProgressUpdate = {
     etapa: 'LENDO_JSON' | 'VALIDANDO' | 'ENRIQUECENDO_ORCID' | 'ENRIQUECENDO_PRODUCOES' | 'SALVANDO_PESQUISADOR' | 'SALVANDO_PRODUCOES' | 'MOVENDO_ARQUIVO' | 'CONCLUIDO';
@@ -21,278 +22,12 @@ export type ResearcherEtlProgressUpdate = {
 };
 export type ResearcherEtlProgressReporter = (progress: ResearcherEtlProgressUpdate) => Promise<void>;
 
-type ResearcherProductionInput = {
-    titulo: string;
-    ano: number | null;
-    anoFonte?: 'LATTES' | 'OPENALEX';
-    tipo: TipoProducao;
-    doi: string | null;
-    url: string | null;
-    veiculo: string | null;
-    issn: string | null;
-    qualis: Qualis | null;
-    resumo: string | null;
-};
-
 function normalizeLattesId(value: unknown): string | null {
     if (typeof value !== 'string') return null;
     const clean = value.replace(/https?:\/\/lattes\.cnpq\.br\//, '').trim();
     return clean.length > 0 ? clean : null;
 }
 
-function chunkArray<T>(items: T[], size: number): T[][] {
-    const chunks: T[][] = [];
-    for (let index = 0; index < items.length; index += size) {
-        chunks.push(items.slice(index, index + size));
-    }
-    return chunks;
-}
-
-export function isValidPublicationYear(value: number | null | undefined): value is number {
-    const maxYear = new Date().getFullYear() + 1;
-    return Number.isInteger(value) && value >= 1900 && value <= maxYear;
-}
-
-function parsePublicationYear(value: unknown): number | null {
-    if (typeof value === 'number') {
-        return isValidPublicationYear(value) ? value : null;
-    }
-
-    if (typeof value !== 'string') {
-        return null;
-    }
-
-    const parsed = parseInt(value.replace(/\D/g, ''), 10);
-    return isValidPublicationYear(parsed) ? parsed : null;
-}
-
-export async function getOpenAlexData(orcid:string) {
-    try{
-        const url = `${OPEN_ALEX_URL}?api_key=${process.env.OPEN_ALEX_KEY}&filter=orcid:${orcid}`
-        const res = await fetch(url)
-        if (!res.ok || res.status == 404){ throw new Error(`Orcid ${orcid} não encontrado no openAlex`)}
-        const data = await res.json()
-        if(data.meta.count == 0) return null
-        const { id } = data.results[0]
-        const {h_index, i10_index} = data.results[0].summary_stats
-        return { h_index, i10_index, openAlexId: id}
-    }catch(e: unknown){
-        if(e instanceof Error){
-            console.log(`Ocorrou um erro ao procurar dados openAlex para ${orcid} - ${e.message}`)
-        }
-    }
-}
-
-function restoreAbstractFromInvertedIndex(index: Record<string, number[]>): string {
-    const wordsByPosition: string[] = [];
-
-    for (const [word, positions] of Object.entries(index)) {
-        for (const position of positions) {
-            wordsByPosition[position] = word;
-        }
-    }
-
-    return wordsByPosition.filter(Boolean).join(' ');
-}
-
-export async function linkProductionOpenAlex(doi: string) {
-    try {
-        const cleanDoi = doi.trim();
-        const url = `https://api.openalex.org/works/doi:${encodeURIComponent(cleanDoi)}?api_key=${process.env.OPEN_ALEX_KEY}`;
-        const res = await fetch(url);
-        if (!res.ok || res.status === 404) throw new Error(`Artigo não encontrado no OpenAlex`);
-
-        const data = await res.json();
-        const abstract = data?.abstract
-            || (data?.abstract_inverted_index ? restoreAbstractFromInvertedIndex(data.abstract_inverted_index) : "");
-
-        const publicationYear = isValidPublicationYear(data?.publication_year)
-            ? data.publication_year
-            : null;
-        const issn = data?.issn_1
-            || data?.primary_location?.source?.issn_l
-            || data?.primary_location?.source?.issn?.[0]
-            || "";
-
-        return { abstract, publicationYear, issn };
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.log(`Ocorrou um erro ao procurar dados OpenAlex para o doi: ${doi} - ${e.message}`)
-        }
-    }
-}
-
-export async function linkProductionDoi(doi: string) {
-    try{
-        const url = `${DOI_URL}${doi}`
-        const res = await fetch(url)
-        if (!res.ok || res.status == 404) throw new Error(`Artigo não encontrado na api do DOI`)
-        
-        const data = await res.json() 
-        const abstract: string = data?.abstract ? stripHtml(data.abstract) : ""
-        const publisher: string = data?.publisher || ""
-        const rawUrl: string = data?.link?.[0]?.URL || data?.license?.[0]?.URL || ""
-        const productionUrl = rawUrl.replace(/\/pdf\/?$/i, '')
-        const issn: string = data?.ISSN?.[0] || data?.issn?.[0] || data?.['issn-type']?.[0]?.value || ""
-        return {abstract, publisher, licenseUrl: productionUrl, issn}
-    }catch(e: unknown){
-         if(e instanceof Error){
-            console.log(`Ocorrou um erro ao informações para o doi: ${doi} - ${e.message}`)
-        }
-    }
-}
-
-let qualisMap: Map<string, string> | null = null;
-
-function loadQualisMap() {
-    if (qualisMap) return qualisMap;
-    qualisMap = new Map<string, string>();
-    try {
-        let filePath = path.resolve(__dirname, 'commom/qualis-capes-2017-2020.json');
-        if (!fs.existsSync(filePath)) {
-            filePath = path.resolve(__dirname, '../src/commom/qualis-capes-2017-2020.json');
-        }
-        if (fs.existsSync(filePath)) {
-            const raw = fs.readFileSync(filePath, 'utf-8');
-            const data = JSON.parse(raw);
-            for (const item of data) {
-                if (item.issn && item.qualis) {
-                    const cleanIssn = item.issn.replace(/-/g, '').trim().toUpperCase();
-                    qualisMap.set(cleanIssn, item.qualis);
-                }
-            }
-        }
-    } catch (e: any) {
-        console.error(`[ETL-QUALIS] Erro ao carregar arquivo de Qualis: ${e.message}`);
-    }
-    return qualisMap;
-}
-
-export async function linkProductionQualis(issn: string): Promise<Qualis | null> {
-    if (!issn) return null;
-    const map = loadQualisMap();
-    const clean = issn.replace(/-/g, '').trim().toUpperCase();
-    return (map.get(clean) as Qualis) || null;
-}
-
-
-async function buildResearcherProductions(artigos: any[], livrosCapitulos: any[]): Promise<ResearcherProductionInput[]> {
-    const producoes: ResearcherProductionInput[] = [];
-
-    for (const artigo of artigos) {
-        if (!artigo.titulo) continue;
-
-        const ano = parsePublicationYear(artigo.ano);
-        const cleanDoi = artigo.doi ? artigo.doi.trim() : null;
-        const issn = artigo.issn || artigo.ISSN || null;
-        const qualis = issn ? await linkProductionQualis(issn) : null;
-
-        producoes.push({
-            titulo: artigo.titulo.trim(),
-            ano,
-            anoFonte: artigo.anoFonte,
-            tipo: TipoProducao.ARTIGO,
-            doi: cleanDoi || null,
-            url: artigo.url || null,
-            veiculo: artigo?.veiculo || null,
-            issn: issn || null,
-            qualis: qualis || null,
-            resumo: artigo?.resumo || null,
-        });
-    }
-
-    for (const livro of livrosCapitulos) {
-        if (!livro.titulo) continue;
-
-        const ano = parsePublicationYear(livro.ano);
-        const cleanDoi = livro.doi ? livro.doi.trim() : null;
-
-        producoes.push({
-            titulo: livro.titulo.trim(),
-            ano,
-            anoFonte: 'LATTES',
-            tipo: TipoProducao.LIVROCAPITULO,
-            doi: cleanDoi || null,
-            url: livro.url || null,
-            veiculo: livro.editora || livro.veiculo || null,
-            issn: null,
-            qualis: null,
-            resumo: null,
-        });
-    }
-
-    return producoes;
-}
-
-async function saveResearcherProductionsBatch(tx: TransactionClient, pesquisadorId: string, producoes: ResearcherProductionInput[]) {
-    for (const item of producoes) {
-        if (!item.titulo) continue;
-
-        let producao = null;
-
-        if (item.doi) {
-            producao = await tx.producao.findUnique({
-                where: { doi: item.doi }
-            });
-        }
-
-        if (!producao) {
-            producao = await tx.producao.findFirst({
-                where: {
-                    titulo: { equals: item.titulo, mode: 'insensitive' },
-                    ano: item.ano
-                }
-            });
-        }
-
-        if (!producao) {
-            producao = await tx.producao.create({
-                data: {
-                    titulo: item.titulo,
-                    ano: item.ano,
-                    tipo: item.tipo,
-                    doi: item.doi,
-                    url: item.url,
-                    veiculo: item.veiculo,
-                    issn: item.issn,
-                    qualis: item.qualis,
-                    resumo: item.resumo
-                }
-            });
-        } else {
-            const deveAtualizarAno =
-                isValidPublicationYear(item.ano)
-                && (item.anoFonte === 'OPENALEX' || !isValidPublicationYear(producao.ano));
-
-            producao = await tx.producao.update({
-                where: { id: producao.id },
-                data: {
-                    ano: deveAtualizarAno ? item.ano : producao.ano,
-                    doi: item.doi || producao.doi,
-                    veiculo: item.veiculo || producao.veiculo,
-                    url: item.url || producao.url,
-                    resumo: item.resumo || producao.resumo,
-                    issn: item.issn || producao.issn,
-                    qualis: item.qualis || producao.qualis,
-                }
-            });
-        }
-
-        await tx.producaoPesquisador.upsert({
-            where: {
-                producaoId_pesquisadorId: {
-                    producaoId: producao.id,
-                    pesquisadorId
-                }
-            },
-            update: {},
-            create: {
-                producaoId: producao.id,
-                pesquisadorId
-            }
-        });
-    }
-}
 
 /**
  * Lógica de persistência para Currículos Lattes

@@ -68,6 +68,17 @@ export class PesquisadoresController {
     return this.pesquisadoresService.findAll(query);
   }
 
+  @Get('busca-semantica')
+  @UseGuards(AiAccessGuard)
+  @ApiOperation({ summary: 'Busca pesquisadores semanticamente (compatibilidade)', deprecated: true })
+  @ApiQuery({ name: 'q', required: true, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'size', required: false, type: Number })
+  @ZodResponse({ status: 200, type: PaginatedPesquisadorResponseDto })
+  buscaSemantica(@Query() query: FindAllPesquisadoresDto) {
+    return this.pesquisadoresService.findAll({ ...query, modoBusca: 'semantica' });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Busca um pesquisador pelo ID' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })

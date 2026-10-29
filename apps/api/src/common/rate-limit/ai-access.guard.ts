@@ -23,7 +23,13 @@ export class AiAccessGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
 
-    if (request.method === 'GET' && request.query.modoBusca !== 'semantica') return true;
+    const normalizedPath = request.path.replace(/\/+$/, '').toLowerCase();
+    const isSemanticCompatibilityRoute = normalizedPath.endsWith('/busca-semantica');
+    if (
+      request.method === 'GET'
+      && request.query.modoBusca !== 'semantica'
+      && !isSemanticCompatibilityRoute
+    ) return true;
 
     const principal = await this.getPrincipal(request);
     if (principal?.role === 'ADMIN') return true;

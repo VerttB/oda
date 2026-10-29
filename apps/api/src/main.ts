@@ -47,12 +47,16 @@ async function bootstrap() {
   const publicAiPaths = new Set(['/langchain/generate', '/langchain/summarize']);
   const publicPostPaths = new Set(['/auth/login', ...publicAiPaths]);
   const semanticSearchPaths = new Set([
+    '/grupos-pesquisa/busca-semantica',
     '/grupos-pesquisa',
     '/grupos-pesquisa/simcc',
     '/grupos-pesquisa/{id}/pesquisadores',
+    '/pesquisadores/busca-semantica',
     '/pesquisadores',
     '/pesquisadores/{id}/producoes',
+    '/linha-pesquisa/busca-semantica',
     '/linha-pesquisa',
+    '/producoes/busca-semantica',
     '/producoes',
   ]);
 

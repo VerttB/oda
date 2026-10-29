@@ -68,6 +68,17 @@ export class GruposPesquisaController {
     return  await this.gruposPesquisaService.findAll(query);
   }
 
+  @Get('busca-semantica')
+  @UseGuards(AiAccessGuard)
+  @ApiOperation({ summary: 'Busca grupos semanticamente (compatibilidade)', deprecated: true })
+  @ApiQuery({ name: 'q', required: true, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'size', required: false, type: Number })
+  @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
+  buscaSemantica(@Query() query: FindAllGruposPesquisaDto) {
+    return this.gruposPesquisaService.findAll({ ...query, modoBusca: 'semantica' });
+  }
+
   @Get('simcc')
   @UseGuards(AiAccessGuard)
   @ApiOperation({ summary: 'Lista grupos com sede nas instituições do SIMCC' })
