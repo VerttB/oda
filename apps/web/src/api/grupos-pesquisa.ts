@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '#/api/config'
+import { API_BASE_URL, API_ASSET_BASE_URL } from '#/api/config'
 import type { SortOrder } from '#/api/sorting'
 import type {
   Author,
@@ -65,7 +65,7 @@ function normalizeApiAssetUrl(url?: string | null) {
   }
 
   if (url.startsWith('/')) {
-    return `${API_BASE_URL}${url}`
+    return `${API_ASSET_BASE_URL}${url}`
   }
 
   return url

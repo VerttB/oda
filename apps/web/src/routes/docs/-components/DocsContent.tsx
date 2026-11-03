@@ -444,7 +444,7 @@ export const GeneralDocsContent: FC = () => {
             </span>
           </div>
           <span className="w-fit shrink-0 rounded bg-accent/10 px-2 py-0.5 font-mono text-[11px] font-medium text-accent">
-            v1 provisória ativa
+            v1 ativa
           </span>
         </div>
 

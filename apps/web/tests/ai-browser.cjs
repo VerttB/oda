@@ -26,6 +26,7 @@ async function setup(t, handler, options = {}) {
     const url = new URL(request.url());
     // Nenhuma chamada de IA alcança a API real ou um provedor externo.
     if (url.pathname.startsWith('/api/')) {
+      assert.ok(url.pathname.startsWith('/api/v1/'), 'Consultas do frontend devem usar /v1');
       calls.push({ url, method: request.method(), headers: request.headers(), body: request.postDataJSON() });
       return handler(route, calls.at(-1), calls.length);
     }
@@ -82,7 +83,7 @@ test('busca explícita, ordem semântica, parâmetros, paginação, URL e cache'
 
 test('abas usam endpoints reais, sem fabricar metadados, e tratam vazio', async (t) => {
   const { page, calls } = await setup(t, (route, call) => {
-    const records = { '/api/grupos-pesquisa': [], '/api/pesquisadores': [person], '/api/producoes': [work], '/api/linha-pesquisa': [line] };
+    const records = { '/api/v1/grupos-pesquisa': [], '/api/v1/pesquisadores': [person], '/api/v1/producoes': [work], '/api/v1/linha-pesquisa': [line] };
     return json(route, paginated(records[call.url.pathname]));
   });
   await open(page);
@@ -97,7 +98,7 @@ test('abas usam endpoints reais, sem fabricar metadados, e tratam vazio', async 
   await page.getByRole('button', { name: 'Linhas de pesquisa', exact: true }).click();
   await page.getByRole('heading', { name: line.titulo }).waitFor();
   assert.equal(await page.getByRole('link', { name: 'Ver grupo da linha' }).getAttribute('href'), `/grupos/${line.grupoId}`);
-  assert.deepEqual(calls.map((call) => call.url.pathname), ['/api/grupos-pesquisa', '/api/pesquisadores', '/api/producoes', '/api/linha-pesquisa']);
+  assert.deepEqual(calls.map((call) => call.url.pathname), ['/api/v1/grupos-pesquisa', '/api/v1/pesquisadores', '/api/v1/producoes', '/api/v1/linha-pesquisa']);
 });
 
 test('chat: JWT, contexto, fontes, segurança da renderização e preservação entre abas', async (t) => {

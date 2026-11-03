@@ -9,6 +9,7 @@
     "dev": "vite dev --port 4000",
     "generate-routes": "tsr generate",
     "test:ai:browser": "node --test tests/ai-browser.cjs",
+    "test:api-config": "node --test tests/api-base-url.test.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint",

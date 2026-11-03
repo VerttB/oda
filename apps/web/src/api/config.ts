@@ -1,10 +1,9 @@
-const configuredBaseUrl = import.meta.env.VITE_PUBLIC_BASE_URL?.trim()
+import { getApiUrls } from './base-url'
 
-if (!configuredBaseUrl) {
-  throw new Error('A variável VITE_PUBLIC_BASE_URL não foi configurada.')
-}
+const publicUrls = getApiUrls(import.meta.env.VITE_PUBLIC_BASE_URL ?? '')
+const clientUrls =
+  import.meta.env.DEV && !import.meta.env.SSR ? getApiUrls('/api') : publicUrls
 
-export const PUBLIC_API_BASE_URL = configuredBaseUrl.replace(/\/+$/, '')
-
-export const API_BASE_URL =
-  import.meta.env.DEV && !import.meta.env.SSR ? '/api' : PUBLIC_API_BASE_URL
+export const PUBLIC_API_BASE_URL = publicUrls.apiUrl
+export const API_BASE_URL = clientUrls.apiUrl
+export const API_ASSET_BASE_URL = clientUrls.rootUrl
