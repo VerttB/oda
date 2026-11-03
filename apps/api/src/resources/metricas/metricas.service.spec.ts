@@ -183,6 +183,15 @@ describe('MetricasService', () => {
       });
     });
 
+    it('retorna produções da view e traduz o filtro público para o singular do banco', async () => {
+      setupMock([{ entidade: 'producao', dataRegistro: new Date('2025-01-15T00:00:00Z'), novosNoDia: 4, totalAcumulado: 14 }]);
+      const result = await testService.findMetricasDiarias({ entidade: ['producoes', 'pesquisador'] });
+      expect(testPrismaMock.mvMetricasSistema.findMany).toHaveBeenCalledWith({
+        where: { entidade: { in: ['producao', 'pesquisador'] } }, orderBy: { dataRegistro: 'asc' },
+      });
+      expect(result.producoes).toEqual([{ dataRegistro: '15-01-2025', novosNoDia: 4, totalAcumulado: 14 }]);
+    });
+
     it('combina filtro de data e entidade', async () => {
       setupMock();
       await testService.findMetricasDiarias({
@@ -193,7 +202,7 @@ describe('MetricasService', () => {
 
       expect(testPrismaMock.mvMetricasSistema.findMany).toHaveBeenCalledWith({
         where: {
-          entidade: { equals: 'producoes' },
+          entidade: { equals: 'producao' },
           dataRegistro: {
             gte: new Date('2025-01-01'),
             lte: expect.any(Date),

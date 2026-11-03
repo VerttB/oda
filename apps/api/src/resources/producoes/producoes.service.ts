@@ -6,8 +6,8 @@ import { UpdateProducoeDto } from './dto/update-producoe.dto';
 import { FindAllProducoesDto } from './dto/find-all-producoes.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
+import { findFullTextProductions } from './search/full-text-search';
 
 const PRODUCOES_LIST_CACHE_KEY = 'producoes:list:v2';
 
@@ -74,7 +74,16 @@ export class ProducoesService {
   }
 
   async findAll(query?: FindAllProducoesDto) {
+    if (query && query.modoBusca !== 'semantica' && (query.q || query.titulo)) {
+      query = {
+        ...query,
+        q: query.q ?? query.titulo,
+        titulo: query.q ? query.titulo : undefined,
+        modoBusca: 'textual',
+      };
+    }
     validateSearchQuery(query);
+    if (query?.q && query.modoBusca === 'textual') return findFullTextProductions(this.prismaService, query);
     const where: Prisma.ProducaoWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -84,12 +93,6 @@ export class ProducoesService {
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
-      const titleQuery = query.titulo ?? (query.modoBusca === 'textual' ? query.q : undefined);
-      if (titleQuery) {
-        where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'producao', titleQuery),
-        };
-      }
       if (query.ano) {
         where.ano = query.ano;
       }

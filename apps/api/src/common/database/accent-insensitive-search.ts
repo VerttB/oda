@@ -23,6 +23,10 @@ export function normalizeSearchText(value: string) {
     .trim();
 }
 
+export function accentInsensitiveExpression(expression: Prisma.Sql): Prisma.Sql {
+  return Prisma.sql`translate(lower(${expression}), ${ACCENTED_CHARACTERS}, ${PLAIN_CHARACTERS})`;
+}
+
 export async function findIdsByAccentInsensitiveText(
   prisma: PrismaService,
   target: AccentInsensitiveSearchTarget,
@@ -36,11 +40,7 @@ export async function findIdsByAccentInsensitiveText(
   const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
     SELECT "id"
     FROM ${Prisma.raw(table)}
-    WHERE translate(
-      lower(${Prisma.raw(expression)}),
-      ${ACCENTED_CHARACTERS},
-      ${PLAIN_CHARACTERS}
-    ) LIKE ${`%${normalizedValue}%`}
+    WHERE ${accentInsensitiveExpression(Prisma.raw(expression))} LIKE ${`%${normalizedValue}%`}
   `);
 
   return rows.map(row => row.id);

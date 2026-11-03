@@ -3,7 +3,7 @@ import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } fro
 import { createPaginatedResponseSchema } from './pagination';
 import { TipoProducaoSchema, QualisSchema } from './producoes';
 import { AreaConhecimentoResponseSchema } from './area-conhecimento';
-import { GrupoPesquisaResumoResponseSchema, GrupoPesquisaInstituicaoResponseSchema } from './grupos-pesquisa';
+import { GrupoPesquisaResumoResponseSchema } from './grupos-pesquisa';
 
 export const TipoPesquisadorSchema = z.enum([
   'TECNICO',

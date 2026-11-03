@@ -2,8 +2,7 @@ import { z } from 'zod';
 import { PaginationQuerySchema, SemanticSearchQueryFields, SortOrderSchema } from './pagination';
 import { createPaginatedResponseSchema } from './pagination';
 import { TipoAreaConhecimentoSchema } from './area-conhecimento';
-import { TipoPesquisadorSchema, FormacaoAcademicaSchema, PesquisadorResumoResponseSchema } from './pesquisadores';
-import { TipoProducaoSchema, QualisSchema, ProducaoPesquisadorResponseSchema } from './producoes';
+import { PesquisadorResumoResponseSchema } from './pesquisadores';
 
 export const SituacaoGrupoPesquisaSchema = z.enum([
   'CERTIFICADO',

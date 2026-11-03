@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider   = "postgresql"
-  extensions = [pgvector(map: "vector")]
+  extensions = [pgvector(map: "vector"), unaccent]
 }
 
 model Instituicao {
@@ -297,9 +297,12 @@ model Producao {
   atualizadoEm  DateTime               @updatedAt @map("atualizado_em")
   issn          String?
   qualis        Qualis?
+  // Gerada pelo PostgreSQL a partir de título e resumo; mantida por migration SQL.
+  buscaTextual  Unsupported("tsvector")? @map("busca_textual")
   palavrasChave ProducaoPalavraChave[]
   autores       ProducaoPesquisador[]
 
+  @@index([buscaTextual(ops: raw("tsvector_ops"))], type: Gin, map: "producao_busca_booleana_gin_idx")
   @@map("producao")
 }
 

@@ -9,7 +9,7 @@ const ENTITY_MAP = {
   linha_pesquisa: 'linhasPesquisa',
   instituicao: 'instituicoes',
   pesquisador: 'pesquisadores',
-  producoes: 'producoes',
+  producao: 'producoes',
 }
 type JsonRows<T> = T[];
 type GroupMetrics = {
@@ -392,16 +392,17 @@ export class MetricasService {
     const where: Record<string, any> = {};
 
     if (entidade) {
-      where.entidade = Array.isArray(entidade) ? { in: entidade } : { equals: entidade };
+      // A interface pública usa plural; a view identifica a tabela no singular.
+      const entities = (Array.isArray(entidade) ? entidade : [entidade])
+        .map(value => value === 'producoes' ? 'producao' : value);
+      where.entidade = Array.isArray(entidade) ? { in: entities } : { equals: entities[0] };
     }
 
     if (dataInicio || dataFim) {
       where.dataRegistro = {};
       if (dataInicio) where.dataRegistro.gte = new Date(dataInicio);
       if (dataFim) {
-        const fim = new Date(dataFim);
-        fim.setHours(23, 59, 59, 999);
-        where.dataRegistro.lte = fim;
+        where.dataRegistro.lte = new Date(dataFim);
       }
     }
 

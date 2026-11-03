@@ -33,6 +33,7 @@ export {
   TipoErroColeta,
 } from '../generated/prisma';
 export * from './pipelineLogger';
+export * from './simcc';
 import path from "path";
 import dotenv from 'dotenv';
 

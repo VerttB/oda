@@ -60,7 +60,11 @@ export class PesquisadoresController {
 
   @Get()
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista pesquisadores' })
+  @ApiOperation({
+    summary: 'Lista pesquisadores',
+    description: 'A busca textual por nome exige todos os termos informados, em qualquer ordem, ignorando acentos e caixa. Carlos Fernando encontra Carlos Alvares Fernando. Aceita nome ou q; q sem modoBusca usa busca textual.',
+  })
+  @ApiQuery({ name: 'nome', required: false, type: String, example: 'Carlos Fernando' })
   @ApiQuery({ name: 'q', required: false, type: String, example: 'pesquisa sobre educação inclusiva' })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedPesquisadorResponseDto })
@@ -106,7 +110,10 @@ export class PesquisadoresController {
 
   @Get(':id/producoes')
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista produções vinculadas a um pesquisador' })
+  @ApiOperation({
+    summary: 'Lista produções vinculadas a um pesquisador',
+    description: 'q (ou titulo) pesquisa título e resumo, exigindo todos os termos em qualquer ordem. Também aceita AND, OR, NOT maiúsculos e frases entre aspas, com as mesmas regras da listagem de produções.',
+  })
   @ApiQuery({ name: 'q', required: false, type: String })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })

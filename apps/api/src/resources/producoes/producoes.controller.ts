@@ -46,9 +46,13 @@ export class ProducoesController {
 
   @Get()
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista produções' })
-  @ApiQuery({ name: 'q', required: false, type: String, example: 'estudos recentes sobre vacinas' })
+  @ApiOperation({
+    summary: 'Lista produções',
+    description: 'A busca padrão em q (ou titulo) pesquisa sempre título e resumo. Texto comum exige todos os termos, em qualquer ordem. Reconhece AND, OR, NOT (maiúsculos) e frases entre aspas. Precedência: NOT, AND, OR; parênteses alteram a ordem e termos adjacentes usam AND. Ignora caixa e acentos, sem expansão por radical ou prefixo. Buscas aceitam até 500 caracteres e 32 termos/frases; expressões aceitam cinco níveis de parênteses e size de 1 a 100, exigindo termo positivo em cada alternativa de OR. modoBusca=semantica mantém a busca por IA.',
+  })
+  @ApiQuery({ name: 'q', required: false, type: String, example: 'fisica AND plasma' })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
+  @ApiBadRequestResponse({ description: 'Expressão booleana, filtros ou paginação inválidos.' })
   @ZodResponse({ status: 200, type: PaginatedProducaoResponseDto })
   findAll(@Query() query: FindAllProducoesDto) {
     return this.producoesService.findAll(query);

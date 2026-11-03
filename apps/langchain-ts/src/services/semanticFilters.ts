@@ -88,7 +88,11 @@ export function buildSemanticFilterConditions(
     const grupoId = getText(filters, 'grupoPesquisaId');
     const eLider = getBoolean(filters, 'eLider');
 
-    if (nome) conditions.push(contains('p.nome', nome, add));
+    if (nome) {
+      for (const term of new Set(nome.split(/\s+/u))) {
+        conditions.push(contains('p.nome', term.replace(/[\\%_]/g, '\\$&'), add));
+      }
+    }
     if (formacao) conditions.push(`p.formacao_academica::text = ${add(enumValue(formacao))}`);
     if (tipo) conditions.push(`p.tipo::text = ${add(enumValue(tipo))}`);
     if (lattesId) conditions.push(`p.lattes_id = ${add(lattesId)}`);

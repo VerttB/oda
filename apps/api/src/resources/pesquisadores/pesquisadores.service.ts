@@ -9,7 +9,7 @@ import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 import { FormacaoAcademica, Prisma, TipoPesquisador } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toPesquisadorResponse } from './pesquisadores.response';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { findResearchersByName } from './search/name-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v3';
 
@@ -49,7 +49,12 @@ export class PesquisadoresService {
   }
 
   async findAll(query?: FindAllPesquisadoresDto) {
+    if (query?.q && !query.modoBusca) query = { ...query, modoBusca: 'textual' };
     validateSearchQuery(query);
+    const nameQuery = query?.nome ?? (query?.modoBusca === 'textual' ? query.q : undefined);
+    if (query && nameQuery && query.modoBusca !== 'semantica') {
+      return findResearchersByName(this.prismaService, { ...query, nome: nameQuery });
+    }
     const where: Prisma.PesquisadorWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -59,12 +64,6 @@ export class PesquisadoresService {
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
     if (query) {
-      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
-      if (nameQuery) {
-        where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'pesquisador', nameQuery),
-        };
-      }
       if (query.formacaoAcademica) {
         where.formacaoAcademica = query.formacaoAcademica;
       }

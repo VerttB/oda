@@ -91,7 +91,10 @@ export class GruposPesquisaController {
 
   @Get(':id/pesquisadores')
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista pesquisadores vinculados a um grupo de pesquisa' })
+  @ApiOperation({
+    summary: 'Lista pesquisadores vinculados a um grupo de pesquisa',
+    description: 'A busca textual em nome ou q exige todos os termos do nome em qualquer ordem, ignorando acentos e caixa.',
+  })
   @ApiQuery({ name: 'q', required: false, type: String })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })

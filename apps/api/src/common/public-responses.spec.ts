@@ -63,8 +63,11 @@ function setup() {
   });
   const prisma = { grupoPesquisa: delegate(grupo), pesquisador: delegate(pesquisador),
     grupoPesquisaInstituicao: { upsert: jest.fn(), deleteMany: jest.fn() },
-    $queryRaw: jest.fn().mockResolvedValue([{ id: pesquisador.id }]), $transaction: jest.fn() };
-  prisma.$transaction.mockImplementation(callback => callback(prisma));
+    $queryRaw: jest.fn().mockImplementation(query => Promise.resolve(
+      query.sql?.includes('count(*)') ? [{ total: 1 }]
+        : query.sql?.includes('FROM public.pesquisador r') ? [pesquisadorBase] : [{ id: pesquisador.id }],
+    )), $transaction: jest.fn() };
+  prisma.$transaction.mockImplementation(input => typeof input === 'function' ? input(prisma) : Promise.all(input));
   const entries = new Map<string, unknown>([['grupos-pesquisa:list', { antigo: true }], ['pesquisadores:list', { antigo: true }]]);
   const cache = { del: jest.fn(async (key: string) => entries.delete(key)),
     wrap: jest.fn(async (key: string, callback: () => Promise<unknown>) => {

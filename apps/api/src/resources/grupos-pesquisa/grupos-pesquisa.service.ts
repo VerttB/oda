@@ -7,20 +7,12 @@ import {
   UpdateGruposPesquisaRequest,
 } from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
-import { Prisma, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { Prisma, Situacao, TipoRelacaoGrupoInstituicao, SIMCC_INSTITUICOES_WHERE } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
-
-const SIMCC_INSTITUICOES: Prisma.InstituicaoWhereInput = {
-  OR: [
-    { sigla: { in: SIMCC_INSTITUTIONS.filter(item => item.sigla !== 'FIOCRUZ').map(item => item.sigla) } },
-    { sigla: { startsWith: 'IFBA -', mode: 'insensitive' } },
-    { sigla: 'FIOCRUZ', nome: { contains: 'Moniz', mode: 'insensitive' } },
-  ],
-};
 
 const getPagination = (query?: { page?: number; size?: number }) => {
   const page = query?.page ?? 1;
@@ -126,7 +118,7 @@ export class GruposPesquisaService {
       const vinculo: Prisma.GrupoPesquisaInstituicaoWhereInput = {
         tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
         ...(query?.instituicaoId ? { instituicaoId: query.instituicaoId } : {}),
-        ...(simcc ? { instituicao: SIMCC_INSTITUICOES } : {}),
+        ...(simcc ? { instituicao: SIMCC_INSTITUICOES_WHERE } : {}),
       };
       andConditions.push({ instituicoes: { some: vinculo } });
     }
