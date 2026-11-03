@@ -1,8 +1,8 @@
-import type { ConnectionOptions } from 'bullmq';
+import type { RedisOptions } from 'bullmq';
 
 export type QueueConnectionRole = 'producer' | 'worker';
 
-export function createQueueConnection(role: QueueConnectionRole): ConnectionOptions {
+export function createQueueConnection(role: QueueConnectionRole): RedisOptions {
   const redisUrl = process.env.REDIS_URL
     || `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`;
   const url = new URL(redisUrl);

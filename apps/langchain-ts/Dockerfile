@@ -15,6 +15,7 @@ COPY apps/langchain-ts/package.json ./apps/langchain-ts/
 COPY shared/database/package.json ./shared/database/
 COPY shared/cache/package.json ./shared/cache/
 COPY shared/shared-types/package.json ./shared/shared-types/
+COPY shared/queue/package.json ./shared/queue/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile

@@ -1,4 +1,5 @@
 export const QUEUE_NAMES = {
+  AI: 'oda-ai',
   DGP_SCRAPER_SIMCC: 'oda-dgp-scraper-simcc',
   ETL_GROUPS_SIMCC: 'oda-etl-grupos-simcc',
   ETL_DISPATCH_SIMCC: 'oda-etl-despacho-simcc',

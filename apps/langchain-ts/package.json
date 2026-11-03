@@ -7,8 +7,13 @@
     "start": "ts-node src/main.ts",
     "dev": "ts-node-dev --respawn src/main.ts",
     "build": "tsc",
+    "queue:worker": "ts-node src/queue/aiWorker.ts",
+    "test:queue": "node tests/ai-queue.integration.cjs",
     "ingest-db": "ts-node src/scripts/ingestDb.ts",
-    "reindex-groups-batch": "ts-node src/scripts/reindexGroupsBatch.ts"
+    "reindex-groups-batch": "ts-node src/scripts/reindexGroupsBatch.ts",
+    "reindex-simcc": "ts-node src/scripts/reindexSimcc.ts",
+    "test:reindex-simcc": "node --test tests/reindex-simcc.test.cjs",
+    "test:reindex-simcc:postgres": "node tests/reindex-simcc-postgres.cjs"
   },
   "dependencies": {
     "@langchain/community": "^0.3.33",
@@ -16,6 +21,8 @@
     "@langchain/openai": "^0.4.4",
     "@oda/cache": "workspace:*",
     "@oda/database": "workspace:*",
+    "@oda/queue": "workspace:*",
+    "@oda/shared-types": "workspace:*",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

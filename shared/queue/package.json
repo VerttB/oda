@@ -18,6 +18,7 @@
     "demo:worker": "pnpm run build && node --env-file=../../.env dist/demo-worker.js"
   },
   "dependencies": {
+    "@oda/shared-types": "workspace:*",
     "bullmq": "^5.79.0"
   },
   "devDependencies": {

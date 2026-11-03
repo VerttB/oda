@@ -120,8 +120,6 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=${JWT_SECRET}
-      - LANGCHAIN_HOST=langchain
-      - LANGCHAIN_PORT=8002
     volumes:
       - ./apps/api/static:/app/static
     ports:
@@ -132,6 +130,7 @@ services:
 
   langchain:
     profiles: ["core"]
+    image: oda-langchain:local
     build:
       context: .
       dockerfile: apps/langchain-ts/Dockerfile
@@ -143,6 +142,26 @@ services:
       - LANGCHAIN_PORT=8002
     depends_on:
       - postgres
+
+  langchain-worker:
+    profiles: ["core"]
+    image: oda-langchain:local
+    build:
+      context: .
+      dockerfile: apps/langchain-ts/Dockerfile
+    container_name: oda_langchain_worker
+    restart: unless-stopped
+    command: ["node", "dist/queue/aiWorker.js"]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379/0
+      OPEN_AI_KEY: ${OPEN_AI_KEY}
+    stop_grace_period: 5m
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_healthy
 
   etl:
     <<: *etl-worker

@@ -4,6 +4,13 @@ dist
 **/dist
 .git
 .env
+.env.*
+!.env.example
+backups
+audit
+tmp
+output
+docs
 .dockerignore
 **/*.tsbuildinfo
 apps/api/static

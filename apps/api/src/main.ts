@@ -15,7 +15,10 @@ async function bootstrap() {
   if (Number.isInteger(trustProxyHops) && trustProxyHops >= 0) {
     app.set('trust proxy', trustProxyHops);
   }
-  app.enableCors({ origin: '*' });
+  app.enableCors({
+    origin: '*',
+    exposedHeaders: ['Retry-After', 'RateLimit-Limit', 'RateLimit-Remaining', 'RateLimit-Reset'],
+  });
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/static/',
   });

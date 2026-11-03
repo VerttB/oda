@@ -1,91 +1,63 @@
-import { Injectable } from '@nestjs/common';
 import {
+  GatewayTimeoutException,
+  Injectable,
+  OnModuleDestroy,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { AiQueueClient, AiQueueError } from '@oda/queue';
+import type {
   LangchainGenerateRequest,
-  LangchainHealthResponse,
-  LangchainResponse,
   LangchainSummarizeRequest,
-} from './langchain.contracts';
+  LangchainSemanticSearchRequest,
+} from '@oda/shared-types';
 
 @Injectable()
-export class LangchainGatewayService {
-  private readonly baseUrl: string;
+export class LangchainGatewayService implements OnModuleDestroy {
+  constructor(private readonly client: AiQueueClient) {}
 
-  constructor() {
-    const host = process.env.LANGCHAIN_HOST ?? '127.0.0.1';
-    const cleanHost = host.startsWith('http') ? host : `http://${host}`;
-    const port = process.env.LANGCHAIN_PORT ?? '8002'; // default to HTTP port of langchain-ts
-    this.baseUrl = `${cleanHost}:${port}`;
+  onModuleDestroy() {
+    return this.client.close();
   }
 
-  async health(): Promise<LangchainHealthResponse> {
+  private async run<T>(operation: () => Promise<T>): Promise<T> {
     try {
-      const res = await fetch(`${this.baseUrl}/health`);
-      if (!res.ok) throw new Error('LangChain service not ok');
-      return {
-        status: 'ok',
-        transport: 'tcp', // keeping the contract compatible
-        provider: 'openai',
-        model: 'gpt-4o-mini',
-      };
-    } catch (e: any) {
-      throw new Error(`Langchain health check failed: ${e.message}`);
+      return await operation();
+    } catch (error) {
+      if (error instanceof AiQueueError && error.reason === 'TIMEOUT') {
+        throw new GatewayTimeoutException(
+          'A consulta de IA excedeu o tempo de espera. Uma execução ativa pode continuar no worker.',
+        );
+      }
+      throw new ServiceUnavailableException(
+        'O processamento de IA está indisponível. Verifique a fila e o worker de IA.',
+      );
     }
   }
 
-  async generate(payload: LangchainGenerateRequest): Promise<LangchainResponse> {
-    try {
-      const res = await fetch(`${this.baseUrl}/question`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: payload.prompt, chatHistory: payload.chatHistory }),
-      });
-      if (!res.ok) throw new Error('Failed to fetch generation');
-      const data = await res.json();
-      return {
-        output: data.answer,
-        model: 'gpt-4o-mini',
-        provider: 'openai',
-        createdAt: new Date().toISOString(),
-        ...(Array.isArray(data.sources) ? { sources: data.sources } : {}),
-        ...(typeof data.grounded === 'boolean' ? { grounded: data.grounded } : {}),
-        ...(typeof data.retrievalAttempts === 'number' ? { retrievalAttempts: data.retrievalAttempts } : {}),
-      };
-    } catch (e: any) {
-      throw new Error(`Langchain generate failed: ${e.message}`);
-    }
+  health() {
+    return this.run(() => this.client.health());
   }
-
-  async summarize(payload: LangchainSummarizeRequest): Promise<LangchainResponse> {
-    try {
-      const res = await fetch(`${this.baseUrl}/summarize`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: payload.text, instructions: payload.instructions }),
-      });
-      if (!res.ok) throw new Error('Failed to fetch summary');
-      return await res.json();
-    } catch (e: any) {
-      throw new Error(`Langchain summarize failed: ${e.message}`);
-    }
+  generate(payload: LangchainGenerateRequest) {
+    return this.run(() => this.client.request('generate', payload));
   }
-
-  async semanticSearch(
-    query: string, 
-    type: 'GRUPO_PESQUISA' | 'PESQUISADOR' | 'PRODUCAO' | 'LINHA_PESQUISA', 
+  summarize(payload: LangchainSummarizeRequest) {
+    return this.run(() => this.client.request('summarize', payload));
+  }
+  semanticSearch(
+    query: string,
+    type: LangchainSemanticSearchRequest['type'],
     limit = 10,
     offset = 0,
     filters: Record<string, unknown> = {},
-  ): Promise<{ results: { sourceId: string; score: number }[], totalItems: number }> {
-    try {
-      const res = await fetch(`${this.baseUrl}/semantic-search`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, type, limit, offset, filters }),
-      });
-      if (!res.ok) throw new Error('Failed to fetch semantic search');
-      return await res.json();
-    } catch (e: any) {
-      throw new Error(`Langchain semantic search failed: ${e.message}`);
-    }
+  ) {
+    return this.run(() =>
+      this.client.request('semantic-search', {
+        query,
+        type,
+        limit,
+        offset,
+        filters,
+      }),
+    );
   }
 }
