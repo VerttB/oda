@@ -3,6 +3,23 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+FROM base AS migrate
+WORKDIR /app
+ENV CI=true
+
+RUN pnpm config set package-import-method copy
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY shared/database/package.json ./shared/database/
+COPY shared/shared-types/package.json ./shared/shared-types/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm --filter @oda/database... install --frozen-lockfile
+
+COPY shared/database/prisma/ ./shared/database/prisma/
+COPY shared/database/prisma.config.ts ./shared/database/
+WORKDIR /app/shared/database
+ENTRYPOINT ["pnpm", "exec", "prisma", "migrate"]
+CMD ["deploy"]
+
 FROM base AS build
 WORKDIR /app
 ENV CI=true
