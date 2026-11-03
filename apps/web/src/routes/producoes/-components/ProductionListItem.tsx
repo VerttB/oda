@@ -47,8 +47,8 @@ export const ProductionsListItem: FC<ProductionsListItemProps> = ({
   const isCopied = copiedCitationId === production.id
 
   return (
-    <article className="-mx-3 flex items-start justify-between gap-4 rounded px-3 py-4 transition-colors hover:bg-surface/70">
-      <div className="min-w-0 flex-grow">
+    <article className="-mx-3 flex min-w-0 items-start justify-between gap-4 rounded px-3 py-4 transition-colors hover:bg-surface/70">
+      <div className="min-w-0 flex-1">
         <div className="mb-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
           <span className="inline-flex items-center gap-1 rounded bg-surface px-2 py-0.5 text-[11px] font-semibold text-secondary">
             {getTypeIcon(production.type)}
@@ -80,7 +80,7 @@ export const ProductionsListItem: FC<ProductionsListItemProps> = ({
           variant="link"
           size="sm"
           onClick={() => onSelect(production)}
-          className="mb-1 h-auto justify-start p-0 text-left text-base font-semibold leading-snug text-primary hover:text-primary-hover md:text-lg"
+          className="mb-1 h-auto w-full min-w-0 justify-start whitespace-normal p-0 text-left text-base font-semibold leading-snug text-primary hover:text-primary-hover md:text-lg"
         >
           {production.title}
         </Button>

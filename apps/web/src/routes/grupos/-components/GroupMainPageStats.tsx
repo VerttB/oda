@@ -8,8 +8,8 @@ export const GroupMainPageStats: FC<GroupMainPageStatsProps> = ({
   totalCount = '0',
 }) => {
   return (
-    <section className="relative w-full overflow-hidden bg-secondary px-4 pb-10 pt-28 text-white md:px-10">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8">
+    <section className="w-full bg-secondary pb-10 pt-36 text-white md:pt-28">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 md:px-10">
         <div className="max-w-3xl">
           <h1 className="mb-3 text-3xl font-semibold tracking-tight md:text-5xl">
             Diretório de Grupos de Pesquisa

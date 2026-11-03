@@ -7,6 +7,7 @@ import type {
 } from '#/api/pesquisadores'
 import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
+import { AiSearchEntry } from '#/features/ai/AiSearchEntry'
 import type { ResearcherItem } from '#/core/interfaces'
 import { RotateCcw, UserCheck } from 'lucide-react'
 import type { FC } from 'react'
@@ -83,6 +84,7 @@ export const ResearchersPage: FC<ResearchersPageProps> = ({
       />
 
       <ResearchersTopInstitutionsBand metrics={metrics} />
+      <AiSearchEntry entity="pesquisadores" />
 
       <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col gap-6 px-4 py-8 md:flex-row md:px-10">
         <ResearchersFilterSidebar

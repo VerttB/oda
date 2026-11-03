@@ -1,6 +1,6 @@
 import { Button } from '#/components/ui/button'
 import { DebouncedInput } from '#/components/ui/debounced-input'
-import { useRouterState } from '@tanstack/react-router'
+import { useNavigate, useRouterState } from '@tanstack/react-router'
 import React from 'react'
 import { Search, X } from 'lucide-react'
 
@@ -15,10 +15,14 @@ interface NavbarProps {
 export const Header: React.FC<NavbarProps> = ({
   activeTab = 'discover',
   onTabChange = () => {},
-  searchQuery = '',
-  onSearchChange = () => {},
+  searchQuery,
+  onSearchChange,
   isDarkTheme = false,
 }) => {
+  const navigate = useNavigate()
+  const [localQuery, setLocalQuery] = React.useState('')
+  const currentQuery = searchQuery ?? localQuery
+  const changeQuery = onSearchChange ?? setLocalQuery
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
@@ -28,6 +32,7 @@ export const Header: React.FC<NavbarProps> = ({
     { id: 'researchers', label: 'Pesquisadores', href: '/pesquisadores' },
     { id: 'groups', label: 'Grupos', href: '/grupos' },
     { id: 'publications', label: 'Publicações', href: '/producoes' },
+    { id: 'ai', label: 'IA', href: '/ia' },
     { id: 'docs', label: 'Docs da API', href: '/docs/geral' },
   ]
 
@@ -40,9 +45,11 @@ export const Header: React.FC<NavbarProps> = ({
           ? 'groups'
           : pathname.startsWith('/producoes')
             ? 'publications'
-            : pathname.startsWith('/docs')
-              ? 'docs'
-              : activeTab
+            : pathname.startsWith('/ia')
+              ? 'ai'
+              : pathname.startsWith('/docs')
+                ? 'docs'
+                : activeTab
 
   const currentTab = activeTab === 'discover' ? pathnameTab : activeTab
   const isNavyNav = currentTab === 'discover' || isDarkTheme
@@ -71,8 +78,21 @@ export const Header: React.FC<NavbarProps> = ({
           </a>
 
           {/* Campo de busca */}
-          <div
-            className={`hidden md:flex items-center px-3.5 py-1.5 rounded-lg border transition-all w-[280px] lg:w-[320px] ${
+          <form
+            role="search"
+            aria-label="Busca semântica global"
+            onSubmit={(event) => {
+              event.preventDefault()
+              const q = String(
+                new FormData(event.currentTarget).get('q') ?? '',
+              ).trim()
+              if (q)
+                void navigate({
+                  to: '/ia',
+                  search: { modo: 'busca', entidade: 'grupos', q, page: 1 },
+                })
+            }}
+            className={`hidden xl:flex items-center px-3.5 py-1.5 rounded-lg border transition-all w-[280px] ${
               isNavyNav
                 ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-within:border-accent focus-within:bg-white/15'
                 : 'bg-slate-50 border-border-subtle text-foreground placeholder:text-muted-foreground focus-within:border-secondary focus-within:bg-white'
@@ -83,27 +103,30 @@ export const Header: React.FC<NavbarProps> = ({
             />
             <DebouncedInput
               id="global-search-input"
+              name="q"
+              aria-label="Busca semântica global"
+              maxLength={500}
               type="text"
               variant="ghost"
               size="sm"
-              placeholder="Procurar Pesquisadores, Grupos, Publicações..."
-              value={searchQuery}
-              onValueChange={onSearchChange}
+              placeholder="Buscar por significado…"
+              value={currentQuery}
+              onValueChange={changeQuery}
               className="h-auto border-none bg-transparent p-0 text-sm font-normal focus:border-transparent focus:ring-0"
             />
-            {searchQuery && (
+            {currentQuery && (
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => onSearchChange('')}
+                onClick={() => changeQuery('')}
                 className="size-6 rounded-full p-1 hover:bg-transparent hover:opacity-80"
                 title="Limpar busca"
               >
                 <X className="w-3.5 h-3.5" />
               </Button>
             )}
-          </div>
+          </form>
         </div>
 
         {/* Links centrais de navegação */}

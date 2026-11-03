@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as IaRouteImport } from './routes/ia'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IaRoute = IaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -92,6 +98,7 @@ const ProducoesProducaoIdRoute = ProducoesProducaoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ia': typeof IaRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/docs/endpoint': typeof DocsEndpointRoute
   '/docs/filtros': typeof DocsFiltrosRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ia': typeof IaRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/docs/endpoint': typeof DocsEndpointRoute
   '/docs/filtros': typeof DocsFiltrosRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ia': typeof IaRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/docs/endpoint': typeof DocsEndpointRoute
   '/docs/filtros': typeof DocsFiltrosRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ia'
     | '/demo/tanstack-query'
     | '/docs/endpoint'
     | '/docs/filtros'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ia'
     | '/demo/tanstack-query'
     | '/docs/endpoint'
     | '/docs/filtros'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/ia'
     | '/demo/tanstack-query'
     | '/docs/endpoint'
     | '/docs/filtros'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  IaRoute: typeof IaRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   DocsEndpointRoute: typeof DocsEndpointRoute
   DocsFiltrosRoute: typeof DocsFiltrosRoute
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ia': {
+      id: '/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof IaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -298,6 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  IaRoute: IaRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   DocsEndpointRoute: DocsEndpointRoute,
   DocsFiltrosRoute: DocsFiltrosRoute,

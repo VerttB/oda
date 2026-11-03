@@ -5,9 +5,11 @@ import type {
 } from '#/api/producoes'
 import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
+import { AiSearchEntry } from '#/features/ai/AiSearchEntry'
 import type { ProductionItem } from '#/core/interfaces'
 import { FileText, RotateCcw } from 'lucide-react'
-import { useMemo, useState, type FC, type MouseEvent } from 'react'
+import { useMemo, useState } from 'react'
+import type { FC, MouseEvent } from 'react'
 
 import { ProductionsFilterSidebar } from './ProductionFilterSidebar'
 import { ProductionsListItem } from './ProductionListItem'
@@ -139,7 +141,10 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
   )
 
   return (
-    <div id="productions-page" className="flex w-full flex-grow flex-col">
+    <div
+      id="productions-page"
+      className="flex min-w-0 w-full flex-grow flex-col"
+    >
       <ProductionStats
         totalCount={productionsPage.meta.totalItems.toLocaleString('pt-BR')}
       />
@@ -149,6 +154,7 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
         onSelectInstitution={setSelectedInstitution}
       />
 
+      <AiSearchEntry entity="producoes" />
       <div className="mx-auto grid w-full max-w-7xl flex-grow grid-cols-1 gap-8 px-4 py-8 md:grid-cols-12 md:px-10">
         <ProductionsFilterSidebar
           searchQuery={searchQuery}
@@ -171,14 +177,14 @@ export const ProductionMainPage: FC<ProductionMainPageProps> = ({
           onApplyFilters={() => onPageChange(1)}
         />
 
-        <section className="md:col-span-9">
+        <section className="min-w-0 md:col-span-9">
           <div className="mb-4 flex flex-col gap-3 border-b border-border-subtle pb-3 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-xs text-muted-foreground">
               Mostrando {pageStart}-{pageEnd} de{' '}
               {productionsPage.meta.totalItems.toLocaleString('pt-BR')}{' '}
               resultados
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-muted-foreground">
                 Ordenar por:
               </span>

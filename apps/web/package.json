@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vite dev --port 4000",
     "generate-routes": "tsr generate",
+    "test:ai:browser": "node --test tests/ai-browser.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint",

@@ -5,7 +5,9 @@ import type {
 import type { SortOrder } from '#/api/sorting'
 import { Button } from '#/components/ui/button'
 import type { DirectoryGroupItem } from '#/core/interfaces'
-import { useEffect, useMemo, useState, type FC } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { FC } from 'react'
+import { AiSearchEntry } from '#/features/ai/AiSearchEntry'
 
 import { DirectoryFilterSidebar } from './GroupFilterSidebar'
 import { GroupMainPageListItem } from './GroupMainPageListItem'
@@ -128,15 +130,14 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
   }
 
   return (
-    <div id="directory-page" className="w-full flex-grow">
+    <main id="directory-page" className="min-w-0 w-full flex-grow">
       <GroupMainPageStats
         totalCount={(metrics?.total ?? groups.length).toLocaleString('pt-BR')}
       />
 
+      <AiSearchEntry entity="grupos" />
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-10">
-       
-
-        <div className="flex flex-col items-start gap-8 lg:flex-row">
+        <div className="grid items-start gap-8 lg:grid-cols-[16rem_minmax(0,1fr)]">
           <DirectoryFilterSidebar
             searchQuery={searchQuery}
             onSearchChange={onSearchChange}
@@ -154,17 +155,18 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
             onSortOrderChange={onSortOrderChange}
           />
 
-          <div className="flex w-full flex-1 flex-col">
+          <div className="flex min-w-0 w-full flex-col">
             <div className="mb-6 flex flex-col gap-3 border-b border-border-subtle pb-2 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-xs text-muted-foreground">
                 Exibindo {pageStart}-{pageEnd} de{' '}
                 {filteredGroups.length.toLocaleString('pt-BR')} resultados
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-muted-foreground">
                   Ordenar por:
                 </span>
                 <select
+                  aria-label="Ordenar grupos por"
                   value={sortField}
                   onChange={(event) =>
                     onSortFieldChange(
@@ -226,6 +228,6 @@ export const GroupMainPage: FC<GroupMainPageProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
