@@ -78,8 +78,11 @@ async function main() {
       ],
     }).compile();
     app = module.createNestApplication({ logger: false });
+    const { configureApiVersioning, API_VERSION_PATH } = require('../src/common/api-versioning');
+    configureApiVersioning(app);
     await app.init();
-    const request = require('supertest')(app.getHttpServer());
+    const http = require('supertest')(app.getHttpServer());
+    const request = { get: route => http.get(`${API_VERSION_PATH}${route}`) };
     const ids = Array.from({ length: 8 }, () => randomUUID());
     const authors = [randomUUID(), randomUUID()];
     const groups = [randomUUID(), randomUUID()];

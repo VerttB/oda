@@ -121,7 +121,7 @@ async function main() {
     assert.ok(Date.now() - start < 2000);
     const down = client({ connection: { ...connection, retryStrategy: () => null } });
     await assert.rejects(down.health(), (error) => error.reason === 'UNAVAILABLE');
-    assert.equal((await fetch(`${await app.getUrl()}/producoes`)).status, 200);
+    assert.equal((await fetch(`${await app.getUrl()}/v1/producoes`)).status, 200);
     console.log('PASS: Redis desligado devolve erro limitado; consulta pública independente continua respondendo.');
   } catch (error) {
     console.error('FAIL antes do encerramento:', error);
@@ -141,8 +141,7 @@ async function checkHttp(gateway, redisPort) {
   apiRequire('tsconfig-paths').register({ baseUrl: path.join(root, 'apps/api'), paths: { '@/*': ['src/*'] } });
   const { Test } = apiRequire('@nestjs/testing');
   const { APP_PIPE, APP_INTERCEPTOR } = apiRequire('@nestjs/core');
-  const { ZodValidationPipe, ZodSerializerInterceptor, cleanupOpenApiDoc } = apiRequire('nestjs-zod');
-  const { SwaggerModule, DocumentBuilder } = apiRequire('@nestjs/swagger');
+  const { ZodValidationPipe, ZodSerializerInterceptor } = apiRequire('nestjs-zod');
   const { ConfigService } = apiRequire('@nestjs/config');
   const { JwtService } = apiRequire('@nestjs/jwt');
   const { CACHE_MANAGER } = apiRequire('@nestjs/cache-manager');
@@ -169,8 +168,9 @@ async function checkHttp(gateway, redisPort) {
     ],
   }).compile();
   app = module.createNestApplication({ logger: false });
+  apiSource('common/api-versioning').configureApiVersioning(app);
   await app.listen(0, '127.0.0.1');
-  const base = await app.getUrl();
+  const base = `${await app.getUrl()}/v1`;
   const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt.sign({ sub: 'admin-test', role: 'ADMIN' })}` };
   const post = (body, auth = true) => fetch(`${base}/langchain/generate`, { method: 'POST', headers: auth ? headers : { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   assert.equal((await post({ prompt: '' })).status, 400);
@@ -194,10 +194,10 @@ async function checkHttp(gateway, redisPort) {
   assert.equal(limited.status, 429);
   assert.ok(Number(limited.headers.get('Retry-After')) > 0);
   assert.equal((await post({ prompt: 'admin continua' })).status, 201);
-  const document = cleanupOpenApiDoc(SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('Test').setVersion('1').build()));
-  assert.ok(document.paths['/langchain/generate'].post.responses['201']);
-  assert.ok(document.paths['/langchain/generate'].post.responses['503']);
-  assert.ok(document.paths['/langchain/generate'].post.responses['504']);
+  const document = apiSource('common/openapi').createApiDocument(app);
+  assert.ok(document.paths['/v1/langchain/generate'].post.responses['201']);
+  assert.ok(document.paths['/v1/langchain/generate'].post.responses['503']);
+  assert.ok(document.paths['/v1/langchain/generate'].post.responses['504']);
   console.log('PASS: HTTP real mantém contratos, aliases, validação Zod, Swagger e limite compartilhado; administrador autenticado preservado.');
 }
 
