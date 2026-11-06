@@ -31,7 +31,11 @@ async function bootstrap() {
     prefix: '/static/',
   });
   app.useGlobalFilters(new PrismaExceptionFilter());
-  SwaggerModule.setup('api', app, createApiDocument(app, isProduction()));
+  SwaggerModule.setup(
+    'api',
+    app,
+    createApiDocument(app, isProduction(), process.env.SWAGGER_SERVER_URL),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 }

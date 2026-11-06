@@ -30,11 +30,16 @@ const httpMethods = new Set([
   'trace',
 ]);
 
-export function createApiDocument(app: INestApplication, production = false) {
+export function createApiDocument(
+  app: INestApplication,
+  production = false,
+  publicServerUrl = '/',
+) {
   const config = new DocumentBuilder()
     .setTitle('Open DGP API')
     .setDescription('API v1 para coleta e busca semântica de dados do DGP/CNPq')
     .setVersion('1.0')
+    .addServer(publicServerUrl.trim().replace(/\/+$/, '') || '/')
     .addBearerAuth();
   for (const tag of [
     'grupos-pesquisa',

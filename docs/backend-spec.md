@@ -850,6 +850,8 @@ flowchart LR
 
 ## 11. Planejamento Atual de Prioridades
 
+> Atualização de 27/10/2026: o planejamento ativo está em [Planejamento de consolidação da V1](planejamento-v1.md), com diagnóstico, prioridades e critérios de aceite. A lista abaixo preserva o histórico; vários itens já têm implementação e devem ser conferidos no código antes de iniciar trabalho novo.
+
 Esta seção registra a ordem sugerida para fechar uma primeira versão funcional do sistema. A prioridade principal é reduzir operação manual, estabilizar a coleta e garantir que os dados gerados sejam confiáveis para as próximas camadas analíticas.
 
 ### 11.1 Estabilizar o pipeline atual

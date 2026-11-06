@@ -144,6 +144,24 @@ test('oculta administração e escrita no documento de produção, preservando l
   assert.ok(document.paths['/v1/producoes/busca-semantica'].get);
 });
 
+test('configura a base publica do Swagger para proxy com prefixo e acesso direto', () => {
+  const route = '/v1/grupos-pesquisa';
+  const origin = 'https://observatoriocti.secti.ba.gov.br';
+  for (const [configured, expected, expectedRequest] of [
+    [undefined, '/', `${origin}/v1/grupos-pesquisa`],
+    ['/', '/', `${origin}/v1/grupos-pesquisa`],
+    ['  ', '/', `${origin}/v1/grupos-pesquisa`],
+    ['  /oda/  ', '/oda', `${origin}/oda/v1/grupos-pesquisa`],
+    ['https://api.example/oda/', 'https://api.example/oda', 'https://api.example/oda/v1/grupos-pesquisa'],
+  ]) {
+    const document = createApiDocument(app, true, configured);
+    assert.deepEqual(document.servers.map(server => server.url), [expected]);
+    assert.ok(document.paths[route]);
+    const base = document.servers[0].url.replace(/\/$/, '');
+    assert.equal(new URL(`${base}${route}`, origin).href, expectedRequest);
+  }
+});
+
 test('mantém arquivos estáticos em /static, fora do versionamento dos controllers', async () => {
   await request(app.getHttpServer()).get('/static/asset.txt').expect(200, 'Arquivo estático de teste.');
   await request(app.getHttpServer()).get('/v1/static/asset.txt').expect(404);
