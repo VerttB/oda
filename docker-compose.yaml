@@ -7,6 +7,7 @@ x-system-worker: &system-worker
   build:
     context: .
     dockerfile: apps/system-worker/Dockerfile
+    network: ${DOCKER_BUILD_NETWORK:-default}
   restart: unless-stopped
   init: true
   env_file:
@@ -29,6 +30,7 @@ x-scraper-worker: &scraper-worker
   build:
     context: .
     dockerfile: apps/scraper/Dockerfile
+    network: ${DOCKER_BUILD_NETWORK:-default}
   restart: unless-stopped
   init: true
   env_file:
@@ -45,6 +47,7 @@ x-etl-worker: &etl-worker
   build:
     context: .
     dockerfile: apps/etl/Dockerfile
+    network: ${DOCKER_BUILD_NETWORK:-default}
   restart: unless-stopped
   init: true
   env_file:
@@ -116,6 +119,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
       target: migrate
+      network: ${DOCKER_BUILD_NETWORK:-default}
     restart: "no"
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -125,6 +129,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
+      network: ${DOCKER_BUILD_NETWORK:-default}
     container_name: oda_api
     restart: always
     env_file:
@@ -147,6 +152,7 @@ services:
     build:
       context: .
       dockerfile: apps/langchain-ts/Dockerfile
+      network: ${DOCKER_BUILD_NETWORK:-default}
     container_name: oda_langchain_ts
     restart: always
     environment:
@@ -162,6 +168,7 @@ services:
     build:
       context: .
       dockerfile: apps/langchain-ts/Dockerfile
+      network: ${DOCKER_BUILD_NETWORK:-default}
     container_name: oda_langchain_worker
     restart: unless-stopped
     command: ["node", "dist/queue/aiWorker.js"]
