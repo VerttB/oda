@@ -10,6 +10,9 @@ import { registerLattesRepeatableSchedule } from './lattesRepeatableSchedule';
 const TZ = 'America/Sao_Paulo';
 
 async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue>) {
+  for(const schedule of await queue.getRepeatableJobs()) {
+    if(schedule.name==='enqueue-etl' && schedule.id==='enqueue-etl-12h') await queue.removeRepeatableByKey(schedule.key);
+  }
   // Backup diário 02:00
   await queue.add('backup-database', {
     version: 1,
@@ -23,7 +26,7 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     removeOnFail: false,
   });
 
-  // Enqueue ETL antes do refresh MV (05:00 / 17:00)
+  // Descobrir arquivos novos a cada 15 minutos; jobs em execução são deduplicados.
   await queue.add('enqueue-etl', {
     version: 1,
     requestedAt: new Date().toISOString(),
@@ -32,8 +35,8 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
     ids: [],
     scope: 'default',
   }, {
-    repeat: { pattern: '0 5,17 * * *', tz: TZ },
-    jobId: 'enqueue-etl-12h',
+    repeat: { pattern: '*/15 * * * *', tz: TZ },
+    jobId: 'enqueue-etl-15m',
     removeOnComplete: { age: 12 * 60 * 60, count: 100 },
     removeOnFail: false,
   });

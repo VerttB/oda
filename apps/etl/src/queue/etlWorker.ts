@@ -9,6 +9,8 @@ import {
 import { reconcileEtlQueues } from './etlDispatch';
 import { EtlQueueRepository } from './etlRepository';
 import { prepareEtlBatch } from './etlBatch';
+import { startAdaptiveEtl,ADAPTIVE_ETL } from './adaptiveConcurrency';
+import { prisma } from './database';
 
 type GroupQueue = ReturnType<typeof createEtlGroupQueue>;
 type ResearcherQueue = ReturnType<typeof createEtlResearcherQueue>;
@@ -19,7 +21,7 @@ export async function runEtlWorkers(
 ) {
     await Promise.all([
         groupQueue.setGlobalConcurrency(ETL_GROUP_QUEUE_SETTINGS.concurrency),
-        ...(repository.scope === 'default' ? [researcherQueue.setGlobalConcurrency(ETL_RESEARCHER_QUEUE_SETTINGS.concurrency)] : []),
+        ...(repository.scope === 'default' ? [researcherQueue.setGlobalConcurrency(ADAPTIVE_ETL.max)] : []),
         dispatchQueue.setGlobalConcurrency(ETL_DISPATCH_QUEUE_SETTINGS.concurrency),
     ]);
     await reconcileEtlQueues(groupQueue, researcherQueue, repository);
@@ -64,6 +66,17 @@ export async function runEtlWorkers(
     );
 
     const workers = [dispatchWorker, groupWorker, ...(researcherWorker ? [researcherWorker] : [])];
+    const stopAdaptive=researcherWorker ? startAdaptiveEtl(researcherWorker,researcherQueue,async()=>{
+      try {
+        return await prisma.$transaction(async tx=>{
+          await tx.$executeRaw`SET LOCAL statement_timeout='1500ms'`;
+          const [row]=await tx.$queryRaw<Array<{ready:boolean}>>`SELECT NOT EXISTS(
+            SELECT 1 FROM pg_stat_activity WHERE datname=current_database()
+            AND cardinality(pg_blocking_pids(pid))>0) AS ready`;
+          return row.ready;
+        },{timeout:2500,maxWait:1000});
+      } catch {return false;}
+    }) : ()=>{};
     let reconciliation: Promise<void> | undefined;
     let stopping = false;
     const sync = () => {
@@ -88,6 +101,7 @@ export async function runEtlWorkers(
         if (stopping) return;
         stopping = true;
         clearInterval(interval);
+        stopAdaptive();
         console.log('[ETL Worker] Encerrando depois dos jobs ativos.');
         void Promise.all(workers.map(worker => worker.close()));
     };
@@ -97,6 +111,7 @@ export async function runEtlWorkers(
         console.log(`[ETL Worker] Escopo ${repository.scope}: aguardando jobs em ${workers.map(worker => worker.name).join(', ')}.`);
         await Promise.all(workers.map(worker => worker.run()));
     } finally {
+        stopAdaptive();
         clearInterval(interval);
         process.off('SIGINT', shutdown);
         process.off('SIGTERM', shutdown);

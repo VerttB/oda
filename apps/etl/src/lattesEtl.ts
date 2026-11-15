@@ -211,7 +211,7 @@ export async function processResearcherEtlFile(
 
     const saved = await saveLattesToDb(lattesData, reportProgress);
     await reportProgress({ etapa: 'MOVENDO_ARQUIVO', percentual: 95, itensProcessados: null, itensTotal: null, loteAtual: null, lotesTotal: null });
-    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'lattes');
+    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'lattes','default',fileInfo.hashArquivo);
     const result = {
         lattesId,
         arquivoJson: fileInfo.arquivoJson,

@@ -42,7 +42,8 @@ export function assertFileHash(filePath: string, expectedHash: string, expectedS
     }
 }
 
-export function moveEtlFileToProcessed(sourcePath: string, kind: EtlFileKind, scope: DataScope = 'default'): boolean {
+export function moveEtlFileToProcessed(sourcePath: string, kind: EtlFileKind, scope: DataScope = 'default', expectedHash?:string): boolean {
+    if(expectedHash && hashFile(sourcePath)!==expectedHash) throw new EtlInputError('Arquivo alterado durante a carga; preservado em raw para nova execução.');
     const destinationDir = path.join(getEtlDataPaths(scope).processedDataDir, kind);
     fs.mkdirSync(destinationDir, { recursive: true });
     const destinationPath = path.join(destinationDir, path.basename(sourcePath));
@@ -50,7 +51,15 @@ export function moveEtlFileToProcessed(sourcePath: string, kind: EtlFileKind, sc
 
     if (fs.existsSync(destinationPath)) {
         if (hashFile(sourcePath) !== hashFile(destinationPath)) {
-            throw new Error(`Ja existe um arquivo processado diferente em ${destinationPath}.`);
+            // Mantém a versão anterior por hash antes de publicar a recoleta.
+            const versions = path.join(destinationDir, '.versions', path.basename(sourcePath, '.json'));
+            fs.mkdirSync(versions, { recursive: true });
+            const previousHash = hashFile(destinationPath);
+            const previousPath = path.join(versions, `${previousHash}.json`);
+            if (!fs.existsSync(previousPath)) fs.copyFileSync(destinationPath, previousPath, fs.constants.COPYFILE_EXCL);
+            if (hashFile(previousPath) !== previousHash) throw new Error('Arquivo histórico inconsistente.');
+            fs.renameSync(sourcePath, destinationPath);
+            return true;
         }
         fs.unlinkSync(sourcePath);
         return true;

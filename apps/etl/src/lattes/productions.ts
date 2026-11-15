@@ -105,6 +105,17 @@ export async function saveResearcherProductionsBatch(
     pesquisadorId: string,
     producoes: ResearcherProductionInput[],
 ) {
+    // Lotes de autores distintos podem conter as mesmas produções.
+    // Ordenação global dos locks evita deadlocks entre lotes com ordem diferente.
+    const keys=[...new Set(producoes.filter(p=>p.titulo).flatMap(p=>[
+        'titulo:'+p.titulo.toLocaleLowerCase('pt-BR')+':'+p.ano+':'+p.tipo,
+        ...(p.doi?['doi:'+p.doi.toLocaleLowerCase('en-US')]:[]),
+    ]))];
+    if(keys.length) await tx.$queryRaw`
+        SELECT pg_advisory_xact_lock(k)::text FROM (
+          SELECT DISTINCT hashtextextended(value,0) k FROM unnest(${keys}::text[]) value ORDER BY k
+        ) locks
+    `;
     for (const item of producoes) {
         if (!item.titulo) continue;
 

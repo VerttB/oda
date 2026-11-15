@@ -4,6 +4,7 @@ import { prismaConfig, PrismaClient, TipoPesquisador, FormacaoAcademica, SharedP
 import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
 import { mapDgpGroupSituation } from './commom/groupSituation';
 import type { DataScope } from '@oda/queue';
+import { verifyGroupPersistence } from './dgp/verifyPersistence';
 import {
     createLinhaPesquisa,
     getLeafAreaName,
@@ -352,8 +353,10 @@ export async function processGroupEtlFile(
     groupData.idDgp = dgpId;
 
     await saveGroupToDb(groupData, reportProgress);
+    const verificacao=await verifyGroupPersistence(prisma,groupData);
+    console.log('[ETL] Conferência JSON/banco.',{dgpId,...verificacao});
     await reportProgress({ etapa: 'MOVENDO_ARQUIVO', percentual: 95, itensProcessados: null, itensTotal: null });
-    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'dgp', scope);
+    const arquivoMovido = moveEtlFileToProcessed(jsonPath, 'dgp', scope,fileInfo.hashArquivo);
     const result = {
         dgpId,
         arquivoJson: fileInfo.arquivoJson,
@@ -361,6 +364,7 @@ export async function processGroupEtlFile(
         membrosProcessados: Array.isArray(groupData.membros) ? groupData.membros.length : 0,
         linhasProcessadas: Array.isArray(groupData.linhas) ? groupData.linhas.length : 0,
         arquivoMovido,
+        verificacao,
     };
     await reportProgress({ etapa: 'CONCLUIDO', percentual: 100, itensProcessados: null, itensTotal: null });
     return result;

@@ -1,4 +1,5 @@
 import './env';
+import { inspectRaw } from './rawDiagnostics';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
@@ -22,6 +23,7 @@ function printHelp() {
     console.log('pnpm queue:etl:worker');
     console.log('pnpm queue:etl:status [grupos|pesquisadores] [id]');
     console.log('pnpm queue:etl:reconcile');
+    console.log('pnpm -F @oda/etl queue:etl diagnostico [--scope default|simcc] (somente leitura)');
     console.log('Sem IDs, enqueue le todos os JSONs ainda presentes em raw-data.');
     console.log('Todos os comandos aceitam --scope default|simcc; padrao: default.');
 }
@@ -131,13 +133,17 @@ async function main() {
     const { scope: dataScope, positional } = parseArgs(rawArgs);
     const [firstArg, ...remaining] = positional;
     if (!command || process.argv.includes('--help') || process.argv.includes('-h')) { printHelp(); return; }
-    if (!['enqueue', 'worker', 'status', 'reconcile'].includes(command)) throw new Error('Comando de fila ETL desconhecido. Use --help.');
+    if (!['enqueue', 'worker', 'status', 'reconcile','diagnostico'].includes(command)) throw new Error('Comando de fila ETL desconhecido. Use --help.');
 
     const groupQueue = createEtlGroupQueue(dataScope);
     const researcherQueue = createEtlResearcherQueue();
     const dispatchQueue = createEtlDispatchQueue(dataScope);
     const repository = new EtlQueueRepository(prisma, dataScope);
     try {
+        if(command==='diagnostico') {
+            console.log(JSON.stringify(await inspectRaw(dataScope,groupQueue,researcherQueue),null,2));
+            return;
+        }
         if (command === 'worker') {
             if (firstArg) throw new Error('O comando worker nao recebe argumentos.');
             await runEtlWorkers(groupQueue, researcherQueue, dispatchQueue, repository);
