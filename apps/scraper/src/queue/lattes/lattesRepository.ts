@@ -1,3 +1,4 @@
+import { beginPipelineItem } from '@oda/database';
 import { randomUUID } from 'node:crypto';
 import {
     FilaExtracaoStatus, ModuloSistema, ModoExecucao, PipelineEtapa, Prisma,
@@ -158,6 +159,7 @@ export class LattesQueueRepository {
             const item = await tx.pipelineLogItem.findUnique({ where: { id: data.pipelineItemId } });
             if (item?.status === StatusItemLog.SUCESSO) return meta.resultados[data.pipelineItemId];
             if (item) throw new Error('Job ja possui resultado definitivo. Publique uma nova execucao.');
+            await beginPipelineItem(tx, data.pipelineLogId, data.pipelineItemId);
             const row = await tx.filaExtracaoPesquisador.findUniqueOrThrow({ where: { lattesId: data.lattesId } });
             await tx.filaExtracaoPesquisador.update({
                 where: { lattesId: data.lattesId },

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@oda/database';
+import { PrismaClient, retainPipelineHistory } from '@oda/database';
 import { CleanupLogsJob, CleanupLogsResult } from '@oda/queue';
 
 export async function handleCleanupLogsJob(
@@ -10,14 +10,16 @@ export async function handleCleanupLogsJob(
   cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
 
   try {
-    const result = await prisma.pipelineLog.deleteMany({
-      where: {
-        criadoEm: { lt: cutoffDate },
-      },
-    });
+    let deleted = 0;
+    // Limite de trabalho por manutenção; as próximas execuções continuam a limpeza.
+    for (let batch = 0; batch < 10; batch++) {
+      const count = await retainPipelineHistory(prisma, cutoffDate);
+      deleted += count;
+      if (count < 100) break;
+    }
 
     return {
-      pipelineLogDeleted: result.count,
+      pipelineLogDeleted: deleted,
     };
   } catch (error) {
     throw new Error(`Cleanup logs failed: ${error instanceof Error ? error.message : String(error)}`);

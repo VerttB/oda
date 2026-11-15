@@ -392,10 +392,53 @@ model PipelineLog {
   criadoEm             DateTime          @default(now()) @map("criado_em")
   atualizadoEm         DateTime          @updatedAt @map("atualizado_em")
   itens                PipelineLogItem[]
+  execucoesItens       PipelineItemExecucao[]
+  relatorioConsistencia RelatorioConsistencia?
 
   @@index([modulo, status])
   @@index([dgpId])
   @@map("pipeline_log")
+}
+
+model PipelineItemExecucao {
+  id String @id
+  pipelineLogId String @map("pipeline_log_id")
+  iniciadoEm DateTime @default(now()) @map("iniciado_em") @db.Timestamptz(6)
+  ultimaTentativaEm DateTime @default(now()) @map("ultima_tentativa_em") @db.Timestamptz(6)
+  tentativas Int @default(1)
+  pipelineLog PipelineLog @relation(fields:[pipelineLogId],references:[id],onDelete:Cascade,onUpdate:NoAction)
+  @@index([pipelineLogId],map:"pipeline_item_execucao_pipeline_idx")
+  @@map("pipeline_item_execucao")
+}
+
+model PipelineMetricaDiaria {
+  dia DateTime @db.Date
+  processamento String
+  escopo String
+  sucessos BigInt @default(0)
+  falhas BigInt @default(0)
+  duracaoTotalMs BigInt @default(0) @map("duracao_total_ms")
+  itensComDuracao BigInt @default(0) @map("itens_com_duracao")
+  tentativasAdicionais BigInt @default(0) @map("tentativas_adicionais")
+  itensComTentativas BigInt @default(0) @map("itens_com_tentativas")
+  @@id([dia,processamento,escopo])
+  @@map("pipeline_metrica_diaria")
+}
+
+model RelatorioConsistencia {
+  id String @id
+  pipelineLogId String? @unique @map("pipeline_log_id")
+  escopo String
+  estado String @default("EM_ANDAMENTO")
+  iniciadoEm DateTime @default(now()) @map("iniciado_em") @db.Timestamptz(6)
+  finalizadoEm DateTime? @map("finalizado_em") @db.Timestamptz(6)
+  antes Json
+  depois Json?
+  resultado Json?
+  erro String?
+  pipelineLog PipelineLog? @relation(fields:[pipelineLogId],references:[id],onDelete:SetNull,onUpdate:NoAction)
+  @@index([iniciadoEm(sort:Desc)],map:"relatorio_consistencia_inicio_idx")
+  @@map("relatorio_consistencia")
 }
 
 model PipelineLogItem {

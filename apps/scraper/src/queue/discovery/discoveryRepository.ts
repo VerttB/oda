@@ -1,3 +1,4 @@
+import { beginPipelineItem } from '@oda/database';
 import { randomUUID } from 'node:crypto';
 import {
     ModuloSistema, ModoExecucao, PipelineEtapa, Prisma, PrismaClient,
@@ -154,6 +155,7 @@ export class DiscoveryQueueRepository {
             const item = await tx.pipelineLogItem.findUnique({ where: { id: data.pipelineItemId } });
             if (item?.status === StatusItemLog.SUCESSO) return meta.resultados[data.pipelineItemId];
             if (item) throw new Error('Job ja possui resultado definitivo. Publique uma nova execucao.');
+            await beginPipelineItem(tx, data.pipelineLogId, data.pipelineItemId);
             return null;
         });
     }

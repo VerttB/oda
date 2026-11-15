@@ -90,4 +90,5 @@ export async function reconcileEtlQueues(
             repository,
         );
     }
+    if(typeof repository.finalizeReports==='function') await repository.finalizeReports();
 }

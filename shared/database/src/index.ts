@@ -34,6 +34,9 @@ export {
 } from '../generated/prisma';
 export * from './pipelineLogger';
 export * from './simcc';
+export * from './pipelineTelemetry';
+export * from './pipelineRetention';
+export * from './dataConsistency';
 import path from "path";
 import dotenv from 'dotenv';
 

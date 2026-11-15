@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { beginPipelineItem, startSimccConsistency, finishSimccConsistency, finishPendingSimccConsistency } from '@oda/database';
 import {
     ModuloSistema, ModoExecucao, PipelineEtapa, Prisma, PrismaClient,
     StatusItemLog, StatusSessao, TipoEntidadeLog, TipoErroColeta,
@@ -71,6 +72,9 @@ function sameJob(left: EtlJob, right: EtlJob) {
 
 export class EtlQueueRepository {
     constructor(private readonly prisma: PrismaClient, readonly scope: DataScope = 'default') {}
+    async finalizeReports() {
+        if (this.scope === 'simcc') await finishPendingSimccConsistency(this.prisma);
+    }
 
     async createBatch(groups: EtlFileDescriptor[], researchers: EtlFileDescriptor[], id: string = randomUUID()): Promise<EtlBatch> {
         if (groups.some(file => file.scope !== this.scope)
@@ -106,10 +110,15 @@ export class EtlQueueRepository {
             scope: groupJobs[0]?.scope ?? 'default',
             itensFila: groupJobs.length + researcherJobs.length,
         };
-        await this.prisma.pipelineLog.create({ data: {
-            id, modulo: ModuloSistema.ETL, modoExecucao,
-            metadata: metadata as unknown as Prisma.InputJsonValue,
-        } });
+        await this.prisma.$transaction(async tx => {
+            await tx.pipelineLog.create({ data: {
+                id, modulo: ModuloSistema.ETL, modoExecucao,
+                metadata: metadata as unknown as Prisma.InputJsonValue,
+            } });
+            if (this.scope === 'simcc') {
+                await startSimccConsistency(tx, id, groups.map(group => group.id));
+            }
+        }, { timeout: 30000 });
         return toBatch(id, metadata);
     }
 
@@ -242,6 +251,7 @@ export class EtlQueueRepository {
             const item = await tx.pipelineLogItem.findUnique({ where: { id: data.pipelineItemId } });
             if (item?.status === StatusItemLog.SUCESSO) return meta.resultados[data.pipelineItemId];
             if (item) throw new Error('Job ETL ja possui resultado definitivo. Publique uma nova execucao.');
+            await beginPipelineItem(tx, data.pipelineLogId, data.pipelineItemId);
             return null;
         });
     }
@@ -265,5 +275,8 @@ export class EtlQueueRepository {
             if (result) meta.resultados[data.pipelineItemId] = result;
             await this.refresh(tx, data.pipelineLogId, meta);
         });
+        if (normalizeDataScope('scope' in data ? data.scope : undefined) === 'simcc') {
+            await finishSimccConsistency(this.prisma, data.pipelineLogId);
+        }
     }
 }
