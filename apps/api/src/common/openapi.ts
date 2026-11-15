@@ -67,7 +67,7 @@ export function createApiDocument(
         : path.startsWith(`${API_VERSION_PATH}/`)
           ? path.slice(API_VERSION_PATH.length)
           : path;
-    const administrative = resource.startsWith('/admin/filas');
+    const administrative = resource.startsWith('/admin/');
     if (production && administrative) {
       delete document.paths[path];
       continue;

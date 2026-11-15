@@ -10,6 +10,7 @@
     "prisma:push": "pnpm -F @oda/database run prisma:push",
     "prisma:seed": "pnpm -F @oda/database run prisma:seed",
     "test:migrations:docker": "node scripts/test-migrations-docker.cjs",
+    "test:observabilidade": "pnpm --filter @oda/api... build && pnpm --filter @oda/etl build && node scripts/test-observability.cjs",
     "backup:db": "C:\\Progra~1\\Git\\usr\\bin\\bash.exe -lc \"scripts/backup-db.sh \\\"$@\\\"\" --",
     "dev:api": "pnpm -F @oda/api start:dev",
     "dev:langchain": "pnpm -F @oda/langchain dev",

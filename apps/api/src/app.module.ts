@@ -20,6 +20,7 @@ import { MetricasModule } from './resources/metricas/metricas.module';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { FilasModule } from './resources/filas/filas.module';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
+import { ObservabilidadeModule } from './resources/observabilidade/observabilidade.module';
 import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 
 @Module({
@@ -45,6 +46,7 @@ import { RateLimitModule } from './common/rate-limit/rate-limit.module';
     UfModule,
     MetricasModule,
     FilasModule,
+    ObservabilidadeModule,
   ],
   controllers: [AppController],
   providers: [

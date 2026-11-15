@@ -24,6 +24,8 @@ export * from './api/auth';
 
 // Re-export filas
 export * from './api/filas';
+export * from './api/filas-status';
+export * from './api/observabilidade';
 
 // Re-export grupos-pesquisa - defines GrupoPesquisaAreaConhecimentoResponseSchema, GrupoPesquisaResumoResponseSchema, GrupoPesquisaInstituicaoResponseSchema, EstadoResponseSchema, GruposPesquisaResponseSchema, MetricasGruposPesquisaResponseSchema
 export {
