@@ -2,13 +2,11 @@ import { useState } from 'react'
 import type { AdminSubTab } from '../../../types'
 import { AdminApiRoutesView } from './AdminApiRoutesView'
 import { AdminCommandConsoleView } from './AdminCommandConsoleView'
-import { AdminDashboardView } from './AdminDashboardView'
 import { AdminQueuesView } from './AdminQueuesView'
 import { AdminResearchersView } from './AdminResearchersView'
-import { AdminScraperLogsView } from './AdminScraperLogsView'
 import { AdminSidebar } from './AdminSidebar'
-import { AdminSystemLogsView } from './AdminSystemLogsView'
 import { AdminTopAppBar } from './AdminTopAppBar'
+import { AdminPipelineView } from './AdminPipelineView'
 
 interface Props {
   onExitAdmin: () => void
@@ -51,9 +49,9 @@ export function AdminConsolePage({
         />
         <main className="flex-1 overflow-y-auto bg-[#f4faff]">
           {activeSubTab === 'dashboard' && (
-            <AdminDashboardView
-              onNavigateSubTab={selectSubTab}
+            <AdminPipelineView
               onToast={onToast}
+              searchQuery={searchQuery}
             />
           )}
           {activeSubTab === 'queues' && <AdminQueuesView onToast={onToast} />}
@@ -69,7 +67,7 @@ export function AdminConsolePage({
             <AdminResearchersView onToast={onToast} searchQuery={searchQuery} />
           )}
           {activeSubTab === 'logs' && (
-            <AdminSystemLogsView onToast={onToast} searchQuery={searchQuery} />
+            <AdminPipelineView onToast={onToast} searchQuery={searchQuery} />
           )}
           {activeSubTab === 'console' && (
             <AdminCommandConsoleView
@@ -78,7 +76,7 @@ export function AdminConsolePage({
             />
           )}
           {activeSubTab === 'scraper' && (
-            <AdminScraperLogsView onToast={onToast} searchQuery={searchQuery} />
+            <AdminPipelineView onToast={onToast} searchQuery={searchQuery} />
           )}
         </main>
       </div>

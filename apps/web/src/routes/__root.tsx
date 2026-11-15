@@ -3,6 +3,7 @@ import {
   Scripts,
   Outlet,
   createRootRouteWithContext,
+  useRouterState,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -58,6 +59,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const administrative=useRouterState({select:state=>/^\/admin(?:\/|$)/.test(state.location.pathname)});
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -65,9 +67,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
-        <Header />
+        {!administrative && <Header />}
         {children}
-        <Footer />
+        {!administrative && <Footer />}
         <TanStackDevtools
           config={{
             position: 'bottom-right',
