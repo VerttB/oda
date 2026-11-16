@@ -169,6 +169,15 @@ export class EtlQueueRepository {
         });
     }
 
+    async completedItems(jobs: EtlJob[]): Promise<Set<string>> {
+        if (!jobs.length) return new Set();
+        const items = await this.prisma.pipelineLogItem.findMany({
+            where: { id: { in: jobs.map(job => job.pipelineItemId) } },
+            select: { id: true },
+        });
+        return new Set(items.map(item => item.id));
+    }
+
     async groupsFinished(batch: EtlBatch) {
         if (!batch.groupsPublished) return false;
         const ids = batch.groupJobs.map(job => job.pipelineItemId);

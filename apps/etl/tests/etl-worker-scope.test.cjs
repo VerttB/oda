@@ -28,3 +28,26 @@ for (const scope of ['default', 'simcc']) {
         assert.equal(researcherConcurrencyChanges, scope === 'default' ? 1 : 0);
     });
 }
+
+test('consumidores iniciam antes de concluir uma reconciliação lenta', async () => {
+    let release;
+    const blocked = new Promise(resolve => { release = resolve; });
+    let entered;
+    const started = new Promise(resolve => { entered = resolve; });
+    const originalRun = FakeWorker.prototype.run;
+    FakeWorker.prototype.run = async function () { entered(); };
+    const queue = name => ({ name, async setGlobalConcurrency() {} });
+    let first = true;
+    const repository = { scope: 'simcc', async *openBatches() {
+        if (first) { first = false; await blocked; }
+    } };
+    try {
+        const execution = runEtlWorkers(queue('groups'), queue('researchers'), queue('dispatch'), repository);
+        await Promise.race([started, new Promise((_, reject) => setTimeout(() => reject(new Error('worker bloqueado')), 1000))]);
+        release();
+        await execution;
+    } finally {
+        release();
+        FakeWorker.prototype.run = originalRun;
+    }
+});

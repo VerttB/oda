@@ -39,8 +39,11 @@ async function reconcileJobs<T extends EtlGroupJob | EtlResearcherJob>(
     enqueue: (data: T) => Promise<unknown>,
     repository: EtlQueueRepository,
 ) {
-    for (const data of jobs) {
-        if (await repository.result(data)) continue;
+    for (let offset = 0; offset < jobs.length; offset += 500) {
+      const slice = jobs.slice(offset, offset + 500);
+      const completed = await repository.completedItems(slice);
+      for (const data of slice) {
+        if (completed.has(data.pipelineItemId)) continue;
         const job = await getJob(data);
         if (!job) {
             await enqueue(data);
@@ -55,10 +58,27 @@ async function reconcileJobs<T extends EtlGroupJob | EtlResearcherJob>(
         if (state === 'completed') {
             await repository.settle(data, null, 'Job ETL concluido no Redis sem resultado persistido no PostgreSQL.');
         }
+      }
     }
 }
 
-export async function reconcileEtlQueues(
+const running = new WeakMap<EtlQueueRepository, Promise<void>>();
+
+export function reconcileEtlQueues(
+    groupQueue: GroupQueue,
+    researcherQueue: ResearcherQueue,
+    repository: EtlQueueRepository,
+): Promise<void> {
+    const previous = running.get(repository) ?? Promise.resolve();
+    const next = previous.catch(() => {}).then(() => reconcileOnce(groupQueue, researcherQueue, repository));
+    running.set(repository, next);
+    void next.finally(() => {
+        if (running.get(repository) === next) running.delete(repository);
+    }).catch(() => {});
+    return next;
+}
+
+async function reconcileOnce(
     groupQueue: GroupQueue,
     researcherQueue: ResearcherQueue,
     repository: EtlQueueRepository,

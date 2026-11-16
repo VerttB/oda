@@ -24,8 +24,6 @@ export async function runEtlWorkers(
         ...(repository.scope === 'default' ? [researcherQueue.setGlobalConcurrency(ADAPTIVE_ETL.max)] : []),
         dispatchQueue.setGlobalConcurrency(ETL_DISPATCH_QUEUE_SETTINGS.concurrency),
     ]);
-    await reconcileEtlQueues(groupQueue, researcherQueue, repository);
-
     const groupWorker = new Worker(
         groupQueue.name,
         pathToFileURL(path.join(__dirname, 'groups/groupProcessor.js')),
@@ -109,6 +107,8 @@ export async function runEtlWorkers(
     process.once('SIGTERM', shutdown);
     try {
         console.log(`[ETL Worker] Escopo ${repository.scope}: aguardando jobs em ${workers.map(worker => worker.name).join(', ')}.`);
+        // A recuperação pode percorrer milhares de itens; não deve impedir o consumo.
+        sync();
         await Promise.all(workers.map(worker => worker.run()));
     } finally {
         stopAdaptive();
