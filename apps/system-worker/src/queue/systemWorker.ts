@@ -6,6 +6,7 @@ import { systemProcessor } from './systemProcessor';
 import { prisma } from '../common/database';
 import { randomUUID } from 'node:crypto';
 import { registerLattesRepeatableSchedule } from './lattesRepeatableSchedule';
+import { registerSimccRepeatableSchedules } from './simccRepeatableSchedule';
 
 const TZ = 'America/Sao_Paulo';
 
@@ -54,6 +55,7 @@ async function registerRepeatableJobs(queue: ReturnType<typeof createSystemQueue
   });
 
   await registerLattesRepeatableSchedule(queue, TZ);
+  await registerSimccRepeatableSchedules(queue);
 
   // Refresh MV a cada 12h (06:00 / 18:00)
   await queue.add('refresh-materialized-view', {

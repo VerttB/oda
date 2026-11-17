@@ -58,6 +58,7 @@ export async function publishScraperBatch<TTarget, T extends ScraperJob>(options
   mode: ModoExecucao;
   targets: TTarget[];
   scope?: string;
+  simccAutoEtl?: boolean;
   createJob: (target: TTarget, manifest: {
     version: 1; requestedAt: string; pipelineLogId: string; pipelineItemId: string;
   }) => T;
@@ -79,6 +80,7 @@ export async function publishScraperBatch<TTarget, T extends ScraperJob>(options
     resultados: {},
     itensFila: jobs.length,
     ...(options.scope ? { scope: options.scope } : {}),
+    ...(options.simccAutoEtl ? { simccAutoEtl: 'pendente' } : {}),
   };
   await options.prisma.pipelineLog.create({ data: {
     id: pipelineLogId,

@@ -7,10 +7,13 @@ import { handleReconcileStuckQueuesJob } from '../jobs/reconcileStuckQueuesJob';
 import { handleEnqueueEtlJob } from '../jobs/enqueueEtlJob';
 import { handleEnqueueDgpScraperJob } from '../jobs/enqueueDgpScraperJob';
 import { handleEnqueueLattesScraperJob } from '../jobs/enqueueLattesScraperJob';
+import { handleFinishedSimccBatches } from '../jobs/finishedSimccBatches';
 import { prisma } from '../common/database';
 
 export async function systemProcessor(job: Job): Promise<any> {
   switch (job.name) {
+    case 'verificar-etl-simcc':
+      return handleFinishedSimccBatches(prisma);
     case JOB_NAMES.BACKUP_DB:
       return handleBackupDbJob(job as any);
 

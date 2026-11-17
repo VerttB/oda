@@ -447,6 +447,7 @@ export type EnqueueDgpScraperJob = {
   version: 1;
   requestedAt: string;
   scope?: DataScope;
+  limite?: number;
 };
 
 export type EnqueueDgpScraperResult = {

@@ -67,6 +67,25 @@ describe('system worker scraper enqueue', () => {
     }));
   });
 
+  it('limita o agendamento SIMCC a 300 grupos e prioriza atualizações antigas', async () => {
+    queue.name = QUEUE_NAMES.DGP_SCRAPER_SIMCC;
+    const rows = Array.from({ length: 350 }, (_, i) => ({
+      dgpId: String(i + 1).padStart(16, '0'), instituicao: 'Universidade do Estado da Bahia',
+    }));
+    (prisma.filaExtracaoGrupo.findMany as jest.Mock).mockImplementation(async ({ cursor, take }) => {
+      const start = cursor ? rows.findIndex(row => row.dgpId === cursor.dgpId) + 1 : 0;
+      return rows.slice(start, start + take);
+    });
+    await handleEnqueueDgpScraperJob({ data: {
+      version: 1, requestedAt: new Date().toISOString(), scope: 'simcc', limite: 300,
+    } } as Job<EnqueueDgpScraperJob>);
+    expect((publishScraperBatch as jest.Mock).mock.calls[0][0].targets).toHaveLength(300);
+    expect(prisma.filaExtracaoGrupo.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      orderBy: [{ ultimaAtualizacao: 'asc' }, { dgpId: 'asc' }],
+      where: { status: { not: 'PROCESSANDO' } },
+    }));
+  });
+
   it('enfileira pesquisadores pendentes sem exigir ID e preserva o nome do banco', async () => {
     (prisma.filaExtracaoPesquisador.findMany as jest.Mock).mockResolvedValue([
       { lattesId: '1234567890123456', nome: 'Maria da Silva' },
