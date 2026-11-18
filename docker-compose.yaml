@@ -75,6 +75,9 @@ services:
       - "${POSTGRES_BIND_IP:-127.0.0.1}:5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    networks:
+      - default
+      - maria_IA
 
   redis:
     profiles: ["core"]
@@ -237,6 +240,11 @@ services:
     container_name: oda_scraper_discovery
     hostname: scraper-discovery
     command: ["node", "dist/queue/discovery/discoveryCli.js", "worker"]
+
+networks:
+  maria_IA:
+    name: maria_IA
+    external: true
 
 volumes:
   redis_data:
