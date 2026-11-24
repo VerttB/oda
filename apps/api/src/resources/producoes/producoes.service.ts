@@ -259,6 +259,12 @@ export class ProducoesService {
         where: { producaoId: id },
       });
 
+      // A exclusão explícita da produção também encerra seus dados derivados.
+      // As áreas referenciam as execuções, portanto são removidas primeiro.
+      await tx.producaoAreaConhecimento.deleteMany({ where: { producaoId: id } });
+      await tx.producaoOpenAlexArea.deleteMany({ where: { producaoId: id } });
+      await tx.execucaoEnriquecimentoProducao.deleteMany({ where: { producaoId: id } });
+
       return await tx.producao.delete({ where: { id } });
     });
 

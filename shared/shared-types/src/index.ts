@@ -366,3 +366,5 @@ export const PipelineMetadataSchema = z.union([
   RagMetadataSchema,
 ]);
 export type PipelineMetadata = z.infer<typeof PipelineMetadataSchema>;
+export * from './keywordIdentity';
+export * from './api/producao-grupo';

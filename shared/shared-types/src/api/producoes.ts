@@ -53,6 +53,10 @@ export type FindProducoesByPesquisadorQuery = z.infer<
 // ==========================================
 
 const RawVinculoResponseSchema = z.record(z.string(), z.unknown());
+export const ProducaoPalavraChaveVinculoResponseSchema = z.object({
+  producaoId: z.string(),
+  palavraChaveId: z.string(),
+});
 
 export const ProducaoResponseSchema = z.object({
   id: z.string(),
@@ -66,7 +70,7 @@ export const ProducaoResponseSchema = z.object({
   qualis: QualisSchema.nullable(),
   resumo: z.string().nullable(),
   autores: z.array(RawVinculoResponseSchema).optional(),
-  palavrasChave: z.array(RawVinculoResponseSchema).optional(),
+  palavrasChave: z.array(ProducaoPalavraChaveVinculoResponseSchema).optional(),
 }).passthrough();
 
 export const ProducaoPesquisadorResponseSchema = z.object({

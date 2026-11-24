@@ -6,6 +6,9 @@
   "scripts": {
     "start": "ts-node src/main.ts",
     "build": "tsc",
+    "enrich:keywords": "ts-node src/enrichProductionKeywords.ts",
+    "prepare:production-group-pilot": "ts-node src/prepareProductionGroupPilot.ts",
+    "evaluate:production-group-pilot": "ts-node src/evaluateProductionGroupPilot.ts",
     "etl:grupo": "ts-node src/main.ts grupo",
     "etl:pesquisador": "ts-node src/main.ts pesquisador",
     "etl:all": "ts-node src/run-all.ts",

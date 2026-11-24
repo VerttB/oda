@@ -81,6 +81,7 @@ model GrupoPesquisa {
   instituicoes       GrupoPesquisaInstituicao[]
   linhasPesquisa     LinhaPesquisa[]
   membros            MembroGrupo[]
+  revisoesProducoes  ProducaoGrupoRevisao[]
 
   @@index([areaConhecimentoId])
   @@map("grupo_pesquisa")
@@ -162,6 +163,7 @@ model AreaConhecimento {
   gruposPesquisa          GrupoPesquisaAreaConhecimento[]
   mapeamentosOpenAlex     MapeamentoAreaTaxonomia[]
   pesquisadores           PesquisadoresAreaConhecimento[]
+  producoes               ProducaoAreaConhecimento[]
 
   @@map("area_conhecimento")
 }
@@ -183,6 +185,7 @@ model OpenAlexAreaConhecimento {
   mapeamentosCnpq   MapeamentoAreaTaxonomia[]
   areaPai           OpenAlexAreaConhecimento?    @relation("OpenAlexAreaConhecimentoHierarquia", fields: [areaPaiId], references: [id])
   subareas          OpenAlexAreaConhecimento[]   @relation("OpenAlexAreaConhecimentoHierarquia")
+  producoes         ProducaoOpenAlexArea[]
 
   @@index([termoNormalizado])
   @@index([tipo])
@@ -202,6 +205,7 @@ model MapeamentoAreaTaxonomia {
   atualizadoEm       DateTime                      @updatedAt @map("atualizado_em")
   areaConhecimento   AreaConhecimento              @relation(fields: [areaConhecimentoId], references: [id])
   openAlexArea       OpenAlexAreaConhecimento      @relation(fields: [openAlexAreaId], references: [id])
+  producoes          ProducaoAreaConhecimento[]
 
   @@unique([openAlexAreaId, areaConhecimentoId])
   @@index([areaConhecimentoId])
@@ -241,13 +245,23 @@ model GrupoPesquisaAreaConhecimento {
 
 model PalavraChave {
   id               String                      @id @default(uuid())
-  termo            String                      @unique
-  termoNormalizado String                      @unique @map("termo_normalizado")
+  termo            String
+  termoNormalizado String                      @map("termo_normalizado")
+  origem           OrigemPalavraChave           @default(LEGADO_NAO_INFORMADO)
+  chaveIdentidade  String?                      @map("chave_identidade")
+  externalId       String?                      @map("external_id")
+  termoOriginal    String?                      @map("termo_original")
+  idiomaOriginal   String?                      @map("idioma_original")
+  traducaoStatus   StatusTraducaoPalavraChave    @default(NAO_NECESSARIA) @map("traducao_status")
+  traducaoMetadata Json?                        @map("traducao_metadata")
   criadoEm         DateTime                    @default(now()) @map("criado_em")
   atualizadoEm     DateTime                    @updatedAt @map("atualizado_em")
   linhasPesquisa   LinhaPesquisaPalavraChave[]
   producoes        ProducaoPalavraChave[]
 
+  @@unique([origem, externalId])
+  @@unique([origem, chaveIdentidade])
+  @@index([termoNormalizado])
   @@map("palavra_chave")
 }
 
@@ -301,6 +315,10 @@ model Producao {
   buscaTextual  Unsupported("tsvector")? @map("busca_textual")
   palavrasChave ProducaoPalavraChave[]
   autores       ProducaoPesquisador[]
+  execucoesEnriquecimento ExecucaoEnriquecimentoProducao[]
+  areasOpenAlex ProducaoOpenAlexArea[]
+  areasConhecimento ProducaoAreaConhecimento[]
+  revisoesGrupos ProducaoGrupoRevisao[]
 
   @@index([buscaTextual(ops: raw("tsvector_ops"))], type: Gin, map: "producao_busca_booleana_gin_idx")
   @@map("producao")
@@ -322,11 +340,129 @@ model ProducaoPalavraChave {
   producaoId     String       @map("producao_id")
   palavraChaveId String       @map("palavra_chave_id")
   criadoEm       DateTime     @default(now()) @map("criado_em")
+  scoreOriginal Float? @map("score_original")
+  metodoAssociacao MetodoAssociacaoPalavraChave? @map("metodo_associacao")
+  execucaoId String? @map("execucao_id")
+  hashEntrada String? @map("hash_entrada")
+  versaoMetodo String? @map("versao_metodo")
+  avaliadaEm DateTime? @map("avaliada_em") @db.Timestamptz(6)
+  revisao StatusRevisaoEnriquecimento @default(PENDENTE)
+  execucao ExecucaoEnriquecimentoProducao? @relation(fields: [execucaoId], references: [id])
   palavraChave   PalavraChave @relation(fields: [palavraChaveId], references: [id])
   producao       Producao     @relation(fields: [producaoId], references: [id])
 
   @@id([producaoId, palavraChaveId])
+  @@index([palavraChaveId])
   @@map("producao_palavra_chave")
+}
+
+enum OrigemPalavraChave {
+  DGP
+  OPENALEX
+  MANUAL
+  EXTRACAO_LOCAL
+  LEGADO_NAO_INFORMADO
+}
+
+enum StatusTraducaoPalavraChave {
+  PENDENTE
+  AUTOMATICA
+  REVISADA
+  NAO_NECESSARIA
+}
+
+enum MetodoAssociacaoPalavraChave {
+  DECLARADA
+  CONSULTA_OBRA
+  CLASSIFICACAO_TEXTO
+  REVISAO_MANUAL
+}
+
+enum StatusRevisaoEnriquecimento {
+  PENDENTE
+  CONFIRMADO
+  REJEITADO
+}
+
+enum MetodoAreaProducao {
+  MAPEAMENTO_APROVADO
+  REVISAO_MANUAL
+}
+
+model ExecucaoEnriquecimentoProducao {
+  id String @id @default(uuid())
+  producaoId String @map("producao_id")
+  obraExternalId String @map("obra_external_id")
+  consultadaEm DateTime @default(now()) @map("consultada_em") @db.Timestamptz(6)
+  hashEntrada String @map("hash_entrada")
+  hashResposta String @map("hash_resposta")
+  versaoMetodo String @map("versao_metodo")
+  avaliadaEm DateTime @default(now()) @map("avaliada_em") @db.Timestamptz(6)
+  evidencia Json
+  producao Producao @relation(fields: [producaoId], references: [id])
+  palavrasChave ProducaoPalavraChave[]
+  areasOpenAlex ProducaoOpenAlexArea[]
+  areasConhecimento ProducaoAreaConhecimento[]
+  @@unique([producaoId, hashEntrada, hashResposta, versaoMetodo])
+  @@index([producaoId, avaliadaEm])
+  @@map("execucao_enriquecimento_producao")
+}
+
+model ProducaoOpenAlexArea {
+  producaoId String @map("producao_id")
+  openAlexAreaId String @map("open_alex_area_id")
+  scoreOriginal Float? @map("score_original")
+  principal Boolean @default(false)
+  execucaoId String @map("execucao_id")
+  versaoMetodo String @map("versao_metodo")
+  revisao StatusRevisaoEnriquecimento @default(PENDENTE)
+  producao Producao @relation(fields: [producaoId], references: [id])
+  openAlexArea OpenAlexAreaConhecimento @relation(fields: [openAlexAreaId], references: [id])
+  execucao ExecucaoEnriquecimentoProducao @relation(fields: [execucaoId], references: [id])
+  @@id([producaoId, openAlexAreaId])
+  @@index([openAlexAreaId])
+  @@map("producao_open_alex_area")
+}
+
+model ProducaoAreaConhecimento {
+  producaoId String @map("producao_id")
+  areaConhecimentoId String @map("area_conhecimento_id")
+  metodo MetodoAreaProducao
+  revisao StatusRevisaoEnriquecimento @default(PENDENTE)
+  mapeamentoId String? @map("mapeamento_id")
+  execucaoId String? @map("execucao_id")
+  producao Producao @relation(fields: [producaoId], references: [id])
+  areaConhecimento AreaConhecimento @relation(fields: [areaConhecimentoId], references: [id])
+  mapeamento MapeamentoAreaTaxonomia? @relation(fields: [mapeamentoId], references: [id])
+  execucao ExecucaoEnriquecimentoProducao? @relation(fields: [execucaoId], references: [id])
+  @@id([producaoId, areaConhecimentoId])
+  @@index([areaConhecimentoId])
+  @@map("producao_area_conhecimento")
+}
+
+enum DecisaoProducaoGrupo {
+  CONFIRMADO
+  REJEITADO
+  INCONCLUSIVO
+}
+
+model ProducaoGrupoRevisao {
+  grupoId     String              @map("grupo_id")
+  producaoId  String              @map("producao_id")
+  versao      Int
+  decisao     DecisaoProducaoGrupo
+  justificativa String
+  evidencia   String?
+  fonteUrl    String?             @map("fonte_url")
+  revisor     String
+  revisadoEm  DateTime            @default(now()) @map("revisado_em") @db.Timestamptz(6)
+  grupo       GrupoPesquisa       @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  producao    Producao            @relation(fields: [producaoId], references: [id], onDelete: Cascade)
+
+  @@id([grupoId, producaoId, versao])
+  @@index([grupoId, decisao])
+  @@index([producaoId])
+  @@map("producao_grupo_revisao")
 }
 
 model RagDocument {

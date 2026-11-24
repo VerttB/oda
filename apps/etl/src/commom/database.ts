@@ -7,6 +7,7 @@ import {
     Pesquisador,
 } from '@oda/database';
 import { normalizeString } from './normalize';
+import { keywordIdentity, keywordSearchKey } from '@oda/shared-types';
 const prisma = new PrismaClient(prismaConfig);
 
 export function splitAreaHierarchy(areaStr?: string | null): string[] {
@@ -175,13 +176,14 @@ export async function createResearchers(data: { nome: string; lattesId: string; 
  * Cria ou recupera uma palavra-chave normalizada
  */
 export async function upsertPalavraChave(tx: any, termo: string) {
-    const termoNormalizado = normalizeString(termo);
+    const chaveIdentidade = keywordIdentity(termo);
+    const termoNormalizado = keywordSearchKey(termo);
     return await tx.palavraChave.upsert({
-        where: { termoNormalizado },
+        where: { origem_chaveIdentidade: { origem: 'DGP', chaveIdentidade } },
         update: {},
         create: {
             termo: termo.trim(),
-            termoNormalizado
+            termoNormalizado, chaveIdentidade, origem: 'DGP',
         }
     });
 }

@@ -8,10 +8,12 @@ import { MetricasModule } from '../metricas/metricas.module';
 import { AuthModule } from '../auth/auth.module';
 import { RateLimitModule } from '@/common/rate-limit/rate-limit.module';
 import { AiAccessGuard } from '@/common/rate-limit/ai-access.guard';
+import { ProducoesConfirmadasController, RevisaoProducoesGrupoController } from './producoes-grupo.controller';
+import { ProducoesGrupoService } from './producoes-grupo.service';
 
 @Module({
   imports: [LangchainGatewayModule, PesquisadoresModule, MetricasModule, AuthModule, RateLimitModule],
-  controllers: [GruposPesquisaController],
-  providers: [GruposPesquisaService, AiAccessGuard],
+  controllers: [GruposPesquisaController, ProducoesConfirmadasController, RevisaoProducoesGrupoController],
+  providers: [GruposPesquisaService, ProducoesGrupoService, AiAccessGuard],
 })
 export class GruposPesquisaModule {}

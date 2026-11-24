@@ -6,6 +6,7 @@ import {
 } from '@oda/database';
 import { DefaultArgs } from '../../../../shared/database/generated/prisma/runtime/client';
 import { isValidPublicationYear, linkProductionQualis, parsePublicationYear } from './enrichment';
+import { classificationLockKeys, OpenAlexEvidence, saveClassification } from './saveClassification';
 
 type TransactionClient = Omit<
     PrismaClient<Prisma.PrismaClientOptions, Prisma.LogLevel, DefaultArgs>,
@@ -23,6 +24,7 @@ export type ResearcherProductionInput = {
     issn: string | null;
     qualis: Qualis | null;
     resumo: string | null;
+    openAlex?: OpenAlexEvidence | null;
 };
 
 type ExistingProductionMatch = {
@@ -75,25 +77,28 @@ export async function buildResearcherProductions(
             issn: issn || null,
             qualis: qualis || null,
             resumo: artigo.resumo || null,
+            openAlex: artigo.openAlex ?? null,
         });
     }
 
     for (const livro of livrosCapitulos) {
         if (!livro.titulo) continue;
 
-        const ano = parsePublicationYear(livro.ano);
+        const anoOpenAlex = livro.openAlex?.publicationYear;
+        const ano = isValidPublicationYear(anoOpenAlex) ? anoOpenAlex : parsePublicationYear(livro.ano);
         const cleanDoi = livro.doi ? livro.doi.trim() : null;
         producoes.push({
             titulo: livro.titulo.trim(),
             ano,
-            anoFonte: 'LATTES',
+            anoFonte: isValidPublicationYear(anoOpenAlex) ? 'OPENALEX' : 'LATTES',
             tipo: TipoProducao.LIVROCAPITULO,
             doi: cleanDoi || null,
             url: livro.url || null,
             veiculo: livro.editora || livro.veiculo || null,
-            issn: null,
+            issn: livro.openAlex?.issn || null,
             qualis: null,
-            resumo: null,
+            resumo: livro.openAlex?.abstract || null,
+            openAlex: livro.openAlex ?? null,
         });
     }
 
@@ -110,6 +115,7 @@ export async function saveResearcherProductionsBatch(
     const keys=[...new Set(producoes.filter(p=>p.titulo).flatMap(p=>[
         'titulo:'+p.titulo.toLocaleLowerCase('pt-BR')+':'+p.ano+':'+p.tipo,
         ...(p.doi?['doi:'+p.doi.toLocaleLowerCase('en-US')]:[]),
+        ...(p.doi && p.openAlex ? classificationLockKeys(p.doi, p.openAlex) : []),
     ]))];
     if(keys.length) await tx.$queryRaw`
         SELECT pg_advisory_xact_lock(k)::text FROM (
@@ -211,5 +217,6 @@ export async function saveResearcherProductionsBatch(
                 pesquisadorId,
             },
         });
+        if (item.doi && item.openAlex) await saveClassification(tx, producao.id, item.doi, item.openAlex);
     }
 }

@@ -3,6 +3,7 @@ import * as path from 'path';
 import { Qualis } from '@oda/database';
 import { DOI_URL, OPEN_ALEX_URL } from '../commom/config';
 import { stripHtml } from '../commom/normalize';
+import { normalizeDoi, parseOpenAlexClassification } from './openAlexClassification';
 
 export function isValidPublicationYear(value: number | null | undefined): value is number {
     const maxYear = new Date().getFullYear() + 1;
@@ -56,9 +57,10 @@ function restoreAbstractFromInvertedIndex(index: Record<string, number[]>): stri
 
 export async function linkProductionOpenAlex(doi: string) {
     try {
-        const cleanDoi = doi.trim();
+        const cleanDoi = normalizeDoi(doi);
+        if (!process.env.OPEN_ALEX_KEY) return null;
         const url = `https://api.openalex.org/works/doi:${encodeURIComponent(cleanDoi)}?api_key=${process.env.OPEN_ALEX_KEY}`;
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
         if (!response.ok || response.status === 404) {
             throw new Error('Artigo não encontrado no OpenAlex');
         }
@@ -74,7 +76,8 @@ export async function linkProductionOpenAlex(doi: string) {
             || data?.primary_location?.source?.issn?.[0]
             || '';
 
-        return { abstract, publicationYear, issn };
+        if (data.doi && normalizeDoi(data.doi) !== cleanDoi) throw new Error('DOI da resposta OpenAlex diverge do DOI consultado.');
+        return { abstract, publicationYear, issn, classification: parseOpenAlexClassification(data), consultadaEm: new Date().toISOString() };
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.log(`Ocorrou um erro ao procurar dados OpenAlex para o doi: ${doi} - ${error.message}`);

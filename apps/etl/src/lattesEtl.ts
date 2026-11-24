@@ -6,6 +6,7 @@ import { getOrCreateAreaConhecimentoHierarchy } from './commom/database';
 import { EtlInputError, inspectEtlFile, moveEtlFileToProcessed } from './commom/etlFile';
 import { getOpenAlexData, isValidPublicationYear, linkProductionDoi, linkProductionOpenAlex, linkProductionQualis, parsePublicationYear } from './lattes/enrichment';
 import { buildResearcherProductions, chunkArray, saveResearcherProductionsBatch } from './lattes/productions';
+import { createOpenAlexLookup } from './lattes/openAlexLookup';
 
 export { getOpenAlexData, isValidPublicationYear, linkProductionDoi, linkProductionOpenAlex, linkProductionQualis };
 
@@ -48,10 +49,12 @@ export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlPro
         console.log("OpenAlex Para", data.nome, openAlexData)
     }
     const artigosEnriquecidos = [] as any;
+    const lookupOpenAlex = createOpenAlexLookup(prisma);
     if (data.artigos && Array.isArray(data.artigos)) {
         for (const [index, artigo] of data.artigos.entries()) {
             let resumo = null, veiculo = null, url = null, issnDoi = null, issnOpenAlex = null;
             let anoOpenAlex: number | null = null;
+            let openAlex = null;
             const anoLattes = parsePublicationYear(artigo.ano);
             if (artigo.doi) {
                 const artigosExtra = await linkProductionDoi(artigo.doi);
@@ -63,13 +66,9 @@ export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlPro
                     issnDoi = artigosExtra.issn || null
                 }
 
-                const precisaOpenAlex =
-                    !resumo
-                    || !(artigo.issn || artigo.ISSN || issnDoi)
-                    || !isValidPublicationYear(anoLattes);
-
-                if (precisaOpenAlex) {
-                    const openAlexExtra = await linkProductionOpenAlex(artigo.doi);
+                {
+                    const openAlexExtra = await lookupOpenAlex(artigo.doi);
+                    openAlex = openAlexExtra ?? null;
                     resumo = resumo || (openAlexExtra?.abstract ? stripHtml(openAlexExtra.abstract) : null);
                     issnOpenAlex = openAlexExtra?.issn || null;
                     anoOpenAlex = openAlexExtra?.publicationYear || null;
@@ -83,7 +82,7 @@ export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlPro
                 issn: artigo.issn || artigo.ISSN || issnDoi || issnOpenAlex,
                 resumo,
                 veiculo,
-                url
+                url, openAlex,
             });
             await reportProgress({
                 etapa: 'ENRIQUECENDO_PRODUCOES', percentual: 20 + Math.round(((index + 1) / Math.max(data.artigos.length, 1)) * 35),
@@ -91,7 +90,10 @@ export async function saveLattesToDb(data: any, reportProgress: ResearcherEtlPro
             });
         }
     }
-    const livrosCapitulos = data.livrosCapitulos || [];
+    const livrosCapitulos = [];
+    for (const livro of data.livrosCapitulos || []) {
+        livrosCapitulos.push({ ...livro, openAlex: livro.doi ? await lookupOpenAlex(livro.doi) : null });
+    }
     const producoes = await buildResearcherProductions(artigosEnriquecidos, livrosCapitulos);
 
     try {
