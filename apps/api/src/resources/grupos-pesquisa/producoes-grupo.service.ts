@@ -4,9 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@oda/database';
-import type {
-  ProducoesConfirmadasQuery,
-  RevisarProducaoGrupo,
+import {
+  getPagination,
+  buildPaginationMeta,
+  type ProducoesConfirmadasQuery,
+  type RevisarProducaoGrupo,
 } from '@oda/shared-types';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -128,8 +130,9 @@ export class ProducoesGrupoService {
 
   async listConfirmed(
     grupoId: string,
-    { page, size }: ProducoesConfirmadasQuery,
+    query: ProducoesConfirmadasQuery,
   ) {
+    const pagination = getPagination(query);
     return this.db.$transaction(
       async (tx) => {
         if (
@@ -152,7 +155,7 @@ export class ProducoesGrupoService {
         >`SELECT count(*)::int AS total ${lastConfirmed}`;
         const ids = await tx.$queryRaw<{ id: string }[]>`
         SELECT r.producao_id AS id ${lastConfirmed}
-        ORDER BY r.revisado_em DESC, r.producao_id LIMIT ${size} OFFSET ${(page - 1) * size}`;
+        ORDER BY r.revisado_em DESC, r.producao_id LIMIT ${pagination.size} OFFSET ${pagination.skip}`;
         const rows = await tx.producao.findMany({
           where: { id: { in: ids.map((row) => row.id) } },
           select: {
@@ -167,12 +170,7 @@ export class ProducoesGrupoService {
         const byId = new Map(rows.map((row) => [row.id, row]));
         return {
           data: ids.map((row) => byId.get(row.id)!),
-          meta: {
-            page,
-            size,
-            totalItems: total,
-            totalPages: Math.ceil(total / size),
-          },
+          meta: buildPaginationMeta(pagination, total),
         };
       },
       { isolationLevel: 'RepeatableRead' },

@@ -5,6 +5,8 @@ import {
   CreateGruposPesquisaRequest,
   SIMCC_INSTITUTIONS,
   UpdateGruposPesquisaRequest,
+  getPagination,
+  buildPaginationMeta,
 } from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 import { Prisma, Situacao, TipoRelacaoGrupoInstituicao, SIMCC_SEDE_WHERE } from '@oda/database';
@@ -13,18 +15,6 @@ import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
-
-const getPagination = (query?: { page?: number; size?: number }) => {
-  const page = query?.page ?? 1;
-  const size = query?.size ?? 30;
-
-  return {
-    page,
-    size,
-    skip: (page - 1) * size,
-    take: size === 0 ? undefined : size,
-  };
-};
 
 const grupoPesquisaInclude = {
   instituicoes: { include: { instituicao: { include: { estado: true } } } },
@@ -144,18 +134,16 @@ export class GruposPesquisaService {
         omit: { criadoEm: true, atualizadoEm: true },
       });
       const gruposPorId = new Map(grupos.map(grupo => [grupo.id, grupo]));
-      const totalPages = Math.ceil(totalItems / pagination.size);
-
       return {
         data: ids.flatMap(id => {
           const grupo = gruposPorId.get(id);
           return grupo ? [toGrupoPesquisaResponse(grupo)] : [];
         }),
-        meta: { page: pagination.page, size: pagination.size, totalItems, totalPages },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
+    if (Object.keys(where).length > 0 || !pagination.isDefault || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.grupoPesquisa.findMany({
           where,
@@ -167,16 +155,9 @@ export class GruposPesquisaService {
         }),
         this.prismaService.grupoPesquisa.count({ where }),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
       return {
         data: data.map(toGrupoPesquisaResponse),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages,
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     }
 
@@ -191,16 +172,9 @@ export class GruposPesquisaService {
         }),
         this.prismaService.grupoPesquisa.count(),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
       return {
         data: data.map(toGrupoPesquisaResponse),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages,
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     });
   }

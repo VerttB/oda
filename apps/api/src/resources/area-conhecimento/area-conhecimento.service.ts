@@ -5,21 +5,10 @@ import { CreateAreaConhecimentoDto } from './dto/create-area-conhecimento.dto';
 import { UpdateAreaConhecimentoDto } from './dto/update-area-conhecimento.dto';
 import { FindAllAreaConhecimentoDto } from './dto/find-all-area-conhecimento.dto';
 import { Prisma } from '@oda/database';
+import { getPagination, buildPaginationMeta } from '@oda/shared-types';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
 const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v3';
-
-const getPagination = (query?: { page?: number; size?: number }) => {
-  const page = query?.page ?? 1;
-  const size = query?.size ?? 30;
-
-  return {
-    page,
-    size,
-    skip: (page - 1) * size,
-    take: size === 0 ? undefined : size,
-  };
-};
 
 const areaConhecimentoResumoSelect = {
   id: true,
@@ -79,7 +68,7 @@ export class AreaConhecimentoService {
           where.areaPaiId = query.areaPaiId;
         }
 
-        if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
+        if (Object.keys(where).length > 0 || !pagination.isDefault || hasCustomOrdering) {
           const [data, totalItems] = await Promise.all([
             this.prismaService.areaConhecimento.findMany({
               where,
@@ -90,9 +79,7 @@ export class AreaConhecimentoService {
             }),
             this.prismaService.areaConhecimento.count({ where }),
           ]);
-          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+          return { data, meta: buildPaginationMeta(pagination, totalItems) };
         }
 
         return this.cacheManager.wrap(AREA_CONHECIMENTO_LIST_KEY, async () => {
@@ -105,9 +92,7 @@ export class AreaConhecimentoService {
             }),
             this.prismaService.areaConhecimento.count(),
           ]);
-          const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-          return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+          return { data, meta: buildPaginationMeta(pagination, totalItems) };
         });
       }
       

@@ -4,6 +4,8 @@ import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreatePesquisadorRequest,
   UpdatePesquisadorRequest,
+  getPagination,
+  buildPaginationMeta,
 } from '@oda/shared-types';
 import { FindAllPesquisadoresDto } from './dto/find-all-pesquisadores.dto';
 import { FormacaoAcademica, Prisma, TipoPesquisador } from '@oda/database';
@@ -12,18 +14,6 @@ import { toPesquisadorResponse } from './pesquisadores.response';
 import { findResearchersByName } from './search/name-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const PESQUISADORES_LIST_CACHE_KEY = 'pesquisadores:list:v3';
-
-const getPagination = (query?: { page?: number; size?: number }) => {
-  const page = query?.page ?? 1;
-  const size = query?.size ?? 30;
-
-  return {
-    page,
-    size,
-    skip: (page - 1) * size,
-    take: size === 0 ? undefined : size,
-  };
-};
 
 @Injectable()
 export class PesquisadoresService {
@@ -87,7 +77,6 @@ export class PesquisadoresService {
     }
 
     if (query?.modoBusca === 'semantica') {
-      const pagination = getPagination(query);
       const filters = withoutSearchControls(query as unknown as Record<string, unknown>);
       const { results, totalItems } = await this.langchainService.semanticSearch(
         query.q!, 'PESQUISADOR', pagination.size, pagination.skip, filters,
@@ -104,16 +93,11 @@ export class PesquisadoresService {
           const pesquisador = pesquisadoresPorId.get(id);
           return pesquisador ? [toPesquisadorResponse(pesquisador)] : [];
         }),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages: Math.ceil(totalItems / pagination.size),
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     }
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
+    if (Object.keys(where).length > 0 || !pagination.isDefault || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.pesquisador.findMany({
           where,
@@ -124,16 +108,9 @@ export class PesquisadoresService {
         }),
         this.prismaService.pesquisador.count({ where }),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
       return {
         data: data.map(toPesquisadorResponse),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages,
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     }
 
@@ -147,16 +124,9 @@ export class PesquisadoresService {
         }),
         this.prismaService.pesquisador.count(),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
       return {
         data: data.map(toPesquisadorResponse),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages,
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     });
   }

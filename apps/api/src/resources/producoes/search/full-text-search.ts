@@ -1,7 +1,7 @@
 import { Prisma } from '@oda/database';
 import { BadRequestException } from '@nestjs/common';
 import type { PrismaService } from '@/prisma/prisma.service';
-import type { FindAllProducoesQuery, ProducaoResponse } from '@oda/shared-types';
+import { getPagination, buildPaginationMeta, type FindAllProducoesQuery, type ProducaoResponse } from '@oda/shared-types';
 import { BooleanExpression, hasBooleanOperators, parseProductionSearch } from './boolean-expression';
 
 function compileExpression(node: BooleanExpression): Prisma.Sql {
@@ -52,8 +52,8 @@ export function buildProductionSearchWhere(query: FindAllProducoesQuery): Prisma
 }
 
 export async function findFullTextProductions(prisma: PrismaService, query: FindAllProducoesQuery) {
-  const page = query.page ?? 1;
-  const size = query.size ?? 30;
+  const pagination = getPagination(query);
+  const { size, skip, take } = pagination;
   const hasOperators = [query.q, query.titulo].some(value => value && hasBooleanOperators(value));
   if (hasOperators && (size < 1 || size > 100)) throw new BadRequestException('A busca com operadores aceita size entre 1 e 100.');
   const where = buildProductionSearchWhere(query);
@@ -67,11 +67,11 @@ export async function findFullTextProductions(prisma: PrismaService, query: Find
         p.doi, p.url, p.veiculo, p.resumo, p.issn, p.qualis::text AS qualis
       FROM public.producao p WHERE ${where}
       ORDER BY ${column} ${direction}, p.id ASC
-      ${size === 0 ? Prisma.empty : Prisma.sql`LIMIT ${size}`} OFFSET ${(page - 1) * size}
+      ${take === undefined ? Prisma.empty : Prisma.sql`LIMIT ${take}`} OFFSET ${skip}
     `),
     prisma.$queryRaw<{ total: number }[]>(Prisma.sql`
       SELECT count(*)::int AS total FROM public.producao p WHERE ${where}
     `),
   ], { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
-  return { data, meta: { page, size, totalItems: count.total, totalPages: size === 0 ? 1 : Math.ceil(count.total / size) } };
+  return { data, meta: buildPaginationMeta(pagination, count.total) };
 }

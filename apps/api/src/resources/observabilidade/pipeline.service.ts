@@ -6,6 +6,7 @@ import {
   PipelineSerieSchema,
   PipelineExecucoesSchema,
   PipelineItensSchema,
+  getPagination,
 } from "@oda/shared-types";
 import { itemFilters } from "./pipeline-query";
 @Injectable()
@@ -47,6 +48,7 @@ export class PipelineService {
     };
   }
   async executions(q: PipelineQuery) {
+    const { skip } = getPagination({ page: q.pagina, size: q.limite });
     const filter = Prisma.sql`(p.data_inicio AT TIME ZONE 'UTC' AT TIME ZONE 'America/Bahia')::date
       BETWEEN ${q.dataInicio}::date AND ${q.dataFim}::date
       AND (${q.escopo ?? null}::text IS NULL OR COALESCE(p.metadata->>'scope','nao_informado')=${q.escopo ?? null})
@@ -59,7 +61,7 @@ export class PipelineService {
         p.data_inicio::text AS inicio,p.data_fim::text AS fim,p.duracao_ms AS "duracaoMs",
         p.registros_processados AS processados,p.quantidade_sucessos AS sucessos,p.quantidade_erros AS falhas
         FROM pipeline_log p WHERE ${filter} ORDER BY p.data_inicio DESC,p.id
-        LIMIT ${q.limite} OFFSET ${(q.pagina - 1) * q.limite}`,
+        LIMIT ${q.limite} OFFSET ${skip}`,
         this.db.$queryRaw<
           Array<{ total: number }>
         >`SELECT COUNT(*)::int AS total FROM pipeline_log p WHERE ${filter}`,
@@ -74,6 +76,7 @@ export class PipelineService {
     });
   }
   async items(q: PipelineQuery, pipelineId?: string) {
+    const { skip } = getPagination({ page: q.pagina, size: q.limite });
     const filter = Prisma.sql`${itemFilters(q)} AND
       (${pipelineId ?? null}::text IS NULL OR v.pipeline_log_id=${pipelineId ?? null})`;
     const [dados, count] = await this.db.$transaction(
@@ -83,7 +86,7 @@ export class PipelineService {
         v.status,v.tipo_erro AS "tipoErro",v.mensagem_erro AS "mensagemErro",v.tempo_ms::float8 AS "tempoMs",
         v.encerrado_em::text AS "encerradoEm",v.tentativas
         FROM vw_pipeline_itens v WHERE ${filter} ORDER BY v.encerrado_em DESC,v.id
-        LIMIT ${q.limite} OFFSET ${(q.pagina - 1) * q.limite}`,
+        LIMIT ${q.limite} OFFSET ${skip}`,
         this.db.$queryRaw<
           Array<{ total: number }>
         >`SELECT COUNT(*)::int AS total FROM vw_pipeline_itens v WHERE ${filter}`,

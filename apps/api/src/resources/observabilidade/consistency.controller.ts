@@ -13,6 +13,7 @@ import {
   ConsistenciaRelatorioSchema,
   ConsistenciaHistoricoSchema,
   ConsistenciaQuerySchema,
+  getPagination,
 } from "@oda/shared-types";
 import { PrismaService } from "../../prisma/prisma.service";
 import { Prisma } from "@oda/database";
@@ -48,12 +49,13 @@ export class ConsistencyController {
   @ApiOperation({ summary: "Histórico de relatórios SIMCC" })
   @ZodResponse({ status: 200, type: HistoryDto })
   async history(@Query() q: QueryDto) {
+    const { skip } = getPagination({ page: q.pagina, size: q.limite });
     const filter = Prisma.sql`iniciado_em::date BETWEEN ${q.dataInicio}::date AND ${q.dataFim}::date`;
     const [dados, total] = await this.db.$transaction(
       [
         this.db
           .$queryRaw`SELECT ${fields} FROM relatorio_consistencia WHERE ${filter}
-        ORDER BY iniciado_em DESC,id LIMIT ${q.limite} OFFSET ${(q.pagina - 1) * q.limite}`,
+        ORDER BY iniciado_em DESC,id LIMIT ${q.limite} OFFSET ${skip}`,
         this.db.$queryRaw<
           Array<{ n: number }>
         >`SELECT COUNT(*)::int n FROM relatorio_consistencia WHERE ${filter}`,

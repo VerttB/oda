@@ -4,6 +4,8 @@ import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateLinhaPesquisaRequest,
   UpdateLinhaPesquisaRequest,
+  getPagination,
+  buildPaginationMeta,
 } from '@oda/shared-types';
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
@@ -11,18 +13,6 @@ import { LangchainGatewayService } from '../langchain/langchain.service';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list:v2';
-
-const getPagination = (query?: { page?: number; size?: number }) => {
-  const page = query?.page ?? 1;
-  const size = query?.size ?? 30;
-
-  return {
-    page,
-    size,
-    skip: (page - 1) * size,
-    take: size === 0 ? undefined : size,
-  };
-};
 
 @Injectable()
 export class LinhaPesquisaService {
@@ -127,17 +117,12 @@ export class LinhaPesquisaService {
           const linha = linhasPorId.get(id);
           return linha ? [linha] : [];
         }),
-        meta: {
-          page: pagination.page,
-          size: pagination.size,
-          totalItems,
-          totalPages: Math.ceil(totalItems / pagination.size),
-        },
+        meta: buildPaginationMeta(pagination, totalItems),
       };
     }
 
     // Bypass cache if filters or pagination are present (except default pagination)
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
+    if (Object.keys(where).length > 0 || !pagination.isDefault || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.linhaPesquisa.findMany({
           where,
@@ -148,9 +133,7 @@ export class LinhaPesquisaService {
         }),
         this.prismaService.linhaPesquisa.count({ where }),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-      return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+      return { data, meta: buildPaginationMeta(pagination, totalItems) };
     }
 
     return await this.cacheManager.wrap(
@@ -165,9 +148,7 @@ export class LinhaPesquisaService {
           }),
           this.prismaService.linhaPesquisa.count(),
         ]);
-        const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-        return { data, meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+        return { data, meta: buildPaginationMeta(pagination, totalItems) };
       },
     );
   }

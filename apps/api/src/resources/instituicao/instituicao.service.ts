@@ -5,22 +5,10 @@ import { CreateInstituicaoDto } from './dto/create-instituicao.dto';
 import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
 import { FindAllInstituicaoDto } from './dto/find-all-instituicao.dto';
 import { Prisma } from '@oda/database';
-import { InstituicaoResponseSchema } from '@oda/shared-types';
+import { InstituicaoResponseSchema, getPagination, buildPaginationMeta } from '@oda/shared-types';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
 const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list:v3';
-
-const getPagination = (query?: { page?: number; size?: number }) => {
-  const page = query?.page ?? 1;
-  const size = query?.size ?? 30;
-
-  return {
-    page,
-    size,
-    skip: (page - 1) * size,
-    take: size === 0 ? undefined : size,
-  };
-};
 
 const instituicaoInclude = {
   estado: true,
@@ -94,7 +82,7 @@ export class InstituicaoService {
     if (query?.estadoId) where.estadoId = query.estadoId;
     if (query?.uf) where.estado = { sigla: { equals: query.uf, mode: 'insensitive' } };
 
-    if (Object.keys(where).length > 0 || pagination.page > 1 || pagination.size !== 30 || hasCustomOrdering) {
+    if (Object.keys(where).length > 0 || !pagination.isDefault || hasCustomOrdering) {
       const [data, totalItems] = await Promise.all([
         this.prismaService.instituicao.findMany({
           where,
@@ -106,9 +94,7 @@ export class InstituicaoService {
         }),
         this.prismaService.instituicao.count({ where }),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-      return { data: data.map(toInstituicaoResponse), meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+      return { data: data.map(toInstituicaoResponse), meta: buildPaginationMeta(pagination, totalItems) };
     }
 
     return this.cacheManager.wrap(INSTITUICOES_LIST_CACHE_KEY, async () => {
@@ -122,9 +108,7 @@ export class InstituicaoService {
         }),
         this.prismaService.instituicao.count(),
       ]);
-      const totalPages = pagination.size === 0 ? 1 : Math.ceil(totalItems / pagination.size);
-
-      return { data: data.map(toInstituicaoResponse), meta: { page: pagination.page, size: pagination.size, totalItems, totalPages } };
+      return { data: data.map(toInstituicaoResponse), meta: buildPaginationMeta(pagination, totalItems) };
     });
   }
 

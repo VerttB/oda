@@ -1,5 +1,5 @@
 import { Prisma } from '@oda/database';
-import type { FindAllPesquisadoresQuery, PesquisadorResumoResponse } from '@oda/shared-types';
+import { getPagination, buildPaginationMeta, type FindAllPesquisadoresQuery, type PesquisadorResumoResponse } from '@oda/shared-types';
 import type { PrismaService } from '@/prisma/prisma.service';
 import { accentInsensitiveExpression, normalizeSearchText } from '@/common/database/accent-insensitive-search';
 import { toPesquisadorResponse } from '../pesquisadores.response';
@@ -33,8 +33,8 @@ export function buildResearcherNameWhere(query: FindAllPesquisadoresQuery): Pris
 }
 
 export async function findResearchersByName(prisma: PrismaService, query: FindAllPesquisadoresQuery) {
-  const page = query.page ?? 1;
-  const size = query.size ?? 30;
+  const pagination = getPagination(query);
+  const { skip, take } = pagination;
   const where = buildResearcherNameWhere(query);
   const columns = {
     nome: Prisma.sql`r.nome`, tipo: Prisma.sql`r.tipo`,
@@ -50,7 +50,7 @@ export async function findResearchersByName(prisma: PrismaService, query: FindAl
         r.index_h AS "indexH", r.index_i_10 AS "indexI10"
       FROM public.pesquisador r WHERE ${where}
       ORDER BY ${column} ${direction}, r.id ASC
-      ${size === 0 ? Prisma.empty : Prisma.sql`LIMIT ${size}`} OFFSET ${(page - 1) * size}
+      ${take === undefined ? Prisma.empty : Prisma.sql`LIMIT ${take}`} OFFSET ${skip}
     `),
     prisma.$queryRaw<{ total: number }[]>(Prisma.sql`
       SELECT count(*)::int AS total FROM public.pesquisador r WHERE ${where}
@@ -58,6 +58,6 @@ export async function findResearchersByName(prisma: PrismaService, query: FindAl
   ], { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
   return {
     data: rows.map(toPesquisadorResponse),
-    meta: { page, size, totalItems: count.total, totalPages: size === 0 ? 1 : Math.ceil(count.total / size) },
+    meta: buildPaginationMeta(pagination, count.total),
   };
 }

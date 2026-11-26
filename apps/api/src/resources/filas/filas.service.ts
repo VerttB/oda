@@ -20,6 +20,7 @@ import {
   EtlResearcherJobProgress, EtlResearcherJobProgressSchema, EtlResearcherJobResponse, EtlResearcherJobsAtivosResponse,
   WorkerFilaResponse, WorkersAtivosResponse,
   ConsultarFilaJobsRequest, EnfileirarEtlRequest, EnfileirarEtlResponse,
+  getPagination, buildPaginationMeta,
   EtlDispatchJobProgress, EtlDispatchJobProgressSchema, EtlDispatchJobResponse,
   FilaJobsResponse, FilaNome, FilaResumoResponse,
   EnfileirarBackupDbRequest, EnfileirarBackupDbResponse,
@@ -404,12 +405,12 @@ export class FilasService implements OnModuleDestroy {
       const rightTime = right.iniciadoEm || right.finalizadoEm || '';
       return rightTime.localeCompare(leftTime);
     });
-    const total = jobs.length;
-    const start = (query.pagina - 1) * query.limite;
+    const pagination = getPagination({ page: query.pagina, size: query.limite });
+    const { totalItems: total, totalPages: totalPaginas } = buildPaginationMeta(pagination, jobs.length);
     return {
       fila, pausada, total, pagina: query.pagina, limite: query.limite,
-      totalPaginas: total ? Math.ceil(total / query.limite) : 0,
-      contadores, jobs: jobs.slice(start, start + query.limite),
+      totalPaginas,
+      contadores, jobs: jobs.slice(pagination.skip, pagination.skip + pagination.size),
     };
   }
 

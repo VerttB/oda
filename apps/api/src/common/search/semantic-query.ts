@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { getPagination } from '@oda/shared-types';
 
 type SearchQuery = {
   q?: string;
@@ -14,7 +15,7 @@ export function validateSearchQuery(query?: SearchQuery) {
     throw new BadRequestException('Os parametros q e modoBusca devem ser informados juntos.');
   }
   if (query.modoBusca === 'semantica') {
-    const size = query.size ?? 30;
+    const { size } = getPagination(query);
     if (size < 1 || size > 100) {
       throw new BadRequestException('A busca semantica aceita size entre 1 e 100.');
     }
