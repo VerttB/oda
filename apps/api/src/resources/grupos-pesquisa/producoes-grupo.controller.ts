@@ -37,7 +37,7 @@ class ReviewResponseDto extends createZodDto(
 ) {}
 
 @ApiTags('grupos-pesquisa')
-@Controller('grupos-pesquisa/:grupoId/producoes-confirmadas')
+@Controller('grupos-pesquisa/:grupoId/producoes')
 export class ProducoesConfirmadasController {
   constructor(private readonly service: ProducoesGrupoService) {}
 

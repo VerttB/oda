@@ -56,8 +56,7 @@ async function testProductionGroup(db, productionId) {
     app.useGlobalInterceptors(new ZodSerializerInterceptor(app.get(Reflector)));
     await app.init();
     const http = request(app.getHttpServer());
-    const listing =
-      '/v1/grupos-pesquisa/' + group.id + '/producoes-confirmadas';
+    const listing = '/v1/grupos-pesquisa/' + group.id + '/producoes';
     const review =
       '/v1/admin/grupos-pesquisa/' +
       group.id +
@@ -75,6 +74,7 @@ async function testProductionGroup(db, productionId) {
     };
     await http.get(review).set('X-SIMCC-Key', 'chave-simulada').expect(401);
     await http.put(review).send(decision).expect(401);
+    await http.get(listing + '-confirmadas').expect(404);
     await http
       .get(listing)
       .expect(200, {
