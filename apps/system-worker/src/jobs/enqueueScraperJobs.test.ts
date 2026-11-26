@@ -8,6 +8,7 @@ import { createDgpScraperQueue, createLattesScraperQueue } from '@oda/queue';
 
 jest.mock('../common/database', () => ({
   prisma: {
+    grupoPesquisa: { findMany: jest.fn() },
     filaExtracaoGrupo: { findMany: jest.fn() },
     filaExtracaoPesquisador: { findMany: jest.fn(), findUnique: jest.fn() },
     pipelineLog: { findFirst: jest.fn() },
@@ -28,6 +29,7 @@ describe('system worker scraper enqueue', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (prisma.grupoPesquisa.findMany as jest.Mock).mockResolvedValue([]);
     queue.name = QUEUE_NAMES.DGP_SCRAPER;
     (createDgpScraperQueue as jest.Mock).mockReturnValue(queue);
     (createLattesScraperQueue as jest.Mock).mockReturnValue(queue);
@@ -55,8 +57,11 @@ describe('system worker scraper enqueue', () => {
 
   it('publica SIMCC na fila exclusiva do servidor SIMCC', async () => {
     queue.name = QUEUE_NAMES.DGP_SCRAPER_SIMCC;
+    (prisma.grupoPesquisa.findMany as jest.Mock).mockResolvedValue([{ dgpId: '2222222222222222' }]);
     (prisma.filaExtracaoGrupo.findMany as jest.Mock).mockResolvedValue([
       { dgpId: '1234567890123456', instituicao: 'Universidade do Estado da Bahia' },
+      { dgpId: '2222222222222222', instituicao: 'SENAI/DR/BA' },
+      { dgpId: '3333333333333333', instituicao: 'SENAI/DR/BA' },
     ]);
     await handleEnqueueDgpScraperJob({ data: {
       version: 1, requestedAt: new Date().toISOString(), scope: 'simcc',
@@ -64,6 +69,10 @@ describe('system worker scraper enqueue', () => {
     expect(createDgpScraperQueue).toHaveBeenCalledWith('simcc');
     expect(publishScraperBatch).toHaveBeenCalledWith(expect.objectContaining({
       queueName: QUEUE_NAMES.DGP_SCRAPER_SIMCC, scope: 'simcc',
+      targets: [
+        expect.objectContaining({ dgpId: '1234567890123456' }),
+        expect.objectContaining({ dgpId: '2222222222222222' }),
+      ],
     }));
   });
 

@@ -1,3 +1,5 @@
+import { SIMCC_CIMATEC } from '@oda/shared-types';
+
 const ACCENTED_CHARACTERS = 'áàâãäéèêëíìîïóòôõöúùûüçñýÿ';
 const PLAIN_CHARACTERS = 'aaaaaeeeeiiiiooooouuuucnyy';
 
@@ -50,7 +52,7 @@ export function buildSemanticFilterConditions(
     if (areaId) conditions.push(`g.area_conhecimento_id = ${add(areaId)}`);
     if (cidade) conditions.push(contains('g.cidade', cidade, add));
     if (uf) conditions.push(`lower(g.uf) = lower(${add(uf)})`);
-    if (instituicaoId) {
+    if (instituicaoId && filters.simcc !== true) {
       conditions.push(`EXISTS (
         SELECT 1 FROM grupo_pesquisa_instituicao gpi
         WHERE gpi.grupo_id = g.id AND gpi.tipo_relacao = 'sede'
@@ -68,13 +70,21 @@ export function buildSemanticFilterConditions(
       const siglas = Array.isArray(filters.simccSiglas)
         ? filters.simccSiglas.filter((value): value is string => typeof value === 'string')
         : [];
+      const cimatecNames = [SIMCC_CIMATEC.nome, ...SIMCC_CIMATEC.aliases].map(nome => `%${nome}%`);
+      const cimatecUnits = [SIMCC_CIMATEC.sigla, ...SIMCC_CIMATEC.aliases].map(nome => `%${nome}%`);
       conditions.push(`EXISTS (
         SELECT 1 FROM grupo_pesquisa_instituicao gpi
         JOIN instituicao i ON i.id = gpi.instituicao_id
         WHERE gpi.grupo_id = g.id AND gpi.tipo_relacao = 'sede'
+          ${instituicaoId ? `AND gpi.instituicao_id = ${add(instituicaoId)}` : ''}
           AND (i.sigla = ANY(${add(siglas)}::text[])
-            OR i.sigla LIKE 'IFBA - %'
-            OR (i.sigla = 'FIOCRUZ' AND i.nome ILIKE '%Moniz%'))
+            OR i.sigla ILIKE 'IFBA -%'
+            OR (i.sigla = 'FIOCRUZ' AND i.nome ILIKE '%Moniz%')
+            OR i.sigla ILIKE ${add(SIMCC_CIMATEC.sigla)}
+            OR i.nome ILIKE ANY(${add(cimatecNames)}::text[])
+            OR ((i.sigla ILIKE ${add(SIMCC_CIMATEC.mantenedoraSigla)}
+                  OR i.nome ILIKE ${add(`${SIMCC_CIMATEC.mantenedoraNome}%`)})
+                AND gpi.unidade ILIKE ANY(${add(cimatecUnits)}::text[])))
       )`);
     }
   }

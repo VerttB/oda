@@ -11,7 +11,7 @@ import { memorySnapshot } from '../common/scraperMetrics';
 import { DGP_DETAIL_SELECTORS, readDgpDetailButtons, resolveDgpDetailButton, type DgpDetailButton } from '../common/dgpDetailButtons';
 import { FilaExtracaoStatus, TipoErroColeta, StatusSessao, StatusItemLog, TipoEntidadeLog, ModuloSistema, ModoExecucao, PipelineEtapa } from '@oda/database';
 import { randomSleep, sleep } from '../common/utils';
-import { SharedPipelineLogger } from '@oda/database';
+import { findRegionalCimatecDgpIds, SharedPipelineLogger } from '@oda/database';
 import { isSimccInstitution, type DgpJobProgress } from '@oda/shared-types';
 import type { DataScope } from '@oda/queue';
 
@@ -476,13 +476,14 @@ export async function runDgpScraper(dgpIds: string[] = [], scope: DataScope = 'd
     log.info('[Scraper] Iniciando Extração DGP a partir da fila (FilaExtracao)', { scope });
 
     let pendingGroups: { dgpId: string; nome: string }[] = [];
+    const regionalCimatecIds = scope === 'simcc' ? await findRegionalCimatecDgpIds(prisma) : undefined;
 
     if (dgpIds && dgpIds.length > 0) {
         assertValidDgpIds(dgpIds);
         for (const id of dgpIds) {
             const existing = await prisma.filaExtracaoGrupo.findUnique({ where: { dgpId: id } });
-            if (scope === 'simcc' && (!existing || !isSimccInstitution(existing.instituicao))) {
-                throw new Error(`O grupo ${id} nao possui uma instituicao SIMCC reconhecida na fila de descoberta.`);
+            if (scope === 'simcc' && (!existing || !isSimccInstitution(existing.instituicao, regionalCimatecIds?.has(id)))) {
+                throw new Error(`O grupo ${id} nao possui uma instituicao SIMCC confirmada.`);
             }
             const row = existing ?? await prisma.filaExtracaoGrupo.create({ data: {
                 dgpId: id, nome: `Grupo_${id}`, area: 'N/A', instituicao: 'N/A', status: FilaExtracaoStatus.PENDENTE,
@@ -500,7 +501,7 @@ export async function runDgpScraper(dgpIds: string[] = [], scope: DataScope = 'd
                 ids: invalid.map(group => group.dgpId),
             });
         }
-        pendingGroups = selectDgpRowsForScope(sourceRows, scope, SCRAPER_SETTINGS.dgp.take)
+        pendingGroups = selectDgpRowsForScope(sourceRows, scope, SCRAPER_SETTINGS.dgp.take, regionalCimatecIds)
             .map(p => ({ dgpId: p.dgpId, nome: p.nome }));
     }
 

@@ -22,10 +22,7 @@ type Candidate = {
 };
 
 async function prepare(db: PrismaClient, database: typeof import('@oda/database')) {
-    const headOffice = {
-        tipoRelacao: database.TipoRelacaoGrupoInstituicao.SEDE,
-        instituicao: database.SIMCC_INSTITUICOES_WHERE,
-    };
+    const headOffice = database.SIMCC_SEDE_WHERE;
     return db.$transaction(async tx => {
         await tx.$executeRaw`SET TRANSACTION READ ONLY`;
         const eligible = await tx.grupoPesquisa.findMany({

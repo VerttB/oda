@@ -1,5 +1,5 @@
 import type { Job } from 'bullmq';
-import { FilaExtracaoStatus, ModoExecucao } from '@oda/database';
+import { FilaExtracaoStatus, findRegionalCimatecDgpIds, ModoExecucao } from '@oda/database';
 import {
   createDgpScraperQueue, dgpJobId, enqueueDgpGroup, parseDataScope,
   SCRAPER_ENQUEUE_LIMITS, validateScrapeDgpGroupJob,
@@ -18,6 +18,7 @@ export async function handleEnqueueDgpScraperJob(job: Job<EnqueueDgpScraperJob>)
   }
   const queue = createDgpScraperQueue(scope);
   try {
+    const regionalCimatecIds = scope === 'simcc' ? await findRegionalCimatecDgpIds(prisma) : undefined;
     const targets = await selectAvailable({
       queue,
       prisma,
@@ -36,7 +37,8 @@ export async function handleEnqueueDgpScraperJob(job: Job<EnqueueDgpScraperJob>)
         });
         return rows.map(row => ({ ...row, id: row.dgpId }));
       },
-      eligible: row => /^\d{16}$/.test(row.id) && (scope !== 'simcc' || isSimccInstitution(row.instituicao)),
+      eligible: row => /^\d{16}$/.test(row.id) &&
+        (scope !== 'simcc' || isSimccInstitution(row.instituicao, regionalCimatecIds?.has(row.id))),
       jobId: dgpJobId,
       validate: validateScrapeDgpGroupJob,
     });

@@ -30,9 +30,10 @@ async function main() {
     execFileSync(process.execPath, [path.join(root, 'shared/database/node_modules/prisma/build/index.js'), 'migrate', 'deploy'], {
       cwd: path.join(root, 'shared/database'), env: process.env, encoding: 'utf8', timeout: 120_000,
     });
-    const { PrismaClient } = require('@oda/database');
-    const { PrismaPg } = require('@prisma/adapter-pg');
-    prisma = new PrismaClient({ adapter: new PrismaPg(url) });
+    const { PrismaClient, prismaConfig, findRegionalCimatecDgpIds } = require('@oda/database');
+    prisma = new PrismaClient(prismaConfig);
+    const { SIMCC_INSTITUTIONS } = require('@oda/shared-types');
+    const { buildSemanticFilterConditions } = require('../dist/services/semanticFilters');
     const { selectSimccBatch } = require('../dist/scripts/simcc/selection');
     const { loadDocuments } = require('../dist/scripts/simcc/documents');
     const { applySimccManifest } = require('../dist/scripts/reindexSimcc');
@@ -43,6 +44,8 @@ async function main() {
       { id: 'moniz', nome: 'Instituto Gonçalo Moniz', sigla: 'FIOCRUZ' },
       { id: 'outro', nome: 'Outra instituição', sigla: 'OUT' },
       { id: 'fiocruz-fora', nome: 'Instituto Oswaldo Cruz', sigla: 'FIOCRUZ' },
+      { id: 'cimatec', nome: 'Universidade SENAI CIMATEC', sigla: 'SENAI' },
+      { id: 'senai-regional', nome: 'SENAI - Departamento Regional da Bahia', sigla: 'SENAI/DR/BA' },
     ] });
     const mandatory = ['NPAI', 'G2BC', 'ACSO', 'PIMAT'].map(sigla => ({
       id: `required-${sigla}`, nome: `Grupo obrigatório - ${sigla}`, areaPredominante: 'Computação', situacao: 'CERTIFICADO',
@@ -50,12 +53,22 @@ async function main() {
     const regular = Array.from({ length: 203 }, (_, i) => ({
       id: `base-${String(i).padStart(3, '0')}`, nome: `Grupo regular ${i}`, areaPredominante: 'Computação',
       situacao: i === 3 ? 'INATIVO' : i === 4 ? 'EM_PREENCHIMENTO' : 'CERTIFICADO',
+      ...(i === 7 ? { dgpId: '1234567890123456' } : {}),
     }));
-    const excluded = ['outside', 'fiocruz-other'].map(id => ({ id, nome: id, areaPredominante: 'Outra', situacao: 'CERTIFICADO' }));
+    const excluded = ['outside', 'fiocruz-other', 'senai-sem-unidade', 'cimatec-parceira']
+      .map(id => ({ id, nome: id, areaPredominante: 'Outra', situacao: 'CERTIFICADO' }));
     await prisma.grupoPesquisa.createMany({ data: [...mandatory, ...regular, ...excluded] });
     await prisma.grupoPesquisaInstituicao.createMany({ data: [
       ...mandatory.map(group => ({ grupoId: group.id, instituicaoId: 'ufba', tipoRelacao: 'SEDE' })),
-      ...regular.map((group, i) => ({ grupoId: group.id, instituicaoId: i === 1 ? 'ifba' : i === 2 ? 'moniz' : 'ufba', tipoRelacao: 'SEDE' })),
+      ...regular.filter(({ id }) => !['base-006', 'base-007'].includes(id)).map(group => ({
+        grupoId: group.id, instituicaoId: { 'base-001': 'ifba', 'base-002': 'moniz' }[group.id] ?? 'ufba', tipoRelacao: 'SEDE',
+      })),
+      { grupoId: 'base-006', instituicaoId: 'cimatec', tipoRelacao: 'SEDE' },
+      { grupoId: 'base-007', instituicaoId: 'senai-regional', tipoRelacao: 'SEDE', unidade: 'Centro Integrado de Manufatura e Tecnologia' },
+      { grupoId: 'base-007', instituicaoId: 'outro', tipoRelacao: 'SEDE' },
+      { grupoId: 'senai-sem-unidade', instituicaoId: 'senai-regional', tipoRelacao: 'SEDE' },
+      { grupoId: 'cimatec-parceira', instituicaoId: 'outro', tipoRelacao: 'SEDE' },
+      { grupoId: 'cimatec-parceira', instituicaoId: 'cimatec', tipoRelacao: 'PARCEIRA' },
       { grupoId: 'base-005', instituicaoId: 'uneb', tipoRelacao: 'PARCEIRA' },
       { grupoId: 'outside', instituicaoId: 'outro', tipoRelacao: 'SEDE' },
       { grupoId: 'outside', instituicaoId: 'ufba', tipoRelacao: 'PARCEIRA' },
@@ -87,13 +100,31 @@ async function main() {
     assert.equal(selection.groups.length, 200);
     assert.equal(new Set(selection.groups.map(group => group.id)).size, 200);
     mandatory.forEach(group => assert(selection.groups.some(item => item.id === group.id)));
-    for (const id of ['base-000', 'base-001', 'base-002']) assert(selection.groups.some(group => group.id === id));
-    for (const id of ['outside', 'fiocruz-other', 'base-003', 'base-004', 'base-202']) assert(!selection.groups.some(group => group.id === id));
+    for (const id of ['base-000', 'base-001', 'base-002', 'base-006', 'base-007']) assert(selection.groups.some(group => group.id === id));
+    for (const id of [...excluded.map(group => group.id), 'base-003', 'base-004', 'base-202']) assert(!selection.groups.some(group => group.id === id));
     assert.deepEqual(selection.related.researcherIds, ['line-only', 'second', 'shared']);
     assert.deepEqual(selection.related.productionIds, ['line-work', 'shared-work']);
     assert.equal(selection.counts.sectors, 1);
     assert.equal(selection.counts.documents, 207);
     console.log('PASS: seleção de 200, quatro siglas, ranking, sedes, campus IFBA, Moniz e deduplicação dos relacionados.');
+
+    const simccSiglas = SIMCC_INSTITUTIONS.filter(item => item.sigla !== 'FIOCRUZ').map(item => item.sigla);
+    async function findSemanticSimccGroups(instituicaoId) {
+      const parameters = [];
+      const conditions = buildSemanticFilterConditions('GRUPO_PESQUISA', { simcc: true, simccSiglas, instituicaoId }, value => {
+        parameters.push(value);
+        return `$${parameters.length}`;
+      });
+      const rows = await prisma.$queryRawUnsafe(`SELECT g.id FROM grupo_pesquisa g WHERE ${conditions.join(' AND ')}`, ...parameters);
+      return rows.map(row => row.id);
+    }
+    const semantic = await findSemanticSimccGroups();
+    assert(semantic.includes('base-006') && semantic.includes('base-007'));
+    assert(excluded.every(group => !semantic.includes(group.id)));
+    assert.deepEqual(await findSemanticSimccGroups('senai-regional'), ['base-007']);
+    assert.deepEqual(await findSemanticSimccGroups('outro'), []);
+    assert.deepEqual(await findRegionalCimatecDgpIds(prisma), new Set(['1234567890123456']));
+    console.log('PASS: CIMATEC como sede direta ou unidade da sede regional, com os mesmos critérios na busca semântica.');
 
     const previous = await prisma.ragDocument.create({ data: { sourceType: 'GRUPO_PESQUISA', sourceId: 'required-ACSO', titulo: 'Anterior', conteudo: 'Anterior válido' } });
     const outside = await prisma.ragDocument.create({ data: { sourceType: 'GRUPO_PESQUISA', sourceId: 'outside', titulo: 'Fora', conteudo: 'Preservar fora' } });

@@ -50,10 +50,8 @@ async function evaluate(db: PrismaClient, database: typeof import('@oda/database
     return db.$transaction(async tx => {
         await tx.$executeRaw`SET TRANSACTION READ ONLY`;
         const groups = await tx.grupoPesquisa.findMany({
-            where: { id: { in: groupIds }, situacao: database.Situacao.CERTIFICADO, instituicoes: { some: {
-                tipoRelacao: database.TipoRelacaoGrupoInstituicao.SEDE,
-                instituicao: database.SIMCC_INSTITUICOES_WHERE,
-            } } },
+            where: { id: { in: groupIds }, situacao: database.Situacao.CERTIFICADO,
+                instituicoes: { some: database.SIMCC_SEDE_WHERE } },
             select: {
                 id: true, nome: true, anoFormacao: true, areaConhecimentoId: true,
                 linhasPesquisa: { orderBy: { id: 'asc' }, select: {

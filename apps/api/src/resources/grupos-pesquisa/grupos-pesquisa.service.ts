@@ -7,7 +7,7 @@ import {
   UpdateGruposPesquisaRequest,
 } from '@oda/shared-types';
 import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
-import { Prisma, Situacao, TipoRelacaoGrupoInstituicao, SIMCC_INSTITUICOES_WHERE } from '@oda/database';
+import { Prisma, Situacao, TipoRelacaoGrupoInstituicao, SIMCC_SEDE_WHERE } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
 import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
@@ -118,7 +118,7 @@ export class GruposPesquisaService {
       const vinculo: Prisma.GrupoPesquisaInstituicaoWhereInput = {
         tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE,
         ...(query?.instituicaoId ? { instituicaoId: query.instituicaoId } : {}),
-        ...(simcc ? { instituicao: SIMCC_INSTITUICOES_WHERE } : {}),
+        ...(simcc ? SIMCC_SEDE_WHERE : {}),
       };
       andConditions.push({ instituicoes: { some: vinculo } });
     }

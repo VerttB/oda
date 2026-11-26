@@ -1,10 +1,10 @@
-import { Prisma, PrismaClient, SIMCC_INSTITUICOES_WHERE, Situacao, TipoRelacaoGrupoInstituicao } from '@oda/database';
+import { Prisma, PrismaClient, SIMCC_SEDE_WHERE, Situacao } from '@oda/database';
 
 export const SIMCC_BATCH_SIZE = 200;
 export const REQUIRED_ACRONYMS = ['NPAI', 'G2BC', 'ACSO', 'PIMAT'];
 export const CERTIFIED_SIMCC_WHERE: Prisma.GrupoPesquisaWhereInput = {
   situacao: Situacao.CERTIFICADO,
-  instituicoes: { some: { tipoRelacao: TipoRelacaoGrupoInstituicao.SEDE, instituicao: SIMCC_INSTITUICOES_WHERE } },
+  instituicoes: { some: SIMCC_SEDE_WHERE },
 };
 
 export type SimccGroup = {

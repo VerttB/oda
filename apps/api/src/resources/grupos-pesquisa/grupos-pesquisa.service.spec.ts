@@ -24,11 +24,16 @@ describe('GruposPesquisaService', () => {
     const sede = where.AND[0].instituicoes.some;
 
     expect(sede.tipoRelacao).toBe(TipoRelacaoGrupoInstituicao.SEDE);
-    expect(sede.instituicao.OR).toEqual(expect.arrayContaining([
+    const direct = sede.OR[0].instituicao.OR;
+    expect(direct).toEqual(expect.arrayContaining([
       { sigla: { startsWith: 'IFBA -', mode: 'insensitive' } },
       { sigla: 'FIOCRUZ', nome: { contains: 'Moniz', mode: 'insensitive' } },
+      { sigla: { equals: 'CIMATEC', mode: 'insensitive' } },
     ]));
-    expect(sede.instituicao.OR[0].sigla.in).toHaveLength(10);
+    expect(sede.OR[1]).toMatchObject({
+      instituicao: { OR: expect.arrayContaining([{ sigla: { equals: 'SENAI/DR/BA', mode: 'insensitive' } }]) },
+      OR: expect.arrayContaining([{ unidade: { contains: 'CIMATEC', mode: 'insensitive' } }]),
+    });
     expect(prisma.grupoPesquisa.count).toHaveBeenCalledWith({ where });
     expect(prisma.grupoPesquisa.findMany.mock.calls[0][0].orderBy).toEqual([{ nome: 'asc' }, { id: 'asc' }]);
     expect(result).toEqual({ data: [], meta: { page: 1, size: 30, totalItems: 0, totalPages: 0 } });
@@ -40,7 +45,7 @@ describe('GruposPesquisaService', () => {
     const sede = args.where.AND[0].instituicoes.some;
 
     expect(sede.instituicaoId).toBe('instituicao-id');
-    expect(sede.instituicao).toBeDefined();
+    expect(sede.OR).toHaveLength(2);
     expect(args.skip).toBe(10);
     expect(args.take).toBe(10);
   });

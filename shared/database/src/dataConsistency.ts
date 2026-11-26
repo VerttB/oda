@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { Prisma, PrismaClient } from "../generated/prisma";
-import { SIMCC_INSTITUICOES_WHERE } from "./simcc";
+import { SIMCC_SEDE_WHERE } from "./simcc";
 type Db = PrismaClient | Prisma.TransactionClient;
 type GroupSnapshot = {
   dgpId: string | null;
@@ -105,12 +105,7 @@ async function snapshot(db: Db, expected: string[] = []): Promise<Snapshot> {
     where: {
       OR: [
         {
-          instituicoes: {
-            some: {
-              tipoRelacao: "SEDE",
-              instituicao: SIMCC_INSTITUICOES_WHERE,
-            },
-          },
+          instituicoes: { some: SIMCC_SEDE_WHERE },
         },
         ...(expected.length ? [{ dgpId: { in: expected } }] : []),
       ],
@@ -120,7 +115,10 @@ async function snapshot(db: Db, expected: string[] = []): Promise<Snapshot> {
       nome: true,
       situacao: true,
       areaConhecimentoId: true,
-      _count: { select: { linhasPesquisa: true } },
+      _count: { select: {
+        linhasPesquisa: true,
+        instituicoes: { where: SIMCC_SEDE_WHERE },
+      } },
       instituicoes: {
         where: { tipoRelacao: "SEDE" },
         select: { instituicaoId: true },
@@ -130,11 +128,6 @@ async function snapshot(db: Db, expected: string[] = []): Promise<Snapshot> {
       },
     },
   });
-  const eligible = await db.instituicao.findMany({
-    where: SIMCC_INSTITUICOES_WHERE,
-    select: { id: true },
-  });
-  const institutionIds = new Set(eligible.map((i) => i.id));
   return {
     idsEsperados: [
       ...new Set([
@@ -153,9 +146,7 @@ async function snapshot(db: Db, expected: string[] = []): Promise<Snapshot> {
         /^\d{16}$/.test(m.pesquisador.lattesId ?? ""),
       ).length,
       sedes: g.instituicoes.length,
-      sedesSimcc: g.instituicoes.filter((i) =>
-        institutionIds.has(i.instituicaoId),
-      ).length,
+      sedesSimcc: g._count.instituicoes,
       areaPrincipal: !!g.areaConhecimentoId,
     })),
   };

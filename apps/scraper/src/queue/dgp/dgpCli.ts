@@ -1,6 +1,6 @@
 import '../env';
 import { createDgpScraperQueue, DataScope, dgpJobId, parseDataScope, validateScrapeDgpGroupJob } from '@oda/queue';
-import { FilaExtracaoStatus } from '@oda/database';
+import { FilaExtracaoStatus, findRegionalCimatecDgpIds } from '@oda/database';
 import { prisma } from '../../common/database';
 import { assertValidDgpIds } from '../../common/dgpId';
 import { SCRAPER_SETTINGS } from '../../common/config';
@@ -78,10 +78,11 @@ async function main() {
             sourceRows,
             scope,
             ids.length ? undefined : SCRAPER_SETTINGS.dgp.take,
+            scope === 'simcc' ? await findRegionalCimatecDgpIds(prisma) : undefined,
         )
             .map(row => row.dgpId);
         if (scope === 'simcc' && ids.length && candidates.length !== new Set(ids).size) {
-            throw new Error('Todos os IDs explicitos do escopo SIMCC devem pertencer a uma das 11 instituicoes reconhecidas.');
+            throw new Error('Todos os IDs explícitos do escopo SIMCC devem pertencer a uma instituição reconhecida.');
         }
         const available: string[] = [];
         for (const dgpId of candidates) {

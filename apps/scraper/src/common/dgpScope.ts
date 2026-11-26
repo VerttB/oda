@@ -6,10 +6,11 @@ export function selectDgpRowsForScope<T extends { dgpId: string; instituicao: st
     rows: T[],
     scope: DataScope,
     take?: number,
+    regionalCimatecIds?: ReadonlySet<string>,
 ): T[] {
     const selected = rows
         .filter(row => isValidDgpId(row.dgpId))
-        .filter(row => scope !== 'simcc' || isSimccInstitution(row.instituicao));
+        .filter(row => scope !== 'simcc' || isSimccInstitution(row.instituicao, regionalCimatecIds?.has(row.dgpId)));
 
     return scope === 'simcc' || take === undefined
         ? selected
