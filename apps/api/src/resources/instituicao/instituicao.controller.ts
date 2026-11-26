@@ -43,7 +43,10 @@ export class InstituicaoController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lista instituições' })
+  @ApiOperation({
+    summary: 'Lista instituições',
+    description: 'O filtro nome busca todos os termos no nome ou na sigla, em qualquer ordem, ignorando acentos e caixa.',
+  })
   @ZodResponse({ status: 200, type: PaginatedInstituicaoResponseDto })
   findAll(@Query() query: FindAllInstituicaoDto) {
     return this.instituicaoService.findAll(query);

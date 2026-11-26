@@ -45,7 +45,10 @@ export class AreaConhecimentoController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lista áreas de conhecimento' })
+  @ApiOperation({
+    summary: 'Lista áreas de conhecimento',
+    description: 'O filtro nome busca todos os termos em qualquer ordem, ignorando acentos e caixa.',
+  })
   @ZodResponse({ status: 200, type: PaginatedAreaConhecimentoResponseDto })
   findAll(@Query() query: FindAllAreaConhecimentoDto) {
     return this.areaConhecimentoService.findAll(query);

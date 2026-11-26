@@ -5,10 +5,11 @@ import { CreateAreaConhecimentoDto } from './dto/create-area-conhecimento.dto';
 import { UpdateAreaConhecimentoDto } from './dto/update-area-conhecimento.dto';
 import { FindAllAreaConhecimentoDto } from './dto/find-all-area-conhecimento.dto';
 import { Prisma } from '@oda/database';
+import { searchNamePage } from '@/common/search/name-page';
 import { getPagination, buildPaginationMeta } from '@oda/shared-types';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 
 const AREA_CONHECIMENTO_LIST_KEY = 'area-conhecimento:list:v3';
+const nameSortColumns = { nome: Prisma.sql`a.nome`, tipo: Prisma.sql`a.tipo` };
 
 const areaConhecimentoResumoSelect = {
   id: true,
@@ -48,6 +49,18 @@ export class AreaConhecimentoService {
       }
     
       async findAll(query?: FindAllAreaConhecimentoDto) {
+        if (query?.nome) {
+          const filters: Prisma.Sql[] = [];
+          if (query.tipo) filters.push(Prisma.sql`a.tipo = ${query.tipo}::public.tipo_area_conhecimento`);
+          if (query.areaPaiId) filters.push(Prisma.sql`a.area_pai_id = ${query.areaPaiId}`);
+          return searchNamePage(this.prismaService, query, query.nome, {
+            from: Prisma.sql`public.area_conhecimento a`, id: Prisma.sql`a.id`,
+            name: Prisma.sql`a.nome`, orderBy: nameSortColumns[query.ordenarPor ?? 'nome'], filters,
+          }, (tx, ids) => tx.areaConhecimento.findMany({
+            where: { id: { in: ids } }, select: areaConhecimentoResumoSelect,
+          }));
+        }
+
         const where: Prisma.AreaConhecimentoWhereInput = {};
         const pagination = getPagination(query);
         const orderBy = [
@@ -56,11 +69,6 @@ export class AreaConhecimentoService {
         ] as Prisma.AreaConhecimentoOrderByWithRelationInput[];
         const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
-        if (query?.nome) {
-          where.id = {
-            in: await findIdsByAccentInsensitiveText(this.prismaService, 'areaConhecimento', query.nome),
-          };
-        }
         if (query?.tipo) {
           where.tipo = query.tipo;
         }

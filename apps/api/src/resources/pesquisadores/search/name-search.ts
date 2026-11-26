@@ -1,22 +1,11 @@
-import { Prisma } from '@oda/database';
-import { getPagination, buildPaginationMeta, type FindAllPesquisadoresQuery, type PesquisadorResumoResponse } from '@oda/shared-types';
+import { Prisma, nameSearchSpecification } from '@oda/database';
+import type { FindAllPesquisadoresQuery, PesquisadorResumoResponse } from '@oda/shared-types';
 import type { PrismaService } from '@/prisma/prisma.service';
-import { accentInsensitiveExpression, normalizeSearchText } from '@/common/database/accent-insensitive-search';
+import { readSearchPage } from '@/common/search/name-page';
 import { toPesquisadorResponse } from '../pesquisadores.response';
 
-export function researcherNameTerms(name: string): string[] {
-  return [...new Set(normalizeSearchText(name).split(/\s+/u).filter(Boolean))];
-}
-
 export function buildResearcherNameWhere(query: FindAllPesquisadoresQuery): Prisma.Sql {
-  const nameExpression = accentInsensitiveExpression(Prisma.sql`r.nome`);
-  const terms = researcherNameTerms(query.nome ?? '');
-  if (terms.length === 0) return Prisma.sql`FALSE`;
-  const conditions = terms.map(term => {
-    // Percentual, sublinhado e barra invertida são texto literal, não curingas do LIKE.
-    const literal = term.replace(/[\\%_]/g, '\\$&');
-    return Prisma.sql`${nameExpression} LIKE ${`%${literal}%`}`;
-  });
+  const conditions = [nameSearchSpecification(Prisma.sql`r.nome`, query.nome ?? '')];
   if (query.tipo) conditions.push(Prisma.sql`r.tipo::text = ${query.tipo.toLowerCase()}`);
   if (query.formacaoAcademica) conditions.push(Prisma.sql`r.formacao_academica::text = ${query.formacaoAcademica.toLowerCase()}`);
   if (query.lattesId) conditions.push(Prisma.sql`r.lattes_id = ${query.lattesId}`);
@@ -33,31 +22,21 @@ export function buildResearcherNameWhere(query: FindAllPesquisadoresQuery): Pris
 }
 
 export async function findResearchersByName(prisma: PrismaService, query: FindAllPesquisadoresQuery) {
-  const pagination = getPagination(query);
-  const { skip, take } = pagination;
   const where = buildResearcherNameWhere(query);
   const columns = {
     nome: Prisma.sql`r.nome`, tipo: Prisma.sql`r.tipo`,
     formacaoAcademica: Prisma.sql`r.formacao_academica`, indexH: Prisma.sql`r.index_h`,
   };
-  const column = columns[query.ordenarPor ?? 'nome'];
-  const direction = query.ordem === 'desc' ? Prisma.sql`DESC` : Prisma.sql`ASC`;
-  const [rows, [count]] = await prisma.$transaction([
-    prisma.$queryRaw<PesquisadorResumoResponse[]>(Prisma.sql`
-      SELECT r.id, r.nome, r.lattes_id AS "lattesId", upper(r.tipo::text) AS tipo,
-        upper(r.formacao_academica::text) AS "formacaoAcademica", r.orcid_id AS "orcidId",
-        r.open_alex_id AS "openAlexId", r.image_url AS "imageUrl",
-        r.index_h AS "indexH", r.index_i_10 AS "indexI10"
-      FROM public.pesquisador r WHERE ${where}
-      ORDER BY ${column} ${direction}, r.id ASC
-      ${take === undefined ? Prisma.empty : Prisma.sql`LIMIT ${take}`} OFFSET ${skip}
-    `),
-    prisma.$queryRaw<{ total: number }[]>(Prisma.sql`
-      SELECT count(*)::int AS total FROM public.pesquisador r WHERE ${where}
-    `),
-  ], { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
-  return {
-    data: rows.map(toPesquisadorResponse),
-    meta: buildPaginationMeta(pagination, count.total),
+  const source = {
+    from: Prisma.sql`public.pesquisador r`, id: Prisma.sql`r.id`, orderBy: columns[query.ordenarPor ?? 'nome'],
   };
+  const select = Prisma.sql`r.id, r.nome, r.lattes_id AS "lattesId", upper(r.tipo::text) AS tipo,
+    upper(r.formacao_academica::text) AS "formacaoAcademica", r.orcid_id AS "orcidId",
+    r.open_alex_id AS "openAlexId", r.image_url AS "imageUrl",
+    r.index_h AS "indexH", r.index_i_10 AS "indexI10"`;
+  const { rows, meta } = await prisma.$transaction(
+    tx => readSearchPage<PesquisadorResumoResponse>(tx, query, source, select, where),
+    { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+  );
+  return { data: rows.map(toPesquisadorResponse), meta };
 }

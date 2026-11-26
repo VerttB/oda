@@ -1,4 +1,5 @@
 import { SIMCC_CIMATEC } from '@oda/shared-types';
+import { Prisma, nameSearchSpecification } from '@oda/database';
 
 const ACCENTED_CHARACTERS = 'áàâãäéèêëíìîïóòôõöúùûüçñýÿ';
 const PLAIN_CHARACTERS = 'aaaaaeeeeiiiiooooouuuucnyy';
@@ -29,6 +30,12 @@ function contains(column: string, value: string, add: AddParameter) {
   return `translate(lower(${column}), '${ACCENTED_CHARACTERS}', '${PLAIN_CHARACTERS}') LIKE ${add(`%${normalized}%`)}`;
 }
 
+function matchesName(column: 'g.nome' | 'p.nome' | 'lp.titulo', value: string, add: AddParameter) {
+  const { strings, values } = nameSearchSpecification(Prisma.raw(column), value);
+  const [first, ...fragments] = strings;
+  return fragments.reduce((sql, fragment, index) => sql + add(values[index]) + fragment, first);
+}
+
 export function buildSemanticFilterConditions(
   sourceType: SourceType,
   filters: Record<string, unknown>,
@@ -46,7 +53,7 @@ export function buildSemanticFilterConditions(
     const instituicaoId = getText(filters, 'instituicaoId');
     const estadoId = getText(filters, 'estadoId');
 
-    if (nome) conditions.push(contains('g.nome', nome, add));
+    if (nome) conditions.push(matchesName('g.nome', nome, add));
     if (situacao) conditions.push(`g.situacao::text = ${add(enumValue(situacao))}`);
     if (ano !== undefined) conditions.push(`g.ano_formacao = ${add(ano)}`);
     if (areaId) conditions.push(`g.area_conhecimento_id = ${add(areaId)}`);
@@ -98,11 +105,7 @@ export function buildSemanticFilterConditions(
     const grupoId = getText(filters, 'grupoPesquisaId');
     const eLider = getBoolean(filters, 'eLider');
 
-    if (nome) {
-      for (const term of new Set(nome.split(/\s+/u))) {
-        conditions.push(contains('p.nome', term.replace(/[\\%_]/g, '\\$&'), add));
-      }
-    }
+    if (nome) conditions.push(matchesName('p.nome', nome, add));
     if (formacao) conditions.push(`p.formacao_academica::text = ${add(enumValue(formacao))}`);
     if (tipo) conditions.push(`p.tipo::text = ${add(enumValue(tipo))}`);
     if (lattesId) conditions.push(`p.lattes_id = ${add(lattesId)}`);
@@ -120,7 +123,7 @@ export function buildSemanticFilterConditions(
   if (sourceType === 'LINHA_PESQUISA') {
     const nome = getText(filters, 'nome');
     const grupoId = getText(filters, 'grupo');
-    if (nome) conditions.push(contains('lp.titulo', nome, add));
+    if (nome) conditions.push(matchesName('lp.titulo', nome, add));
     if (grupoId) conditions.push(`lp.grupo_id = ${add(grupoId)}`);
   }
 

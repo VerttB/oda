@@ -46,7 +46,10 @@ export class LinhaPesquisaController {
 
   @Get()
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista linhas de pesquisa' })
+  @ApiOperation({
+    summary: 'Lista linhas de pesquisa',
+    description: 'A busca textual em nome ou q encontra todos os termos no título em qualquer ordem, ignorando acentos e caixa.',
+  })
   @ApiQuery({ name: 'q', required: false, type: String, example: 'bioinformática aplicada a doenças tropicais' })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedLinhaPesquisaResponseDto })

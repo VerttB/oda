@@ -12,8 +12,9 @@ import { FindAllGruposPesquisaDto } from './dto/find-all-grupos-pesquisa.dto';
 import { Prisma, Situacao, TipoRelacaoGrupoInstituicao, SIMCC_SEDE_WHERE } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
 import { toGrupoPesquisaResponse } from './grupos-pesquisa.response';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
+import { searchNamePage } from '@/common/search/name-page';
+import { groupNameSearchSource } from './search/name-search';
 const GRUPOS_PESQUISA_LIST_CACHE_KEY = 'grupos-pesquisa:list:v3';
 
 const grupoPesquisaInclude = {
@@ -66,7 +67,12 @@ export class GruposPesquisaService {
   }
 
   private async list(query?: FindAllGruposPesquisaDto, simcc = false) {
+    if (query?.q && !query.modoBusca) query = { ...query, modoBusca: 'textual' };
     validateSearchQuery(query);
+    const nameQuery = query?.nome ?? (query?.modoBusca === 'textual' ? query.q : undefined);
+    if (query && nameQuery && query.modoBusca !== 'semantica') {
+      return this.listByName(query, nameQuery, simcc);
+    }
     const where: Prisma.GrupoPesquisaWhereInput = {};
     const andConditions: Prisma.GrupoPesquisaWhereInput[] = [];
     const pagination = getPagination(query);
@@ -79,12 +85,6 @@ export class GruposPesquisaService {
     if (query) {
       if (query.situacao) {
         where.situacao = query.situacao;
-      }
-      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
-      if (nameQuery) {
-        where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'grupoPesquisa', nameQuery),
-        };
       }
       if (query.anoFormacao) {
         where.anoFormacao = query.anoFormacao;
@@ -134,6 +134,7 @@ export class GruposPesquisaService {
         omit: { criadoEm: true, atualizadoEm: true },
       });
       const gruposPorId = new Map(grupos.map(grupo => [grupo.id, grupo]));
+
       return {
         data: ids.flatMap(id => {
           const grupo = gruposPorId.get(id);
@@ -177,6 +178,16 @@ export class GruposPesquisaService {
         meta: buildPaginationMeta(pagination, totalItems),
       };
     });
+  }
+
+  private async listByName(query: FindAllGruposPesquisaDto, name: string, simcc: boolean) {
+    const { data, meta } = await searchNamePage(this.prismaService, query, name, groupNameSearchSource(query, simcc),
+      (tx, ids) => tx.grupoPesquisa.findMany({
+        where: { id: { in: ids } }, include: grupoPesquisaInclude,
+        omit: { criadoEm: true, atualizadoEm: true },
+      }),
+    );
+    return { data: data.map(toGrupoPesquisaResponse), meta };
   }
 
   async findOne(id: string) {

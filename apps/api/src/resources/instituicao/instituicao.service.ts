@@ -6,9 +6,10 @@ import { UpdateInstituicaoDto } from './dto/update-instituicao.dto';
 import { FindAllInstituicaoDto } from './dto/find-all-instituicao.dto';
 import { Prisma } from '@oda/database';
 import { InstituicaoResponseSchema, getPagination, buildPaginationMeta } from '@oda/shared-types';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { searchNamePage } from '@/common/search/name-page';
 
 const INSTITUICOES_LIST_CACHE_KEY = 'instituicoes:list:v3';
+const nameSortColumns = { nome: Prisma.sql`i.nome`, sigla: Prisma.sql`i.sigla` };
 
 const instituicaoInclude = {
   estado: true,
@@ -66,6 +67,23 @@ export class InstituicaoService {
   }
 
   async findAll(query?: FindAllInstituicaoDto) {
+    if (query?.nome) {
+      const filters: Prisma.Sql[] = [];
+      if (query.estadoId) filters.push(Prisma.sql`i.estado_id = ${query.estadoId}`);
+      if (query.uf) filters.push(Prisma.sql`EXISTS (
+        SELECT 1 FROM public.estado e WHERE e.id = i.estado_id AND lower(e.sigla) = lower(${query.uf})
+      )`);
+      const { data, meta } = await searchNamePage(this.prismaService, query, query.nome, {
+        from: Prisma.sql`public.instituicao i`, id: Prisma.sql`i.id`,
+        name: Prisma.sql`concat_ws(' ', i.nome, i.sigla)`,
+        orderBy: nameSortColumns[query.ordenarPor ?? 'nome'], filters,
+      }, (tx, ids) => tx.instituicao.findMany({
+        where: { id: { in: ids } }, include: instituicaoInclude,
+        omit: { criadoEm: true, atualizadoEm: true },
+      }));
+      return { data: data.map(toInstituicaoResponse), meta };
+    }
+
     const where: Prisma.InstituicaoWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -74,11 +92,6 @@ export class InstituicaoService {
     ] as Prisma.InstituicaoOrderByWithRelationInput[];
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
-    if (query?.nome) {
-      where.id = {
-        in: await findIdsByAccentInsensitiveText(this.prismaService, 'instituicao', query.nome),
-      };
-    }
     if (query?.estadoId) where.estadoId = query.estadoId;
     if (query?.uf) where.estado = { sigla: { equals: query.uf, mode: 'insensitive' } };
 

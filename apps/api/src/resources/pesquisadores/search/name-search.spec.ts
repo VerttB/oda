@@ -1,10 +1,6 @@
-import { researcherNameTerms, buildResearcherNameWhere } from './name-search';
+import { buildResearcherNameWhere } from './name-search';
 
 describe('Busca de pesquisadores por termos do nome', () => {
-  it('normaliza caixa, acentos, espaços e termos duplicados', () => {
-    expect(researcherNameTerms('  CÁRLOS\tFERNÁNDO carlos  ')).toEqual(['carlos', 'fernando']);
-  });
-
   it('combina todos os termos com AND sem exigir que sejam consecutivos', () => {
     const sql = buildResearcherNameWhere({ nome: 'Carlos Fernando', page: 1, size: 30 });
     expect(sql.values).toContain('%carlos%');

@@ -10,7 +10,7 @@ import {
 import { FindAllLinhaPesquisaDto } from './dto/find-all-linha-pesquisa.dto';
 import { Prisma } from '@oda/database';
 import { LangchainGatewayService } from '../langchain/langchain.service';
-import { findIdsByAccentInsensitiveText } from '@/common/database/accent-insensitive-search';
+import { searchNamePage } from '@/common/search/name-page';
 import { validateSearchQuery, withoutSearchControls } from '@/common/search/semantic-query';
 const LINHAS_PESQUISA_LIST_CACHE_KEY = 'linhas-pesquisa:list:v2';
 
@@ -79,7 +79,19 @@ export class LinhaPesquisaService {
   }
 
   async findAll(query?: FindAllLinhaPesquisaDto) {
+    if (query?.q && !query.modoBusca) query = { ...query, modoBusca: 'textual' };
     validateSearchQuery(query);
+    const nameQuery = query?.nome ?? (query?.modoBusca === 'textual' ? query.q : undefined);
+    if (query && nameQuery && query.modoBusca !== 'semantica') {
+      return searchNamePage(this.prismaService, query, nameQuery, {
+        from: Prisma.sql`public.linha_pesquisa lp`, id: Prisma.sql`lp.id`,
+        name: Prisma.sql`lp.titulo`, orderBy: Prisma.sql`lp.titulo`,
+        filters: query.grupo ? [Prisma.sql`lp.grupo_id = ${query.grupo}`] : [],
+      }, (tx, ids) => tx.linhaPesquisa.findMany({
+        where: { id: { in: ids } }, omit: { criadoEm: true, atualizadoEm: true },
+      }));
+    }
+
     const where: Prisma.LinhaPesquisaWhereInput = {};
     const pagination = getPagination(query);
     const orderBy = [
@@ -88,17 +100,7 @@ export class LinhaPesquisaService {
     ] as Prisma.LinhaPesquisaOrderByWithRelationInput[];
     const hasCustomOrdering = Boolean(query?.ordenarPor || query?.ordem);
 
-    if (query) {
-      if (query.grupo) {
-        where.grupoId = query.grupo;
-      }
-      const nameQuery = query.nome ?? (query.modoBusca === 'textual' ? query.q : undefined);
-      if (nameQuery) {
-        where.id = {
-          in: await findIdsByAccentInsensitiveText(this.prismaService, 'linhaPesquisa', nameQuery),
-        };
-      }
-    }
+    if (query?.grupo) where.grupoId = query.grupo;
 
     if (query?.modoBusca === 'semantica') {
       const { results, totalItems } = await this.langchainService.semanticSearch(

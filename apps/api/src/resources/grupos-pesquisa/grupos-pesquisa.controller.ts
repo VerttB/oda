@@ -60,7 +60,10 @@ export class GruposPesquisaController {
 
   @Get()
   @UseGuards(AiAccessGuard)
-  @ApiOperation({ summary: 'Lista grupos de pesquisa' })
+  @ApiOperation({
+    summary: 'Lista grupos de pesquisa',
+    description: 'A busca textual em nome ou q encontra todos os termos em qualquer ordem, ignorando acentos e caixa.',
+  })
   @ApiQuery({ name: 'q', required: false, type: String, example: 'inteligência artificial na educação' })
   @ApiQuery({ name: 'modoBusca', required: false, enum: ['textual', 'semantica'] })
   @ZodResponse({ status: 200, type: PaginatedGruposPesquisaResponseDto })
